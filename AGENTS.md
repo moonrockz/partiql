@@ -273,27 +273,53 @@ new ADR.
 - Tags and releases are **immutable**. Publish to mooncakes.io first, then
   create the GitHub release.
 
-## Landing the Plane (Session Completion)
 
-When ending a work session:
+## Work Tracking
 
-1. File issues for remaining work.
-2. Run quality gates (`mise run check`) if code changed.
-3. Update issue status (e.g. `bd close` / `bd update`).
-4. **PUSH TO REMOTE** — mandatory: `bd sync`, then `git pull --rebase` and
-   `git push`. Work is not complete until both pushes succeed.
-5. Clean up; verify all changes committed and pushed; hand off context for
-   next session.
+**bd (beads) is the primary tracker for all work.** GitHub Issues are the
+public intake for reports from outside contributors.
 
-<!-- BEGIN BEADS INTEGRATION v:1 profile:full hash:bacef91e -->
+- Track every task, bug, feature and epic in bd. Do NOT use markdown TODO
+  lists or other tracking methods.
+- GitHub milestones and one epic issue per milestone hold the public
+  roadmap; bd holds all task tracking.
+- Mirror each GitHub issue into bd with `--external-ref gh-<number>` (the
+  existing issues use the full issue URL; either form is fine), and keep the
+  two in step: when the bd issue closes, close the GitHub issue.
+- A pull request that resolves a GitHub issue says `Closes #<number>` in its
+  body. Name the bd issue in the body too.
+- Work lands on `main` through pull requests (squash merge). Branch first;
+  do not push to `main` unless the user says so for that change.
+- bd runs with `agent.profile: team-maintainer` (`.beads/config.yaml`):
+  commit, `bd sync` and push are routine parts of the work. An explicit
+  "do not commit" or "do not push" from the user still wins, and pushes go to
+  your branch, not to `main`.
+
+## Persistent Memory
+
+Store knowledge that must outlive the session with `bd remember`. Do not use
+`MEMORY.md` files or any agent's own memory store for this project; bd
+memories sync through `refs/dolt/data`, so every machine and agent sees them.
+
+```bash
+bd remember "insight" --key <slug>   # store, or update the memory with that key
+bd memories <keyword>                # search
+bd recall <key>                      # read one
+```
+
+`bd prime` (the SessionStart hook) injects the memories into each session.
+
+<!-- BEGIN BEADS INTEGRATION -->
 ## Issue Tracking with bd (beads)
 
-**IMPORTANT**: This project uses **bd (beads)** for ALL issue tracking. Do NOT use markdown TODOs, task lists, or other tracking methods.
+**IMPORTANT**: This project uses **bd (beads)** for ALL issue tracking. Do NOT
+use markdown TODOs, task lists, or other tracking methods.
 
 ### Why bd?
 
 - Dependency-aware: Track blockers and relationships between issues
-- Git-friendly: Dolt-powered version control with native sync
+- Git-friendly: syncs through a Dolt remote on the Git origin
+  (`refs/dolt/data`), separate from source branches
 - Agent-optimized: JSON output, ready work detection, discovered-from links
 - Prevents duplicate tracking systems and confusion
 
@@ -309,20 +335,21 @@ bd ready --json
 
 ```bash
 bd create "Issue title" --description="Detailed context" -t bug|feature|task -p 0-4 --json
-bd create "Issue title" --description="What this issue is about" -p 1 --deps discovered-from:bd-123 --json
+bd create "Issue title" --description="What this issue is about" -p 1 --deps discovered-from:partiql-123 --json
+bd create "Issue title" --description="..." --external-ref gh-12 --json   # mirror a GitHub issue
 ```
 
 **Claim and update:**
 
 ```bash
-bd update <id> --claim --json
-bd update bd-42 --priority 1 --json
+bd update partiql-42 --status in_progress --json
+bd update partiql-42 --priority 1 --json
 ```
 
 **Complete work:**
 
 ```bash
-bd close bd-42 --reason "Completed" --json
+bd close partiql-42 --reason "Completed" --json
 ```
 
 ### Issue Types
@@ -344,31 +371,35 @@ bd close bd-42 --reason "Completed" --json
 ### Workflow for AI Agents
 
 1. **Check ready work**: `bd ready` shows unblocked issues
-2. **Claim your task atomically**: `bd update <id> --claim`
+2. **Claim your task**: `bd update <id> --status in_progress`
 3. **Work on it**: Implement, test, document
 4. **Discover new work?** Create linked issue:
    - `bd create "Found bug" --description="Details about what was found" -p 1 --deps discovered-from:<parent-id>`
 5. **Complete**: `bd close <id> --reason "Done"`
 
-### Quality
-- Use `--acceptance` and `--design` fields when creating issues
-- Use `--validate` to check description completeness
+### Storage and Sync
 
-### Lifecycle
-- `bd defer <id>` / `bd supersede <id>` for issue management
-- `bd stale` / `bd orphans` / `bd lint` for hygiene
-- `bd human <id>` to flag for human decisions
-- `bd formula list` / `bd mol pour <name>` for structured workflows
+- bd stores issues in an embedded Dolt database at `.beads/embeddeddolt/`
+  (not committed).
+- Git worktrees share the database of the main checkout. Do not create a
+  database inside a worktree.
+- Cross-machine sync uses a Dolt remote on the GitHub origin. Dolt keeps issue
+  history under `refs/dolt/data`, separate from source branches:
+  - `bd sync` — pull, check for conflicts, and push in one step.
+  - `bd dolt pull` / `bd dolt push` — the individual steps.
+- Issue changes need no commit or pull request: `bd sync` publishes them to
+  `refs/dolt/data`.
+- `.beads/issues.jsonl` is a passive export (`bd export -o .beads/issues.jsonl`)
+  for viewers and interchange. It is gitignored; do not commit it.
 
-### Sync
+### Setup on a Fresh Clone
 
-bd stores issue history in Dolt:
-
-- Each write auto-commits to Dolt history
-- Use `bd dolt push`/`bd dolt pull` for remote sync
-- Do not treat `.beads/issues.jsonl` as the sync protocol
-
-**Architecture in one line:** issues live in a local Dolt DB; sync uses `refs/dolt/data` on your git remote; `.beads/issues.jsonl` is a passive export. See https://github.com/gastownhall/beads/blob/main/docs/core-concepts/sync-concepts.md for details and anti-patterns.
+```bash
+mise run setup          # submodules and MoonBit dependencies
+bd bootstrap            # clones refs/dolt/data from origin and wires the Dolt remote
+mise run hooks:install  # installs lefthook git hooks (these call `bd hooks run <hook>`)
+git config beads.role maintainer   # or contributor
+```
 
 ### Important Rules
 
@@ -377,46 +408,31 @@ bd stores issue history in Dolt:
 - ✅ Link discovered work with `discovered-from` dependencies
 - ✅ Check `bd ready` before asking "what should I work on?"
 - ❌ Do NOT create markdown TODO lists
-- ✅ GitHub milestones and one epic issue per milestone hold the public roadmap; beads holds all task tracking
-- ❌ Do NOT track tasks in GitHub issues or other trackers
-- ❌ Do NOT duplicate tracking systems
-
-For more details, see README.md and https://github.com/gastownhall/beads/blob/main/docs/getting-started/quickstart.md.
-
-## Agent Context Profiles
-
-The managed Beads block is task-tracking guidance, not permission to override repository, user, or orchestrator instructions.
-
-- **Conservative (default)**: Use `bd` for task tracking. Do not run git commits, git pushes, or Dolt remote sync unless explicitly asked. At handoff, report changed files, validation, and suggested next commands.
-- **Minimal**: Keep tool instruction files as pointers to `bd prime`; use the same conservative git policy unless active instructions say otherwise.
-- **Team-maintainer**: Only when the repository explicitly opts in, agents may close beads, run quality gates, commit, and push as part of session close. A current "do not commit" or "do not push" instruction still wins.
-
-## Session Completion
-
-This protocol applies when ending a Beads implementation workflow. It is subordinate to explicit user, repository, and orchestrator instructions.
-
-1. **File issues for remaining work** - Create beads for anything that needs follow-up
-2. **Run quality gates** (if code changed) - Tests, linters, builds
-3. **Update issue status** - Close finished work, update in-progress items
-4. **Handle git/sync by active profile**:
-   ```bash
-   # Conservative/minimal/default: report status and proposed commands; wait for approval.
-   git status
-
-   # Team-maintainer opt-in only, unless current instructions forbid it:
-   git pull --rebase
-   bd dolt push
-   git push
-   git status
-   ```
-5. **Hand off** - Summarize changes, validation, issue status, and any blocked sync/commit/push step
-
-**Critical rules:**
-- Explicit user or orchestrator instructions override this Beads block.
-- Do not commit or push without clear authority from the active profile or the current user request.
-- If a required sync or push is blocked, stop and report the exact command and error.
+- ❌ Do NOT duplicate tracking systems (GitHub issues are mirrored, not tracked twice)
 
 <!-- END BEADS INTEGRATION -->
+
+## Landing the Plane (Session Completion)
+
+When you end a work session, complete ALL steps below. Work is NOT complete
+until the pushes succeed.
+
+1. **File issues for remaining work** in bd.
+2. **Run quality gates** if code changed: `mise run check`,
+   `moon info && moon fmt`.
+3. **Update issue status**: close finished work, update in-progress items.
+4. **Push** (mandatory):
+   ```bash
+   bd sync                  # publish issue changes to refs/dolt/data
+   git pull --rebase
+   git push                 # your branch; open or update its pull request
+   git status               # MUST show "up to date with origin"
+   ```
+5. **Clean up**: clear stashes, prune merged branches.
+6. **Hand off**: give context for the next session.
+
+Never stop before pushing; that leaves work stranded on one machine. If a push
+fails, resolve the cause and retry.
 
 <!-- BEGIN BEADS CODEX SETUP: generated by bd setup codex -->
 ## Beads Issue Tracker
