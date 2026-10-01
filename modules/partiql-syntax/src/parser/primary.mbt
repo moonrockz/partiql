@@ -187,6 +187,9 @@ fn Parser::parenthesized(self : Parser) -> @ast.Expr raise @ast.ParseError {
   if self.at_query_start(1) {
     ignore(self.advance())
     let q = self.nested(() => self.query())
+    if self.at_word("MATCH") {
+      return self.graph_match_rest(query_or_expr(q, q.span), start)
+    }
     self.expect_punct(')')
     return query_or_expr(q, self.span_from(start))
   }

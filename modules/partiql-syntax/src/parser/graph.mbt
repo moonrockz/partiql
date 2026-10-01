@@ -34,46 +34,6 @@ fn Parser::graph_match_rest(
 }
 
 ///|
-/// `path (, path)* [WHERE expr]` when `many`; one path otherwise (the FROM
-/// form). Task 3 adds the selector.
-fn Parser::graph_pattern(
-  self : Parser,
-  many~ : Bool,
-) -> @ast.GraphPattern raise @ast.ParseError {
-  let start = self.pos
-  let paths = [self.path_pattern()]
-  ignore(many)
-  { selector: None, paths, where_: None, span: self.span_from(start), }
-}
-
-///|
-/// `part+`. Task 3 adds the restrictor and the path variable.
-fn Parser::path_pattern(
-  self : Parser,
-) -> @ast.PathPattern raise @ast.ParseError {
-  let start = self.pos
-  let parts : Array[@ast.PathPart] = []
-  while starts_part(self.peek()) {
-    parts.push(self.path_part())
-  }
-  if parts.is_empty() {
-    self.note("graph pattern")
-    raise self.error("expected a node, edge or group pattern")
-  }
-  { restrictor: None, variable: None, parts, span: self.span_from(start), }
-}
-
-///|
-/// A node or an edge. Task 3 adds groups.
-fn Parser::path_part(self : Parser) -> @ast.PathPart raise @ast.ParseError {
-  if self.at_punct('(') {
-    Node(self.node())
-  } else {
-    Edge(self.edge())
-  }
-}
-
-///|
 /// The inside of a node or an edge filler: `[name] [: label] [WHERE expr]`.
 fn Parser::element_body(
   self : Parser,
@@ -215,4 +175,157 @@ fn Parser::label_primary(self : Parser) -> @ast.Label raise @ast.ParseError {
   }
   self.note("label")
   raise self.error("expected a label")
+}
+
+///|
+/// The restrictor that `token` names, if any. Quoted identifiers are never
+/// restrictors.
+fn restrictor_of(token : @lexer.Token) -> @ast.Restrictor? {
+  match token.kind {
+    Word(w) =>
+      match w.to_upper() {
+        "WALK" => Some(Walk)
+        "TRAIL" => Some(Trail)
+        "ACYCLIC" => Some(Acyclic)
+        "SIMPLE" => Some(Simple)
+        _ => None
+      }
+    _ => None
+  }
+}
+
+///|
+/// Whether the tokens `k` places ahead are `name =` (a path variable).
+fn Parser::at_path_variable(self : Parser, k : Int) -> Bool {
+  is_name(self.peek_at(k)) && self.peek_at(k + 1).kind is Punct('=')
+}
+
+///|
+/// `ANY SHORTEST`, `ALL SHORTEST`, `ANY [k]`, `SHORTEST [k [GROUP]]`
+/// (spec 7.5). `any = …` is a path variable, not a selector.
+fn Parser::selector(self : Parser) -> @ast.Selector? raise @ast.ParseError {
+  if self.at_path_variable(0) {
+    return None
+  }
+  let start = self.pos
+  let kind : @ast.SelectorKind = if self.at_word("ANY") &&
+    self.at_word_at(1, "SHORTEST") {
+    ignore(self.advance())
+    ignore(self.advance())
+    AnyShortest
+  } else if self.eat_word("ALL") {
+    self.expect_word("SHORTEST")
+    AllShortest
+  } else if self.eat_word("ANY") {
+    let k = if self.peek().kind is IntLit(_) {
+      Some(self.int_literal())
+    } else {
+      None
+    }
+    Any(k~)
+  } else if self.eat_word("SHORTEST") {
+    if self.peek().kind is IntLit(_) {
+      let k = self.int_literal()
+      ShortestK(k~, group=self.eat_word("GROUP"))
+    } else {
+      Shortest
+    }
+  } else {
+    return None
+  }
+  Some({ kind, span: self.span_from(start), })
+}
+
+///|
+/// Whether the `(` at the cursor starts a node: the next token is `)`, `:`
+/// or WHERE, or a name followed by one of those (spec 7.6).
+fn Parser::at_node(self : Parser) -> Bool {
+  let closes = (t : @lexer.Token) => {
+    t.kind is Punct(')' | ':') || word_is(t, "WHERE")
+  }
+  let next = self.peek_at(1)
+  closes(next) || (is_name(next) && closes(self.peek_at(2)))
+}
+
+///|
+/// `( path [WHERE expr] )` or `[ path [WHERE expr] ]`, with an optional
+/// quantifier.
+fn Parser::group(self : Parser) -> @ast.GroupPattern raise @ast.ParseError {
+  let start = self.pos
+  let (delimiter, close) : (@ast.GroupDelimiter, Char) = if self.eat_punct('(') {
+    (Paren, ')')
+  } else {
+    self.expect_punct('[')
+    (Bracket, ']')
+  }
+  let path = self.path_pattern()
+  let where_ = if self.eat_word("WHERE") { Some(self.expr()) } else { None }
+  self.expect_punct(close)
+  let quantifier = self.quantifier()
+  { delimiter, path, where_, quantifier, span: self.span_from(start), }
+}
+
+///|
+/// `[selector] path (, path)* [WHERE expr]` when `many` (the parenthesized
+/// form); `[selector] path` otherwise (the FROM form).
+fn Parser::graph_pattern(
+  self : Parser,
+  many~ : Bool,
+) -> @ast.GraphPattern raise @ast.ParseError {
+  let start = self.pos
+  let selector = self.selector()
+  let paths = [self.path_pattern()]
+  if many {
+    while self.eat_punct(',') {
+      paths.push(self.path_pattern())
+    }
+  }
+  let where_ = if many && self.eat_word("WHERE") {
+    Some(self.expr())
+  } else {
+    None
+  }
+  { selector, paths, where_, span: self.span_from(start), }
+}
+
+///|
+/// `[restrictor] [name =] part+` (spec 7.4): a path variable first, then a
+/// restrictor word that is followed by a part or a path variable.
+fn Parser::path_pattern(
+  self : Parser,
+) -> @ast.PathPattern raise @ast.ParseError {
+  let start = self.pos
+  let restrictor = match restrictor_of(self.peek()) {
+    Some(r) if !self.at_path_variable(0) &&
+      (starts_part(self.peek_at(1)) || self.at_path_variable(1)) => {
+      ignore(self.advance())
+      Some(r)
+    }
+    _ => None
+  }
+  let variable = if self.at_path_variable(0) {
+    let v = self.identifier()
+    self.expect_punct('=')
+    Some(v)
+  } else {
+    None
+  }
+  let parts : Array[@ast.PathPart] = []
+  while starts_part(self.peek()) {
+    parts.push(self.path_part())
+  }
+  if parts.is_empty() {
+    self.note("graph pattern")
+    raise self.error("expected a node, edge or group pattern")
+  }
+  { restrictor, variable, parts, span: self.span_from(start), }
+}
+
+///|
+fn Parser::path_part(self : Parser) -> @ast.PathPart raise @ast.ParseError {
+  match self.peek().kind {
+    Punct('(') if self.at_node() => Node(self.node())
+    Punct('(' | '[') => Group(self.nested(() => self.group()))
+    _ => Edge(self.edge())
+  }
 }
