@@ -48,11 +48,13 @@ graph TD
 - `partiql-value`
   - root: `Value`, the PartiQL data model: absent values, numbers, text,
     LOBs, `Date`/`Time`/`Timestamp`, intervals, `List`, `Bag`, `Tuple`, and
-    `Map` (RFC 0104: `MapValue` with declared `MapType`s), and `Ion` (boxed
-    exact Ion, ADR 0005). Relations: structural `Eq`,
+    `Map` (RFC 0104: `MapValue` with declared `MapType`s), `Graph` (RFC 0025:
+    `GraphValue` with id-keyed nodes and edges), and `Ion` (boxed exact Ion,
+    ADR 0005). Relations: structural `Eq`,
     `sql_equals` (the `=` operator), `eqg` (grouping) and `compare` (ORDER
     BY). One concern per file (`value.mbt`, `tuple.mbt`, `bag.mbt`,
-    `datetime.mbt`, `interval.mbt`, `map.mbt`, `numeric.mbt`, `text.mbt`,
+    `datetime.mbt`, `interval.mbt`, `map.mbt`, `graph.mbt`, `numeric.mbt`,
+    `text.mbt`,
     `identity.mbt`, `lower.mbt`, `equality.mbt`, `ordering.mbt`).
   - `ion`: the PartiQL-encoded Ion codec (`from_ion`, `to_ion`). Its default
     alias is `ion`, so it imports `moonrockz/ion/ion` as `@ion_core`.

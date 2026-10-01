@@ -7,7 +7,7 @@ the [partiql-tests](https://github.com/partiql/partiql-tests) suite uses.
 
 | Package | Alias | Content |
 |---|---|---|
-| `moonrockz/partiql-value` | `@value` | `Value`, `Tuple`, `Bag`, `MapValue` (RFC 0104), `Date`, `Time`, `Timestamp`, `IntervalYM`, `IntervalDT`, and the relations `==`, `sql_equals`, `eqg`, `compare` |
+| `moonrockz/partiql-value` | `@value` | `Value`, `Tuple`, `Bag`, `MapValue` (RFC 0104), `GraphValue` (RFC 0025), `Date`, `Time`, `Timestamp`, `IntervalYM`, `IntervalDT`, and the relations `==`, `sql_equals`, `eqg`, `compare` |
 | `moonrockz/partiql-value/ion` | `@partiql_ion` | `from_ion`, `to_ion` (PartiQL-encoded Ion) |
 | `moonrockz/partiql-value/arbitrary` | `@arbitrary` | quickcheck generators for property-based tests |
 

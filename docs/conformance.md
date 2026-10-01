@@ -98,17 +98,17 @@ files, so the codec must accept both.
 
 ## Current status
 
-At commit `2ef0ce2`, after M1 (data model) and M1b MAP:
+At commit `2ef0ce2`, after M1 (data model) and M1b (MAP and graph):
 
 | Check | Passed | Total | N/A |
 |---|---|---|---|
 | `syntax` | 0 | 672 | 247 |
 | `eval-parse` | 0 | 4985 | 0 |
-| `codec` | 6714 | 6822 | 0 |
+| `codec` | 6822 | 6822 | 0 |
 | `ion-roundtrip` | 39 | 39 | 0 |
 
-The 108 `codec` failures are the `$graph` values (M1b graph). The `$map`
-values pass since M1b MAP.
+Every corpus value passes `codec`, including the `$map` (M1b MAP) and
+`$graph` (M1b graph) values.
 
 The future eval comparison must treat a DATE and a midnight UTC TIMESTAMP as
 equal where the corpus writes a date as a plain Ion timestamp outside a typed
