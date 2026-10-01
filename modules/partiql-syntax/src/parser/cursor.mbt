@@ -12,6 +12,9 @@ priv struct Parser {
   /// Token positions where a parenthesized join was tried and failed; the
   /// attempt is never repeated there, so parsing stays linear.
   failed_joins : @hashset.HashSet[Int]
+  /// Token positions where a parenthesized join was read, with the join and
+  /// the position after it; a second visit reuses them (spec M2b 7.3).
+  joins : Map[Int, (@ast.FromItem, Int)]
 }
 
 ///|
@@ -22,6 +25,7 @@ fn Parser::new(tokens : Array[@lexer.Token]) -> Parser {
     depth: 0,
     expected: [],
     failed_joins: @hashset.from_array([]),
+    joins: {},
   }
 }
 

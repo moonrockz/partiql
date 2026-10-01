@@ -96,6 +96,10 @@ fn Parser::from_base(self : Parser) -> @ast.FromItem raise @ast.ParseError {
     word_is(after, "PIVOT") ||
     word_is(after, "VALUES")
   if self.at_punct('(') && !subquery && !self.failed_joins.contains(self.pos) {
+    if self.joins.get(self.pos) is Some((j, end)) {
+      self.pos = end
+      return j
+    }
     let saved = self.pos
     let saved_depth = self.depth
     ignore(self.advance())
@@ -106,21 +110,25 @@ fn Parser::from_base(self : Parser) -> @ast.FromItem raise @ast.ParseError {
       _ => None
     }
     match joined {
-      Some(j) if !comma_after_match(j) => return j
+      Some(j) if !comma_after_match(j) => {
+        self.joins.set(saved, (j, self.pos))
+        return j
+      }
       Some(j) => {
-        // `(g MATCH (a), (b))`: the expression reading wins when it consumes
+        // `(g MATCH (a), (b))`: the graph MATCH reading wins when it consumes
         // everything up to the matching `)` (spec 7.3).
         let join_end = self.pos
         self.pos = saved
         self.depth = saved_depth
-        let expression = try self.expr() catch {
+        let graph = try self.nested(() => self.parenthesized()) catch {
           _ => false
         } noraise {
-          _ => true
+          e => e.kind is GraphMatch(_)
         }
         self.depth = saved_depth
-        if !expression {
+        if !graph {
           self.pos = join_end
+          self.joins.set(saved, (j, join_end))
           return j
         }
         self.failed_joins.add(saved)
@@ -164,10 +172,12 @@ fn Parser::from_base(self : Parser) -> @ast.FromItem raise @ast.ParseError {
 }
 
 ///|
-/// Whether the first FROM item of `item` is a graph MATCH.
+/// Whether the first FROM item of `item` is a FROM-form graph MATCH (its span
+/// starts with the graph; the parenthesized form starts with `(`).
 fn starts_with_match(item : @ast.FromItem) -> Bool {
   match item {
-    Scan(s) => s.expr.kind is GraphMatch(_)
+    Scan(s) =>
+      s.expr.kind is GraphMatch(m) && m.span.start == m.graph.span.start
     Join(j) => starts_with_match(j.left)
     Unpivot(_) => false
   }

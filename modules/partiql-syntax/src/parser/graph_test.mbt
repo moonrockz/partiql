@@ -192,3 +192,11 @@ test "malformed path patterns fail" {
   ])
   check_query_failures(["SELECT g MATCH (a) FROM t"])
 }
+
+///|
+test "a graph MATCH as the right side of IN" {
+  check_shapes([
+    ("x IN (g MATCH (a))", "(in x (match g (path (node a))))"),
+    ("x NOT IN (g MATCH (a))", "(not-in x (match g (path (node a))))"),
+  ])
+}

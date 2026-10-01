@@ -51,3 +51,26 @@ test "malformed FROM graph items fail" {
     "SELECT * FROM UNPIVOT g MATCH (a)",
   ])
 }
+
+///|
+test "a parenthesized MATCH before a comma is a FROM item, not a row" {
+  check_queries([
+    (
+      "SELECT * FROM ((g MATCH (a)), t)", "(select * (from (, (match g (path (node a))) t)))",
+    ),
+    (
+      "SELECT * FROM ((g MATCH (a)), (b))", "(select * (from (, (match g (path (node a))) b)))",
+    ),
+  ])
+}
+
+///|
+test "nested comma rules parse in linear time" {
+  // Each level has a FROM-form MATCH, a comma, and a WHERE in a node that
+  // holds the next level; without a memo the work doubles per level.
+  let mut source = "1"
+  for _ in 0..<30 {
+    source = "(SELECT * FROM (g MATCH (c WHERE " + source + ") AS z, t))"
+  }
+  @expect.expect_call(() => @parser.parse_expression(source)).not().to_raise()
+}

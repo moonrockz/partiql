@@ -15,8 +15,8 @@ let statement = @syntax.parse("SELECT a FROM t WHERE a > 1")
 | `moonrockz/partiql-syntax/parser` | `parse_statement`, `parse_expression` |
 
 Errors: `ParseError::Syntax(message~, span~, expected~, found~)` for invalid
-input; `ParseError::Unsupported` for valid PartiQL that this version does not
-parse (DML, DDL and window functions).
+input. `ParseError::Unsupported` is reserved for valid PartiQL that a later
+version parses; nothing raises it yet.
 `Span::line_column(source)` gives 1-based line and column numbers.
 
 See `docs/architecture.md` and `docs/conformance.md` in the repository.

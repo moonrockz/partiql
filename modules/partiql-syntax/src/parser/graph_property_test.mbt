@@ -232,3 +232,18 @@ test "law 5: removing a closing delimiter is a syntax error" {
     count=200,
   )
 }
+
+///|
+test "law 6: a pattern list in FROM parentheses keeps every path" {
+  @quickcheck.check(
+    (spec : GraphSpec) => {
+      try
+        statement_shape("SELECT * FROM " + render(spec)) ==
+        "(select * (from \{expected_shape(spec)}))"
+      catch {
+        _ => false
+      }
+    },
+    count=300,
+  )
+}
