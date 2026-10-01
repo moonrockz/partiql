@@ -4,6 +4,7 @@
 import {
   "moonrockz/partiql-value" @value,
   "moonrockz/ion/ion" @ion_core,
+  "moonbitlang/core/bigint",
   "moonbitlang/core/debug",
 }
 

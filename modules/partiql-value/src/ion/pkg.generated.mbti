@@ -14,6 +14,7 @@ pub fn to_ion(@partiql-value.Value) -> @moonrockz/ion/ion.IonValue
 // Errors
 pub(all) suberror CodecError {
   Unsupported(String)
+  Malformed(String)
 } derive(Eq, @debug.Debug)
 
 // Types and methods

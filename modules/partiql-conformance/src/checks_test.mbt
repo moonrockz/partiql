@@ -51,6 +51,7 @@ fn check_parses(statement : String) -> Outcome {
 fn check_codec(value : @ion.IonValue) -> Outcome {
   try @partiql_ion.from_ion(value) catch {
     Unsupported(reason) => Fail("unsupported: \{reason}")
+    Malformed(reason) => Fail("malformed: \{reason}")
   } noraise {
     decoded =>
       if @partiql_ion.to_ion(decoded).equals(value) {
