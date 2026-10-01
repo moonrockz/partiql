@@ -199,10 +199,11 @@ pub fn gen_value(size : Int, rs : @splitmix.RandomState) -> @value.Value {
   } else {
     let n = pick(rs, 4)
     let child = size / 2
-    match pick(rs, 4) {
+    match pick(rs, 5) {
       0 => List(Array::makei(n, _ => gen_value(child, rs)))
       1 => Bag(@value.Bag::new(Array::makei(n, _ => gen_value(child, rs))))
       2 => Map(gen_map(child, rs))
+      3 => Graph(gen_graph(child, rs))
       _ => {
         let names = ["a", "b", "A"]
         Tuple(
@@ -254,6 +255,71 @@ pub fn gen_map(size : Int, rs : @splitmix.RandomState) -> @value.MapValue {
 }
 
 ///|
+fn gen_payload(size : Int, rs : @splitmix.RandomState) -> @value.Value? {
+  if chance(rs, 30) {
+    None
+  } else {
+    match gen_value(size, rs) {
+      Missing => Some(@value.Value::Null)
+      v => Some(v)
+    }
+  }
+}
+
+///|
+/// A small graph: 1-3 nodes, 0-3 edges between them, random directions,
+/// labels from a small pool (with repeats, to exercise de-duplication) and
+/// optional payloads.
+pub fn gen_graph(size : Int, rs : @splitmix.RandomState) -> @value.GraphValue {
+  let pool = ["a", "b", "c", "a"]
+  let gen_labels = (r : @splitmix.RandomState) => {
+    Array::makei(pick(r, 3), _ => pool[pick(r, pool.length())])
+  }
+  let node_ids = ["n1", "n2", "n3"][:1 + pick(rs, 3)].to_owned()
+  let nodes = node_ids.map(id => {
+    @value.GraphNode::new(
+      id~,
+      labels=gen_labels(rs),
+      payload=gen_payload(size, rs),
+    )
+  })
+  let edges = Array::makei(pick(rs, 4), k => {
+    let a = node_ids[pick(rs, node_ids.length())]
+    let b = node_ids[pick(rs, node_ids.length())]
+    let ends : @value.Ends = if chance(rs, 50) {
+      Directed(from=a, to=b)
+    } else {
+      Undirected(a, b)
+    }
+    @value.GraphEdge::new(
+      id="e\{k}",
+      ends~,
+      labels=gen_labels(rs),
+      payload=gen_payload(size, rs),
+    )
+  })
+  @value.GraphValue::new(nodes, edges) catch {
+    _ => abort("unreachable: generated graphs are valid")
+  }
+}
+
+///|
+fn graph_payloads(g : @value.GraphValue) -> Array[@value.Value] {
+  let out : Array[@value.Value] = []
+  for n in g.nodes() {
+    if n.payload is Some(p) {
+      out.push(p)
+    }
+  }
+  for e in g.edges() {
+    if e.payload is Some(p) {
+      out.push(p)
+    }
+  }
+  out
+}
+
+///|
 /// Whether a collection or tuple inside `v` holds NULL or MISSING.
 pub fn has_nested_absent(v : @value.Value) -> Bool {
   fn inside(x : @value.Value) -> Bool {
@@ -263,6 +329,7 @@ pub fn has_nested_absent(v : @value.Value) -> Bool {
       Bag(bag) => bag.items().iter().any(inside)
       Tuple(t) => t.fields().iter().any(pair => inside(pair.1))
       Map(m) => m.entries().iter().any(pair => inside(pair.1))
+      Graph(g) => graph_payloads(g).iter().any(inside)
       Ion(i) => i.is_null() || ion_has_null(i)
       _ => false
     }
@@ -272,6 +339,7 @@ pub fn has_nested_absent(v : @value.Value) -> Bool {
     Bag(bag) => bag.items().iter().any(inside)
     Tuple(t) => t.fields().iter().any(pair => inside(pair.1))
     Map(m) => m.entries().iter().any(pair => inside(pair.1))
+    Graph(g) => graph_payloads(g).iter().any(inside)
     Ion(i) => ion_has_null(i)
     _ => false
   }
