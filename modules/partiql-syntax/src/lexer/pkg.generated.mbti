@@ -3,6 +3,7 @@ package "moonrockz/partiql-syntax/lexer"
 
 import {
   "moonbitlang/core/debug",
+  "moonrockz/ion/ion",
   "moonrockz/partiql-syntax/ast",
 }
 
@@ -24,11 +25,12 @@ pub(all) enum TokenKind {
   IntLit(String)
   DecimalLit(String)
   FloatLit(String)
-  IonLit(String)
+  IonLit(String, @ion.IonValue)
   Punct(Char)
   End
-} derive(Eq, @debug.Debug)
+} derive(@debug.Debug)
 pub fn TokenKind::describe(Self) -> String
+pub impl Eq for TokenKind
 
 // Type aliases
 

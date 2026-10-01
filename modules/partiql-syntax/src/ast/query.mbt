@@ -43,8 +43,9 @@ pub(all) enum QueryBody {
   Select(Select)
   SetOp(SetOp)
   Expr(Expr)
-  /// `TABLE name` (RFC 0007)
-  Table(Expr)
+  /// `TABLE name` (RFC 0007): a table name such as `t` or `hr.employees`,
+  /// one identifier per part. Never empty.
+  Table(Array[Identifier])
 } derive(Debug, Eq)
 
 ///|

@@ -76,12 +76,7 @@ fn Parser::primary(self : Parser) -> @ast.Expr raise @ast.ParseError {
     DecimalLit(n) => self.literal(Decimal(n))
     FloatLit(n) => self.literal(Float(n))
     StringLit(s) => self.literal(String(s))
-    IonLit(text) => {
-      let value = @text.read_ion(text) catch {
-        _ => raise self.error("invalid Ion literal")
-      }
-      self.literal(Ion(text, value))
-    }
+    IonLit(text, value) => self.literal(Ion(text, value))
     QuotedIdent(_) => {
       let name = self.identifier()
       make(VarRef(name, qualified=false), name.span)
@@ -188,6 +183,12 @@ fn Parser::parenthesized(self : Parser) -> @ast.Expr raise @ast.ParseError {
     ignore(self.advance())
     let q = self.nested(() => self.query())
     if self.at_word("MATCH") {
+      // A query operand is one parenthesized group, as Kotlin's exprPrimary.
+      if !self.one_group(start + 1, self.pos) {
+        raise self.error(
+          "a query as the graph MATCH operand needs its own parentheses",
+        )
+      }
       return self.graph_match_rest(query_or_expr(q, q.span), start)
     }
     self.expect_punct(')')
@@ -317,4 +318,27 @@ fn Parser::call(self : Parser) -> @ast.Expr raise @ast.ParseError {
     self.fail("expected an argument")
   }
   make(Call(name, args, quantifier~), self.span_from(start))
+}
+
+///|
+/// Whether the tokens from `from` up to `to` (exclusive) are one
+/// parenthesized group: a `(` whose matching `)` is the last token.
+fn Parser::one_group(self : Parser, from : Int, to : Int) -> Bool {
+  guard to - from >= 2 && self.tokens[from].kind is Punct('(') else {
+    return false
+  }
+  let mut depth = 0
+  for i in from..<to {
+    match self.tokens[i].kind {
+      Punct('(') => depth += 1
+      Punct(')') => {
+        depth -= 1
+        if depth == 0 {
+          return i == to - 1
+        }
+      }
+      _ => ()
+    }
+  }
+  false
 }

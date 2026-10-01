@@ -181,7 +181,10 @@ fn Parser::set_primary(self : Parser) -> @ast.Query raise @ast.ParseError {
   if self.at_word("TABLE") {
     let start = self.pos
     ignore(self.advance())
-    let name = self.postfix()
+    let name = [self.identifier()]
+    while self.eat_punct('.') {
+      name.push(self.identifier(allow_path_words=true))
+    }
     return single(Table(name), self.span_from(start))
   }
   if self.at_word("SELECT") || self.at_word("PIVOT") {

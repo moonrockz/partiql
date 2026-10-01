@@ -86,7 +86,7 @@ fn query_shape(q : @ast.Query) -> String {
   let body = match q.body {
     Select(s) => select_shape(s)
     Expr(e) => shape(e)
-    Table(e) => "(table \{shape(e)})"
+    Table(name) => "(table \{name.map(ident_shape).join(".")})"
     SetOp(op) => {
       let name = match op.op {
         Union => "union"

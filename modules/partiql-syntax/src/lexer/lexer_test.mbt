@@ -4,6 +4,12 @@ fn kinds(source : String) -> Array[@lexer.TokenKind] raise {
 }
 
 ///|
+/// An Ion literal token: its text and the value the text reads to.
+fn ion(text : String) -> @lexer.TokenKind raise {
+  IonLit(text, @text.read_ion(text))
+}
+
+///|
 fn syntax_error(e : Error) -> Bool {
   e is @ast.ParseError::Syntax(_)
 }
@@ -67,12 +73,12 @@ test "comments are skipped" {
 ///|
 test "Ion literals are scanned Ion-aware" {
   @expect.expect_all(soft => {
-    soft.expect(kinds("`{a: \"x`y\"}`")).to_equal([IonLit("{a: \"x`y\"}"), End])
-    soft.expect(kinds("`/* ` */ 1`")).to_equal([IonLit("/* ` */ 1"), End])
-    soft.expect(kinds("`'''a`b'''`")).to_equal([IonLit("'''a`b'''"), End])
-    soft.expect(kinds("`'q`x'`")).to_equal([IonLit("'q`x'"), End])
-    soft.expect(kinds("`{{\"c\"}}`")).to_equal([IonLit("{{\"c\"}}"), End])
-    soft.expect(kinds("`1 // `\n`")).to_equal([IonLit("1 // `\n"), End])
+    soft.expect(kinds("`{a: \"x`y\"}`")).to_equal([ion("{a: \"x`y\"}"), End])
+    soft.expect(kinds("`/* ` */ 1`")).to_equal([ion("/* ` */ 1"), End])
+    soft.expect(kinds("`'''a`b'''`")).to_equal([ion("'''a`b'''"), End])
+    soft.expect(kinds("`'q`x'`")).to_equal([ion("'q`x'"), End])
+    soft.expect(kinds("`{{\"c\"}}`")).to_equal([ion("{{\"c\"}}"), End])
+    soft.expect(kinds("`1 // `\n`")).to_equal([ion("1 // `\n"), End])
   })
 }
 
@@ -129,5 +135,16 @@ test "error spans stay inside the source" {
 
 ///|
 test "Ion blobs may contain //" {
-  @expect.expect(kinds("`{{//8=}}`")).to_equal([IonLit("{{//8=}}"), End])
+  @expect.expect(kinds("`{{//8=}}`")).to_equal([ion("{{//8=}}"), End])
+}
+
+///|
+test "an Ion literal token carries its value" {
+  guard @lexer.lex("`{a: 1}`")[0].kind is IonLit(text, value) else {
+    fail("expected an Ion literal")
+  }
+  @expect.expect_all(soft => {
+    soft.expect(text).to_equal("{a: 1}")
+    soft.expect(value.equals(@text.read_ion("{a: 1}"))).to_be_true()
+  })
 }

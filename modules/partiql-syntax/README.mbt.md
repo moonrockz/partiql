@@ -19,4 +19,7 @@ input. `ParseError::Unsupported` is reserved for valid PartiQL that a later
 version parses; nothing raises it yet.
 `Span::line_column(source)` gives 1-based line and column numbers.
 
+Input nested more than 100 levels deep (parentheses, subqueries, collections,
+graph groups) is a `Syntax` error, "nesting is too deep", on every target.
+
 See `docs/architecture.md` and `docs/conformance.md` in the repository.

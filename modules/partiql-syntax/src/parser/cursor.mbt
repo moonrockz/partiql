@@ -2,6 +2,10 @@
 let max_depth = 100
 
 ///|
+/// The message of the depth guard's syntax error.
+let too_deep : String = "nesting is too deep"
+
+///|
 /// The parser state: a cursor over the tokens, the nesting depth, and what
 /// the parser tried at the current position (for error messages).
 priv struct Parser {
@@ -185,7 +189,7 @@ fn[T] Parser::nested(
   body : () -> T raise @ast.ParseError,
 ) -> T raise @ast.ParseError {
   if self.depth >= max_depth {
-    raise self.error("nesting is too deep")
+    raise self.error(too_deep)
   }
   self.depth += 1
   let result = body()
