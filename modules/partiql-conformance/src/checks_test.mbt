@@ -1,11 +1,24 @@
 ///|
 test "syntax check treats Unsupported as failure" {
-  // Graph MATCH is Unsupported until M2b. Neither SyntaxSuccess nor
-  // SyntaxFail may count that as a pass.
-  let gpml = "SELECT * FROM (g MATCH (x))"
+  // Nothing raises Unsupported since M2b; a stub parser stands in for a
+  // statement that a later milestone parses.
+  let unsupported : (String) -> @syntax.Statement raise @syntax.ParseError = _ => {
+    raise @syntax.ParseError::Unsupported(
+      message="DML",
+      span=({ start: 0, end: 6, } : @syntax.Span),
+    )
+  }
+  let dml = "INSERT INTO t VALUE 1"
   @expect.expect_all(soft => {
-    soft.expect(check_syntax(true, gpml) is Fail(_)).to_be_true()
-    soft.expect(check_syntax(false, gpml) is Fail(_)).to_be_true()
+    soft
+    .expect(check_syntax(true, dml, parse=unsupported) is Fail(_))
+    .to_be_true()
+    soft
+    .expect(check_syntax(false, dml, parse=unsupported) is Fail(_))
+    .to_be_true()
+    soft
+    .expect(check_syntax(true, "SELECT * FROM (g MATCH (x))"))
+    .to_equal(Pass)
     soft.expect(check_syntax(true, "SELECT a FROM t")).to_equal(Pass)
     soft.expect(check_syntax(false, "SELECT FROM t")).to_equal(Pass)
   })
@@ -52,8 +65,12 @@ enum Outcome {
 
 ///|
 /// `expect_success` is true for SyntaxSuccess and false for SyntaxFail.
-fn check_syntax(expect_success : Bool, statement : String) -> Outcome {
-  try @syntax.parse(statement) catch {
+fn check_syntax(
+  expect_success : Bool,
+  statement : String,
+  parse? : (String) -> @syntax.Statement raise @syntax.ParseError = @syntax.parse,
+) -> Outcome {
+  try parse(statement) catch {
     Unsupported(message~, ..) => Fail("unsupported: \{message}")
     Syntax(message~, ..) =>
       if expect_success {
