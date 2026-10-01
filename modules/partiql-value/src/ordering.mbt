@@ -21,7 +21,10 @@ fn rank(v : Value) -> Int {
     List(_) => 10
     Tuple(_) => 11
     Bag(_) => 12
-    Ion(_) => 13 // never reached: values are lowered first
+    Map(_) => 13
+    // Only an Ion value that cannot be lowered (a symbol without text)
+    // keeps this rank; such values compare equal to each other.
+    Ion(_) => 14
   }
 }
 

@@ -29,6 +29,8 @@ pub(all) enum Value {
   List(Array[Value])
   Bag(Bag)
   Tuple(Tuple)
+  /// A MAP (RFC 0104).
+  Map(MapValue)
   Ion(@ion_core.IonValue)
 } derive(Debug)
 

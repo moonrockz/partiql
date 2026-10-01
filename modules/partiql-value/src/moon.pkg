@@ -1,5 +1,6 @@
 import {
   "moonbitlang/core/bigint",
+  "moonbitlang/core/debug",
   "moonrockz/ion/ion" @ion_core,
 }
 
