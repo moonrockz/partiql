@@ -230,7 +230,8 @@ Rules:
   commit the baseline in the same commit as the change that made tests pass.
   CI fails when the baseline is out of date.
 - A regression (a baseline id that fails) is a bug. Fix it. Do not remove the
-  id.
+  id. The ratchet refuses to drop ids unless `PARTIQL_CONFORMANCE_ALLOW_DROP=1`
+  is set; use that only for a pin bump that removes or renames tests.
 - `ParseError::Unsupported` and `CodecError::Unsupported` always count as
   failures, never as expected errors.
 - To bump the submodule pin, follow `docs/conformance.md`.

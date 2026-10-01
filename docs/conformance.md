@@ -51,6 +51,9 @@ statement of that class (ids end in `[0]`, `[1]`, ...). Test ids have the form
   fail the test, but CI fails when the baseline is out of date.
 - After a change that makes tests pass, run `mise run conformance:ratchet`
   and commit the baseline in the same commit.
+- The ratchet never drops a baseline id. When a baseline id fails, the ratchet
+  fails and keeps the baseline. To drop ids on purpose (for example when a pin
+  bump removes tests), set `PARTIQL_CONFORMANCE_ALLOW_DROP=1`.
 - Never edit the baseline by hand. Never remove an id to hide a regression.
 
 ## Updating the pin
@@ -59,7 +62,8 @@ statement of that class (ids end in `[0]`, `[1]`, ...). Test ids have the form
 git -C modules/partiql-conformance/partiql-tests fetch
 git -C modules/partiql-conformance/partiql-tests checkout <commit>
 mise run test:conformance        # read the regressions, if any
-mise run conformance:ratchet
+# Only when the new pin removed or renamed tests:
+PARTIQL_CONFORMANCE_ALLOW_DROP=1 mise run conformance:ratchet
 git add modules/partiql-conformance
 git commit -m "test(conformance): bump partiql-tests to <short sha>"
 ```
