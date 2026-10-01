@@ -12,7 +12,7 @@ pub(all) enum Ends {
 /// it acts as MISSING in queries.
 pub struct GraphNode {
   id : String
-  labels : Array[String]
+  priv labels : Array[String]
   payload : Value?
 } derive(Debug)
 
@@ -40,7 +40,7 @@ pub fn GraphNode::new(
 /// A graph edge: id, labels, ends and an optional payload.
 pub struct GraphEdge {
   id : String
-  labels : Array[String]
+  priv labels : Array[String]
   ends : Ends
   payload : Value?
 } derive(Debug)
@@ -53,6 +53,18 @@ pub fn GraphEdge::new(
   payload? : Value? = None,
 ) -> GraphEdge {
   { id, labels: dedup_labels(labels), ends, payload, }
+}
+
+///|
+/// The labels, without duplicates, in first-seen order.
+pub fn GraphNode::labels(self : GraphNode) -> ArrayView[String] {
+  self.labels[:]
+}
+
+///|
+/// The labels, without duplicates, in first-seen order.
+pub fn GraphEdge::labels(self : GraphEdge) -> ArrayView[String] {
+  self.labels[:]
 }
 
 ///|
@@ -108,7 +120,8 @@ pub fn GraphValue::new(
     }
     edge_ids.push(e.id)
   }
-  { nodes, edges, }
+  // Copies: the caller's arrays must not change the graph.
+  { nodes: nodes.copy(), edges: edges.copy(), }
 }
 
 ///|
@@ -123,6 +136,8 @@ pub fn GraphValue::edges(self : GraphValue) -> ArrayView[GraphEdge] {
 
 ///|
 fn same_label_set(a : Array[String], b : Array[String]) -> Bool {
+  // Labels are de-duplicated on construction, so equal sizes and inclusion
+  // mean equal sets.
   a.length() == b.length() && a.iter().all(label => b.contains(label))
 }
 

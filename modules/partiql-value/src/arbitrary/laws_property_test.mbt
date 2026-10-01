@@ -487,7 +487,7 @@ test "graphs ignore node and edge order, and undirected end order" {
       let swapped = edges.map(e => {
         @value.GraphEdge::new(
           id=e.id,
-          labels=e.labels.rev(),
+          labels=e.labels().to_owned().rev(),
           payload=e.payload,
           ends=match e.ends {
             Undirected(x, y) => Undirected(y, x)
@@ -516,7 +516,7 @@ test "reversing a directed edge between two nodes changes the graph" {
       guard e.ends is Directed(from~, to~) else { return true }
       edges[k] = @value.GraphEdge::new(
         id=e.id,
-        labels=e.labels,
+        labels=e.labels().to_owned(),
         payload=e.payload,
         ends=Directed(from=to, to=from),
       )
@@ -539,7 +539,7 @@ test "changing one node payload changes the graph" {
       // A payload that no generator produces.
       nodes[0] = @value.GraphNode::new(
         id=n.id,
-        labels=n.labels,
+        labels=n.labels().to_owned(),
         payload=Some(@value.Value::String("\u{1F600}fresh")),
       )
       let changed = rebuild(g, nodes, g.edges().to_owned())

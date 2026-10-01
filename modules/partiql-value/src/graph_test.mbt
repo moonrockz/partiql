@@ -72,7 +72,8 @@ test "graph constructor rules" {
 ///|
 test "graph labels are de-duplicated" {
   match graph([node("n1", labels=["a", "b", "a"])], []) {
-    Graph(g) => @expect.expect(g.nodes()[0].labels).to_equal(["a", "b"])
+    Graph(g) =>
+      @expect.expect(g.nodes()[0].labels().to_owned()).to_equal(["a", "b"])
     other => fail("unexpected \{@debug.to_string(other)}")
   }
 }
@@ -137,5 +138,18 @@ test "graph equality and ordering" {
       @value.MapValue::new(key_type=String, value_type=Dynamic, []),
     )
     soft.expect(cmp(m, base)).to_equal(-1)
+  })
+}
+
+///|
+test "a graph does not share arrays with its caller" {
+  let nodes = [node("a"), node("b")]
+  let edges = [edge("e", Undirected("a", "b"))]
+  let g = @value.GraphValue::new(nodes, edges)
+  nodes.push(node("a"))
+  edges.push(edge("e", Directed(from="a", to="b")))
+  @expect.expect_all(soft => {
+    soft.expect(g.nodes().length()).to_equal(2)
+    soft.expect(g.edges().length()).to_equal(1)
   })
 }

@@ -172,7 +172,12 @@ fn encode_graph(g : @value.GraphValue) -> @ion_core.IonValue {
     .nodes()
     .iter()
     .map(n => {
-      struct_of([("id", symbol(n.id)), ..element_fields(n.labels, n.payload)])
+      struct_of(
+        [
+          ("id", symbol(n.id)),
+          ..element_fields(n.labels().to_owned(), n.payload),
+        ],
+      )
     })
     .collect()
   let edges = g
@@ -188,7 +193,7 @@ fn encode_graph(g : @value.GraphValue) -> @ion_core.IonValue {
       struct_of(
         [
           ("id", symbol(e.id)),
-          ..element_fields(e.labels, e.payload),
+          ..element_fields(e.labels().to_owned(), e.payload),
           ("ends", ends),
         ],
       )

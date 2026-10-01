@@ -68,17 +68,19 @@ pub impl Eq for Ends
 
 pub struct GraphEdge {
   id : String
-  labels : Array[String]
   ends : Ends
   payload : Value?
+  // private fields
 } derive(@debug.Debug)
+pub fn GraphEdge::labels(Self) -> ArrayView[String]
 pub fn GraphEdge::new(id~ : String, ends~ : Ends, labels? : Array[String], payload? : Value?) -> Self
 
 pub struct GraphNode {
   id : String
-  labels : Array[String]
   payload : Value?
+  // private fields
 } derive(@debug.Debug)
+pub fn GraphNode::labels(Self) -> ArrayView[String]
 pub fn GraphNode::new(id~ : String, labels? : Array[String], payload? : Value?) -> Self
 
 pub struct GraphValue {
