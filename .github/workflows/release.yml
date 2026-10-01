@@ -51,6 +51,16 @@ jobs:
             exit 1
           fi
 
+      - name: Guard tag is on main
+        if: github.ref_type == 'tag'
+        run: |
+          # A publish to mooncakes.io cannot be undone, so a tag on another
+          # branch must not release.
+          if ! git merge-base --is-ancestor "$GITHUB_SHA" origin/main; then
+            echo "Error: tag ${GITHUB_REF_NAME} (${GITHUB_SHA}) is not on main" >&2
+            exit 1
+          fi
+
       - name: Install dependencies
         run: moon update
 
