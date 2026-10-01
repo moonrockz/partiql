@@ -93,6 +93,8 @@ pub(all) enum ExprKind {
   Values(Array[Expr])
   /// A subquery.
   Query(Query)
+  /// `(graph MATCH pattern)` (GPML).
+  GraphMatch(GraphMatch)
 } derive(Debug, Eq)
 
 ///|

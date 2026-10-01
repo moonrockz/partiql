@@ -180,23 +180,23 @@ fn Parser::fields(
 }
 
 ///|
-/// `(` ... `)`: a subquery, a row value, a graph MATCH (not yet supported),
+/// `(` ... `)`: a subquery, a row value, a graph MATCH,
 /// or a parenthesized expression.
 fn Parser::parenthesized(self : Parser) -> @ast.Expr raise @ast.ParseError {
   let start = self.pos
   if self.at_query_start(1) {
     ignore(self.advance())
     let q = self.nested(() => self.query())
+    if self.at_word("MATCH") {
+      return self.graph_match_rest(query_or_expr(q, q.span), start)
+    }
     self.expect_punct(')')
     return query_or_expr(q, self.span_from(start))
   }
   ignore(self.advance())
   let first = self.expr()
   if self.at_word("MATCH") {
-    raise @ast.ParseError::Unsupported(
-      message="graph MATCH is not supported yet (M2b)",
-      span=self.peek().span,
-    )
+    return self.graph_match_rest(first, start)
   }
   if self.eat_punct(',') {
     let items = [first]

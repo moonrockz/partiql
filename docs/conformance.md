@@ -98,18 +98,17 @@ files, so the codec must accept both.
 
 ## Current status
 
-At commit `2ef0ce2`, after M1 (data model), M1b (MAP and graph) and M2
-(parser):
+At commit `2ef0ce2`, after M1 (data model), M1b (MAP and graph), M2
+(parser) and M2b (graph MATCH):
 
 | Check | Passed | Total | N/A |
 |---|---|---|---|
 | `syntax` | 425 | 672 | 247 |
-| `eval-parse` | 4862 | 4985 | 0 |
+| `eval-parse` | 4982 | 4985 | 0 |
 | `codec` | 6822 | 6822 | 0 |
 | `ion-roundtrip` | 39 | 39 | 0 |
 
-The 123 `eval-parse` failures are 120 graph `MATCH` statements (M2b) and
-three corpus defects:
+The 3 `eval-parse` failures are corpus defects (bead `partiql-zhj.9`):
 
 - `eval/query/group-by/group-by.ion` "max and min of rep grouped by
   fiscal_year": `SELECT max(rep), min(rep)) FROM ...` has a stray `)`.

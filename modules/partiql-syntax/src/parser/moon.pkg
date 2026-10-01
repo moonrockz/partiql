@@ -12,6 +12,8 @@ import {
 import {
   "moonrockz/partiql-syntax/parser",
   "moonrockz/expect",
+  "moonbitlang/core/quickcheck",
+  "moonbitlang/core/quickcheck/splitmix",
 } for "test"
 
 import {

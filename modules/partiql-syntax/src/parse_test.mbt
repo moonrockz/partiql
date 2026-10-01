@@ -8,7 +8,7 @@ test "parse returns the syntax tree of a statement" {
 }
 
 ///|
-test "parse errors: Syntax for invalid input, Unsupported for graph MATCH" {
+test "parse errors: Syntax for invalid input; graph MATCH parses" {
   @expect.expect_all(soft => {
     soft
     .expect_call(() => @syntax.parse("SELECT"))
@@ -18,9 +18,7 @@ test "parse errors: Syntax for invalid input, Unsupported for graph MATCH" {
     )
     soft
     .expect_call(() => @syntax.parse("SELECT * FROM (g MATCH (x))"))
-    .to_raise_matching(
-      e => e is @syntax.ParseError::Unsupported(_),
-      description="Unsupported",
-    )
+    .not()
+    .to_raise()
   })
 }

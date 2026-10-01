@@ -96,6 +96,10 @@ fn Parser::from_base(self : Parser) -> @ast.FromItem raise @ast.ParseError {
     word_is(after, "PIVOT") ||
     word_is(after, "VALUES")
   if self.at_punct('(') && !subquery && !self.failed_joins.contains(self.pos) {
+    if self.joins.get(self.pos) is Some((j, end)) {
+      self.pos = end
+      return j
+    }
     let saved = self.pos
     let saved_depth = self.depth
     ignore(self.advance())
@@ -106,7 +110,30 @@ fn Parser::from_base(self : Parser) -> @ast.FromItem raise @ast.ParseError {
       _ => None
     }
     match joined {
-      Some(j) => return j
+      Some(j) if !comma_after_match(j) => {
+        self.joins.set(saved, (j, self.pos))
+        return j
+      }
+      Some(j) => {
+        // `(g MATCH (a), (b))`: the graph MATCH reading wins when it consumes
+        // everything up to the matching `)` (spec 7.3).
+        let join_end = self.pos
+        self.pos = saved
+        self.depth = saved_depth
+        let graph = try self.nested(() => self.parenthesized()) catch {
+          _ => false
+        } noraise {
+          e => e.kind is GraphMatch(_)
+        }
+        self.depth = saved_depth
+        if !graph {
+          self.pos = join_end
+          self.joins.set(saved, (j, join_end))
+          return j
+        }
+        self.failed_joins.add(saved)
+        self.pos = saved
+      }
       None => {
         self.failed_joins.add(saved)
         self.pos = saved
@@ -117,7 +144,15 @@ fn Parser::from_base(self : Parser) -> @ast.FromItem raise @ast.ParseError {
   let start = self.pos
   let lateral = self.eat_word("LATERAL")
   let unpivot = self.eat_word("UNPIVOT")
+  let expr_start = self.pos
   let expr = self.expr()
+  let expr = if !unpivot && self.eat_word("MATCH") {
+    let pattern = self.graph_pattern(many=false)
+    let span = self.span_from(expr_start)
+    make(GraphMatch({ graph: expr, pattern, span, }), span)
+  } else {
+    expr
+  }
   let as_ = self.as_alias()
   let at = if self.eat_word("AT") { Some(self.identifier()) } else { None }
   let by = if self.eat_word("BY") { Some(self.identifier()) } else { None }
@@ -133,5 +168,29 @@ fn Parser::from_base(self : Parser) -> @ast.FromItem raise @ast.ParseError {
     Unpivot(source)
   } else {
     Scan(source)
+  }
+}
+
+///|
+/// Whether the first FROM item of `item` is a FROM-form graph MATCH (its span
+/// starts with the graph; the parenthesized form starts with `(`).
+fn starts_with_match(item : @ast.FromItem) -> Bool {
+  match item {
+    Scan(s) =>
+      s.expr.kind is GraphMatch(m) && m.span.start == m.graph.span.start
+    Join(j) => starts_with_match(j.left)
+    Unpivot(_) => false
+  }
+}
+
+///|
+/// Whether a parenthesized join has a comma right after a FROM-form graph
+/// MATCH; RFC 0033 reads that comma as part of the pattern list (spec 7.3).
+fn comma_after_match(item : @ast.FromItem) -> Bool {
+  match item {
+    Join(j) =>
+      (j.form is Comma && starts_with_match(j.left)) ||
+      comma_after_match(j.left)
+    _ => false
   }
 }

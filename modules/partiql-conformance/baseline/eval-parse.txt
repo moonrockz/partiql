@@ -55,6 +55,126 @@ eval-equiv/spec-tests.ion::section-6::equiv tupleunion with select list[1]
 eval-equiv/spec-tests.ion::section-9::equiv coercion of a SELECT subquery into a scalar[0]
 eval-equiv/spec-tests.ion::section-9::equiv coercion of a SELECT subquery into an array[0]
 eval-equiv/spec-tests.ion::section-9::equiv coercion of a SELECT subquery into an array[1]
+eval/experimental/graph/directionality.ion::directionality::Left shorthand
+eval/experimental/graph/directionality.ion::directionality::Left with spots
+eval/experimental/graph/directionality.ion::directionality::Left with variables
+eval/experimental/graph/directionality.ion::directionality::Left+right shorthand
+eval/experimental/graph/directionality.ion::directionality::Left+right with spots
+eval/experimental/graph/directionality.ion::directionality::Left+right with variables
+eval/experimental/graph/directionality.ion::directionality::Left+right with variables and label
+eval/experimental/graph/directionality.ion::directionality::Left+right+undirected shorthand
+eval/experimental/graph/directionality.ion::directionality::Left+right+undirected with spots
+eval/experimental/graph/directionality.ion::directionality::Left+right+undirected with variables
+eval/experimental/graph/directionality.ion::directionality::Left+undirected shorthand
+eval/experimental/graph/directionality.ion::directionality::Left+undirected with spots
+eval/experimental/graph/directionality.ion::directionality::Left+undirected with variables
+eval/experimental/graph/directionality.ion::directionality::Left+undirected with variables and label
+eval/experimental/graph/directionality.ion::directionality::Right shorthand
+eval/experimental/graph/directionality.ion::directionality::Right with spots
+eval/experimental/graph/directionality.ion::directionality::Right with variables
+eval/experimental/graph/directionality.ion::directionality::Right+undirected shorthand
+eval/experimental/graph/directionality.ion::directionality::Right+undirected with spots
+eval/experimental/graph/directionality.ion::directionality::Right+undirected with variables
+eval/experimental/graph/directionality.ion::directionality::Right+undirected with variables and labels
+eval/experimental/graph/directionality.ion::directionality::Undirected shorthand
+eval/experimental/graph/directionality.ion::directionality::Undirected with spots
+eval/experimental/graph/directionality.ion::directionality::Undirected with variables
+eval/experimental/graph/directionality.ion::directionality::Undirected with variables and label
+eval/experimental/graph/gpml-paper.ion::gpml_paper::labels::label :City
+eval/experimental/graph/gpml-paper.ion::gpml_paper::labels::label :Country
+eval/experimental/graph/gpml-paper.ion::gpml_paper::labels::label conjunction
+eval/experimental/graph/gpml-paper.ion::gpml_paper::labels::label disjunction
+eval/experimental/graph/gpml-paper.ion::gpml_paper::labels::label negation
+eval/experimental/graph/gpml-paper.ion::gpml_paper::mode_3_hop::Equivs: SEARCH MODE: 3 hop cycle: ACYCLIC[0]
+eval/experimental/graph/gpml-paper.ion::gpml_paper::mode_3_hop::Equivs: SEARCH MODE: 3 hop cycle: ACYCLIC[1]
+eval/experimental/graph/gpml-paper.ion::gpml_paper::mode_3_hop::Equivs: SEARCH MODE: 3 hop cycle: SIMPLE[0]
+eval/experimental/graph/gpml-paper.ion::gpml_paper::mode_3_hop::Equivs: SEARCH MODE: 3 hop cycle: SIMPLE[1]
+eval/experimental/graph/gpml-paper.ion::gpml_paper::mode_3_hop::Equivs: SEARCH MODE: 3 hop cycle: TRAIL[0]
+eval/experimental/graph/gpml-paper.ion::gpml_paper::mode_3_hop::Equivs: SEARCH MODE: 3 hop cycle: TRAIL[1]
+eval/experimental/graph/gpml-paper.ion::gpml_paper::mode_3_hop::Equivs: SEARCH MODE: 3 hop cycle: WALK[0]
+eval/experimental/graph/gpml-paper.ion::gpml_paper::mode_3_hop::Equivs: SEARCH MODE: 3 hop cycle: WALK[1]
+eval/experimental/graph/gpml-paper.ion::gpml_paper::mode_4_hop::Equivs: SEARCH MODE: 4 hop cycle: ACYCLIC[0]
+eval/experimental/graph/gpml-paper.ion::gpml_paper::mode_4_hop::Equivs: SEARCH MODE: 4 hop cycle: ACYCLIC[1]
+eval/experimental/graph/gpml-paper.ion::gpml_paper::mode_4_hop::Equivs: SEARCH MODE: 4 hop cycle: SIMPLE[0]
+eval/experimental/graph/gpml-paper.ion::gpml_paper::mode_4_hop::Equivs: SEARCH MODE: 4 hop cycle: SIMPLE[1]
+eval/experimental/graph/gpml-paper.ion::gpml_paper::mode_4_hop::Equivs: SEARCH MODE: 4 hop cycle: TRAIL[0]
+eval/experimental/graph/gpml-paper.ion::gpml_paper::mode_4_hop::Equivs: SEARCH MODE: 4 hop cycle: TRAIL[1]
+eval/experimental/graph/gpml-paper.ion::gpml_paper::mode_4_hop::Equivs: SEARCH MODE: 4 hop cycle: WALK[0]
+eval/experimental/graph/gpml-paper.ion::gpml_paper::mode_4_hop::Equivs: SEARCH MODE: 4 hop cycle: WALK[1]
+eval/experimental/graph/gpml-paper.ion::gpml_paper::mode_6_hop::Equivs: SEARCH MODE: 6 hop cycle: ACYCLIC[0]
+eval/experimental/graph/gpml-paper.ion::gpml_paper::mode_6_hop::Equivs: SEARCH MODE: 6 hop cycle: ACYCLIC[1]
+eval/experimental/graph/gpml-paper.ion::gpml_paper::mode_6_hop::Equivs: SEARCH MODE: 6 hop cycle: SIMPLE[0]
+eval/experimental/graph/gpml-paper.ion::gpml_paper::mode_6_hop::Equivs: SEARCH MODE: 6 hop cycle: SIMPLE[1]
+eval/experimental/graph/gpml-paper.ion::gpml_paper::mode_6_hop::Equivs: SEARCH MODE: 6 hop cycle: TRAIL[0]
+eval/experimental/graph/gpml-paper.ion::gpml_paper::mode_6_hop::Equivs: SEARCH MODE: 6 hop cycle: TRAIL[1]
+eval/experimental/graph/gpml-paper.ion::gpml_paper::mode_6_hop::Equivs: SEARCH MODE: 6 hop cycle: WALK[0]
+eval/experimental/graph/gpml-paper.ion::gpml_paper::mode_6_hop::Equivs: SEARCH MODE: 6 hop cycle: WALK[1]
+eval/experimental/graph/gpml-paper.ion::gpml_paper::where::edge WHERE
+eval/experimental/graph/gpml-paper.ion::gpml_paper::where::node WHERE
+eval/experimental/graph/gpml-paper.ion::gpml_paper::where::pattern WHERE
+eval/experimental/graph/gpml-paper.ion::gpml_paper::where::pattern WHERE -- longer path
+eval/experimental/graph/gpml-paper.ion::gpml_paper::where::pattern WHERE -- longer path with AND
+eval/experimental/graph/gpml-paper.ion::gpml_paper::where::sub pattern WHERE
+eval/experimental/graph/small_graphs.ion::small_graphs::(N0E0 MATCH (x))
+eval/experimental/graph/small_graphs.ion::small_graphs::(N0E0 MATCH (x)-[y]->(z) )
+eval/experimental/graph/small_graphs.ion::small_graphs::(N0E0 MATCH -[y]-> )
+eval/experimental/graph/small_graphs.ion::small_graphs::(N1D2 MATCH (x))
+eval/experimental/graph/small_graphs.ion::small_graphs::(N1D2 MATCH (x)-[y]->(x) )
+eval/experimental/graph/small_graphs.ion::small_graphs::(N1D2 MATCH (x)-[y]->(z) )
+eval/experimental/graph/small_graphs.ion::small_graphs::(N1D2 MATCH (x1)-[y1]->(x2)-[y2]->(x3) )
+eval/experimental/graph/small_graphs.ion::small_graphs::(N1D2 MATCH -[y]-> )
+eval/experimental/graph/small_graphs.ion::small_graphs::(N1E0 MATCH (x))
+eval/experimental/graph/small_graphs.ion::small_graphs::(N1E0 MATCH (x)-[y]->(x) )
+eval/experimental/graph/small_graphs.ion::small_graphs::(N1E0 MATCH (x)-[y]->(z) )
+eval/experimental/graph/small_graphs.ion::small_graphs::(N1E0 MATCH -[y]-> )
+eval/experimental/graph/small_graphs.ion::small_graphs::(N1U1 MATCH (x))
+eval/experimental/graph/small_graphs.ion::small_graphs::(N1U1 MATCH (x)~[y]~(x) )
+eval/experimental/graph/small_graphs.ion::small_graphs::(N1U1 MATCH (x)~[y]~(z) )
+eval/experimental/graph/small_graphs.ion::small_graphs::(N1U1 MATCH (x1)~[y1]~(x2)~[y2]~(x3) )
+eval/experimental/graph/small_graphs.ion::small_graphs::(N1U1 MATCH ~[y]~ )
+eval/experimental/graph/small_graphs.ion::small_graphs::(N2D1 MATCH (x))
+eval/experimental/graph/small_graphs.ion::small_graphs::(N2D1 MATCH (x)-[y]->(x) )
+eval/experimental/graph/small_graphs.ion::small_graphs::(N2D1 MATCH (x)-[y]->(z) )
+eval/experimental/graph/small_graphs.ion::small_graphs::(N2D1 MATCH (x1)-[y1]-(x2)-[y2]-(x3) )
+eval/experimental/graph/small_graphs.ion::small_graphs::(N2D1 MATCH (x1)-[y1]-(x2)-[y2]->(x3) )
+eval/experimental/graph/small_graphs.ion::small_graphs::(N2D1 MATCH (x1)-[y1]->(x2)-[y2]-(x3) )
+eval/experimental/graph/small_graphs.ion::small_graphs::(N2D1 MATCH (x1)-[y1]->(x2)-[y2]->(x3) )
+eval/experimental/graph/small_graphs.ion::small_graphs::(N2D1 MATCH -[y]-> )
+eval/experimental/graph/small_graphs.ion::small_graphs::(N2E0 MATCH (x))
+eval/experimental/graph/small_graphs.ion::small_graphs::(N2E0 MATCH (x)-[y]->(x) )
+eval/experimental/graph/small_graphs.ion::small_graphs::(N2E0 MATCH (x)-[y]->(z) )
+eval/experimental/graph/small_graphs.ion::small_graphs::(N2E0 MATCH -[y]-> )
+eval/experimental/graph/small_graphs.ion::small_graphs::(N2U1 MATCH (x))
+eval/experimental/graph/small_graphs.ion::small_graphs::(N2U1 MATCH (x)~[y]~(x) )
+eval/experimental/graph/small_graphs.ion::small_graphs::(N2U1 MATCH (x)~[y]~(z) )
+eval/experimental/graph/small_graphs.ion::small_graphs::(N2U1 MATCH (x1)-[y1]-(x2)-[y2]-(x3) )
+eval/experimental/graph/small_graphs.ion::small_graphs::(N2U1 MATCH (x1)-[y1]-(x2)~[y2]~(x3) )
+eval/experimental/graph/small_graphs.ion::small_graphs::(N2U1 MATCH (x1)~[y1]~(x2)-[y2]-(x3) )
+eval/experimental/graph/small_graphs.ion::small_graphs::(N2U1 MATCH (x1)~[y1]~(x2)~[y2]~(x3) )
+eval/experimental/graph/small_graphs.ion::small_graphs::(N2U1 MATCH ~[y]~ )
+eval/experimental/graph/small_graphs.ion::small_graphs::(N2U2 MATCH (x))
+eval/experimental/graph/small_graphs.ion::small_graphs::(N2U2 MATCH (x)~[y]~(x) )
+eval/experimental/graph/small_graphs.ion::small_graphs::(N2U2 MATCH (x)~[y]~(z) )
+eval/experimental/graph/small_graphs.ion::small_graphs::(N2U2 MATCH (x1)~[y1]~(x2)~[y2]~(x1) )
+eval/experimental/graph/small_graphs.ion::small_graphs::(N2U2 MATCH (x1)~[y1]~(x2)~[y2]~(x3) )
+eval/experimental/graph/small_graphs.ion::small_graphs::(N2U2 MATCH ~[y]~ )
+eval/experimental/graph/small_graphs.ion::small_graphs::Cycle: (N2D2 MATCH (x)-[y]->(x) )
+eval/experimental/graph/small_graphs.ion::small_graphs::Cycle: (N2D2c MATCH (x)-[y]->(x) )
+eval/experimental/graph/small_graphs.ion::small_graphs::E: (N2D2 MATCH -[y]-> )
+eval/experimental/graph/small_graphs.ion::small_graphs::E: (N2D2c MATCH -[y]-> )
+eval/experimental/graph/small_graphs.ion::small_graphs::L/L Cycle: (N2D2c MATCH (x1)-[y1]->(x2)-[y2]->(x1) )
+eval/experimental/graph/small_graphs.ion::small_graphs::L/L: (N2D2 MATCH (x1)-[y1]->(x2)-[y2]->(x3) )
+eval/experimental/graph/small_graphs.ion::small_graphs::L/L: (N2D2c MATCH (x1)-[y1]->(x2)-[y2]->(x3) )
+eval/experimental/graph/small_graphs.ion::small_graphs::L/LUR: (N2D2 MATCH (x1)-[y1]->(x2)-[y2]-(x3) )
+eval/experimental/graph/small_graphs.ion::small_graphs::L/LUR: (N2D2c MATCH (x1)-[y1]->(x2)-[y2]-(x3) )
+eval/experimental/graph/small_graphs.ion::small_graphs::L: (N2D2 MATCH (x)-[y]->(z) )
+eval/experimental/graph/small_graphs.ion::small_graphs::L: (N2D2c MATCH (x)-[y]->(z) )
+eval/experimental/graph/small_graphs.ion::small_graphs::LUR/L: (N2D2 MATCH (x1)-[y1]-(x2)-[y2]->(x3) )
+eval/experimental/graph/small_graphs.ion::small_graphs::LUR/L: (N2D2c MATCH (x1)-[y1]-(x2)-[y2]->(x3) )
+eval/experimental/graph/small_graphs.ion::small_graphs::LUR/LUR: (N2D2 MATCH (x1)-[y1]-(x2)-[y2]-(x3) )
+eval/experimental/graph/small_graphs.ion::small_graphs::LUR/LUR: (N2D2c MATCH (x1)-[y1]-(x2)-[y2]-(x3) )
+eval/experimental/graph/small_graphs.ion::small_graphs::N: (N2D2 MATCH (x))
+eval/experimental/graph/small_graphs.ion::small_graphs::N: (N2D2c MATCH (x))
 eval/ion/primitives/cast.ion::cast-to-int::cast to int valid cases{value:" `\"100\"` ",result:100}
 eval/ion/primitives/cast.ion::cast-to-int::cast to int valid cases{value:"`-9223372036854775808e0`",result:-9223372036854775808}
 eval/ion/primitives/cast.ion::cast_invalid::cast to int invalid target type{value:" `{{\"1\"}}` ",target:"CLOB"}
