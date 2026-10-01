@@ -142,7 +142,7 @@ test "spec forms found by the corpus" {
     (
       "SELECT VALUE g FROM t GROUP ALL AS g", "(select (value g) (from t) (group all group-as g))",
     ),
-    ("TABLE hr.employees", "(table (path hr .employees))"),
+    ("TABLE hr.employees", "(table hr.employees)"),
     (
       "TABLE a UNION ALL CORRESPONDING BY (name, title) TABLE b", "(union-all-corresponding(name,title) (table a) (table b))",
     ),
@@ -176,5 +176,17 @@ test "parenthesized joins may start with a parenthesized subquery" {
     (
       "SELECT * FROM ((SELECT * FROM t) x, u)", "(select * (from (, (select * (from t)) as x u)))",
     ),
+  ])
+}
+
+///|
+test "TABLE takes a table name" {
+  check_queries([
+    ("TABLE users", "(table users)"),
+    ("TABLE engineering.employees", "(table engineering.employees)"),
+    ("TABLE \"a\".b", "(table \"a\".b)"),
+  ])
+  check_query_failures([
+    "TABLE f(x)", "TABLE a[0]", "TABLE 'x'", "TABLE a.*", "TABLE a.", "TABLE", "TABLE 1",
   ])
 }

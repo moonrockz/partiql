@@ -341,7 +341,7 @@ pub(all) enum QueryBody {
   Select(Select)
   SetOp(SetOp)
   Expr(Expr)
-  Table(Expr)
+  Table(Array[Identifier])
 } derive(Eq, @debug.Debug)
 
 pub(all) enum Restrictor {
