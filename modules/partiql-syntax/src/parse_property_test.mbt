@@ -179,3 +179,22 @@ impl @quickcheck.Shrink for GraphSoup
 test "parse never aborts on graph soup" {
   @quickcheck.check((s : GraphSoup) => parses_or_raises(s.text), count=1000)
 }
+
+///|
+test "deep input inside a parenthesized join reports the depth" {
+  let deep = "(".repeat(150) + "x" + ")".repeat(150)
+  @expect.expect_all(soft => {
+    for
+      source in [
+        "SELECT * FROM (a JOIN " + deep + " ON x)",
+        "SELECT * FROM (a JOIN b ON " + deep + ")",
+      ] {
+      soft
+      .expect_call(
+        () => @syntax.parse(source),
+        label=source.view(end_offset=30).to_owned(),
+      )
+      .to_raise_matching(too_deep, description="nesting is too deep")
+    }
+  })
+}

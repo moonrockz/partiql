@@ -104,6 +104,8 @@ fn Parser::from_base(self : Parser) -> @ast.FromItem raise @ast.ParseError {
     let saved_depth = self.depth
     ignore(self.advance())
     let joined = try self.nested(() => self.from_clause()) catch {
+      // Deep input fails the same way in every reading; report it.
+      Syntax(message=m, ..) as e if m == too_deep => raise e
       _ => None
     } noraise {
       Join(_) as j if self.eat_punct(')') => Some(j)
