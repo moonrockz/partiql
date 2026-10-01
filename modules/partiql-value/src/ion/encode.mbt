@@ -57,7 +57,9 @@ pub fn to_ion(v : @value.Value) -> @ion_core.IonValue {
 ///|
 /// Encodes a value for Ion data (the Ion-preserving mode): a boxed Ion
 /// value, at any depth, is written exactly as it was read; other values use
-/// the PartiQL-encoded forms.
+/// the PartiQL-encoded forms. Read the output with `from_ion_data`, not
+/// `from_ion`: a boxed value whose own annotation is, for example, `$bag`
+/// is written as is, so `from_ion` would read it as a PartiQL bag.
 pub fn to_ion_data(v : @value.Value) -> @ion_core.IonValue {
   encode(v, true)
 }

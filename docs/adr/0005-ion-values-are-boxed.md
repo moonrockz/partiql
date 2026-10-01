@@ -43,7 +43,10 @@ representation, never a PartiQL type.
 - The Ion-preserving codec mode (`from_ion_data`, `to_ion_data`) is for Ion
   data: decoding boxes the value, and encoding writes every boxed Ion value,
   at any depth, exactly as it was read. Computed values that Ion cannot
-  express use the PartiQL-encoded `$` forms.
+  express use the PartiQL-encoded `$` forms. Its output is for
+  `from_ion_data`: because pass-through is exact, an input value annotated
+  `$bag::` or `$missing::` is written unchanged, and `from_ion` would read it
+  as a PartiQL bag or MISSING.
 
 ## Consequences
 

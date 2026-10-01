@@ -491,3 +491,47 @@ test "computed values use the PartiQL-encoded forms" {
   )
   @expect.expect(@partiql_ion.to_ion_data(v).equals(@partiql_ion.to_ion(v))).to_be_true()
 }
+
+///|
+test "Ion data inside maps, graphs and bags passes through exactly" {
+  let boxed = @value.Value::Ion(ion("a::(1 sym)"))
+  let m = @value.Value::Map(
+    @value.MapValue::new(key_type=String, value_type=Dynamic, [
+      (@value.Value::String("k"), boxed),
+    ]),
+  )
+  let g = @value.Value::Graph(
+    @value.GraphValue::new(
+      [@value.GraphNode::new(id="n", payload=Some(boxed))],
+      [
+        @value.GraphEdge::new(
+          id="e",
+          ends=Undirected("n", "n"),
+          payload=Some(@value.Value::Ion(ion("null.int"))),
+        ),
+      ],
+    ),
+  )
+  let b = @value.Value::Bag(@value.Bag::new([boxed]))
+  @expect.expect_all(soft => {
+    soft
+    .expect(
+      @partiql_ion.to_ion_data(m).equals(
+        ion("$map::string::dynamic::[[\"k\", a::(1 sym)]]"),
+      ),
+    )
+    .to_be_true()
+    soft
+    .expect(
+      @partiql_ion.to_ion_data(g).equals(
+        ion(
+          "$graph::{nodes: [{id: n, payload: a::(1 sym)}], edges: [{id: e, payload: null.int, ends: (n -- n)}]}",
+        ),
+      ),
+    )
+    .to_be_true()
+    soft
+    .expect(@partiql_ion.to_ion_data(b).equals(ion("$bag::[a::(1 sym)]")))
+    .to_be_true()
+  })
+}
