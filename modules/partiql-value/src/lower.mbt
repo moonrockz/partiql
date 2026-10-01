@@ -120,6 +120,33 @@ pub fn Value::lower_deep(self : Value) -> Value raise LowerError {
       }
       Tuple(Tuple::new(out))
     }
+    // Keys are stored lowered already; values may hold boxed Ion.
+    Map(m) => {
+      let out : Array[(Value, Value)] = []
+      for pair in m.entries() {
+        out.push((pair.0, pair.1.lower_deep()))
+      }
+      Map({ key_type: m.key_type, value_type: m.value_type, entries: out, })
+    }
+    Graph(g) => {
+      let nodes : Array[GraphNode] = []
+      for n in g.nodes() {
+        nodes.push({ ..n, payload: lower_payload(n.payload), })
+      }
+      let edges : Array[GraphEdge] = []
+      for e in g.edges() {
+        edges.push({ ..e, payload: lower_payload(e.payload), })
+      }
+      Graph({ nodes, edges, })
+    }
     other => other
+  }
+}
+
+///|
+fn lower_payload(payload : Value?) -> Value? raise LowerError {
+  match payload {
+    Some(v) => Some(v.lower_deep())
+    None => None
   }
 }

@@ -32,3 +32,26 @@ test "decode never aborts" {
     count=200,
   )
 }
+
+///|
+test "Ion data passes through the Ion-preserving mode exactly" {
+  @quickcheck.check(
+    (a : @arbitrary.ArbIon) => {
+      @partiql_ion.to_ion_data(@partiql_ion.from_ion_data(a.value)).equals(
+        a.value,
+      )
+    },
+    count=200,
+  )
+}
+
+///|
+test "without boxed Ion, both modes encode alike" {
+  @quickcheck.check(
+    (a : @arbitrary.ArbValue) => {
+      let lowered = a.value.lower_deep()
+      @partiql_ion.to_ion_data(lowered).equals(@partiql_ion.to_ion(lowered))
+    },
+    count=200,
+  )
+}
