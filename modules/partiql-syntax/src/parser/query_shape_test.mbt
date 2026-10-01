@@ -125,3 +125,10 @@ fn query_shape(q : @ast.Query) -> String {
     "(query \{parts.join(" ")})"
   }
 }
+
+///|
+fn statement_shape(source : String) -> String raise {
+  match @parser.parse_statement(source) {
+    Query(q) => query_shape(q)
+  }
+}
