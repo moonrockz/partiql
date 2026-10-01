@@ -1,0 +1,15 @@
+// The `partiql` command line as a library: `run` takes the arguments and
+// returns the output, so tests drive it without a process.
+
+import {
+  "moonbitlang/core/argparse",
+}
+
+import {
+  "moonrockz/partiql/cli",
+  "moonrockz/expect",
+} for "test"
+
+import {
+  "moonrockz/expect",
+} for "wbtest"

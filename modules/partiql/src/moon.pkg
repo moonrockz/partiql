@@ -1,0 +1,14 @@
+// The `partiql` executable. The commands live in `moonrockz/partiql/cli`.
+
+import {
+  "moonrockz/partiql/cli",
+  "moonbitlang/core/env",
+  "moonbitlang/x/sys",
+}
+
+// On js, `@env.args()` starts with the node binary, so the argument
+// handling differs. moonx runs wasm, and releases ship native binaries.
+
+supported_targets = "native+wasm"
+
+pkgtype(kind: "executable")
