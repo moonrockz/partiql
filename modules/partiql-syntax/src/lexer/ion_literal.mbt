@@ -12,7 +12,8 @@ fn Scanner::skip_ion_quoted(
       if self.at(0) == -1 {
         raise error("unterminated Ion literal", start, self.pos)
       }
-      if self.at(0) == '\\'.to_int() {
+      // An escape skips the next unit, but never past the end.
+      if self.at(0) == '\\'.to_int() && self.at(1) != -1 {
         self.pos += 1
       }
       self.pos += 1
@@ -25,7 +26,8 @@ fn Scanner::skip_ion_quoted(
     if self.at(0) == -1 {
       raise error("unterminated Ion literal", start, self.pos)
     }
-    if self.at(0) == '\\'.to_int() {
+    // An escape skips the next unit, but never past the end.
+    if self.at(0) == '\\'.to_int() && self.at(1) != -1 {
       self.pos += 1
     }
     self.pos += 1
@@ -45,6 +47,19 @@ fn ion_literal(s : Scanner) -> TokenKind raise @ast.ParseError {
     let c = s.at(0)
     if c == -1 {
       raise error("unterminated Ion literal", start, s.pos)
+    } else if c == '{'.to_int() && s.at(1) == '{'.to_int() {
+      // A blob or clob: base64 may contain `//`, and a clob holds a string.
+      s.pos += 2
+      while !(s.at(0) == '}'.to_int() && s.at(1) == '}'.to_int()) {
+        if s.at(0) == -1 {
+          raise error("unterminated Ion literal", start, s.pos)
+        } else if s.at(0) == '"'.to_int() || s.at(0) == '\''.to_int() {
+          s.skip_ion_quoted(start)
+        } else {
+          s.pos += 1
+        }
+      }
+      s.pos += 2
     } else if c == '"'.to_int() || c == '\''.to_int() {
       s.skip_ion_quoted(start)
     } else if c == '/'.to_int() && s.at(1) == '/'.to_int() {

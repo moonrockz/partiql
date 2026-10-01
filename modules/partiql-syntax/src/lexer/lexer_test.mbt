@@ -107,3 +107,27 @@ test "token descriptions" {
     soft.expect(@lexer.TokenKind::End.describe()).to_equal("end of input")
   })
 }
+
+///|
+test "error spans stay inside the source" {
+  @expect.expect_all(soft => {
+    for source in ["`'a\\", "`\"a\\", "'a", "/* a", "`'''a\\"] {
+      let n = source.length()
+      soft
+      .expect_call(() => @lexer.lex(source), label=source)
+      .to_raise_matching(
+        e => {
+          e is @ast.ParseError::Syntax(span~, ..) &&
+          span.end <= n &&
+          span.start <= span.end
+        },
+        description="Syntax with a span inside the source",
+      )
+    }
+  })
+}
+
+///|
+test "Ion blobs may contain //" {
+  @expect.expect(kinds("`{{//8=}}`")).to_equal([IonLit("{{//8=}}"), End])
+}
