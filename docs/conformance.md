@@ -32,10 +32,16 @@ CI turns these lines into a job summary (`.github/scripts/conformance_summary.py
 | `syntax` | `SyntaxFail` | `parse` raises `ParseError::Syntax` |
 | `syntax` | `StaticAnalysisFail` | not applicable yet (counted as N/A) |
 | `eval-parse` | `EvaluationSuccess`, `EvaluationFail` | the statement parses |
-| `codec` | each `env` and each `EvaluationSuccess` `output` | the value decodes as PartiQL-encoded Ion and encodes back to an equal Ion value |
+| `codec` | each `env` and each `EvaluationSuccess` `output` | `v = from_ion(x)` succeeds; `from_ion(to_ion(v)) == v` (structural identity); and `to_ion` is a fixpoint after one round trip |
+| `ion-roundtrip` | each `$ion::` value inside a corpus value | it decodes to an `Ion` value and encodes back to an Ion-equal value |
 
 `ParseError::Unsupported` and `CodecError::Unsupported` always count as
-failures. Evaluation results are not checked until an evaluator exists.
+failures.
+
+The `codec` check does not require the encoded Ion to equal the input Ion:
+the reference runners decode Ion symbols as strings and accept legacy
+`$date`/`$time` forms, so the encoder writes strings and the new canonical
+forms (see ADR 0005). Evaluation results are not checked until an evaluator exists.
 
 A test case whose `statement` names an `equiv_class` is checked once per
 statement of that class (ids end in `[0]`, `[1]`, ...). Test ids have the form
@@ -92,13 +98,17 @@ files, so the codec must accept both.
 
 ## Current status
 
-At commit `2ef0ce2`, with the M0 stubs:
+At commit `2ef0ce2`, after M1 (data model):
 
 | Check | Passed | Total | N/A |
 |---|---|---|---|
 | `syntax` | 0 | 672 | 247 |
 | `eval-parse` | 0 | 4985 | 0 |
-| `codec` | 505 | 6822 | 0 |
+| `codec` | 6545 | 6822 | 0 |
+| `ion-roundtrip` | 39 | 39 | 0 |
+
+The 277 `codec` failures are the `$map` (169) and `$graph` (108) values, which
+M1b adds.
 
 All 172 `.ion` files decode with `moonrockz/ion` 0.2.0 (5,611 test cases).
 

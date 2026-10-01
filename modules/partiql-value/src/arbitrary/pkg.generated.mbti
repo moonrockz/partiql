@@ -1,0 +1,55 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "moonrockz/partiql-value/arbitrary"
+
+import {
+  "moonbitlang/core/debug",
+  "moonbitlang/core/quickcheck",
+  "moonbitlang/core/quickcheck/shrink",
+  "moonbitlang/core/quickcheck/splitmix",
+  "moonrockz/ion/ion",
+  "moonrockz/partiql-value",
+}
+
+// Values
+pub fn gen_date(@splitmix.RandomState) -> @partiql-value.Date
+
+pub fn gen_interval_dt(@splitmix.RandomState) -> @partiql-value.IntervalDT
+
+pub fn gen_interval_ym(@splitmix.RandomState) -> @partiql-value.IntervalYM
+
+pub fn gen_ion(Int, @splitmix.RandomState) -> @ion.IonValue
+
+pub fn gen_number(@splitmix.RandomState) -> @partiql-value.Value
+
+pub fn gen_time(@splitmix.RandomState) -> @partiql-value.Time
+
+pub fn gen_timestamp(@splitmix.RandomState) -> @partiql-value.Timestamp
+
+pub fn gen_value(Int, @splitmix.RandomState) -> @partiql-value.Value
+
+pub fn has_nested_absent(@partiql-value.Value) -> Bool
+
+// Errors
+
+// Types and methods
+pub(all) struct ArbIon {
+  value : @ion.IonValue
+} derive(@debug.Debug)
+pub impl @quickcheck.Arbitrary for ArbIon
+pub impl @shrink.Shrink for ArbIon
+
+pub(all) struct ArbTimestamp {
+  value : @partiql-value.Timestamp
+} derive(@debug.Debug)
+pub impl @quickcheck.Arbitrary for ArbTimestamp
+pub impl @shrink.Shrink for ArbTimestamp
+
+pub(all) struct ArbValue {
+  value : @partiql-value.Value
+} derive(@debug.Debug)
+pub impl @quickcheck.Arbitrary for ArbValue
+pub impl @shrink.Shrink for ArbValue
+
+// Type aliases
+
+// Traits

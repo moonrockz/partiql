@@ -21,7 +21,7 @@ fixed from the start (see [ADR 0001](adr/0001-workspace-monorepo.md)).
 
 | Module | Packages | Depends on | Targets | Published |
 |---|---|---|---|---|
-| `moonrockz/partiql-value` | root (`Value`), `ion` (codec) | `moonrockz/ion` | wasm, wasm-gc, js, native | yes |
+| `moonrockz/partiql-value` | root (`Value`), `ion` (codec), `arbitrary` (generators) | `moonrockz/ion` | wasm, wasm-gc, js, native | yes |
 | `moonrockz/partiql-syntax` | root (`parse`) | none | wasm, wasm-gc, js, native | yes |
 | `moonrockz/partiql-eval` | reserved: plan, catalog, functions, evaluator | value, syntax | all four | later |
 | `moonrockz/partiql` | root (executable), `cli` | `moonbitlang/x` (later: value, syntax, eval) | native, wasm | yes |
@@ -46,11 +46,19 @@ graph TD
 ## Package plan
 
 - `partiql-value`
-  - root: `Value`, the PartiQL data model. M1 adds scalars, lists, bags and
-    tuples, equality and ordering.
+  - root: `Value`, the PartiQL data model: absent values, numbers, text,
+    LOBs, `Date`/`Time`/`Timestamp`, intervals, `List`, `Bag`, `Tuple`, and
+    `Ion` (boxed exact Ion, ADR 0005). Relations: structural `Eq`,
+    `sql_equals` (the `=` operator), `eqg` (grouping) and `compare` (ORDER
+    BY). One concern per file (`value.mbt`, `tuple.mbt`, `bag.mbt`,
+    `datetime.mbt`, `interval.mbt`, `numeric.mbt`, `text.mbt`,
+    `identity.mbt`, `lower.mbt`, `equality.mbt`, `ordering.mbt`).
   - `ion`: the PartiQL-encoded Ion codec (`from_ion`, `to_ion`). Its default
     alias is `ion`, so it imports `moonrockz/ion/ion` as `@ion_core`.
     Consumers import it as `@partiql_ion`.
+  - `arbitrary`: quickcheck generators (`gen_value`, `ArbValue`, ...) and
+    the property laws of the data model. Published so that later milestones
+    can reuse the generators.
 - `partiql-syntax`
   - root: `parse`. M2 adds the lexer, AST and parser packages, and M3 the
     printer. The M2 spec sets their names.
@@ -62,6 +70,8 @@ graph TD
 
 - Never move a package between modules.
 - Library modules build and pass their tests on wasm, wasm-gc, js and native.
-- Library code imports only `moonbitlang/core` and `moonrockz/ion`.
+- Library code may use the base class library (`moonbitlang/core`,
+  `moonbitlang/x`, `moonbitlang/async`) and `moonrockz/ion`. A
+  target-restricted dependency needs `supported_targets` and a reason.
 - When `partiql-eval` is created, insert it before `partiql` in the publish
   order (`mise-tasks/release/publish`).

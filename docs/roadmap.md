@@ -20,6 +20,10 @@ corpus with a ratchet baseline.
 
 ## M1 Data model
 
+Status: done. `codec` passes 6,545 of 6,822 corpus values; the rest are
+`$map` and `$graph` values (M1b). Property laws cover identity, equality,
+ordering and the codec.
+
 The `Value` type covers every PartiQL value: the absent values `NULL` and
 `MISSING`, the Ion scalars, lists, bags and tuples. Tuples allow duplicate
 attribute names, and an attribute value is never `MISSING`. Equality and the

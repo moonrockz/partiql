@@ -2,19 +2,133 @@
 package "moonrockz/partiql-value"
 
 import {
+  "moonbitlang/core/bigint",
   "moonbitlang/core/debug",
+  "moonrockz/ion/ion",
 }
 
 // Values
+pub fn compare(Value, Value, nulls~ : NullOrder) -> Int
+
+pub fn eqg(Value, Value) -> Bool
+
+pub fn sql_equals(Value, Value) -> Value
+
+pub fn timestamp_of_ion(@ion.Timestamp) -> Timestamp
 
 // Errors
+pub(all) suberror DateTimeError {
+  InvalidDate(String)
+  InvalidTime(String)
+} derive(Eq, @debug.Debug)
+
+pub(all) suberror IntervalError {
+  Overflow(String)
+} derive(Eq, @debug.Debug)
+
+pub(all) suberror LowerError {
+  SymbolWithoutText
+} derive(Eq, @debug.Debug)
 
 // Types and methods
+pub struct Bag {
+  // private fields
+} derive(@debug.Debug)
+pub fn Bag::items(Self) -> ArrayView[Value]
+pub fn Bag::length(Self) -> Int
+pub fn Bag::new(Array[Value]) -> Self
+pub impl Eq for Bag
+
+pub struct Date {
+  year : Int
+  month : Int
+  day : Int
+} derive(@debug.Debug)
+pub fn Date::new(year~ : Int, month~ : Int, day~ : Int) -> Self raise DateTimeError
+pub impl Eq for Date
+
+pub struct IntervalDT {
+  seconds : Int64
+  nanos : Int
+} derive(@debug.Debug)
+pub fn IntervalDT::days(Self) -> Int64
+pub fn IntervalDT::from_parts(negative~ : Bool, days~ : Int64, hours~ : Int64, minutes~ : Int64, seconds~ : Int64, nanos~ : Int64) -> Self raise IntervalError
+pub fn IntervalDT::hours(Self) -> Int64
+pub fn IntervalDT::is_negative(Self) -> Bool
+pub fn IntervalDT::minutes(Self) -> Int64
+pub fn IntervalDT::nanos_part(Self) -> Int64
+pub fn IntervalDT::new(Int64, Int64) -> Self raise IntervalError
+pub fn IntervalDT::seconds_part(Self) -> Int64
+pub impl Eq for IntervalDT
+
+pub struct IntervalYM {
+  months : Int64
+} derive(@debug.Debug)
+pub fn IntervalYM::from_parts(negative~ : Bool, years~ : Int64, months~ : Int64) -> Self raise IntervalError
+pub fn IntervalYM::is_negative(Self) -> Bool
+pub fn IntervalYM::months_part(Self) -> Int64
+pub fn IntervalYM::new(Int64) -> Self raise IntervalError
+pub fn IntervalYM::years(Self) -> Int64
+pub impl Eq for IntervalYM
+
+pub(all) enum NullOrder {
+  NullsFirst
+  NullsLast
+} derive(Eq, @debug.Debug)
+
+pub struct Time {
+  hour : Int
+  minute : Int
+  second : Int
+  nanos : Int
+  precision : Int
+  offset : Int?
+} derive(@debug.Debug)
+pub fn Time::new(hour~ : Int, minute~ : Int, second~ : Int, nanos? : Int, precision? : Int, offset? : Int?) -> Self raise DateTimeError
+pub impl Eq for Time
+
+pub struct Timestamp {
+  date : Date
+  time : Time
+} derive(@debug.Debug)
+pub fn Timestamp::new(Date, Time) -> Self
+pub impl Eq for Timestamp
+
+pub struct Tuple {
+  // private fields
+} derive(@debug.Debug)
+pub fn Tuple::fields(Self) -> ArrayView[(String, Value)]
+pub fn Tuple::get_all(Self, String) -> Array[Value]
+pub fn Tuple::length(Self) -> Int
+pub fn Tuple::new(Array[(String, Value)]) -> Self
+pub impl Eq for Tuple
+
 pub(all) enum Value {
   Null
   Missing
-} derive(Eq, @debug.Debug)
+  Bool(Bool)
+  Int(Int64)
+  BigInt(@bigint.BigInt)
+  Float(Double)
+  Decimal(@ion.Decimal)
+  String(String)
+  Clob(Bytes)
+  Blob(Bytes)
+  Date(Date)
+  Time(Time)
+  Timestamp(Timestamp)
+  IntervalYM(IntervalYM)
+  IntervalDT(IntervalDT)
+  List(Array[Value])
+  Bag(Bag)
+  Tuple(Tuple)
+  Ion(@ion.IonValue)
+} derive(@debug.Debug)
+pub fn Value::integer(@bigint.BigInt) -> Self
 pub fn Value::is_absent(Self) -> Bool
+pub fn Value::lower(Self) -> Self raise LowerError
+pub fn Value::lower_deep(Self) -> Self raise LowerError
+pub impl Eq for Value
 
 // Type aliases
 
