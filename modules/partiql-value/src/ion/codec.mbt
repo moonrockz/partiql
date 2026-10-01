@@ -32,5 +32,7 @@ pub fn to_ion(value : @value.Value) -> @ion_core.IonValue {
       @ion_core.IonValue::untyped_null().with_annotation(
         @ion_core.SymbolToken::new(missing_annotation),
       )
+    // Temporary until M1 task 8 rewrites the codec.
+    _ => abort("to_ion: not implemented for this value yet")
   }
 }
