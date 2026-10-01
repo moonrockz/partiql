@@ -76,7 +76,13 @@ fn optional_int(
   form : String,
 ) -> Int64 raise CodecError {
   match fields.get(name) {
-    Some(x) => int_of(x, "\{form}.\{name}")
+    Some(x) => {
+      let n = int_of(x, "\{form}.\{name}")
+      if n < 0L {
+        raise Malformed("\{form}.\{name} must not be negative")
+      }
+      n
+    }
     None => 0L
   }
 }
@@ -101,9 +107,17 @@ fn seconds_of(
   match x.kind() {
     Int(_) => (small_int(x, what), 0, 0)
     Decimal(d) => {
-      let digits = if d.exponent < 0 { -d.exponent } else { 0 }
-      if digits > 9 {
+      // Check the exponent before any power of ten: a huge exponent must
+      // fail fast, not build a huge number.
+      if d.exponent < -9 {
         raise Malformed("\{what} has more than 9 fractional digits")
+      }
+      let digits = if d.exponent < 0 { -d.exponent } else { 0 }
+      if d.coefficient.is_zero() {
+        return (0, 0, digits)
+      }
+      if d.exponent > 1 {
+        raise Malformed("\{what} is out of range")
       }
       let scaled = if d.exponent > 0 {
         d.coefficient * 10N.pow(@bigint.BigInt::from_int(d.exponent))
@@ -263,6 +277,9 @@ fn decode_time(x : @ion_core.IonValue) -> @value.Value raise CodecError {
           (None, None) => None
           (Some(h), m) => {
             let minutes = m.unwrap_or(0)
+            if h < -23 || h > 23 || minutes < 0 || minutes > 59 {
+              raise Malformed("$time zone \{h}:\{minutes} is out of range")
+            }
             Some(if h < 0 { h * 60 - minutes } else { h * 60 + minutes })
           }
           (None, Some(m)) => Some(m)
@@ -322,13 +339,14 @@ fn decode_interval_ym(x : @ion_core.IonValue) -> @value.Value raise CodecError {
   let form = "$interval_ym"
   let f = field_map(x, form)
   check_fields(f, ["sign", "years", "months"], form)
-  IntervalYM(
-    @value.IntervalYM::from_parts(
-      negative=sign_of(f, form),
-      years=optional_int(f, "years", form),
-      months=optional_int(f, "months", form),
-    ),
-  )
+  let interval = @value.IntervalYM::from_parts(
+    negative=sign_of(f, form),
+    years=optional_int(f, "years", form),
+    months=optional_int(f, "months", form),
+  ) catch {
+    error => raise Malformed(@debug.to_string(error))
+  }
+  IntervalYM(interval)
 }
 
 ///|
@@ -340,16 +358,17 @@ fn decode_interval_dt(x : @ion_core.IonValue) -> @value.Value raise CodecError {
     ["sign", "days", "hours", "minutes", "seconds", "nanos"],
     form,
   )
-  IntervalDT(
-    @value.IntervalDT::from_parts(
-      negative=sign_of(f, form),
-      days=optional_int(f, "days", form),
-      hours=optional_int(f, "hours", form),
-      minutes=optional_int(f, "minutes", form),
-      seconds=optional_int(f, "seconds", form),
-      nanos=optional_int(f, "nanos", form),
-    ),
-  )
+  let interval = @value.IntervalDT::from_parts(
+    negative=sign_of(f, form),
+    days=optional_int(f, "days", form),
+    hours=optional_int(f, "hours", form),
+    minutes=optional_int(f, "minutes", form),
+    seconds=optional_int(f, "seconds", form),
+    nanos=optional_int(f, "nanos", form),
+  ) catch {
+    error => raise Malformed(@debug.to_string(error))
+  }
+  IntervalDT(interval)
 }
 
 ///|

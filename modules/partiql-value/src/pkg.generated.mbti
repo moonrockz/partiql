@@ -22,6 +22,10 @@ pub(all) suberror DateTimeError {
   InvalidTime(String)
 } derive(Eq, @debug.Debug)
 
+pub(all) suberror IntervalError {
+  Overflow(String)
+} derive(Eq, @debug.Debug)
+
 pub(all) suberror LowerError {
   SymbolWithoutText
 } derive(Eq, @debug.Debug)
@@ -48,22 +52,22 @@ pub struct IntervalDT {
   nanos : Int
 } derive(@debug.Debug)
 pub fn IntervalDT::days(Self) -> Int64
-pub fn IntervalDT::from_parts(negative~ : Bool, days~ : Int64, hours~ : Int64, minutes~ : Int64, seconds~ : Int64, nanos~ : Int64) -> Self
+pub fn IntervalDT::from_parts(negative~ : Bool, days~ : Int64, hours~ : Int64, minutes~ : Int64, seconds~ : Int64, nanos~ : Int64) -> Self raise IntervalError
 pub fn IntervalDT::hours(Self) -> Int64
 pub fn IntervalDT::is_negative(Self) -> Bool
 pub fn IntervalDT::minutes(Self) -> Int64
 pub fn IntervalDT::nanos_part(Self) -> Int64
-pub fn IntervalDT::new(Int64, Int64) -> Self
+pub fn IntervalDT::new(Int64, Int64) -> Self raise IntervalError
 pub fn IntervalDT::seconds_part(Self) -> Int64
 pub impl Eq for IntervalDT
 
 pub struct IntervalYM {
   months : Int64
 } derive(@debug.Debug)
-pub fn IntervalYM::from_parts(negative~ : Bool, years~ : Int64, months~ : Int64) -> Self
+pub fn IntervalYM::from_parts(negative~ : Bool, years~ : Int64, months~ : Int64) -> Self raise IntervalError
 pub fn IntervalYM::is_negative(Self) -> Bool
 pub fn IntervalYM::months_part(Self) -> Int64
-pub fn IntervalYM::new(Int64) -> Self
+pub fn IntervalYM::new(Int64) -> Self raise IntervalError
 pub fn IntervalYM::years(Self) -> Int64
 pub impl Eq for IntervalYM
 

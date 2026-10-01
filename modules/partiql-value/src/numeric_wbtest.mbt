@@ -70,3 +70,12 @@ test "sign_of is -1, 0 or 1 for any size" {
     soft.expect(sign_of(0N)).to_equal(0)
   })
 }
+
+///|
+test "exponents near Int limits compare correctly" {
+  @expect.expect_all(soft => {
+    soft.expect(compare_num(dec(1, 2147483647), num_of_int64(1L))).to_equal(1)
+    soft.expect(compare_num(dec(1, -2147483648), num_of_int64(0L))).to_equal(1)
+    soft.expect(compare_num(dec(1, -2147483648), dec(1, -9))).to_equal(-1)
+  })
+}

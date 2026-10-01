@@ -12,15 +12,24 @@ pub fn timestamp_of_ion(ts : @ion_core.Timestamp) -> Timestamp {
   let (nanos, precision) = match ts.fraction {
     None => (0, 0)
     Some(fraction) => {
-      let digits = -fraction.exponent
-      if digits <= 0 {
+      // Int64: `-exponent` must not overflow.
+      let digits = -fraction.exponent.to_int64()
+      if digits <= 0L {
         (0, 0)
-      } else if digits <= 9 {
-        let scale = @bigint.BigInt::from_int(pow10(9 - digits))
-        ((fraction.coefficient * scale).to_int(), digits)
+      } else if digits <= 9L {
+        let d = digits.to_int()
+        let scale = @bigint.BigInt::from_int(pow10(9 - d))
+        ((fraction.coefficient * scale).to_int(), d)
       } else {
-        let scale = 10N.pow(@bigint.BigInt::from_int(digits - 9))
-        ((fraction.coefficient / scale).to_int(), 9)
+        // Dropping more digits than the coefficient has leaves 0; never
+        // build a power of ten larger than the coefficient.
+        let drop = digits - 9L
+        if drop > digit_count(fraction.coefficient).to_int64() {
+          (0, 9)
+        } else {
+          let scale = 10N.pow(@bigint.BigInt::from_int64(drop))
+          ((fraction.coefficient / scale).to_int(), 9)
+        }
       }
     }
   }

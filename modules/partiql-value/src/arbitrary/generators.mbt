@@ -136,7 +136,9 @@ pub fn gen_interval_ym(rs : @splitmix.RandomState) -> @value.IntervalYM {
     negative=chance(rs, 50),
     years=pick(rs, 1000).to_int64(),
     months=pick(rs, 30).to_int64(),
-  )
+  ) catch {
+    _ => abort("unreachable: generated interval parts fit Int64")
+  }
 }
 
 ///|
@@ -148,7 +150,9 @@ pub fn gen_interval_dt(rs : @splitmix.RandomState) -> @value.IntervalDT {
     minutes=pick(rs, 90).to_int64(),
     seconds=pick(rs, 90).to_int64(),
     nanos=pick(rs, 2000000000).to_int64(),
-  )
+  ) catch {
+    _ => abort("unreachable: generated interval parts fit Int64")
+  }
 }
 
 ///|

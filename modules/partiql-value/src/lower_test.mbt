@@ -56,3 +56,25 @@ test "ion timestamps lower to timestamps with time zone" {
 test "non-ion values are unchanged" {
   @expect.expect(@value.Value::Int(3L).lower()).to_equal(@value.Value::Int(3L))
 }
+
+///|
+test "ion timestamps with huge fraction exponents lower quickly" {
+  @expect.expect_all(soft => {
+    for exponent in [-50000000, -2147483648] {
+      let ts = @ion_core.Timestamp::new(
+        year=2000,
+        month=Some(1),
+        day=Some(1),
+        hour=Some(0),
+        minute=Some(0),
+        second=Some(0),
+        fraction=Some(@ion_core.Decimal::new(1N, exponent)),
+        offset=Some(Known(0)),
+      )
+      let t = @value.timestamp_of_ion(ts)
+      soft
+      .expect((t.time.nanos, t.time.precision), label="\{exponent}")
+      .to_equal((0, 9))
+    }
+  })
+}

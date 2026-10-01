@@ -47,8 +47,9 @@ fn compare_keys(a : (Int64, Int), b : (Int64, Int)) -> Int {
 }
 
 ///|
-/// Key and zone flag: values without a time zone sort before values with
-/// one at equal keys.
+/// Key and zone flag. The key is the UTC instant for a zoned value and the
+/// fields for an unzoned one; at equal keys, an unzoned value sorts first.
+/// (A tie-break on raw fields would not be transitive.)
 fn compare_zoned(
   a_key : (Int64, Int),
   a_zoned : Bool,

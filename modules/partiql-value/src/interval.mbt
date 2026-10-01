@@ -1,12 +1,42 @@
 ///|
+/// An interval that does not fit the representation.
+pub(all) suberror IntervalError {
+  Overflow(String)
+} derive(Debug, Eq)
+
+///|
+let int64_min_big : @bigint.BigInt = @bigint.BigInt::from_int64(
+  -9223372036854775808L,
+)
+
+///|
+let int64_max_big : @bigint.BigInt = @bigint.BigInt::from_int64(
+  9223372036854775807L,
+)
+
+///|
+/// Int64 min is excluded, so that every value has a magnitude.
+fn fit_int64(n : @bigint.BigInt, what : String) -> Int64 raise IntervalError {
+  if n.compare(int64_min_big) <= 0 || n.compare(int64_max_big) > 0 {
+    raise Overflow("\{what} does not fit in Int64")
+  }
+  n.to_int64()
+}
+
+///|
+fn big(n : Int64) -> @bigint.BigInt {
+  @bigint.BigInt::from_int64(n)
+}
+
+///|
 /// A year-month interval, as a signed number of months.
 pub struct IntervalYM {
   months : Int64
 } derive(Debug)
 
 ///|
-pub fn IntervalYM::new(months : Int64) -> IntervalYM {
-  { months, }
+pub fn IntervalYM::new(months : Int64) -> IntervalYM raise IntervalError {
+  { months: fit_int64(big(months), "months"), }
 }
 
 ///|
@@ -14,9 +44,9 @@ pub fn IntervalYM::from_parts(
   negative~ : Bool,
   years~ : Int64,
   months~ : Int64,
-) -> IntervalYM {
-  let total = years * 12L + months
-  { months: if negative { -total } else { total }, }
+) -> IntervalYM raise IntervalError {
+  let total = big(years) * 12N + big(months)
+  { months: fit_int64(if negative { -total } else { total }, "months"), }
 }
 
 ///|
@@ -52,15 +82,28 @@ pub struct IntervalDT {
 } derive(Debug)
 
 ///|
-pub fn IntervalDT::new(seconds : Int64, nanos : Int64) -> IntervalDT {
-  let carry = nanos / 1000000000L
-  let rest = nanos % 1000000000L
-  let (s, n) = if rest < 0L {
-    (seconds + carry - 1L, rest + 1000000000L)
-  } else {
-    (seconds + carry, rest)
+/// Floor form of seconds + nanos / 10^9, computed in BigInt arithmetic.
+fn normalize_dt(
+  seconds : @bigint.BigInt,
+  nanos : @bigint.BigInt,
+) -> IntervalDT raise IntervalError {
+  let billion = 1000000000N
+  let total = seconds * billion + nanos
+  let mut s = total / billion
+  let mut n = total % billion
+  if n.compare(0N) < 0 {
+    s = s - 1N
+    n = n + billion
   }
-  { seconds: s, nanos: n.to_int(), }
+  { seconds: fit_int64(s, "seconds"), nanos: n.to_int(), }
+}
+
+///|
+pub fn IntervalDT::new(
+  seconds : Int64,
+  nanos : Int64,
+) -> IntervalDT raise IntervalError {
+  normalize_dt(big(seconds), big(nanos))
 }
 
 ///|
@@ -71,12 +114,15 @@ pub fn IntervalDT::from_parts(
   minutes~ : Int64,
   seconds~ : Int64,
   nanos~ : Int64,
-) -> IntervalDT {
-  let total = days * 86400L + hours * 3600L + minutes * 60L + seconds
+) -> IntervalDT raise IntervalError {
+  let total = big(days) * 86400N +
+    big(hours) * 3600N +
+    big(minutes) * 60N +
+    big(seconds)
   if negative {
-    IntervalDT::new(-total, -nanos)
+    normalize_dt(-total, -big(nanos))
   } else {
-    IntervalDT::new(total, nanos)
+    normalize_dt(total, big(nanos))
   }
 }
 

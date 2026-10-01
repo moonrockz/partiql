@@ -101,27 +101,26 @@ test "legacy forms decode like the new forms" {
 
 ///|
 test "unsupported and malformed inputs raise" {
-  for text in ["$map::string::integer::[]", "$graph::{nodes: [], edges: []}"] {
-    try decode(text) catch {
-      @partiql_ion.CodecError::Unsupported(_) => ()
-      other => fail("\{text}: \{@debug.to_string(other)}")
-    } noraise {
-      v => fail("\{text} decoded to \{@debug.to_string(v)}")
+  @expect.expect_all(soft => {
+    for text in ["$map::string::integer::[]", "$graph::{nodes: [], edges: []}"] {
+      soft
+      .expect_call(() => decode(text), label=text)
+      .to_raise_matching(
+        e => e is @partiql_ion.CodecError::Unsupported(_),
+        description="Unsupported",
+      )
     }
-  }
-  for
-    text in [
-      "(1 2)", "foo::1", "$date::{year: 2022, month: 13, day: 1}", "$time::{hour: 25, minute: 0, second: 0., offset: null}",
-      "$time::{hour: 1, minute: 0, second: 0.1234567891, offset: null}", "$interval_ym::{sign: \"*\"}",
-      "$date::{year: \"x\", month: 1, day: 1}", "$bag::1", "$missing::1",
-    ] {
-    try decode(text) catch {
-      @partiql_ion.CodecError::Malformed(_) => ()
-      other => fail("\{text}: \{@debug.to_string(other)}")
-    } noraise {
-      v => fail("\{text} decoded to \{@debug.to_string(v)}")
+    for
+      text in [
+        "(1 2)", "foo::1", "$date::{year: 2022, month: 13, day: 1}", "$time::{hour: 25, minute: 0, second: 0., offset: null}",
+        "$time::{hour: 1, minute: 0, second: 0.1234567891, offset: null}", "$interval_ym::{sign: \"*\"}",
+        "$date::{year: \"x\", month: 1, day: 1}", "$bag::1", "$missing::1",
+      ] {
+      soft
+      .expect_call(() => decode(text), label=text)
+      .to_raise_matching(malformed, description="Malformed")
     }
-  }
+  })
 }
 
 ///|
@@ -139,22 +138,90 @@ test "encode writes canonical forms" {
     ("$ion::a::sym", "$ion::a::sym"),
     ("sym", "\"sym\""),
   ]
-  for case in cases {
-    let encoded = @partiql_ion.to_ion(decode(case.0))
-    @expect.expect(encoded.equals(ion(case.1)), label=case.0).to_be_true()
-  }
+  @expect.expect_all(soft => {
+    for case in cases {
+      let encoded = @partiql_ion.to_ion(decode(case.0))
+      soft.expect(encoded.equals(ion(case.1)), label=case.0).to_be_true()
+    }
+  })
 }
 
 ///|
 test "round trip" {
-  for
-    text in [
-      "{a: 1, b: [1.50, 2e0, $bag::[null]], c: $timestamp::{year: 2025, month: 1, day: 1, hour: 1, minute: 1, second: 1.111, offset: -2}}",
-      "$interval_ym::{sign: \"-\", years: 2, months: 3}",
-    ] {
-    let v = decode(text)
-    @expect.expect(@partiql_ion.from_ion(@partiql_ion.to_ion(v)), label=text).to_equal(
-      v,
+  @expect.expect_all(soft => {
+    for
+      text in [
+        "{a: 1, b: [1.50, 2e0, $bag::[null]], c: $timestamp::{year: 2025, month: 1, day: 1, hour: 1, minute: 1, second: 1.111, offset: -2}}",
+        "$interval_ym::{sign: \"-\", years: 2, months: 3}",
+      ] {
+      let v = decode(text)
+      soft
+      .expect(@partiql_ion.from_ion(@partiql_ion.to_ion(v)), label=text)
+      .to_equal(v)
+    }
+  })
+}
+
+///|
+fn malformed(e : Error) -> Bool {
+  e is @partiql_ion.CodecError::Malformed(_)
+}
+
+///|
+test "seconds with extreme exponents decode or fail fast" {
+  @expect.expect_all(soft => {
+    soft
+    .expect(
+      decode("$time::{hour: 1, minute: 0, second: 0d50000000, offset: null}"),
     )
-  }
+    .to_equal(@value.Value::Time(@value.Time::new(hour=1, minute=0, second=0)))
+    soft
+    .expect_call(() => {
+      decode("$time::{hour: 1, minute: 0, second: 1d2147483647, offset: null}")
+    })
+    .to_raise_matching(malformed, description="Malformed")
+    let tiny = @ion_core.IonValue::from_fields([
+      @ion_core.Field::new("hour", @ion_core.IonValue::int(1)),
+      @ion_core.Field::new("minute", @ion_core.IonValue::int(0)),
+      @ion_core.Field::new(
+        "second",
+        @ion_core.IonValue::decimal(@ion_core.Decimal::new(1N, -2147483648)),
+      ),
+      @ion_core.Field::new("offset", @ion_core.IonValue::untyped_null()),
+    ]).with_annotation(@ion_core.SymbolToken::new("$time"))
+    soft
+    .expect_call(() => @partiql_ion.from_ion(tiny))
+    .to_raise_matching(malformed, description="Malformed")
+  })
+}
+
+///|
+test "interval fields that overflow or are negative are malformed" {
+  @expect.expect_all(soft => {
+    for
+      text in [
+        "$interval_ym::{years: 9223372036854775807}", "$interval_dt::{days: 9223372036854775807}",
+        "$interval_dt::{seconds: 9223372036854775807, nanos: 1000000000}", "$interval_dt::{sign: \"-\", nanos: -9223372036854775808}",
+        "$interval_ym::{months: -1}",
+      ] {
+      soft
+      .expect_call(() => decode(text), label=text)
+      .to_raise_matching(malformed, description="Malformed")
+    }
+  })
+}
+
+///|
+test "legacy zone fields out of range are malformed" {
+  @expect.expect_all(soft => {
+    for
+      text in [
+        "$time::{hour: 1, minute: 0, second: 0., timezone_hour: 71582788, timezone_minute: 0}",
+        "$time::{hour: 1, minute: 0, second: 0., timezone_hour: 1, timezone_minute: 60}",
+      ] {
+      soft
+      .expect_call(() => decode(text), label=text)
+      .to_raise_matching(malformed, description="Malformed")
+    }
+  })
 }

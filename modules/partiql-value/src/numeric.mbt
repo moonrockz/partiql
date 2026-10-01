@@ -107,8 +107,9 @@ fn compare_finite(
     return 0
   }
   // Same sign, both non-zero. Compare magnitudes, then apply the sign.
-  let a1 = e1 + digit_count(c1)
-  let a2 = e2 + digit_count(c2)
+  // Int64: an exponent near Int's limits must not overflow.
+  let a1 = e1.to_int64() + digit_count(c1).to_int64()
+  let a2 = e2.to_int64() + digit_count(c2).to_int64()
   let magnitude = if a1 != a2 {
     if a1 < a2 {
       -1
