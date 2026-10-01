@@ -31,7 +31,8 @@ moon.work                         # workspace: one module per directory in modul
 modules/
 ├── partiql-value/                # moonrockz/partiql-value
 │   └── src/                      # Value: the PartiQL data model
-│       └── ion/                  # PartiQL-encoded Ion codec (from_ion, to_ion)
+│       ├── ion/                  # PartiQL-encoded Ion codec (from_ion, to_ion)
+│       └── arbitrary/            # quickcheck generators and property laws
 ├── partiql-syntax/               # moonrockz/partiql-syntax
 │   └── src/                      # parse; M2 adds lexer, AST and parser packages
 ├── partiql/                      # moonrockz/partiql: the CLI (moonx moonrockz/partiql)
