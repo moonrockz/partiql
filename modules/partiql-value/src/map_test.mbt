@@ -113,3 +113,72 @@ test "map identity sees type parameters and ignores entry order" {
     soft.expect(@value.Value::Map(a) == @value.Value::Map(c)).to_be_false()
   })
 }
+
+///|
+fn mv(
+  pairs : Array[(@value.Value, @value.Value)],
+  value_type? : @value.MapType = Integer,
+) -> @value.Value raise {
+  @value.Value::Map(map_of(pairs, value_type~))
+}
+
+///|
+test "map equality follows RFC 0104" {
+  @expect.expect_all(soft => {
+    soft
+    .expect(
+      @value.sql_equals(
+        mv([(s("a"), i(1)), (s("b"), i(2))]),
+        mv([(s("b"), i(2)), (s("a"), i(1))]),
+      ),
+    )
+    .to_equal(t)
+    soft
+    .expect(@value.sql_equals(mv([(s("a"), i(1))]), mv([(s("a"), i(2))])))
+    .to_equal(f)
+    soft
+    .expect(
+      @value.sql_equals(
+        mv([(s("a"), i(1))]),
+        mv([(s("a"), i(1)), (s("b"), i(2))]),
+      ),
+    )
+    .to_equal(f)
+    soft
+    .expect(@value.sql_equals(mv([(s("a"), i(1))]), tup([("a", i(1))])))
+    .to_equal(f)
+    soft
+    .expect(@value.eqg(mv([], value_type=Dynamic), mv([], value_type=Integer)))
+    .to_be_true()
+    soft
+    .expect(
+      @value.sql_equals(
+        mv([(s("b"), @value.Value::Null)]),
+        mv([(s("b"), @value.Value::Null)]),
+      ),
+    )
+    .to_equal(t)
+  })
+}
+
+///|
+test "maps order by sorted entries, after bags" {
+  let a1 = mv([(s("a"), i(1))])
+  let a1b2 = mv([(s("b"), i(2)), (s("a"), i(1))])
+  let b2 = mv([(s("b"), i(2))])
+  @expect.expect_all(soft => {
+    soft.expect(@value.compare(a1, a1b2, nulls=NullsFirst)).to_equal(-1)
+    soft.expect(@value.compare(a1b2, b2, nulls=NullsFirst)).to_equal(-1)
+    soft.expect(@value.compare(a1, b2, nulls=NullsFirst)).to_equal(-1)
+    soft.expect(@value.compare(bag([i(9)]), a1, nulls=NullsFirst)).to_equal(-1)
+    soft
+    .expect(
+      @value.compare(
+        a1b2,
+        mv([(s("a"), i(1)), (s("b"), i(2))]),
+        nulls=NullsFirst,
+      ),
+    )
+    .to_equal(0)
+  })
+}

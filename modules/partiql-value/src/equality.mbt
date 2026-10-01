@@ -54,6 +54,11 @@ fn deep_equal(a : Value, b : Value) -> Bool {
       match_multiset(x.fields(), y.fields(), (p, q) => {
         p.0 == q.0 && eqg(p.1, q.1)
       })
+    // Type parameters are ignored (RFC 0104 equality; Kotlin's comparator).
+    (Map(x), Map(y)) =>
+      match_multiset(x.entries(), y.entries(), (p, q) => {
+        eqg(p.0, q.0) && eqg(p.1, q.1)
+      })
     _ => false
   }
 }
