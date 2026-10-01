@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+#MISE description="Fail if moon fmt would change any file"
+set -euo pipefail
+
+moon fmt --check

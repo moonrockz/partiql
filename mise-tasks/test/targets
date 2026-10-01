@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+#MISE description="Run all workspace tests on wasm, wasm-gc, js and native"
+set -euo pipefail
+
+for target in wasm wasm-gc js native; do
+  echo "== $target"
+  moon test --target "$target"
+done
