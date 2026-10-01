@@ -14,6 +14,7 @@ let soup_pieces : Array[String] = [
   "INTERVAL", "MAP", "x", "\"q\"", "1", "2.5", "3e2", "'s'", "`1`", "`{a:1}`", "(",
   ")", "[", "]", "{", "}", "<", ">", "<<", ">>", ",", ".", ":", ";", "*", "+", "-",
   "/", "%", "=", "!", "|", "@", "?", "'", "`", "\"", "--", "/*", "*/", " ", "\n",
+  "MATCH", "ANY", "SHORTEST", "TRAIL", "~", "&", "->", "<-", "-[",
 ]
 
 ///|
@@ -84,6 +85,10 @@ test "deep nesting raises a syntax error, not a stack overflow" {
         ">".repeat(20000) +
         ")",
         "x IS " + "ARRAY<".repeat(20000) + "INT" + ">".repeat(20000),
+        "(g MATCH " + "(".repeat(20000) + "(a)" + ")".repeat(20000) + ")",
+        "(g MATCH " + "[".repeat(20000) + "(a)" + "]".repeat(20000) + ")",
+        "(g MATCH (x:" + "(".repeat(20000) + "A" + ")".repeat(20000) + "))",
+        "(g MATCH (x:" + "!(".repeat(20000) + "A" + ")".repeat(20000) + "))",
       ] {
       soft
       .expect_call(
@@ -108,5 +113,69 @@ test "nesting just below the limit parses on every target" {
     })
     .not()
     .to_raise()
+    soft
+    .expect_call(() => {
+      @syntax.parse("(g MATCH " + "(".repeat(80) + "(a)" + ")".repeat(80) + ")")
+    })
+    .not()
+    .to_raise()
+    soft
+    .expect_call(() => {
+      @syntax.parse(
+        "(g MATCH (x:" + "(".repeat(80) + "A" + ")".repeat(80) + "))",
+      )
+    })
+    .not()
+    .to_raise()
   })
+}
+
+///|
+/// Random GPML tokens inside `(g MATCH …)`.
+struct GraphSoup {
+  text : String
+} derive(Debug)
+
+///|
+let graph_pieces : Array[String] = [
+  "MATCH", "ANY", "ALL", "SHORTEST", "GROUP", "TRAIL", "WALK", "ACYCLIC", "SIMPLE",
+  "WHERE", "p", "x", "1", "=", "(", ")", "[", "]", "{", "}", "-", "<", ">", "~",
+  "->", "<-", "~>", ":", "|", "&", "!", "%", "+", "*", ",", "'s'", "--", " ", "\n",
+]
+
+///|
+impl @quickcheck.Arbitrary for GraphSoup with fn arbitrary(size, rs) {
+  let n = rs
+    .next_uint(limit=(size * 4 + 1).reinterpret_as_uint())
+    .reinterpret_as_int()
+  let buf = StringBuilder()
+  buf.write_string(
+    if rs.next_uint(limit=2) == 0 {
+      "(g MATCH "
+    } else {
+      "SELECT * FROM g MATCH "
+    },
+  )
+  for _ in 0..<n {
+    buf.write_string(
+      graph_pieces[rs
+      .next_uint(limit=graph_pieces.length().reinterpret_as_uint())
+      .reinterpret_as_int()],
+    )
+    if rs.next_uint(limit=2) == 0 {
+      buf.write_char(' ')
+    }
+  }
+  if rs.next_uint(limit=2) == 0 {
+    buf.write_char(')')
+  }
+  { text: buf.to_string(), }
+}
+
+///|
+impl @quickcheck.Shrink for GraphSoup
+
+///|
+test "parse never aborts on graph soup" {
+  @quickcheck.check((s : GraphSoup) => parses_or_raises(s.text), count=1000)
 }
