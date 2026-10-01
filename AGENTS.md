@@ -376,7 +376,8 @@ bd stores issue history in Dolt:
 - ✅ Link discovered work with `discovered-from` dependencies
 - ✅ Check `bd ready` before asking "what should I work on?"
 - ❌ Do NOT create markdown TODO lists
-- ❌ Do NOT use external issue trackers
+- ✅ GitHub milestones and one epic issue per milestone hold the public roadmap; beads holds all task tracking
+- ❌ Do NOT track tasks in GitHub issues or other trackers
 - ❌ Do NOT duplicate tracking systems
 
 For more details, see README.md and https://github.com/gastownhall/beads/blob/main/docs/getting-started/quickstart.md.
