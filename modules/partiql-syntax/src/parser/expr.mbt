@@ -143,7 +143,20 @@ fn Parser::predicate(self : Parser) -> @ast.Expr raise @ast.ParseError {
       ignore(self.advance())
     }
     if self.eat_word("IN") {
-      let right = self.concat()
+      // `IN (e, ..)` is a row even with one element (Kotlin's IN '(' expr ')'
+      // alternative): `x IN (5)` and `x IN 5` differ. A subquery stays a
+      // subquery.
+      let right = if self.at_punct('(') && !self.at_query_start(1) {
+        let start = self.pos
+        ignore(self.advance())
+        let items = self.expr_list(')')
+        if items.is_empty() {
+          self.fail("expected an expression")
+        }
+        make(Row(items), self.span_from(start))
+      } else {
+        self.concat()
+      }
       left = make(In(left, right, negated~), spanning(left, right))
     } else if self.eat_word("LIKE") {
       let pattern = self.concat()

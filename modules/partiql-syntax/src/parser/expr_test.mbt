@@ -150,3 +150,15 @@ test "errors report what was expected" {
     description="Syntax at the end, expecting ']'",
   )
 }
+
+///|
+test "IN keeps a parenthesized right operand as a row" {
+  // The corpus gives `x IN (5)` and `x IN 5` different results.
+  check_shapes([
+    ("a IN (5)", "(in a (row 5))"),
+    ("a IN 5", "(in a 5)"),
+    ("a IN (prices)", "(in a (row prices))"),
+    ("a NOT IN (1, 2)", "(not-in a (row 1 2))"),
+    ("a IN (SELECT VALUE x FROM t)", "(in a (select (value x) (from t)))"),
+  ])
+}
