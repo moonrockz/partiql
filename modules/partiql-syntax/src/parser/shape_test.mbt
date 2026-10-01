@@ -258,6 +258,7 @@ fn shape(e : @ast.Expr) -> String {
     Row(xs) => "(row \{xs.map(shape).join(" ")})"
     Values(xs) => "(values \{xs.map(shape).join(" ")})"
     Query(q) => query_shape(q)
+    GraphMatch(m) => graph_shape(m)
   }
 }
 

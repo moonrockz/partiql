@@ -79,6 +79,30 @@ pub(all) enum DatetimeField {
   TimezoneMinute
 } derive(Eq, @debug.Debug)
 
+pub(all) enum EdgeDirection {
+  Left
+  Undirected
+  Right
+  LeftOrUndirected
+  UndirectedOrRight
+  LeftOrRight
+  Any
+} derive(Eq, @debug.Debug)
+
+pub(all) struct EdgeFiller {
+  variable : Identifier?
+  label : Label?
+  where_ : Expr?
+  span : Span
+} derive(Eq, @debug.Debug)
+
+pub(all) struct EdgePattern {
+  direction : EdgeDirection
+  filler : EdgeFiller?
+  quantifier : Quantifier?
+  span : Span
+} derive(Eq, @debug.Debug)
+
 pub(all) struct Expr {
   kind : ExprKind
   span : Span
@@ -123,6 +147,7 @@ pub(all) enum ExprKind {
   Row(Array[Expr])
   Values(Array[Expr])
   Query(Query)
+  GraphMatch(GraphMatch)
 } derive(Eq, @debug.Debug)
 
 pub(all) enum FromItem {
@@ -140,10 +165,28 @@ pub(all) struct FromSource {
   span : Span
 } derive(Eq, @debug.Debug)
 
+pub(all) struct GraphMatch {
+  graph : Expr
+  pattern : GraphPattern
+  span : Span
+} derive(Eq, @debug.Debug)
+
+pub(all) struct GraphPattern {
+  selector : Selector?
+  paths : Array[PathPattern]
+  where_ : Expr?
+  span : Span
+} derive(Eq, @debug.Debug)
+
 pub(all) struct GroupBy {
   keys : GroupKeys
   group_as : Identifier?
   span : Span
+} derive(Eq, @debug.Debug)
+
+pub(all) enum GroupDelimiter {
+  Paren
+  Bracket
 } derive(Eq, @debug.Debug)
 
 pub(all) struct GroupKey {
@@ -155,6 +198,14 @@ pub(all) struct GroupKey {
 pub(all) enum GroupKeys {
   All
   By(Array[GroupKey], partial~ : Bool)
+} derive(Eq, @debug.Debug)
+
+pub(all) struct GroupPattern {
+  delimiter : GroupDelimiter
+  path : PathPattern
+  where_ : Expr?
+  quantifier : Quantifier?
+  span : Span
 } derive(Eq, @debug.Debug)
 
 pub(all) struct Identifier {
@@ -191,6 +242,19 @@ pub(all) enum JoinKind {
   Full
 } derive(Eq, @debug.Debug)
 
+pub(all) struct Label {
+  kind : LabelKind
+  span : Span
+} derive(Eq, @debug.Debug)
+
+pub(all) enum LabelKind {
+  Name(Identifier)
+  Wildcard
+  Not(Label)
+  And(Label, Label)
+  Or(Label, Label)
+} derive(Eq, @debug.Debug)
+
 pub(all) struct LetBinding {
   expr : Expr
   name : Identifier
@@ -213,9 +277,29 @@ pub(all) enum Literal {
 } derive(@debug.Debug)
 pub impl Eq for Literal
 
+pub(all) struct NodePattern {
+  variable : Identifier?
+  label : Label?
+  where_ : Expr?
+  span : Span
+} derive(Eq, @debug.Debug)
+
 pub(all) enum NullsOrder {
   First
   Last
+} derive(Eq, @debug.Debug)
+
+pub(all) enum PathPart {
+  Node(NodePattern)
+  Edge(EdgePattern)
+  Group(GroupPattern)
+} derive(Eq, @debug.Debug)
+
+pub(all) struct PathPattern {
+  restrictor : Restrictor?
+  variable : Identifier?
+  parts : Array[PathPart]
+  span : Span
 } derive(Eq, @debug.Debug)
 
 pub(all) enum PathStep {
@@ -231,6 +315,17 @@ pub(all) enum Projection {
   Items(Array[SelectItem])
   Value(Expr)
   Pivot(value~ : Expr, key~ : Expr)
+} derive(Eq, @debug.Debug)
+
+pub(all) struct Quantifier {
+  kind : QuantifierKind
+  span : Span
+} derive(Eq, @debug.Debug)
+
+pub(all) enum QuantifierKind {
+  Plus
+  Star
+  Range(lower~ : Int, upper~ : Int?)
 } derive(Eq, @debug.Debug)
 
 pub(all) struct Query {
@@ -249,6 +344,13 @@ pub(all) enum QueryBody {
   Table(Expr)
 } derive(Eq, @debug.Debug)
 
+pub(all) enum Restrictor {
+  Walk
+  Trail
+  Acyclic
+  Simple
+} derive(Eq, @debug.Debug)
+
 pub(all) struct Select {
   quantifier : SetQuantifier?
   projection : Projection
@@ -263,6 +365,19 @@ pub(all) struct Select {
 pub(all) enum SelectItem {
   Expr(Expr, as_~ : Identifier?, span~ : Span)
   AllFields(Expr, span~ : Span)
+} derive(Eq, @debug.Debug)
+
+pub(all) struct Selector {
+  kind : SelectorKind
+  span : Span
+} derive(Eq, @debug.Debug)
+
+pub(all) enum SelectorKind {
+  AnyShortest
+  AllShortest
+  Shortest
+  Any(k~ : Int?)
+  ShortestK(k~ : Int, group~ : Bool)
 } derive(Eq, @debug.Debug)
 
 pub(all) struct SetOp {
