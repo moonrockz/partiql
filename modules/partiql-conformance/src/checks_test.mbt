@@ -22,7 +22,9 @@ test "codec check accepts symbols and legacy forms" {
 test "codec check fails unsupported and malformed values" {
   @expect.expect_all(soft => {
     soft
-    .expect(check_codec(@text.read_ion("$map::string::integer::[]")) is Fail(_))
+    .expect(
+      check_codec(@text.read_ion("$graph::{nodes: [], edges: []}")) is Fail(_),
+    )
     .to_be_true()
     soft.expect(check_codec(@text.read_ion("(1 2)")) is Fail(_)).to_be_true()
   })

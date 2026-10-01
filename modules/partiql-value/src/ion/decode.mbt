@@ -410,6 +410,55 @@ fn decode_plain(x : @ion_core.IonValue) -> @value.Value raise CodecError {
 }
 
 ///|
+/// A plain Ion timestamp in a `date`-typed map position is a date
+/// (partiql-tests writes `$map::date::...` keys as Ion timestamps).
+fn coerce(declared : @value.MapType, v : @value.Value) -> @value.Value {
+  match (declared, v) {
+    (Date, Timestamp(ts)) if ts.time.offset == Some(0) &&
+      ts.time.hour == 0 &&
+      ts.time.minute == 0 &&
+      ts.time.second == 0 &&
+      ts.time.nanos == 0 => Date(ts.date)
+    _ => v
+  }
+}
+
+///|
+/// `$map::<key type>::<value type>::[[k, v], ...]` (RFC 0104).
+fn decode_map(x : @ion_core.IonValue) -> @value.Value raise CodecError {
+  let names = x.annotations().map(token => token.text())
+  guard names is [_, Some(k), Some(v)] else {
+    raise Malformed("$map needs exactly a key type and a value type")
+  }
+  guard @value.MapType::from_name(k) is Some(key_type) else {
+    raise Malformed("$map key type \{k} is unknown")
+  }
+  guard @value.MapType::from_name(v) is Some(value_type) else {
+    raise Malformed("$map value type \{v} is unknown")
+  }
+  let body = x.with_annotations([])
+  if body.is_null() {
+    return Null
+  }
+  guard body.kind() is List(items) else {
+    raise Malformed("$map must annotate a list of [key, value] pairs")
+  }
+  let entries : Array[(@value.Value, @value.Value)] = []
+  for item in items {
+    guard item.kind() is List([key, value]) else {
+      raise Malformed("$map entry is not a [key, value] pair")
+    }
+    entries.push(
+      (coerce(key_type, from_ion(key)), coerce(value_type, from_ion(value))),
+    )
+  }
+  let map = @value.MapValue::new(key_type~, value_type~, entries) catch {
+    error => raise Malformed(@debug.to_string(error))
+  }
+  Map(map)
+}
+
+///|
 fn without_first_annotation(x : @ion_core.IonValue) -> @ion_core.IonValue {
   let annotations = x.annotations()
   x.with_annotations(annotations[1:].to_owned())
@@ -428,7 +477,10 @@ pub fn from_ion(x : @ion_core.IonValue) -> @value.Value raise CodecError {
   if form == "$ion" {
     return Ion(without_first_annotation(x))
   }
-  if form == "$map" || form == "$graph" {
+  if form == "$map" {
+    return decode_map(x)
+  }
+  if form == "$graph" {
     raise Unsupported("\{form} values")
   }
   if annotations.length() != 1 {
