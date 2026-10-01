@@ -1,0 +1,23 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "moonrockz/partiql-value/ion"
+
+import {
+  "moonbitlang/core/debug",
+  "moonrockz/partiql-value",
+}
+
+// Values
+pub fn from_ion(@moonrockz/ion/ion.IonValue) -> @partiql-value.Value raise CodecError
+
+pub fn to_ion(@partiql-value.Value) -> @moonrockz/ion/ion.IonValue
+
+// Errors
+pub(all) suberror CodecError {
+  Unsupported(String)
+} derive(Eq, @debug.Debug)
+
+// Types and methods
+
+// Type aliases
+
+// Traits

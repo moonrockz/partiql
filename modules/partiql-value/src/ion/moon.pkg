@@ -1,0 +1,14 @@
+// The PartiQL-encoded Ion codec. This package's default alias is `ion`, so
+// the Ion data model is imported as `@ion_core`.
+
+import {
+  "moonrockz/partiql-value" @value,
+  "moonrockz/ion/ion" @ion_core,
+  "moonbitlang/core/debug",
+}
+
+import {
+  "moonrockz/partiql-value/ion" @partiql_ion,
+  "moonrockz/ion/text",
+  "moonrockz/expect",
+} for "test"
