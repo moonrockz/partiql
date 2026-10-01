@@ -4,7 +4,6 @@
 import {
   "moonrockz/partiql-syntax/ast",
   "moonrockz/partiql-syntax/lexer",
-  "moonrockz/ion/text",
   "moonbitlang/core/hashset",
   "moonbitlang/core/string",
 }

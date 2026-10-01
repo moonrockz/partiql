@@ -81,16 +81,14 @@ fn ion_literal(s : Scanner) -> TokenKind raise @ast.ParseError {
   }
   let body = s.text(body_start, s.pos)
   s.pos += 1
-  ignore(
-    @text.read_ion(body) catch {
-      e =>
-        raise @ast.ParseError::Syntax(
-          message="invalid Ion literal: \{@debug.to_string(e)}",
-          span={ start, end: s.pos, },
-          expected=[],
-          found="Ion literal",
-        )
-    },
-  )
-  IonLit(body)
+  let value = @text.read_ion(body) catch {
+    e =>
+      raise @ast.ParseError::Syntax(
+        message="invalid Ion literal: \{@debug.to_string(e)}",
+        span={ start, end: s.pos, },
+        expected=[],
+        found="Ion literal",
+      )
+  }
+  IonLit(body, value)
 }

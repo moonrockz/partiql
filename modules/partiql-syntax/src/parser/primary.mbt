@@ -76,12 +76,7 @@ fn Parser::primary(self : Parser) -> @ast.Expr raise @ast.ParseError {
     DecimalLit(n) => self.literal(Decimal(n))
     FloatLit(n) => self.literal(Float(n))
     StringLit(s) => self.literal(String(s))
-    IonLit(text) => {
-      let value = @text.read_ion(text) catch {
-        _ => raise self.error("invalid Ion literal")
-      }
-      self.literal(Ion(text, value))
-    }
+    IonLit(text, value) => self.literal(Ion(text, value))
     QuotedIdent(_) => {
       let name = self.identifier()
       make(VarRef(name, qualified=false), name.span)
