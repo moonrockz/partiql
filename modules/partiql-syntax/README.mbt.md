@@ -1,7 +1,7 @@
 # moonrockz/partiql-syntax
 
-A PartiQL parser for MoonBit: queries (DQL) into a typed syntax tree with
-source spans.
+A PartiQL parser for MoonBit: queries (DQL), including graph `MATCH`
+(GPML), into a typed syntax tree with source spans.
 
 ```moonbit
 let statement = @syntax.parse("SELECT a FROM t WHERE a > 1")
@@ -15,7 +15,8 @@ let statement = @syntax.parse("SELECT a FROM t WHERE a > 1")
 | `moonrockz/partiql-syntax/parser` | `parse_statement`, `parse_expression` |
 
 Errors: `ParseError::Syntax(message~, span~, expected~, found~)` for invalid
-input; `ParseError::Unsupported` for graph `MATCH`, which arrives in M2b.
+input; `ParseError::Unsupported` for valid PartiQL that this version does not
+parse (DML, DDL and window functions).
 `Span::line_column(source)` gives 1-based line and column numbers.
 
 See `docs/architecture.md` and `docs/conformance.md` in the repository.

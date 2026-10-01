@@ -78,7 +78,8 @@ graph TD
     (OR, AND, NOT, IS TRUE/FALSE/UNKNOWN, predicates, `||`, `+ -`,
     `* / %`, signs, path steps), special forms by name, a reserved-word table
     (the Kotlin grammar's, without the datetime field words), and a nesting
-    limit of 100 levels (the wasm call stack overflows near 200).
+    limit of 100 levels (the wasm call stack overflows near 200). Graph
+    MATCH (GPML) is in `graph.mbt`.
   - M3 adds the printer.
 - `partiql`
   - root: the executable.
