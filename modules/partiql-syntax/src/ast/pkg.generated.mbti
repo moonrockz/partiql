@@ -1,0 +1,319 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "moonrockz/partiql-syntax/ast"
+
+import {
+  "moonbitlang/core/debug",
+  "moonrockz/ion/ion",
+}
+
+// Values
+
+// Errors
+pub(all) suberror ParseError {
+  Unsupported(message~ : String, span~ : Span)
+  Syntax(message~ : String, span~ : Span, expected~ : Array[String], found~ : String)
+} derive(Eq, @debug.Debug)
+
+// Types and methods
+pub(all) enum BinaryOp {
+  Add
+  Sub
+  Mul
+  Div
+  Mod
+  Concat
+  Eq
+  Ne
+  Lt
+  Le
+  Gt
+  Ge
+} derive(Eq, @debug.Debug)
+
+pub(all) enum DataType {
+  Null
+  Missing
+  Bool
+  TinyInt
+  SmallInt
+  Int
+  BigInt
+  Decimal(Int?, Int?)
+  Numeric(Int?, Int?)
+  Real
+  Double(Int?)
+  Char(Int?)
+  Varchar(Int?)
+  String
+  Symbol
+  Blob
+  Clob
+  Date
+  Time(Int?, with_tz~ : Bool)
+  Timestamp(Int?, with_tz~ : Bool)
+  Interval(IntervalQualifier)
+  Struct
+  Tuple
+  List
+  Bag
+  Sexp
+  Any
+  Map(DataType, DataType)
+  Array(DataType?)
+  Custom(Identifier)
+} derive(Eq, @debug.Debug)
+
+pub(all) enum DatetimeField {
+  Year
+  Month
+  Day
+  Hour
+  Minute
+  Second
+  TimezoneHour
+  TimezoneMinute
+} derive(Eq, @debug.Debug)
+
+pub(all) struct Expr {
+  kind : ExprKind
+  span : Span
+} derive(Eq, @debug.Debug)
+
+pub(all) enum ExprKind {
+  Lit(Literal)
+  VarRef(Identifier, qualified~ : Bool)
+  Parameter
+  Path(Expr, Array[PathStep])
+  Unary(UnaryOp, Expr)
+  Binary(BinaryOp, Expr, Expr)
+  And(Expr, Expr)
+  Or(Expr, Expr)
+  Not(Expr)
+  BoolTest(Expr, Bool?, negated~ : Bool)
+  Like(Expr, pattern~ : Expr, escape~ : Expr?, negated~ : Bool)
+  Between(Expr, low~ : Expr, high~ : Expr, negated~ : Bool)
+  In(Expr, Expr, negated~ : Bool)
+  IsNull(Expr, negated~ : Bool)
+  IsMissing(Expr, negated~ : Bool)
+  IsType(Expr, DataType, negated~ : Bool)
+  Overlaps(Expr, Expr)
+  Case(operand~ : Expr?, branches~ : Array[(Expr, Expr)], default~ : Expr?)
+  Cast(Expr, DataType)
+  Extract(DatetimeField, Expr)
+  Trim(spec~ : TrimSpec?, chars~ : Expr?, Expr)
+  Substring(Expr, start~ : Expr, length~ : Expr?)
+  Position(Expr, Expr)
+  Overlay(Expr, placing~ : Expr, from~ : Expr, for_~ : Expr?)
+  Coalesce(Array[Expr])
+  NullIf(Expr, Expr)
+  DateAdd(DatetimeField, Expr, Expr)
+  DateDiff(DatetimeField, Expr, Expr)
+  Call(Identifier, Array[Expr], quantifier~ : SetQuantifier?)
+  CallStar(Identifier)
+  List(Array[Expr])
+  Bag(Array[Expr])
+  Sexp(Array[Expr])
+  Struct(Array[(Expr, Expr)])
+  Map(Array[(Expr, Expr)])
+  Row(Array[Expr])
+  Values(Array[Expr])
+  Query(Query)
+} derive(Eq, @debug.Debug)
+
+pub(all) enum FromItem {
+  Scan(FromSource)
+  Unpivot(FromSource)
+  Join(Join)
+} derive(Eq, @debug.Debug)
+
+pub(all) struct FromSource {
+  expr : Expr
+  as_ : Identifier?
+  at : Identifier?
+  by : Identifier?
+  span : Span
+} derive(Eq, @debug.Debug)
+
+pub(all) struct GroupBy {
+  partial : Bool
+  keys : Array[GroupKey]
+  group_as : Identifier?
+  span : Span
+} derive(Eq, @debug.Debug)
+
+pub(all) struct GroupKey {
+  expr : Expr
+  as_ : Identifier?
+  span : Span
+} derive(Eq, @debug.Debug)
+
+pub(all) struct Identifier {
+  text : String
+  delimited : Bool
+  span : Span
+} derive(Eq, @debug.Debug)
+
+pub(all) struct IntervalQualifier {
+  start : DatetimeField
+  start_precision : Int?
+  end : DatetimeField?
+  fractional_precision : Int?
+} derive(Eq, @debug.Debug)
+
+pub(all) struct Join {
+  kind : JoinKind
+  form : JoinForm
+  left : FromItem
+  right : FromItem
+  span : Span
+} derive(Eq, @debug.Debug)
+
+pub(all) enum JoinForm {
+  Comma
+  Cross
+  On(Expr)
+} derive(Eq, @debug.Debug)
+
+pub(all) enum JoinKind {
+  Inner
+  Left
+  Right
+  Full
+} derive(Eq, @debug.Debug)
+
+pub(all) struct LetBinding {
+  expr : Expr
+  name : Identifier
+  span : Span
+} derive(Eq, @debug.Debug)
+
+pub(all) enum Literal {
+  Null
+  Missing
+  Bool(Bool)
+  Int(String)
+  Decimal(String)
+  Float(String)
+  String(String)
+  Ion(String, @ion.IonValue)
+  Date(String)
+  Time(String, precision~ : Int?, with_tz~ : Bool)
+  Timestamp(String, precision~ : Int?, with_tz~ : Bool)
+  Interval(String, negative~ : Bool, qualifier~ : IntervalQualifier)
+} derive(@debug.Debug)
+pub impl Eq for Literal
+
+pub(all) enum NullsOrder {
+  First
+  Last
+} derive(Eq, @debug.Debug)
+
+pub(all) enum PathStep {
+  Field(Identifier)
+  FieldString(String, span~ : Span)
+  Index(Expr)
+  AllElements(Span)
+  AllFields(Span)
+} derive(Eq, @debug.Debug)
+
+pub(all) enum Projection {
+  Star(Span)
+  Items(Array[SelectItem])
+  Value(Expr)
+  Pivot(value~ : Expr, key~ : Expr)
+} derive(Eq, @debug.Debug)
+
+pub(all) struct Query {
+  with_ : Array[WithBinding]
+  body : QueryBody
+  order_by : Array[SortSpec]
+  limit : Expr?
+  offset : Expr?
+  span : Span
+} derive(Eq, @debug.Debug)
+
+pub(all) enum QueryBody {
+  Select(Select)
+  SetOp(SetOp)
+  Expr(Expr)
+} derive(Eq, @debug.Debug)
+
+pub(all) struct Select {
+  quantifier : SetQuantifier?
+  projection : Projection
+  from : FromItem?
+  let_ : Array[LetBinding]
+  where_ : Expr?
+  group_by : GroupBy?
+  having : Expr?
+  span : Span
+} derive(Eq, @debug.Debug)
+
+pub(all) enum SelectItem {
+  Expr(Expr, as_~ : Identifier?, span~ : Span)
+  AllFields(Expr, span~ : Span)
+} derive(Eq, @debug.Debug)
+
+pub(all) struct SetOp {
+  op : SetOpKind
+  quantifier : SetQuantifier?
+  outer : Bool
+  left : Query
+  right : Query
+  span : Span
+} derive(Eq, @debug.Debug)
+
+pub(all) enum SetOpKind {
+  Union
+  Intersect
+  Except
+} derive(Eq, @debug.Debug)
+
+pub(all) enum SetQuantifier {
+  All
+  Distinct
+} derive(Eq, @debug.Debug)
+
+pub(all) enum SortOrder {
+  Asc
+  Desc
+} derive(Eq, @debug.Debug)
+
+pub(all) struct SortSpec {
+  expr : Expr
+  order : SortOrder?
+  nulls : NullsOrder?
+  span : Span
+} derive(Eq, @debug.Debug)
+
+pub(all) struct Span {
+  start : Int
+  end : Int
+} derive(Eq, @debug.Debug)
+pub fn Span::line_column(Self, String) -> ((Int, Int), (Int, Int))
+pub fn Span::merge(Self, Self) -> Self
+
+pub(all) enum Statement {
+  Query(Query)
+} derive(Eq, @debug.Debug)
+
+pub(all) enum TrimSpec {
+  Both
+  Leading
+  Trailing
+} derive(Eq, @debug.Debug)
+
+pub(all) enum UnaryOp {
+  Pos
+  Neg
+} derive(Eq, @debug.Debug)
+
+pub(all) struct WithBinding {
+  name : Identifier
+  query : Query
+  span : Span
+} derive(Eq, @debug.Debug)
+
+// Type aliases
+
+// Traits
