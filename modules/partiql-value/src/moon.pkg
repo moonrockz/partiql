@@ -1,4 +1,19 @@
 import {
+  "moonbitlang/core/bigint",
+  "moonrockz/ion/ion" @ion_core,
+}
+
+import {
   "moonrockz/partiql-value" @value,
   "moonrockz/expect",
+  "moonbitlang/core/debug",
+  "moonbitlang/core/double",
+  "moonrockz/ion/ion" @ion_core,
+  "moonrockz/ion/text",
 } for "test"
+
+import {
+  "moonrockz/expect",
+  "moonbitlang/core/double",
+  "moonbitlang/core/quickcheck",
+} for "wbtest"
