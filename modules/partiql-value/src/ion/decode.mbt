@@ -459,6 +459,140 @@ fn decode_map(x : @ion_core.IonValue) -> @value.Value raise CodecError {
 }
 
 ///|
+/// A graph id: a symbol or a string.
+fn graph_id(x : @ion_core.IonValue, what : String) -> String raise CodecError {
+  match x.kind() {
+    Symbol(token) if !x.has_annotations() && token.text() is Some(text) => text
+    String(text) if !x.has_annotations() => text
+    _ => raise Malformed("\{what} must be a symbol or a string")
+  }
+}
+
+///|
+/// The fields of a node or edge struct; `node::`/`edge::` annotations are
+/// optional hints and are ignored.
+fn graph_element_fields(
+  x : @ion_core.IonValue,
+  hint : String,
+  allowed : Array[String],
+) -> Map[String, @ion_core.IonValue] raise CodecError {
+  let names = x.annotations().map(token => token.text())
+  if !(names is [] || (names is [Some(h)] && h == hint)) {
+    raise Malformed("$graph \{hint} has an unexpected annotation")
+  }
+  let f = field_map(x.with_annotations([]), "$graph \{hint}")
+  check_fields(f, allowed, "$graph \{hint}")
+  f
+}
+
+///|
+fn labels_of(
+  f : Map[String, @ion_core.IonValue],
+) -> Array[String] raise CodecError {
+  match f.get("labels") {
+    None => []
+    Some(x) => {
+      guard !x.has_annotations() && x.kind() is List(items) else {
+        raise Malformed("$graph labels must be a list of strings")
+      }
+      let out : Array[String] = []
+      for item in items {
+        guard !item.has_annotations() && item.kind() is String(label) else {
+          raise Malformed("$graph labels must be a list of strings")
+        }
+        out.push(label)
+      }
+      out
+    }
+  }
+}
+
+///|
+fn payload_of(
+  f : Map[String, @ion_core.IonValue],
+) -> @value.Value? raise CodecError {
+  match f.get("payload") {
+    None => None
+    Some(x) =>
+      match from_ion(x) {
+        Missing => raise Malformed("a $graph payload must not be MISSING")
+        v => Some(v)
+      }
+  }
+}
+
+///|
+/// `(a -> b)`, `(a -- b)` or `(a <- b)`.
+fn ends_of(x : @ion_core.IonValue) -> @value.Ends raise CodecError {
+  guard !x.has_annotations() && x.kind() is Sexp([a, op, b]) else {
+    raise Malformed("$graph edge ends must be (a -> b), (a -- b) or (a <- b)")
+  }
+  let from = graph_id(a, "$graph edge end")
+  let to = graph_id(b, "$graph edge end")
+  match op.kind() {
+    Symbol(token) if !op.has_annotations() =>
+      match token.text() {
+        Some("->") => Directed(from~, to~)
+        Some("<-") => Directed(from=to, to=from)
+        Some("--") => Undirected(from, to)
+        _ => raise Malformed("$graph edge ends need ->, -- or <-")
+      }
+    _ => raise Malformed("$graph edge ends need ->, -- or <-")
+  }
+}
+
+///|
+fn graph_list(
+  f : Map[String, @ion_core.IonValue],
+  name : String,
+) -> Array[@ion_core.IonValue] raise CodecError {
+  match f.get(name) {
+    Some(x) if !x.has_annotations() && x.kind() is List(items) => items
+    _ => raise Malformed("$graph needs a list of \{name}")
+  }
+}
+
+///|
+/// `$graph::{nodes: [...], edges: [...]}` (the external graph format of
+/// RFC 0025).
+fn decode_graph(x : @ion_core.IonValue) -> @value.Value raise CodecError {
+  if x.annotations().length() != 1 {
+    raise Malformed("$graph takes no further annotations")
+  }
+  let f = field_map(x.with_annotations([]), "$graph")
+  check_fields(f, ["nodes", "edges"], "$graph")
+  let nodes : Array[@value.GraphNode] = []
+  for item in graph_list(f, "nodes") {
+    let n = graph_element_fields(item, "node", ["id", "labels", "payload"])
+    nodes.push(
+      @value.GraphNode::new(
+        id=graph_id(required(n, "id", "$graph node"), "$graph node id"),
+        labels=labels_of(n),
+        payload=payload_of(n),
+      ),
+    )
+  }
+  let edges : Array[@value.GraphEdge] = []
+  for item in graph_list(f, "edges") {
+    let e = graph_element_fields(item, "edge", [
+      "id", "labels", "payload", "ends",
+    ])
+    edges.push(
+      @value.GraphEdge::new(
+        id=graph_id(required(e, "id", "$graph edge"), "$graph edge id"),
+        ends=ends_of(required(e, "ends", "$graph edge")),
+        labels=labels_of(e),
+        payload=payload_of(e),
+      ),
+    )
+  }
+  let graph = @value.GraphValue::new(nodes, edges) catch {
+    error => raise Malformed(@debug.to_string(error))
+  }
+  Graph(graph)
+}
+
+///|
 fn without_first_annotation(x : @ion_core.IonValue) -> @ion_core.IonValue {
   let annotations = x.annotations()
   x.with_annotations(annotations[1:].to_owned())
@@ -481,7 +615,7 @@ pub fn from_ion(x : @ion_core.IonValue) -> @value.Value raise CodecError {
     return decode_map(x)
   }
   if form == "$graph" {
-    raise Unsupported("\{form} values")
+    return decode_graph(x)
   }
   if annotations.length() != 1 {
     raise Malformed("\{form} takes no further annotations")

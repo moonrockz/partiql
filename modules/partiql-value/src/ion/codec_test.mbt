@@ -102,14 +102,6 @@ test "legacy forms decode like the new forms" {
 ///|
 test "unsupported and malformed inputs raise" {
   @expect.expect_all(soft => {
-    for text in ["$graph::{nodes: [], edges: []}"] {
-      soft
-      .expect_call(() => decode(text), label=text)
-      .to_raise_matching(
-        e => e is @partiql_ion.CodecError::Unsupported(_),
-        description="Unsupported",
-      )
-    }
     for
       text in [
         "(1 2)", "foo::1", "$date::{year: 2022, month: 13, day: 1}", "$time::{hour: 25, minute: 0, second: 0., offset: null}",
@@ -345,6 +337,113 @@ test "map keys are checked even when the value is MISSING" {
       text in [
         "$map::string::integer::[[null, $missing::null]]", "$map::string::integer::[[[\"x\"], $missing::null]]",
         "$map::string::integer::[[\"a\", 1], [\"a\", $missing::null]]", "$map::string::integer::[foo::[\"a\", 1]]",
+      ] {
+      soft
+      .expect_call(() => decode(text), label=text)
+      .to_raise_matching(malformed, description="Malformed")
+    }
+  })
+}
+
+///|
+fn graph_of(
+  nodes : Array[@value.GraphNode],
+  edges : Array[@value.GraphEdge],
+) -> @value.Value raise {
+  @value.Value::Graph(@value.GraphValue::new(nodes, edges))
+}
+
+///|
+test "$graph values decode" {
+  let n1 = @value.GraphNode::new(id="n1", payload=Some(i(1)))
+  @expect.expect_all(soft => {
+    soft
+    .expect(decode("$graph::{nodes: [], edges: []}"))
+    .to_equal(graph_of([], []))
+    soft
+    .expect(
+      decode(
+        "$graph::{nodes: [{id: n1, payload: 1}], edges: [{id: d1, payload: 1.1, ends: (n1 -> n1)}]}",
+      ),
+    )
+    .to_equal(
+      graph_of([n1], [
+        @value.GraphEdge::new(
+          id="d1",
+          ends=Directed(from="n1", to="n1"),
+          payload=Some(@value.Value::Decimal(@ion_core.Decimal::new(11N, -1))),
+        ),
+      ]),
+    )
+    soft
+    .expect(
+      decode(
+        "$graph::{nodes: [{id: a, labels: [\"City\", \"Country\"]}, {id: b}], edges: [{id: e, labels: [\"l\"], ends: (a -- b)}]}",
+      ),
+    )
+    .to_equal(
+      graph_of(
+        [
+          @value.GraphNode::new(id="a", labels=["City", "Country"]),
+          @value.GraphNode::new(id="b"),
+        ],
+        [@value.GraphEdge::new(id="e", labels=["l"], ends=Undirected("a", "b"))],
+      ),
+    )
+    // `<-` is the reversed directed edge.
+    soft
+    .expect(
+      decode(
+        "$graph::{nodes: [{id: a}, {id: b}], edges: [{id: e, ends: (a <- b)}]}",
+      ),
+    )
+    .to_equal(
+      decode(
+        "$graph::{nodes: [{id: a}, {id: b}], edges: [{id: e, ends: (b -> a)}]}",
+      ),
+    )
+    // node:: and edge:: annotations are optional hints.
+    soft
+    .expect(
+      decode(
+        "$graph::{nodes: [node::{id: a}], edges: [edge::{id: e, ends: (a -- a)}]}",
+      ),
+    )
+    .to_equal(
+      decode("$graph::{nodes: [{id: a}], edges: [{id: e, ends: (a -- a)}]}"),
+    )
+  })
+}
+
+///|
+test "$graph round trip" {
+  @expect.expect_all(soft => {
+    for
+      text in [
+        "$graph::{nodes: [{id: n1, payload: 1}], edges: [{id: d1, payload: 1.1, ends: (n1 -> n1)}]}",
+        "$graph::{nodes: [{id: a, labels: [\"x\"], payload: {k: no}}, {id: b}], edges: [{id: e, ends: (a -- b)}, {id: f, labels: [\"y\"], ends: (b -> a), payload: null}]}",
+        "[$graph::{nodes: [], edges: []}]",
+      ] {
+      let v = decode(text)
+      soft
+      .expect(@partiql_ion.from_ion(@partiql_ion.to_ion(v)), label=text)
+      .to_equal(v)
+    }
+  })
+}
+
+///|
+test "malformed $graph values raise" {
+  @expect.expect_all(soft => {
+    for
+      text in [
+        "$graph::{nodes: []}", "$graph::{edges: []}", "$graph::{nodes: [], edges: [], extra: 1}",
+        "$graph::[]", "$graph::foo::{nodes: [], edges: []}", "$graph::{nodes: [{id: 1}], edges: []}",
+        "$graph::{nodes: [{}], edges: []}", "$graph::{nodes: [{id: a, labels: [1]}], edges: []}",
+        "$graph::{nodes: [{id: a, color: red}], edges: []}", "$graph::{nodes: [{id: a, payload: $missing::null}], edges: []}",
+        "$graph::{nodes: [{id: a}], edges: [{id: e, ends: (a => a)}]}", "$graph::{nodes: [{id: a}], edges: [{id: e, ends: (a ->)}]}",
+        "$graph::{nodes: [{id: a}], edges: [{id: e, ends: [a, '->', a]}]}", "$graph::{nodes: [{id: a}], edges: [{id: e}]}",
+        "$graph::{nodes: [{id: a}], edges: [{id: e, ends: (a -> b)}]}", "$graph::{nodes: [{id: a}, {id: a}], edges: []}",
       ] {
       soft
       .expect_call(() => decode(text), label=text)
