@@ -32,17 +32,19 @@ fn compare(baseline : Array[String], passed : Array[String]) -> Comparison {
 fn parse_baseline(text : String) -> Array[String] {
   let ids = text
     .split("\n")
-    .map(line => line.trim().to_owned())
+    // Only a line ending's `\r` is removed: test names may end with spaces.
+    .map(line => line.strip_suffix("\r").unwrap_or(line).to_owned())
     .filter(line => line != "")
     .collect()
-  ids.sort()
+  ids.sort_by((a, b) => a.lexical_compare(b))
   ids
 }
 
 ///|
 fn format_baseline(ids : Array[String]) -> String {
   let sorted = ids.copy()
-  sorted.sort()
+  // Lexicographic, so that the files sort like the `sort` command.
+  sorted.sort_by((a, b) => a.lexical_compare(b))
   sorted.map(id => id + "\n").join("")
 }
 
@@ -64,4 +66,10 @@ fn load_baseline(check : String) -> Array[String] raise {
 ///|
 fn save_baseline(check : String, ids : Array[String]) -> Unit raise {
   @fs.write_string_to_file(baseline_path(check), format_baseline(ids))
+}
+
+///|
+test "baseline ids keep trailing spaces" {
+  // Some corpus test names end with a space.
+  @expect.expect(parse_baseline("a \nb\r\n\n")).to_equal(["a ", "b"])
 }
