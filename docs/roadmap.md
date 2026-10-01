@@ -1,0 +1,45 @@
+# Roadmap
+
+The first work is the PartiQL data model and the parser. Each milestone has
+its own design spec before implementation starts. The conformance harness
+measures the exit criteria (see [conformance.md](conformance.md)).
+
+| Milestone | Content | Exit criteria |
+|---|---|---|
+| M0 Setup | Workspace, stub modules, conformance harness, CI, release, docs | CI green; the harness reports; docs and tracking exist |
+| M1 Data model | `Value` ADT, absent values, list/bag/tuple semantics, equality and total ordering, PartiQL-encoded Ion codec | All `env` and `output` values in the corpus round-trip (`codec` check) |
+| M2 Parser | Lexer, AST, parser, embedded Ion literals | `success/syntax` and `fail/syntax` pass; all evaluation statements parse (`syntax` and `eval-parse` checks) |
+| M3 Printer and errors | AST printer, errors with source spans | Parse, print and parse again gives an equal AST for every corpus statement |
+| Later | Static analysis, logical plan, `partiql-eval`, CLI REPL, tree-sitter corpus | Defined in later specs |
+
+## M0 Setup
+
+Complete. The workspace has the modules `partiql-value`, `partiql-syntax`,
+`partiql` and `partiql-conformance`. The harness runs the full partiql-tests
+corpus with a ratchet baseline.
+
+## M1 Data model
+
+The `Value` type covers every PartiQL value: the absent values `NULL` and
+`MISSING`, the Ion scalars, lists, bags and tuples. Tuples allow duplicate
+attribute names, and an attribute value is never `MISSING`. Equality and the
+total order follow the specification (the order of `ORDER BY`). The codec reads
+and writes the PartiQL-encoded Ion forms that partiql-tests uses, including
+the legacy and the new `$date` and `$time` forms.
+
+## M2 Parser
+
+The lexer handles case-insensitive keywords, quoted identifiers and Ion
+literals in backticks. The parser builds an AST that follows the
+specification. The M2 spec chooses the parser technique. The tree-sitter
+grammar corpus of `partiql/partiql-grammar` is an extra syntax corpus.
+
+## M3 Printer and errors
+
+The printer writes an AST back as PartiQL text. Parse errors carry source
+spans.
+
+## Tracking
+
+Tasks are tracked with beads (`bd ready`). The public roadmap is in the GitHub
+milestones of this repository.
