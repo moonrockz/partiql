@@ -98,14 +98,26 @@ files, so the codec must accept both.
 
 ## Current status
 
-At commit `2ef0ce2`, after M1 (data model) and M1b (MAP and graph):
+At commit `2ef0ce2`, after M1 (data model), M1b (MAP and graph) and M2
+(parser):
 
 | Check | Passed | Total | N/A |
 |---|---|---|---|
-| `syntax` | 0 | 672 | 247 |
-| `eval-parse` | 0 | 4985 | 0 |
+| `syntax` | 425 | 672 | 247 |
+| `eval-parse` | 4862 | 4985 | 0 |
 | `codec` | 6822 | 6822 | 0 |
 | `ion-roundtrip` | 39 | 39 | 0 |
+
+The 123 `eval-parse` failures are 120 graph `MATCH` statements (M2b) and
+three corpus defects:
+
+- `eval/query/group-by/group-by.ion` "max and min of rep grouped by
+  fiscal_year": `SELECT max(rep), min(rep)) FROM ...` has a stray `)`.
+- `eval/primitives/functions/cardinality.ion` (the case with `()`): an empty
+  `()` is not PartiQL (the Kotlin grammar has no such expression, and
+  `fail/syntax` requires `SELECT () FROM data` to fail).
+- `eval-equiv/spec-tests.ion` "equiv coercion of a SELECT subquery into a
+  scalar" `[1]`: a struct with a missing comma.
 
 Every corpus value passes `codec`, including the `$map` (M1b MAP) and
 `$graph` (M1b graph) values.

@@ -33,10 +33,18 @@ the legacy and the new `$date` and `$time` forms.
 
 ## M2 Parser
 
+Status: done for queries (DQL). `syntax` passes 425 of 425 applicable cases;
+`eval-parse` passes every statement except graph `MATCH` (M2b) and three
+corpus defects (see `conformance.md`).
+
 The lexer handles case-insensitive keywords, quoted identifiers and Ion
-literals in backticks. The parser builds an AST that follows the
-specification. The M2 spec chooses the parser technique. The tree-sitter
-grammar corpus of `partiql/partiql-grammar` is an extra syntax corpus.
+literals in backticks. The parser is hand-written recursive descent with a
+precedence ladder, and builds a typed syntax tree with spans. Besides the
+Kotlin grammar's query language it parses the spec forms `LATERAL`,
+`GROUP ALL`, `TABLE` and `CORRESPONDING` that the corpus uses.
+
+Next: M2b, graph `MATCH` (GPML) parsing. DML, DDL and window functions come
+with later milestones.
 
 ## M3 Printer and errors
 

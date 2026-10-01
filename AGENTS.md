@@ -34,7 +34,10 @@ modules/
 │       ├── ion/                  # PartiQL-encoded Ion codec (from_ion, to_ion)
 │       └── arbitrary/            # quickcheck generators and property laws
 ├── partiql-syntax/               # moonrockz/partiql-syntax
-│   └── src/                      # parse; M2 adds lexer, AST and parser packages
+│   └── src/                      # parse (root facade)
+│       ├── ast/                  # syntax tree, Span, ParseError
+│       ├── lexer/                # tokens, Ion-aware literal scanning
+│       └── parser/               # recursive descent + precedence ladder
 ├── partiql/                      # moonrockz/partiql: the CLI (moonx moonrockz/partiql)
 │   └── src/                      # executable entry point
 │       └── cli/                  # the command line as a library (run -> Outcome)

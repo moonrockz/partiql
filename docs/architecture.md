@@ -22,7 +22,7 @@ fixed from the start (see [ADR 0001](adr/0001-workspace-monorepo.md)).
 | Module | Packages | Depends on | Targets | Published |
 |---|---|---|---|---|
 | `moonrockz/partiql-value` | root (`Value`), `ion` (codec), `arbitrary` (generators) | `moonrockz/ion` | wasm, wasm-gc, js, native | yes |
-| `moonrockz/partiql-syntax` | root (`parse`) | none | wasm, wasm-gc, js, native | yes |
+| `moonrockz/partiql-syntax` | root (`parse`), `ast`, `lexer`, `parser` | `moonrockz/ion` | wasm, wasm-gc, js, native | yes |
 | `moonrockz/partiql-eval` | reserved: plan, catalog, functions, evaluator | value, syntax | all four | later |
 | `moonrockz/partiql` | root (executable), `cli` | `moonbitlang/x` (later: value, syntax, eval) | native, wasm | yes |
 | `moonrockz/partiql-conformance` | root (test-only) | value, syntax, `moonrockz/ion`, `moonbitlang/x` | native, js | no |
@@ -65,8 +65,21 @@ graph TD
     the property laws of the data model. Published so that later milestones
     can reuse the generators.
 - `partiql-syntax`
-  - root: `parse`. M2 adds the lexer, AST and parser packages, and M3 the
-    printer. The M2 spec sets their names.
+  - root: `parse(String) -> Statement raise ParseError` (re-exports
+    `Statement`, `ParseError` and `Span` from `ast`).
+  - `ast`: the syntax tree (Kotlin v1 style, one node per form, every node
+    with a `Span` of UTF-16 offsets), `Span` and `ParseError` (`Syntax` with
+    message, span, expected tokens and the found token; `Unsupported`).
+  - `lexer`: tokens; keywords are words that the parser classifies;
+    punctuation is one character per token and the parser composes `<<`,
+    `<=`, `||` and similar operators from touching tokens; Ion literals are
+    scanned Ion-aware and checked with the Ion text reader.
+  - `parser`: recursive descent with a precedence ladder for expressions
+    (OR, AND, NOT, IS TRUE/FALSE/UNKNOWN, predicates, `||`, `+ -`,
+    `* / %`, signs, path steps), special forms by name, a reserved-word table
+    (the Kotlin grammar's, without the datetime field words), and a nesting
+    limit of 100 levels (the wasm call stack overflows near 200).
+  - M3 adds the printer.
 - `partiql`
   - root: the executable.
   - `cli`: `run(args) -> Outcome`. See the CLI section of `AGENTS.md`.
