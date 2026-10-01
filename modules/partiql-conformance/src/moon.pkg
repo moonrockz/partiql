@@ -1,9 +1,14 @@
 // Conformance tests against partiql-tests. This package holds tests only.
 
 import {
+  "moonrockz/partiql-value/ion" @partiql_ion,
+  "moonrockz/partiql-syntax" @syntax,
   "moonrockz/ion/ion",
   "moonrockz/ion/text",
   "moonbitlang/core/debug",
+  "moonbitlang/core/env",
+  "moonbitlang/core/hashset",
+  "moonbitlang/x/fs",
   "moonrockz/expect",
 } for "test"
 
