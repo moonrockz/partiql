@@ -78,7 +78,12 @@ graph TD
     (OR, AND, NOT, IS TRUE/FALSE/UNKNOWN, predicates, `||`, `+ -`,
     `* / %`, signs, path steps), special forms by name, a reserved-word table
     (the Kotlin grammar's, without the datetime field words), and a nesting
-    limit of 100 levels (the wasm call stack overflows near 200). Graph
+    limit of 100 levels: deeper input is a `Syntax` error ("nesting is too
+    deep"). The limit protects the call stack. Without it, debug builds
+    overflow at these depths (measured 2026-10-01): nested queries
+    (`(SELECT VALUE …)`) near 100 on wasm and near 200 on wasm-gc and js;
+    nested parentheses near 150 on wasm, 300 on js and 500 on wasm-gc;
+    native passed 500 of both. Graph
     MATCH (GPML) is in `graph.mbt`.
   - M3 adds the printer.
 - `partiql`
