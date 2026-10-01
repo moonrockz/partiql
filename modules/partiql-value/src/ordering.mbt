@@ -154,6 +154,129 @@ fn compare_maps(a : MapValue, b : MapValue, nulls : NullOrder) -> Int {
 }
 
 ///|
+fn compare_text_lists(a : Array[String], b : Array[String]) -> Int {
+  let n = if a.length() < b.length() { a.length() } else { b.length() }
+  for k in 0..<n {
+    let c = compare_text(a[k], b[k])
+    if c != 0 {
+      return c
+    }
+  }
+  sign(a.length().compare(b.length()))
+}
+
+///|
+fn sorted_labels(labels : Array[String]) -> Array[String] {
+  let out = labels.copy()
+  out.sort_by(compare_text)
+  out
+}
+
+///|
+/// An absent payload sorts before any payload.
+fn compare_payloads(a : Value?, b : Value?, nulls : NullOrder) -> Int {
+  match (a, b) {
+    (None, None) => 0
+    (None, Some(_)) => -1
+    (Some(_), None) => 1
+    (Some(x), Some(y)) => compare(x, y, nulls~)
+  }
+}
+
+///|
+/// Directed before undirected; directed by (from, to), undirected by its
+/// sorted pair of node ids.
+fn compare_ends(a : Ends, b : Ends) -> Int {
+  let key = (e : Ends) => {
+    match e {
+      Directed(from~, to~) => (0, from, to)
+      Undirected(x, y) =>
+        if compare_text(x, y) <= 0 {
+          (1, x, y)
+        } else {
+          (1, y, x)
+        }
+    }
+  }
+  let (ka, kb) = (key(a), key(b))
+  let c = sign(ka.0.compare(kb.0))
+  if c != 0 {
+    return c
+  }
+  let c2 = compare_text(ka.1, kb.1)
+  if c2 != 0 {
+    c2
+  } else {
+    compare_text(ka.2, kb.2)
+  }
+}
+
+///|
+fn compare_nodes(a : GraphNode, b : GraphNode, nulls : NullOrder) -> Int {
+  let c = compare_text(a.id, b.id)
+  if c != 0 {
+    return c
+  }
+  let c2 = compare_text_lists(sorted_labels(a.labels), sorted_labels(b.labels))
+  if c2 != 0 {
+    return c2
+  }
+  compare_payloads(a.payload, b.payload, nulls)
+}
+
+///|
+fn compare_edges(a : GraphEdge, b : GraphEdge, nulls : NullOrder) -> Int {
+  let c = compare_text(a.id, b.id)
+  if c != 0 {
+    return c
+  }
+  let c2 = compare_text_lists(sorted_labels(a.labels), sorted_labels(b.labels))
+  if c2 != 0 {
+    return c2
+  }
+  let c3 = compare_ends(a.ends, b.ends)
+  if c3 != 0 {
+    return c3
+  }
+  compare_payloads(a.payload, b.payload, nulls)
+}
+
+///|
+/// Compares canonical forms: nodes sorted by id, then edges sorted by id,
+/// each list lexicographic with a shorter prefix first.
+fn compare_graphs(a : GraphValue, b : GraphValue, nulls : NullOrder) -> Int {
+  let by_id_n = (x : GraphNode, y : GraphNode) => compare_text(x.id, y.id)
+  let by_id_e = (x : GraphEdge, y : GraphEdge) => compare_text(x.id, y.id)
+  let an = a.nodes().to_owned()
+  let bn = b.nodes().to_owned()
+  an.sort_by(by_id_n)
+  bn.sort_by(by_id_n)
+  let n = if an.length() < bn.length() { an.length() } else { bn.length() }
+  for k in 0..<n {
+    let c = compare_nodes(an[k], bn[k], nulls)
+    if c != 0 {
+      return c
+    }
+  }
+  let c = sign(an.length().compare(bn.length()))
+  if c != 0 {
+    return c
+  }
+  let ae = a.edges().to_owned()
+  let be = b.edges().to_owned()
+  ae.sort_by(by_id_e)
+  be.sort_by(by_id_e)
+  let m = if ae.length() < be.length() { ae.length() } else { be.length() }
+  for k in 0..<m {
+    let c = compare_edges(ae[k], be[k], nulls)
+    if c != 0 {
+      return c
+    }
+  }
+  sign(ae.length().compare(be.length()))
+}
+
+///|
 fn lowered_or_self(v : Value) -> Value {
   try v.lower() catch {
     _ => v
@@ -223,6 +346,7 @@ pub fn compare(a : Value, b : Value, nulls~ : NullOrder) -> Int {
     (List(p), List(q)) => compare_lists(p[:], q[:], nulls)
     (Tuple(p), Tuple(q)) => compare_tuples(p, q, nulls)
     (Map(p), Map(q)) => compare_maps(p, q, nulls)
+    (Graph(p), Graph(q)) => compare_graphs(p, q, nulls)
     (Bag(p), Bag(q)) =>
       compare_lists(
         sorted_values(p.items(), nulls)[:],
