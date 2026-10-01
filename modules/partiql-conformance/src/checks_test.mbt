@@ -1,9 +1,14 @@
 ///|
 test "syntax check treats Unsupported as failure" {
-  // The M0 parser raises Unsupported for everything. Neither SyntaxSuccess
-  // nor SyntaxFail may count that as a pass.
-  @expect.expect(check_syntax(true, "1") is Fail(_)).to_be_true()
-  @expect.expect(check_syntax(false, "x...a") is Fail(_)).to_be_true()
+  // Graph MATCH is Unsupported until M2b. Neither SyntaxSuccess nor
+  // SyntaxFail may count that as a pass.
+  let gpml = "SELECT * FROM (g MATCH (x))"
+  @expect.expect_all(soft => {
+    soft.expect(check_syntax(true, gpml) is Fail(_)).to_be_true()
+    soft.expect(check_syntax(false, gpml) is Fail(_)).to_be_true()
+    soft.expect(check_syntax(true, "SELECT a FROM t")).to_equal(Pass)
+    soft.expect(check_syntax(false, "SELECT FROM t")).to_equal(Pass)
+  })
 }
 
 ///|
@@ -49,7 +54,7 @@ enum Outcome {
 /// `expect_success` is true for SyntaxSuccess and false for SyntaxFail.
 fn check_syntax(expect_success : Bool, statement : String) -> Outcome {
   try @syntax.parse(statement) catch {
-    Unsupported(reason) => Fail("unsupported: \{reason}")
+    Unsupported(message~, ..) => Fail("unsupported: \{message}")
     Syntax(message~, ..) =>
       if expect_success {
         Fail("syntax error: \{message}")

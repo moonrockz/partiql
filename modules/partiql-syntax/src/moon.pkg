@@ -1,5 +1,11 @@
 import {
+  "moonrockz/partiql-syntax/ast",
+  "moonrockz/partiql-syntax/parser",
+}
+
+import {
   "moonrockz/partiql-syntax" @syntax,
   "moonrockz/expect",
   "moonbitlang/core/debug",
+  "moonbitlang/core/quickcheck",
 } for "test"

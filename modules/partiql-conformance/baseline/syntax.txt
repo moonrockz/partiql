@@ -1,0 +1,425 @@
+fail/syntax/ion/primitives/date-constructor.ion::invalid DATE string using Ion literal
+fail/syntax/ion/primitives/time-constructor.ion::invalid TIME with Ion literal
+fail/syntax/primitives/call.ion::position::POSITION no first arg
+fail/syntax/primitives/call.ion::position::POSITION no second arg
+fail/syntax/primitives/call.ion::position::POSITION no second arg, no IN
+fail/syntax/primitives/call.ion::substring::partiql::SUBSTRING missing right paren
+fail/syntax/primitives/call.ion::substring::partiql::SUBSTRING without length missing right paren
+fail/syntax/primitives/call.ion::substring::sql92::SUBSTRING sql92 syntax missing FROM or comma
+fail/syntax/primitives/call.ion::substring::sql92::SUBSTRING sql92 syntax missing left paren
+fail/syntax/primitives/call.ion::substring::sql92::SUBSTRING sql92 syntax with length missing right paren
+fail/syntax/primitives/call.ion::substring::sql92::SUBSTRING sql92 syntax without length and missing right paren
+fail/syntax/primitives/call.ion::trim::TRIM no left paren
+fail/syntax/primitives/case.ion::CASE expected WHEN clause
+fail/syntax/primitives/case.ion::CASE only with END
+fail/syntax/primitives/case.ion::searched CASE no when with ELSE
+fail/syntax/primitives/case.ion::simple CASE no when with ELSE
+fail/syntax/primitives/cast.ion::CAST expected left paren
+fail/syntax/primitives/cast.ion::CAST given keyword as type arg
+fail/syntax/primitives/container-constructors.ion::VALUES constructor expect left paren
+fail/syntax/primitives/date-constructor.ion::invalid DATE string no ending single quotation
+fail/syntax/primitives/date-constructor.ion::invalid DATE string no starting single quotation
+fail/syntax/primitives/date-constructor.ion::invalid DATE string without single quotes
+fail/syntax/primitives/date-constructor.ion::invalid type INT for DATE string
+fail/syntax/primitives/date-constructor.ion::missing DATE string
+fail/syntax/primitives/expressions.ion::VALUE as top-level expression
+fail/syntax/primitives/expressions.ion::missing operation between literals
+fail/syntax/primitives/expressions.ion::missing right paren
+fail/syntax/primitives/expressions.ion::semicolon inside expression
+fail/syntax/primitives/operators/at-operator.ion::at operator on non identifier
+fail/syntax/primitives/operators/at-operator.ion::at operator without identifier
+fail/syntax/primitives/operators/at-operator.ion::double at operator on identifier
+fail/syntax/primitives/operators/between-operator.ion::BETWEEN operator missing AND
+fail/syntax/primitives/operators/like-operator.ion::LIKE ESCAPE as second argument
+fail/syntax/primitives/operators/like-operator.ion::LIKE ESCAPE before LIKE
+fail/syntax/primitives/operators/like-operator.ion::LIKE col name LIKE col name ESCAPE typo
+fail/syntax/primitives/operators/like-operator.ion::LIKE expected expression following ESCAPE
+fail/syntax/primitives/operators/like-operator.ion::LIKE missing rhs argument
+fail/syntax/primitives/operators/like-operator.ion::LIKE wrong order of args
+fail/syntax/primitives/path-expression.ion::invalid path component keyword in path
+fail/syntax/primitives/path-expression.ion::invalid path component too many dots
+fail/syntax/primitives/path-expression.ion::invalid path with array nested
+fail/syntax/primitives/path-expression.ion::invalid path with dot star array nested
+fail/syntax/primitives/path-expression.ion::invalid path with invalid array path
+fail/syntax/primitives/path-expression.ion::invalid path with tuple nested
+fail/syntax/primitives/time-constructor.ion::TIME missing time string
+fail/syntax/primitives/time-constructor.ion::invalid TIME WITH TIME ZONE all one word
+fail/syntax/primitives/time-constructor.ion::invalid TIME WITH TIME ZONE mispelled ZONE
+fail/syntax/primitives/time-constructor.ion::invalid TIME WITH TIME ZONE missing time string
+fail/syntax/primitives/time-constructor.ion::invalid TIME WITH TIME ZONE no space
+fail/syntax/primitives/time-constructor.ion::invalid TIME WITH TIME ZONE using underscores
+fail/syntax/primitives/time-constructor.ion::invalid TIME precision in curly braces
+fail/syntax/primitives/time-constructor.ion::invalid TIME precision in square brackets
+fail/syntax/primitives/time-constructor.ion::invalid TIME precision not in parens
+fail/syntax/primitives/time-constructor.ion::invalid TIME with DECIMAL
+fail/syntax/primitives/time-constructor.ion::invalid TIME with INT
+fail/syntax/query/pivot.ion::PIVOT no AT
+fail/syntax/query/select/joins.ion::INNER CROSS JOIN with extraneous ON condition
+fail/syntax/query/select/joins.ion::INNER JOIN missing required ON condition
+fail/syntax/query/select/joins.ion::JOIN missing required ON condition
+fail/syntax/query/select/joins.ion::LEFT CROSS JOIN with extraneous ON condition
+fail/syntax/query/select/joins.ion::LEFT JOIN missing required ON condition
+fail/syntax/query/select/joins.ion::RIGHT CROSS JOIN with extraneous ON condition
+fail/syntax/query/select/joins.ion::RIGHT JOIN missing required ON condition
+fail/syntax/query/select/joins.ion::paren INNER JOIN missing required ON clause
+fail/syntax/query/select/limit-offset.ion::LIMIT OFFSET before ORDER BY
+fail/syntax/query/select/limit-offset.ion::LIMIT OFFSET before ORDER BY with NULLS spec
+fail/syntax/query/select/limit-offset.ion::OFFSET missing argument
+fail/syntax/query/select/limit-offset.ion::OFFSET unexpected keyword as attribute
+fail/syntax/query/select/order-by.ion::OFFSET before LIMIT
+fail/syntax/query/select/order-by.ion::ORDER BY NULLS spec before ORDER BY
+fail/syntax/query/select/order-by.ion::ORDER BY invalid punctuation
+fail/syntax/query/select/order-by.ion::ORDER BY missing BY
+fail/syntax/query/select/order-by.ion::ORDER BY missing BY and sort spec
+fail/syntax/query/select/order-by.ion::ORDER BY missing NULLS keyword with FIRST
+fail/syntax/query/select/order-by.ion::ORDER BY missing NULLS keyword with LAST
+fail/syntax/query/select/order-by.ion::ORDER BY missing NULLS type
+fail/syntax/query/select/order-by.ion::ORDER BY missing attribute name
+fail/syntax/query/select/order-by.ion::ORDER BY missing sort spec
+fail/syntax/query/select/order-by.ion::ORDER BY multiple attributes in sort spec missing comma
+fail/syntax/query/select/order-by.ion::ORDER BY multiple empty parsed comma list
+fail/syntax/query/select/order-by.ion::ORDER BY multiple order spec
+fail/syntax/query/select/order-by.ion::ORDER BY unexpected NULLS keyword attribute
+fail/syntax/query/select/order-by.ion::ORDER BY unexpected keyword
+fail/syntax/query/select/order-by.ion::ORDER BY unexpected keyword as attribute
+fail/syntax/query/select/select.ion::AT before AS alias
+fail/syntax/query/select/select.ion::SELECT list with extra comma
+fail/syntax/query/select/select.ion::SELECT missing projection
+fail/syntax/query/select/select.ion::SELECT projection with empty parens
+fail/syntax/query/select/select.ion::SELECT without comma between projection items
+fail/syntax/query/select/select.ion::SFW without WHERE expression
+fail/syntax/query/select/select.ion::expected identifier for AS alias
+fail/syntax/query/select/select.ion::expected identifier for AT alias
+fail/syntax/query/select/select.ion::partiql::select-star::disallowed uses of *, *
+fail/syntax/query/select/select.ion::partiql::select-star::disallowed uses of *, <expr>
+fail/syntax/query/select/select.ion::partiql::select-star::disallowed uses of *, alias.*
+fail/syntax/query/select/select.ion::partiql::select-star::disallowed uses of <expr>, *
+fail/syntax/query/select/select.ion::partiql::select-star::disallowed uses of alias.*, *
+success/syntax/primitives/call.ion::call empty
+success/syntax/primitives/call.ion::call one argument
+success/syntax/primitives/call.ion::call two arguments
+success/syntax/primitives/call.ion::call with case insensitive function name
+success/syntax/primitives/call.ion::call with multiple
+success/syntax/primitives/call.ion::position::call POSITION
+success/syntax/primitives/call.ion::substring::partiql::call SUBSTRING function argument list syntax
+success/syntax/primitives/call.ion::substring::partiql::call SUBSTRING function argument list syntax with length
+success/syntax/primitives/call.ion::substring::sql92::call SUBSTRING sql92 syntax
+success/syntax/primitives/call.ion::substring::sql92::call SUBSTRING sql92 syntax with length
+success/syntax/primitives/call.ion::trim::call TRIM single argument
+success/syntax/primitives/call.ion::trim::call TRIM two arguments default specification
+success/syntax/primitives/call.ion::trim::call TRIM two arguments using BOTH
+success/syntax/primitives/call.ion::trim::call TRIM two arguments using LEADING
+success/syntax/primitives/call.ion::trim::call TRIM two arguments using TRAILING
+success/syntax/primitives/case.ion::searched-case::searched CASE multi WHEN with ELSE
+success/syntax/primitives/case.ion::searched-case::searched CASE single WHEN no ELSE
+success/syntax/primitives/case.ion::searched-case::searched CASE single WHEN with ELSE
+success/syntax/primitives/case.ion::simple-case::simple CASE multi WHEN with ELSE 
+success/syntax/primitives/case.ion::simple-case::simple CASE single WHEN no ELSE
+success/syntax/primitives/case.ion::simple-case::simple CASE single WHEN with ELSE
+success/syntax/primitives/cast.ion::CAST as DECIMAL
+success/syntax/primitives/cast.ion::CAST as DECIMAL scale and precision
+success/syntax/primitives/cast.ion::CAST as DECIMAL scale only
+success/syntax/primitives/cast.ion::CAST as NUMERIC
+success/syntax/primitives/cast.ion::CAST as NUMERIC scale and precision
+success/syntax/primitives/cast.ion::CAST as NUMERIC scale only
+success/syntax/primitives/cast.ion::CAST as VARCHAR
+success/syntax/primitives/cast.ion::CAST as VARCHAR with length
+success/syntax/primitives/coll-aggregate-function.ion::coll_any::COLL_ANY ALL aggregate function call
+success/syntax/primitives/coll-aggregate-function.ion::coll_any::COLL_ANY DISTINCT aggregate function call
+success/syntax/primitives/coll-aggregate-function.ion::coll_any::COLL_ANY aggregate function call
+success/syntax/primitives/coll-aggregate-function.ion::coll_avg::COLL_AVG ALL aggregate function call
+success/syntax/primitives/coll-aggregate-function.ion::coll_avg::COLL_AVG DISTINCT aggregate function call
+success/syntax/primitives/coll-aggregate-function.ion::coll_avg::COLL_AVG aggregate function call
+success/syntax/primitives/coll-aggregate-function.ion::coll_count::COLL_COUNT ALL aggregate function call
+success/syntax/primitives/coll-aggregate-function.ion::coll_count::COLL_COUNT DISTINCT aggregate function call
+success/syntax/primitives/coll-aggregate-function.ion::coll_count::COLL_COUNT aggregate function call
+success/syntax/primitives/coll-aggregate-function.ion::coll_count::COLL_COUNT star aggregate function call
+success/syntax/primitives/coll-aggregate-function.ion::coll_every::COLL_EVERY ALL aggregate function call
+success/syntax/primitives/coll-aggregate-function.ion::coll_every::COLL_EVERY DISTINCT aggregate function call
+success/syntax/primitives/coll-aggregate-function.ion::coll_every::COLL_EVERY aggregate function call
+success/syntax/primitives/coll-aggregate-function.ion::coll_max::COLL_MAX ALL aggregate function call
+success/syntax/primitives/coll-aggregate-function.ion::coll_max::COLL_MAX DISTINCT aggregate function call
+success/syntax/primitives/coll-aggregate-function.ion::coll_max::COLL_MAX aggregate function call
+success/syntax/primitives/coll-aggregate-function.ion::coll_min::COLL_MIN ALL aggregate function call
+success/syntax/primitives/coll-aggregate-function.ion::coll_min::COLL_MIN DISTINCT aggregate function call
+success/syntax/primitives/coll-aggregate-function.ion::coll_min::COLL_MIN aggregate function call
+success/syntax/primitives/coll-aggregate-function.ion::coll_some::COLL_SOME ALL aggregate function call
+success/syntax/primitives/coll-aggregate-function.ion::coll_some::COLL_SOME DISTINCT aggregate function call
+success/syntax/primitives/coll-aggregate-function.ion::coll_some::COLL_SOME aggregate function call
+success/syntax/primitives/coll-aggregate-function.ion::coll_sum::COLL_SUM ALL aggregate function call
+success/syntax/primitives/coll-aggregate-function.ion::coll_sum::COLL_SUM DISTINCT aggregate function call
+success/syntax/primitives/coll-aggregate-function.ion::coll_sum::COLL_SUM aggregate function call
+success/syntax/primitives/container-constructors.ion::row-value-constructor::row value constructor with row value constructors
+success/syntax/primitives/container-constructors.ion::row-value-constructor::row value constructor with simple expressions
+success/syntax/primitives/container-constructors.ion::table-value-constructor::table value constructor with row value constructors
+success/syntax/primitives/container-constructors.ion::table-value-constructor::table value constructor with singleton row value constructors
+success/syntax/primitives/date-constructor.ion::DATE constructor
+success/syntax/primitives/date-constructor.ion::DATE first date
+success/syntax/primitives/date-constructor.ion::DATE in SELECT
+success/syntax/primitives/date-constructor.ion::DATE last date
+success/syntax/primitives/date-constructor.ion::DATE leap date
+success/syntax/primitives/date-constructor.ion::DATE no space between keyword and quote
+success/syntax/primitives/extract.ion::call EXTRACT DAY
+success/syntax/primitives/extract.ion::call EXTRACT HOUR
+success/syntax/primitives/extract.ion::call EXTRACT MINUTE
+success/syntax/primitives/extract.ion::call EXTRACT MONTH
+success/syntax/primitives/extract.ion::call EXTRACT SECOND
+success/syntax/primitives/extract.ion::call EXTRACT TIMEZONE_HOUR
+success/syntax/primitives/extract.ion::call EXTRACT TIMEZONE_MINUTE
+success/syntax/primitives/extract.ion::call EXTRACT YEAR
+success/syntax/primitives/identifiers.ion::identifier case insensitive
+success/syntax/primitives/identifiers.ion::identifier case sensitive
+success/syntax/primitives/literal.ion::literal::int
+success/syntax/primitives/literal.ion::literal::list
+success/syntax/primitives/literal.ion::literal::list function
+success/syntax/primitives/literal.ion::literal::list with binary operation
+success/syntax/primitives/literal.ion::literal::missing
+success/syntax/primitives/literal.ion::literal::nested empty bag
+success/syntax/primitives/literal.ion::literal::nested empty list
+success/syntax/primitives/literal.ion::literal::nested empty struct
+success/syntax/primitives/literal.ion::literal::null
+success/syntax/primitives/literal.ion::literal::sexp function
+success/syntax/primitives/literal.ion::literal::sexp function with binary operation
+success/syntax/primitives/literal.ion::literal::struct
+success/syntax/primitives/literal.ion::literal::struct with binary operation
+success/syntax/primitives/operators/arithmetic-operators.ion::arithmetic operators chained together
+success/syntax/primitives/operators/arithmetic-operators.ion::divide operator
+success/syntax/primitives/operators/arithmetic-operators.ion::minus operator
+success/syntax/primitives/operators/arithmetic-operators.ion::modulo operator
+success/syntax/primitives/operators/arithmetic-operators.ion::plus operator
+success/syntax/primitives/operators/arithmetic-operators.ion::times operator
+success/syntax/primitives/operators/at-operator.ion::at operator on identifier
+success/syntax/primitives/operators/at-operator.ion::at operator on path
+success/syntax/primitives/operators/between-operator.ion::BETWEEN operator
+success/syntax/primitives/operators/between-operator.ion::NOT BETWEEN operator
+success/syntax/primitives/operators/comparison-operators.ion::comparison ops with logical ops
+success/syntax/primitives/operators/comparison-operators.ion::eq operator
+success/syntax/primitives/operators/comparison-operators.ion::gt operator
+success/syntax/primitives/operators/comparison-operators.ion::gte operator
+success/syntax/primitives/operators/comparison-operators.ion::lt operator
+success/syntax/primitives/operators/comparison-operators.ion::lte operator
+success/syntax/primitives/operators/comparison-operators.ion::neq operator
+success/syntax/primitives/operators/comparison-operators.ion::neq operator other form
+success/syntax/primitives/operators/in-operator.ion::IN operator with implicit values
+success/syntax/primitives/operators/in-operator.ion::IN operator with implicit values row constructor
+success/syntax/primitives/operators/in-operator.ion::NOT IN operator with implicit values
+success/syntax/primitives/operators/is-operator.ion::CALL IS NOT VARACHAR
+success/syntax/primitives/operators/is-operator.ion::CALL IS VARCHAR
+success/syntax/primitives/operators/is-operator.ion::MISSING IS MISSING
+success/syntax/primitives/operators/is-operator.ion::MISSING IS NOT MISSING
+success/syntax/primitives/operators/is-operator.ion::NULL IS NOT NULL
+success/syntax/primitives/operators/is-operator.ion::NULL IS NULL
+success/syntax/primitives/operators/like-operator.ion::col name LIKE col name
+success/syntax/primitives/operators/like-operator.ion::col name LIKE col name escape
+success/syntax/primitives/operators/like-operator.ion::col name LIKE col name escape non lit
+success/syntax/primitives/operators/like-operator.ion::col name LIKE col name escape path
+success/syntax/primitives/operators/like-operator.ion::col name LIKE string
+success/syntax/primitives/operators/like-operator.ion::col name LIKE string escape
+success/syntax/primitives/operators/like-operator.ion::col name NOT LIKE string
+success/syntax/primitives/operators/like-operator.ion::path LIKE path
+success/syntax/primitives/operators/logical-operators.ion::chained logical AND
+success/syntax/primitives/operators/logical-operators.ion::chained logical OR
+success/syntax/primitives/operators/logical-operators.ion::chained logical ops
+success/syntax/primitives/operators/logical-operators.ion::unary NOT literal
+success/syntax/primitives/operators/string-operators.ion::chained concat operator
+success/syntax/primitives/operators/string-operators.ion::concat operator
+success/syntax/primitives/operators/unary-operators.ion::neg call
+success/syntax/primitives/operators/unary-operators.ion::pos neg call
+success/syntax/primitives/operators/unary-operators.ion::pos neg call no spaces
+success/syntax/primitives/operators/unary-operators.ion::unary ion float literal
+success/syntax/primitives/operators/unary-operators.ion::unary ion int literal
+success/syntax/primitives/operators/unary-operators.ion::unary ion timestamp literal
+success/syntax/primitives/path-expression.ion::pathexpr::array::array with expression index
+success/syntax/primitives/path-expression.ion::pathexpr::array::array with literal index
+success/syntax/primitives/path-expression.ion::pathexpr::array::array with star index
+success/syntax/primitives/path-expression.ion::pathexpr::function-call::path with call
+success/syntax/primitives/path-expression.ion::pathexpr::function-call::path with call nested with star and array
+success/syntax/primitives/path-expression.ion::pathexpr::nested::complicated nested path
+success/syntax/primitives/path-expression.ion::pathexpr::nested::dot and bracket star
+success/syntax/primitives/path-expression.ion::pathexpr::nested::dot case one insensitive component
+success/syntax/primitives/path-expression.ion::pathexpr::nested::dot case sensitive
+success/syntax/primitives/path-expression.ion::pathexpr::nested::dot case sensitive component
+success/syntax/primitives/path-expression.ion::pathexpr::nested::dot case three insensitive components
+success/syntax/primitives/path-expression.ion::pathexpr::nested::dot case two insensitive components
+success/syntax/primitives/path-expression.ion::pathexpr::nested::dot star
+success/syntax/primitives/path-expression.ion::pathexpr::nested::dot two star
+success/syntax/primitives/path-expression.ion::pathexpr::nested::dot two wildcard
+success/syntax/primitives/path-expression.ion::pathexpr::nested::dot wildcard
+success/syntax/primitives/path-expression.ion::pathexpr::nested::mix of pathing wildcard unpivot expressions
+success/syntax/primitives/path-expression.ion::pathexpr::nested::multiple path query expressions
+success/syntax/primitives/path-expression.ion::pathexpr::nested::multiple path query expressions and wildcard
+success/syntax/primitives/path-expression.ion::pathexpr::nested::multiple path unpivot
+success/syntax/primitives/path-expression.ion::pathexpr::nested::multiple path variable
+success/syntax/primitives/path-expression.ion::pathexpr::nested::multiple path wildcard
+success/syntax/primitives/path-expression.ion::pathexpr::nested::path with at identifer
+success/syntax/primitives/path-expression.ion::pathexpr::nested::path with one square bracket
+success/syntax/primitives/path-expression.ion::pathexpr::query::group dot
+success/syntax/primitives/path-expression.ion::pathexpr::query::path expression on select query
+success/syntax/primitives/path-expression.ion::pathexpr::tuple-nested::path expression on tuple
+success/syntax/primitives/path-expression.ion::pathexpr::tuple-nested::path expression on tuple with dot star
+success/syntax/primitives/path-expression.ion::pathexpr::tuple-nested::path expression on tuple with string
+success/syntax/primitives/path-expression.ion::pathexpr::tuple-nested::tuple navigation with array case sensitive
+success/syntax/primitives/path-expression.ion::pathexpr::tuple-nested::tuple navigation with array concat
+success/syntax/primitives/path-expression.ion::pathexpr::tuple-nested::tuple navigation with array notation
+success/syntax/primitives/path-expression.ion::pathexpr::tuple-nested::tuple navigation with array notation with CAST
+success/syntax/primitives/time-constructor.ion::TIME WITH TIME ZONE
+success/syntax/primitives/time-constructor.ion::TIME WITH TIME ZONE no space between keyword and quote
+success/syntax/primitives/time-constructor.ion::TIME WITH TIME ZONE with nano precision greater than 10 and offset
+success/syntax/primitives/time-constructor.ion::TIME WITH TIME ZONE with nano seconds
+success/syntax/primitives/time-constructor.ion::TIME WITH TIME ZONE with nano seconds and precision
+success/syntax/primitives/time-constructor.ion::TIME WITH TIME ZONE with nano seconds, precision, and offset
+success/syntax/primitives/time-constructor.ion::TIME WITH TIME ZONE with precision
+success/syntax/primitives/time-constructor.ion::TIME WITH TIME ZONE with precision and no spaces between precision and keyword
+success/syntax/primitives/time-constructor.ion::TIME WITHOUT TIME ZONE
+success/syntax/primitives/time-constructor.ion::TIME constructor
+success/syntax/primitives/time-constructor.ion::TIME constructor with precision argument
+success/syntax/primitives/time-constructor.ion::TIME constructor with precision argument no spaces between keyword and time string
+success/syntax/primitives/time-constructor.ion::TIME nano precision
+success/syntax/primitives/time-constructor.ion::TIME nano precision with precision argument
+success/syntax/primitives/time-constructor.ion::TIME nano precision with zero precision argument
+success/syntax/primitives/time-constructor.ion::TIME no space between keyword and quote
+success/syntax/primitives/time-constructor.ion::TIME with nano precision greater than 10
+success/syntax/primitives/time-constructor.ion::TIME with nano precision greater than 10 and offset
+success/syntax/primitives/time-constructor.ion::TIME with negative offset
+success/syntax/primitives/time-constructor.ion::TIME with negative zero offset
+success/syntax/primitives/time-constructor.ion::TIME with offset and precision
+success/syntax/primitives/time-constructor.ion::TIME with offset, precision, and nano seconds
+success/syntax/primitives/time-constructor.ion::TIME with positive offset
+success/syntax/primitives/time-constructor.ion::TIME with positive zero offset
+success/syntax/primitives/union-except-intersect.ion::except-sql::a EXCEPT ALL b
+success/syntax/primitives/union-except-intersect.ion::except-sql::a EXCEPT DISTINCT b
+success/syntax/primitives/union-except-intersect.ion::except-sql::a EXCEPT b
+success/syntax/primitives/union-except-intersect.ion::intersect-sql::a INTERSECT ALL b
+success/syntax/primitives/union-except-intersect.ion::intersect-sql::a INTERSECT DISTINCT b
+success/syntax/primitives/union-except-intersect.ion::intersect-sql::a INTERSECT b
+success/syntax/primitives/union-except-intersect.ion::order-by-limit-offset-bag-ops::SQL EXCEPT SFW children with ORDER BY LIMIT OFFSET
+success/syntax/primitives/union-except-intersect.ion::order-by-limit-offset-bag-ops::SQL INTERSECT SFW children with ORDER BY LIMIT OFFSET
+success/syntax/primitives/union-except-intersect.ion::order-by-limit-offset-bag-ops::SQL UNION SFW children with ORDER BY LIMIT OFFSET
+success/syntax/primitives/union-except-intersect.ion::order-by-limit-offset-bag-ops::allow outer except with LIMIT
+success/syntax/primitives/union-except-intersect.ion::order-by-limit-offset-bag-ops::allow outer except with OFFSET
+success/syntax/primitives/union-except-intersect.ion::order-by-limit-offset-bag-ops::allow outer except with ORDER BY
+success/syntax/primitives/union-except-intersect.ion::order-by-limit-offset-bag-ops::allow outer intersect with LIMIT
+success/syntax/primitives/union-except-intersect.ion::order-by-limit-offset-bag-ops::allow outer intersect with OFFSET
+success/syntax/primitives/union-except-intersect.ion::order-by-limit-offset-bag-ops::allow outer intersect with ORDER BY
+success/syntax/primitives/union-except-intersect.ion::order-by-limit-offset-bag-ops::allow outer union with LIMIT
+success/syntax/primitives/union-except-intersect.ion::order-by-limit-offset-bag-ops::allow outer union with OFFSET
+success/syntax/primitives/union-except-intersect.ion::order-by-limit-offset-bag-ops::allow outer union with ORDER BY
+success/syntax/primitives/union-except-intersect.ion::order-by-limit-offset-bag-ops::bag ops with ORDER BY LIMIT OFFSET in children
+success/syntax/primitives/union-except-intersect.ion::order-by-limit-offset-bag-ops::nested SQL set op with ORDER BY LIMIT OFFSET
+success/syntax/primitives/union-except-intersect.ion::outer-except::a OUTER EXCEPT ALL b
+success/syntax/primitives/union-except-intersect.ion::outer-except::a OUTER EXCEPT DISTINCT b
+success/syntax/primitives/union-except-intersect.ion::outer-except::a OUTER EXCEPT b
+success/syntax/primitives/union-except-intersect.ion::outer-intersect::a OUTER INTERSECT ALL b
+success/syntax/primitives/union-except-intersect.ion::outer-intersect::a OUTER INTERSECT DISTINCT b
+success/syntax/primitives/union-except-intersect.ion::outer-intersect::a OUTER INTERSECT b
+success/syntax/primitives/union-except-intersect.ion::outer-union::OUTER UNION SELECT precedence
+success/syntax/primitives/union-except-intersect.ion::outer-union::a OUTER UNION ALL b
+success/syntax/primitives/union-except-intersect.ion::outer-union::a OUTER UNION DISTINCT b
+success/syntax/primitives/union-except-intersect.ion::outer-union::a OUTER UNION b
+success/syntax/primitives/union-except-intersect.ion::union-sql::UNION SELECT precedence
+success/syntax/primitives/union-except-intersect.ion::union-sql::a UNION ALL b
+success/syntax/primitives/union-except-intersect.ion::union-sql::a UNION DISTINCT b
+success/syntax/primitives/union-except-intersect.ion::union-sql::a UNION b
+success/syntax/query/pivot.ion::PIVOT HAVING with WHERE and GROUP BY
+success/syntax/query/pivot.ion::PIVOT with only FROM
+success/syntax/query/select/group-by.ion::group-by::GROUP BY single expr
+success/syntax/query/select/group-by.ion::group-by::GROUP BY single id
+success/syntax/query/select/group-by.ion::group-by::GROUP PARTIAL BY multi aliased and group aliased
+success/syntax/query/select/having.ion::having::HAVING minimal
+success/syntax/query/select/having.ion::having::HAVING with WHERE
+success/syntax/query/select/having.ion::having::HAVING with WHERE and GROUP BY
+success/syntax/query/select/joins.ion::SELECT comma CROSS JOIN three tables
+success/syntax/query/select/joins.ion::SELECT comma CROSS JOIN two tables
+success/syntax/query/select/joins.ion::SELECT literal wrapped in parens
+success/syntax/query/select/joins.ion::SELECT multiple with CROSS JOIN and simple WHERE
+success/syntax/query/select/joins.ion::SELECT multiple with CROSS JOIN and simple WHERE no AS alias
+success/syntax/query/select/joins.ion::SELECT single join multi parens
+success/syntax/query/select/joins.ion::SELECT single join parens test
+success/syntax/query/select/joins.ion::SELECT subquery wrapped in parens
+success/syntax/query/select/joins.ion::SELECT three joins specified order parens
+success/syntax/query/select/joins.ion::SELECT two joins natural order parens
+success/syntax/query/select/joins.ion::SELECT two joins specified order parens
+success/syntax/query/select/joins.ion::SELECT with FULL OUTER JOIN and ON condition
+success/syntax/query/select/joins.ion::SELECT with RIGHT CROSS JOIN
+success/syntax/query/select/joins.ion::SELECT with multiple JOINS and explicit CROSS JOIN
+success/syntax/query/select/joins.ion::SELECT with multiple JOINS and implicit CROSS JOIN
+success/syntax/query/select/joins.ion::correlated-joins::SELECT correlated JOIN
+success/syntax/query/select/joins.ion::correlated-joins::SELECT correlated JOIN with explicit INNER JOIN
+success/syntax/query/select/joins.ion::correlated-joins::SELECT correlated with explicit CROSS JOIN
+success/syntax/query/select/joins.ion::correlated-joins::SELECT correlated with explicit LEFT CROSS JOIN
+success/syntax/query/select/joins.ion::correlated-joins::SELECT correlated with explicit LEFT OUTER JOIN and ON
+success/syntax/query/select/limit-offset.ion::limit::SELECT LIMIT
+success/syntax/query/select/limit-offset.ion::limit::SELECT WHERE LIMIT
+success/syntax/query/select/limit-offset.ion::offset::SELECT LIMIT OFFSET
+success/syntax/query/select/limit-offset.ion::offset::SELECT OFFSET
+success/syntax/query/select/limit-offset.ion::offset::SELECT ORDER BY LIMIT OFFSET
+success/syntax/query/select/limit-offset.ion::offset::SELECT WHERE LIMIT OFFSET
+success/syntax/query/select/order-by.ion::order-by::ORDER BY ASC with nulls spec
+success/syntax/query/select/order-by.ion::order-by::ORDER BY DESC with nulls spec
+success/syntax/query/select/order-by.ion::order-by::ORDER BY multiple ids
+success/syntax/query/select/order-by.ion::order-by::ORDER BY multiple ids with ordering spec
+success/syntax/query/select/order-by.ion::order-by::ORDER BY single id
+success/syntax/query/select/order-by.ion::order-by::ORDER BY single id DESC
+success/syntax/query/select/order-by.ion::order-by::ORDER BY with ordering and null spec
+success/syntax/query/select/select-value.ion::select-value::SELECT ALL VALUE
+success/syntax/query/select/select-value.ion::select-value::SELECT DISTINCT VALUE
+success/syntax/query/select/select-value.ion::select-value::SELECT VALUE with single FROM
+success/syntax/query/select/select-value.ion::select-value::SELECT VALUE with single aliased FROM
+success/syntax/query/select/select.ion::SELECT WHERE MISSING
+success/syntax/query/select/select.ion::SELECT alias dot star
+success/syntax/query/select/select.ion::SELECT list with aggregate wildcard function calls
+success/syntax/query/select/select.ion::SELECT path alias dot star
+success/syntax/query/select/select.ion::SELECT star with single FROM
+success/syntax/query/select/select.ion::SELECT with FROM AS and AT
+success/syntax/query/select/select.ion::SELECT with FROM AS and AT id BY
+success/syntax/query/select/select.ion::SELECT with FROM AS id BY
+success/syntax/query/select/select.ion::SELECT with FROM AT
+success/syntax/query/select/select.ion::SELECT with FROM AT id BY
+success/syntax/query/select/select.ion::SELECT with FROM id BY
+success/syntax/query/select/select.ion::SELECT with single FROM
+success/syntax/query/select/select.ion::nested SELECT
+success/syntax/query/select/select.ion::nested SELECT no WHERE
+success/syntax/query/select/select.ion::partiql::SELECT VALUE query missing FROM
+success/syntax/query/select/select.ion::partiql::SELECT query missing FROM
+success/syntax/query/select/select.ion::partiql::SELECT with case missing FROM
+success/syntax/query/select/select.ion::partiql::SELECT with case missing FROM with WHERE eq
+success/syntax/query/select/select.ion::partiql::SELECT with case missing FROM with WHERE ne
+success/syntax/query/select/select.ion::paths and select
+success/syntax/query/select/set-quantifier.ion::SELECT ALL star with single FROM
+success/syntax/query/select/set-quantifier.ion::SELECT ALL with single FROM
+success/syntax/query/select/set-quantifier.ion::SELECT DISTINCT star with single FROM
+success/syntax/query/select/set-quantifier.ion::SELECT DISTINCT with single FROM
+success/syntax/query/select/sql-aggregate.ion::sql_aggregates::SQL aggregate in HAVING
+success/syntax/query/select/sql-aggregate.ion::sql_aggregates::SQL aggregate in ORDER BY
+success/syntax/query/select/sql-aggregate.ion::sql_aggregates::SQL aggregate in SELECT VALUE
+success/syntax/query/select/sql-aggregate.ion::sql_aggregates::multiple SQL aggregates
+success/syntax/query/select/sql-aggregate.ion::sql_any::SQL ANY ALL aggregate function call
+success/syntax/query/select/sql-aggregate.ion::sql_any::SQL ANY DISTINCT aggregate function call
+success/syntax/query/select/sql-aggregate.ion::sql_any::SQL ANY aggregate function call
+success/syntax/query/select/sql-aggregate.ion::sql_avg::SQL AVG ALL aggregate function call
+success/syntax/query/select/sql-aggregate.ion::sql_avg::SQL AVG DISTINCT aggregate function call
+success/syntax/query/select/sql-aggregate.ion::sql_avg::SQL AVG aggregate function call
+success/syntax/query/select/sql-aggregate.ion::sql_count::SQL COUNT * aggregate function call
+success/syntax/query/select/sql-aggregate.ion::sql_count::SQL COUNT 1 aggregate function call
+success/syntax/query/select/sql-aggregate.ion::sql_count::SQL COUNT ALL aggregate function call
+success/syntax/query/select/sql-aggregate.ion::sql_count::SQL COUNT DISTINCT aggregate function call
+success/syntax/query/select/sql-aggregate.ion::sql_count::SQL COUNT aggregate function call
+success/syntax/query/select/sql-aggregate.ion::sql_every::SQL EVERY ALL aggregate function call
+success/syntax/query/select/sql-aggregate.ion::sql_every::SQL EVERY DISTINCT aggregate function call
+success/syntax/query/select/sql-aggregate.ion::sql_every::SQL EVERY aggregate function call
+success/syntax/query/select/sql-aggregate.ion::sql_max::SQL MAX ALL aggregate function call
+success/syntax/query/select/sql-aggregate.ion::sql_max::SQL MAX DISTINCT aggregate function call
+success/syntax/query/select/sql-aggregate.ion::sql_max::SQL MAX aggregate function call
+success/syntax/query/select/sql-aggregate.ion::sql_min::SQL MIN ALL aggregate function call
+success/syntax/query/select/sql-aggregate.ion::sql_min::SQL MIN DISTINCT aggregate function call
+success/syntax/query/select/sql-aggregate.ion::sql_min::SQL MIN aggregate function call
+success/syntax/query/select/sql-aggregate.ion::sql_some::SQL SOME ALL aggregate function call
+success/syntax/query/select/sql-aggregate.ion::sql_some::SQL SOME DISTINCT aggregate function call
+success/syntax/query/select/sql-aggregate.ion::sql_some::SQL SOME aggregate function call
+success/syntax/query/select/sql-aggregate.ion::sql_sum::SQL SUM ALL aggregate function call
+success/syntax/query/select/sql-aggregate.ion::sql_sum::SQL SUM DISTINCT aggregate function call
+success/syntax/query/select/sql-aggregate.ion::sql_sum::SQL SUM aggregate function call
+success/syntax/query/select/unpivot.ion::SELECT with FROM UNPIVOT
+success/syntax/query/select/unpivot.ion::SELECT with FROM UNPIVOT with AS
+success/syntax/query/select/unpivot.ion::SELECT with FROM UNPIVOT with AS and AT
+success/syntax/query/select/unpivot.ion::SELECT with FROM UNPIVOT with AT
