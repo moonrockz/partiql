@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+#MISE description="Run all local gates: format, lint, interfaces, tests, conformance"
+#MISE depends=["lint:fmt", "lint:check", "lint:info"]
+set -euo pipefail
+
+mise run test:unit
+mise run test:conformance
+echo "All checks passed."
