@@ -1,0 +1,7 @@
+{
+  "database": "dolt",
+  "backend": "dolt",
+  "dolt_mode": "embedded",
+  "dolt_database": "partiql",
+  "project_id": "bfb76b55-f445-4507-b337-61badfbb9488"
+}
