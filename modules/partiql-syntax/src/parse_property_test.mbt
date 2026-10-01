@@ -78,6 +78,12 @@ test "deep nesting raises a syntax error, not a stack overflow" {
         deep("- ", "1", ""),
         deep("(SELECT VALUE ", "1", ")"),
         deep("CASE WHEN ", "x THEN 1", " THEN 1 END"),
+        "CAST(x AS " +
+        "MAP<INT, ".repeat(20000) +
+        "INT" +
+        ">".repeat(20000) +
+        ")",
+        "x IS " + "ARRAY<".repeat(20000) + "INT" + ">".repeat(20000),
       ] {
       soft
       .expect_call(
@@ -90,8 +96,17 @@ test "deep nesting raises a syntax error, not a stack overflow" {
 }
 
 ///|
-test "nesting below the limit parses" {
-  @expect.expect_call(() => @syntax.parse("(".repeat(50) + "1" + ")".repeat(50)))
-  .not()
-  .to_raise()
+test "nesting just below the limit parses on every target" {
+  @expect.expect_all(soft => {
+    soft
+    .expect_call(() => @syntax.parse("(".repeat(95) + "1" + ")".repeat(95)))
+    .not()
+    .to_raise()
+    soft
+    .expect_call(() => {
+      @syntax.parse("(SELECT VALUE ".repeat(45) + "1" + ")".repeat(45))
+    })
+    .not()
+    .to_raise()
+  })
 }

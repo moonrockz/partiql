@@ -186,16 +186,16 @@ fn Parser::data_type(self : Parser) -> @ast.DataType raise @ast.ParseError {
     "MAP" => {
       ignore(self.advance())
       self.expect_punct('<')
-      let k = self.data_type()
+      let k = self.nested(() => self.data_type())
       self.expect_punct(',')
-      let v = self.data_type()
+      let v = self.nested(() => self.data_type())
       self.expect_punct('>')
       Map(k, v)
     }
     "ARRAY" => {
       ignore(self.advance())
       if self.eat_punct('<') {
-        let e = self.data_type()
+        let e = self.nested(() => self.data_type())
         self.expect_punct('>')
         Array(Some(e))
       } else {
