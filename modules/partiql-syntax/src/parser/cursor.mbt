@@ -9,11 +9,20 @@ priv struct Parser {
   mut pos : Int
   mut depth : Int
   expected : Array[String]
+  /// Token positions where a parenthesized join was tried and failed; the
+  /// attempt is never repeated there, so parsing stays linear.
+  failed_joins : @hashset.HashSet[Int]
 }
 
 ///|
 fn Parser::new(tokens : Array[@lexer.Token]) -> Parser {
-  { tokens, pos: 0, depth: 0, expected: [], }
+  {
+    tokens,
+    pos: 0,
+    depth: 0,
+    expected: [],
+    failed_joins: @hashset.from_array([]),
+  }
 }
 
 ///|

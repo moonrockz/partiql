@@ -155,3 +155,26 @@ test "spec forms found by the corpus" {
     ),
   ])
 }
+
+///|
+test "nested parenthesized FROM sources parse in linear time" {
+  // Each level used to double the work: a failed join attempt was parsed
+  // again as an expression.
+  let mut source = "SELECT * FROM a"
+  for _ in 0..<22 {
+    source = "SELECT * FROM (-(\{source}))"
+  }
+  @expect.expect_call(() => @parser.parse_statement(source)).not().to_raise()
+}
+
+///|
+test "parenthesized joins may start with a parenthesized subquery" {
+  check_queries([
+    (
+      "SELECT * FROM ((SELECT * FROM t) AS x JOIN u ON true)", "(select * (from (inner (select * (from t)) as x u (on true))))",
+    ),
+    (
+      "SELECT * FROM ((SELECT * FROM t) x, u)", "(select * (from (, (select * (from t)) as x u)))",
+    ),
+  ])
+}

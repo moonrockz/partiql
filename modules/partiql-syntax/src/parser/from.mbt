@@ -87,20 +87,28 @@ fn Parser::from_item(self : Parser) -> @ast.FromItem raise @ast.ParseError {
 /// A FROM source: a parenthesized join, `UNPIVOT expr`, or `expr`, with
 /// aliases.
 fn Parser::from_base(self : Parser) -> @ast.FromItem raise @ast.ParseError {
-  if self.at_punct('(') && !self.at_query_start(1) {
-    // A parenthesized join, such as `(b JOIN c ON x)`; otherwise the
-    // parentheses belong to an expression.
+  // A parenthesized join, such as `(b JOIN c ON x)` or
+  // `((SELECT ..) AS s JOIN c ON x)`; otherwise the parentheses belong to an
+  // expression. A `(` directly followed by a query word is a subquery.
+  let after = self.peek_at(1)
+  let subquery = word_is(after, "SELECT") ||
+    word_is(after, "WITH") ||
+    word_is(after, "PIVOT") ||
+    word_is(after, "VALUES")
+  if self.at_punct('(') && !subquery && !self.failed_joins.contains(self.pos) {
     let saved = self.pos
     let saved_depth = self.depth
     ignore(self.advance())
-    try self.nested(() => self.from_clause()) catch {
-      _ => {
-        self.pos = saved
-        self.depth = saved_depth
-      }
+    let joined = try self.nested(() => self.from_clause()) catch {
+      _ => None
     } noraise {
-      Join(_) as j if self.eat_punct(')') => return j
-      _ => {
+      Join(_) as j if self.eat_punct(')') => Some(j)
+      _ => None
+    }
+    match joined {
+      Some(j) => return j
+      None => {
+        self.failed_joins.add(saved)
         self.pos = saved
         self.depth = saved_depth
       }
