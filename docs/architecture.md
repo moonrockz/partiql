@@ -56,7 +56,9 @@ graph TD
     `datetime.mbt`, `interval.mbt`, `map.mbt`, `graph.mbt`, `numeric.mbt`,
     `text.mbt`,
     `identity.mbt`, `lower.mbt`, `equality.mbt`, `ordering.mbt`).
-  - `ion`: the PartiQL-encoded Ion codec (`from_ion`, `to_ion`). Its default
+  - `ion`: the Ion codec in two modes: PartiQL-encoded (`from_ion`,
+    `to_ion`, for partiql-tests data) and Ion-preserving (`from_ion_data`,
+    `to_ion_data`, for Ion data; ADR 0005). Its default
     alias is `ion`, so it imports `moonrockz/ion/ion` as `@ion_core`.
     Consumers import it as `@partiql_ion`.
   - `arbitrary`: quickcheck generators (`gen_value`, `ArbValue`, ...) and

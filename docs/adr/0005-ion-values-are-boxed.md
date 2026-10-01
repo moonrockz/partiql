@@ -38,9 +38,12 @@ representation, never a PartiQL type.
   sexp = list, and clob = blob when the octets are equal.
 - Structural identity (`Eq`) is the only relation that sees the `Ion` case
   directly; it uses Ion equality.
-- The PartiQL-encoded codec (M1) reads `$ion::x` as `Ion(x)` and writes it
-  back. An Ion-preserving codec mode, which boxes every value of Ion input,
-  comes later.
+- The PartiQL-encoded codec (`from_ion`, `to_ion`) reads `$ion::x` as
+  `Ion(x)` and writes it back.
+- The Ion-preserving codec mode (`from_ion_data`, `to_ion_data`) is for Ion
+  data: decoding boxes the value, and encoding writes every boxed Ion value,
+  at any depth, exactly as it was read. Computed values that Ion cannot
+  express use the PartiQL-encoded `$` forms.
 
 ## Consequences
 
