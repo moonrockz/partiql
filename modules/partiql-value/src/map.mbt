@@ -117,22 +117,26 @@ pub fn MapValue::new(
   if key_type == Dynamic {
     raise DynamicKeyType
   }
-  let kept : Array[(Value, Value)] = []
+  // Validate every key first, also those whose value is MISSING: a strict
+  // constructor rejects an invalid or duplicate key in any entry.
+  let keys : Array[Value] = []
   for entry in entries {
-    let (raw_key, value) = entry
-    if value is Missing {
-      continue
-    }
-    let key = raw_key.lower() catch {
+    let key = entry.0.lower() catch {
       _ => raise InvalidKey("a symbol without text")
     }
     if !is_scalar_key(key) {
       raise InvalidKey(@debug.to_string(key))
     }
-    if kept.iter().any(pair => eqg(pair.0, key)) {
+    if keys.iter().any(k => eqg(k, key)) {
       raise DuplicateKey(@debug.to_string(key))
     }
-    kept.push((key, value))
+    keys.push(key)
+  }
+  let kept : Array[(Value, Value)] = []
+  for k, entry in entries {
+    if !(entry.1 is Missing) {
+      kept.push((keys[k], entry.1))
+    }
   }
   { key_type, value_type, entries: kept, }
 }

@@ -316,3 +316,39 @@ test "$map date coercion applies only to day-precision timestamps" {
     other => fail("unexpected \{@debug.to_string(other)}")
   }
 }
+
+///|
+test "map timestamps in date positions round trip without coercion" {
+  let ts = @value.Value::Timestamp(
+    @value.Timestamp::new(
+      @value.Date::new(year=2024, month=1, day=1),
+      @value.Time::new(hour=0, minute=0, second=0, offset=Some(0)),
+    ),
+  )
+  let date = @value.Value::Date(@value.Date::new(year=2024, month=1, day=1))
+  let m = map_value(Date, Date, [(ts, @value.Value::String("x")), (date, ts)])
+  @expect.expect_all(soft => {
+    soft.expect(@partiql_ion.from_ion(@partiql_ion.to_ion(m))).to_equal(m)
+    // Only a plain day-precision Ion timestamp is a date.
+    match decode("$map::string::date::[[\"a\", 2024-01-01T00:00:00.000Z]]") {
+      Map(decoded) =>
+        soft.expect(decoded.entries()[0].1 is Timestamp(_)).to_be_true()
+      other => fail("unexpected \{@debug.to_string(other)}")
+    }
+  })
+}
+
+///|
+test "map keys are checked even when the value is MISSING" {
+  @expect.expect_all(soft => {
+    for
+      text in [
+        "$map::string::integer::[[null, $missing::null]]", "$map::string::integer::[[[\"x\"], $missing::null]]",
+        "$map::string::integer::[[\"a\", 1], [\"a\", $missing::null]]", "$map::string::integer::[foo::[\"a\", 1]]",
+      ] {
+      soft
+      .expect_call(() => decode(text), label=text)
+      .to_raise_matching(malformed, description="Malformed")
+    }
+  })
+}

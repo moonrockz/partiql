@@ -410,16 +410,18 @@ fn decode_plain(x : @ion_core.IonValue) -> @value.Value raise CodecError {
 }
 
 ///|
-/// A plain Ion timestamp in a `date`-typed map position is a date
-/// (partiql-tests writes `$map::date::...` keys as Ion timestamps).
-fn coerce(declared : @value.MapType, v : @value.Value) -> @value.Value {
-  match (declared, v) {
-    (Date, Timestamp(ts)) if ts.time.offset == Some(0) &&
-      ts.time.hour == 0 &&
-      ts.time.minute == 0 &&
-      ts.time.second == 0 &&
-      ts.time.nanos == 0 => Date(ts.date)
-    _ => v
+/// Decodes a map key or value. In a `date` position, a plain day-precision
+/// Ion timestamp (how partiql-tests writes `$map::date::...` keys) is a date.
+/// Any other form, including `$timestamp`, decodes as usual, so encoded maps
+/// round-trip.
+fn decode_typed(
+  declared : @value.MapType,
+  x : @ion_core.IonValue,
+) -> @value.Value raise CodecError {
+  match (declared, x.kind()) {
+    (Date, Timestamp(ts)) if !x.has_annotations() && ts.precision() == Day =>
+      Date(@value.timestamp_of_ion(ts).date)
+    _ => from_ion(x)
   }
 }
 
@@ -445,12 +447,10 @@ fn decode_map(x : @ion_core.IonValue) -> @value.Value raise CodecError {
   }
   let entries : Array[(@value.Value, @value.Value)] = []
   for item in items {
-    guard item.kind() is List([key, value]) else {
-      raise Malformed("$map entry is not a [key, value] pair")
+    guard !item.has_annotations() && item.kind() is List([key, value]) else {
+      raise Malformed("$map entry is not an unannotated [key, value] pair")
     }
-    entries.push(
-      (coerce(key_type, from_ion(key)), coerce(value_type, from_ion(value))),
-    )
+    entries.push((decode_typed(key_type, key), decode_typed(value_type, value)))
   }
   let map = @value.MapValue::new(key_type~, value_type~, entries) catch {
     error => raise Malformed(@debug.to_string(error))
