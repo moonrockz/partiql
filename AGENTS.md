@@ -52,10 +52,10 @@ decisions that shape the repository.
 
 ## Library Dependencies
 
-### MoonBit Core Library
+### MoonBit Base Class Library
 
-Treat these three official `moonbitlang` modules together as the MoonBit core
-library. Look in them first before you write a helper or add a third-party
+Treat these three official `moonbitlang` modules together as the MoonBit base
+class library. Look in them first before you write a helper or add a third-party
 dependency.
 
 | Module | Purpose |
@@ -84,8 +84,12 @@ Module dependencies are declared in the `import` block of each module's
 - Supported targets: wasm, wasm-gc, js and native. Library modules
   (`partiql-value`, `partiql-syntax`) must build and pass their tests on all
   four (`mise run test:targets`, CI job `unit`).
-- Library code imports only `moonbitlang/core` and `moonrockz/ion`.
-  `moonbitlang/x` belongs in the CLI and in test-only code.
+- The MoonBit base class library is `moonbitlang/core`, `moonbitlang/x` and
+  `moonbitlang/async`. Any package may use them as needed, plus
+  `moonrockz/ion`. Library modules still pass on wasm, wasm-gc, js and
+  native: a package that needs a target-restricted dependency (for example
+  `moonbitlang/async` or `moonbitlang/x/fs`) declares `supported_targets` and
+  says why in a comment in its `moon.pkg`.
 - The CLI executable supports native and wasm only: on js, `@env.args()`
   starts with the node binary. The conformance harness supports native and js
   (`moonbitlang/x/fs`).
@@ -135,6 +139,11 @@ moonrockz libraries):
 - Write assertions with [moonrockz/expect](https://mooncakes.io/docs/moonrockz/expect):
   `@expect.expect(actual).to_equal(expected)`, `.to_be_true()`,
   `.to_contain(...)`. Use `inspect(...)` for snapshot tests.
+- A test with more than one assertion uses soft assertions, so one run
+  reports every failure:
+  `@expect.expect_all(soft => { soft.expect(a).to_equal(b); ... })`.
+  Use hard assertions (`@expect.expect`, `guard`, `fail` in a `match` arm,
+  `unwrap_some`) only for guards: values that the rest of the test needs.
 - Run `mise run test:unit` for tests; `moon test --update` to refresh
   snapshots. Read every snapshot change before you commit it.
 

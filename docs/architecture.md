@@ -62,6 +62,8 @@ graph TD
 
 - Never move a package between modules.
 - Library modules build and pass their tests on wasm, wasm-gc, js and native.
-- Library code imports only `moonbitlang/core` and `moonrockz/ion`.
+- Library code may use the base class library (`moonbitlang/core`,
+  `moonbitlang/x`, `moonbitlang/async`) and `moonrockz/ion`. A
+  target-restricted dependency needs `supported_targets` and a reason.
 - When `partiql-eval` is created, insert it before `partiql` in the publish
   order (`mise-tasks/release/publish`).
