@@ -1,0 +1,19 @@
+// The PartiQL parser: recursive descent over the lexer's tokens, with Pratt
+// parsing for expressions.
+
+import {
+  "moonrockz/partiql-syntax/ast",
+  "moonrockz/partiql-syntax/lexer",
+  "moonrockz/ion/text",
+  "moonbitlang/core/hashset",
+  "moonbitlang/core/string",
+}
+
+import {
+  "moonrockz/partiql-syntax/parser",
+  "moonrockz/expect",
+} for "test"
+
+import {
+  "moonrockz/expect",
+} for "wbtest"
