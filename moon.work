@@ -1,3 +1,4 @@
 members = [
   "./modules/partiql-value",
+  "./modules/partiql-syntax",
 ]

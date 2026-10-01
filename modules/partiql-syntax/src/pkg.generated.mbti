@@ -1,0 +1,24 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "moonrockz/partiql-syntax"
+
+import {
+  "moonbitlang/core/debug",
+}
+
+// Values
+pub fn parse(String) -> Statement raise ParseError
+
+// Errors
+pub(all) suberror ParseError {
+  Unsupported(String)
+  Syntax(message~ : String, offset~ : Int)
+} derive(Eq, @debug.Debug)
+
+// Types and methods
+pub(all) struct Statement {
+  source : String
+} derive(Eq, @debug.Debug)
+
+// Type aliases
+
+// Traits
