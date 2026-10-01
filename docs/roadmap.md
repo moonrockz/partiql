@@ -7,9 +7,9 @@ measures the exit criteria (see [conformance.md](conformance.md)).
 | Milestone | Content | Exit criteria |
 |---|---|---|
 | M0 Setup | Workspace, stub modules, conformance harness, CI, release, docs | CI green; the harness reports; docs and tracking exist |
-| M1 Data model | `Value` ADT, absent values, list/bag/tuple semantics, equality and total ordering, PartiQL-encoded Ion codec | All `env` and `output` values in the corpus round-trip (`codec` check) |
-| M2 Parser | Lexer, AST, parser, embedded Ion literals | `success/syntax` and `fail/syntax` pass; all evaluation statements parse (`syntax` and `eval-parse` checks) |
-| M3 Printer and errors | AST printer, errors with source spans | Parse, print and parse again gives an equal AST for every corpus statement |
+| [M1 Data model](https://github.com/moonrockz/partiql/issues/1) | `Value` ADT, absent values, list/bag/tuple semantics, equality and total ordering, PartiQL-encoded Ion codec | All `env` and `output` values in the corpus round-trip (`codec` check) |
+| [M2 Parser](https://github.com/moonrockz/partiql/issues/2) | Lexer, AST, parser, embedded Ion literals | `success/syntax` and `fail/syntax` pass; all evaluation statements parse (`syntax` and `eval-parse` checks) |
+| [M3 Printer and errors](https://github.com/moonrockz/partiql/issues/3) | AST printer, errors with source spans | Parse, print and parse again gives an equal AST for every corpus statement |
 | Later | Static analysis, logical plan, `partiql-eval`, CLI REPL, tree-sitter corpus | Defined in later specs |
 
 ## M0 Setup
@@ -42,4 +42,9 @@ spans.
 ## Tracking
 
 Tasks are tracked with beads (`bd ready`). The public roadmap is in the GitHub
-milestones of this repository.
+[milestones](https://github.com/moonrockz/partiql/milestones), with one epic
+issue each:
+
+- M1: [#1](https://github.com/moonrockz/partiql/issues/1) (beads `partiql-9er`)
+- M2: [#2](https://github.com/moonrockz/partiql/issues/2) (beads `partiql-zhj`)
+- M3: [#3](https://github.com/moonrockz/partiql/issues/3) (beads `partiql-sfz`)
