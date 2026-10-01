@@ -1,0 +1,24 @@
+.DS_Store
+_build/
+target/
+target
+.mooncakes/
+.moonagent/
+.worktrees/
+__pycache__/
+*.py[cod]
+.venv/
+
+# Beads / Dolt files (added by bd init)
+.dolt/
+*.db
+.beads-credential-key
+.beads/proxieddb/
+*.gate.lock*
+
+# Local AI-assisted working area (specs, plans, scratch). Never committed.
+.dev/
+.superpowers/
+
+# Conformance reports written by the harness
+modules/partiql-conformance/_reports/

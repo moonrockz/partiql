@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+#MISE description="Run all workspace tests (optionally on one target)"
+#USAGE flag "--target <target>" help="wasm, wasm-gc, js or native"
+set -euo pipefail
+
+if [ -n "${usage_target:-}" ]; then
+  moon test --target "$usage_target"
+else
+  moon test
+fi

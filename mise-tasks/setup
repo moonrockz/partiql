@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+#MISE description="Fetch submodules and MoonBit dependencies"
+set -euo pipefail
+
+git submodule update --init --recursive
+moon update

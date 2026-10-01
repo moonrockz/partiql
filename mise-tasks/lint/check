@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+#MISE description="Type-check the workspace and treat warnings as errors"
+set -euo pipefail
+
+moon check --deny-warn

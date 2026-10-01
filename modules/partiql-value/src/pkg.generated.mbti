@@ -1,0 +1,21 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "moonrockz/partiql-value"
+
+import {
+  "moonbitlang/core/debug",
+}
+
+// Values
+
+// Errors
+
+// Types and methods
+pub(all) enum Value {
+  Null
+  Missing
+} derive(Eq, @debug.Debug)
+pub fn Value::is_absent(Self) -> Bool
+
+// Type aliases
+
+// Traits

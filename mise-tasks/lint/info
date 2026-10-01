@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+#MISE description="Fail if the generated .mbti interfaces are out of date"
+set -euo pipefail
+
+moon info
+if ! git diff --exit-code -- '*.mbti'; then
+  echo "::error::moon info changed .mbti files. Run 'moon info' and commit the result." >&2
+  exit 1
+fi
