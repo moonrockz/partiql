@@ -121,6 +121,18 @@ pub fn to_ion(v : @value.Value) -> @ion_core.IonValue {
       struct_of(
         t.fields().iter().map(pair => (pair.0, to_ion(pair.1))).collect(),
       )
+    Map(m) => {
+      let pairs = m
+        .entries()
+        .iter()
+        .map(pair => @ion_core.IonValue::list([to_ion(pair.0), to_ion(pair.1)]))
+        .collect()
+      @ion_core.IonValue::list(pairs).with_annotations([
+        @ion_core.SymbolToken::new("$map"),
+        @ion_core.SymbolToken::new(m.key_type.name()),
+        @ion_core.SymbolToken::new(m.value_type.name()),
+      ])
+    }
     Ion(x) => annotate(x, "$ion")
   }
 }

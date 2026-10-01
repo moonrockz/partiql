@@ -30,6 +30,12 @@ pub(all) suberror LowerError {
   SymbolWithoutText
 } derive(Eq, @debug.Debug)
 
+pub(all) suberror MapError {
+  InvalidKey(String)
+  DuplicateKey(String)
+  DynamicKeyType
+} derive(Eq, @debug.Debug)
+
 // Types and methods
 pub struct Bag {
   // private fields
@@ -70,6 +76,37 @@ pub fn IntervalYM::months_part(Self) -> Int64
 pub fn IntervalYM::new(Int64) -> Self raise IntervalError
 pub fn IntervalYM::years(Self) -> Int64
 pub impl Eq for IntervalYM
+
+pub(all) enum MapType {
+  Dynamic
+  Bool
+  TinyInt
+  SmallInt
+  Integer
+  BigInt
+  Numeric
+  Decimal
+  Real
+  Double
+  String
+  Char
+  Varchar
+  Date
+  Time
+  Timestamp
+} derive(Eq, @debug.Debug)
+pub fn MapType::from_name(String) -> Self?
+pub fn MapType::name(Self) -> String
+
+pub struct MapValue {
+  key_type : MapType
+  value_type : MapType
+  // private fields
+} derive(@debug.Debug)
+pub fn MapValue::entries(Self) -> ArrayView[(Value, Value)]
+pub fn MapValue::length(Self) -> Int
+pub fn MapValue::new(key_type~ : MapType, value_type~ : MapType, Array[(Value, Value)]) -> Self raise MapError
+pub impl Eq for MapValue
 
 pub(all) enum NullOrder {
   NullsFirst
@@ -122,6 +159,7 @@ pub(all) enum Value {
   List(Array[Value])
   Bag(Bag)
   Tuple(Tuple)
+  Map(MapValue)
   Ion(@ion.IonValue)
 } derive(@debug.Debug)
 pub fn Value::integer(@bigint.BigInt) -> Self

@@ -409,3 +409,60 @@ test "a decoded non-normalized interval equals the normalized value" {
     count=200,
   )
 }
+
+///|
+test "maps never hold MISSING and ignore entry order" {
+  @quickcheck.check(
+    (a : @arbitrary.ArbValue) => {
+      match v(a) {
+        Map(m) => {
+          let reversed = @value.MapValue::new(
+            key_type=m.key_type,
+            value_type=m.value_type,
+            m.entries().to_owned().rev(),
+          )
+          m.entries().iter().all(pair => !(pair.1 is Missing)) &&
+          @value.Value::Map(reversed) == v(a)
+        }
+        _ => true
+      }
+    },
+    count=200,
+  )
+}
+
+///|
+test "MapValue::new drops MISSING values" {
+  @quickcheck.check(
+    (p : (@arbitrary.ArbValue, Int)) => {
+      let key = @value.Value::Int(p.1.to_int64())
+      let m = @value.MapValue::new(key_type=Integer, value_type=Dynamic, [
+        (key, @value.Value::Missing),
+      ])
+      m.length() == 0
+    },
+    count=50,
+  )
+}
+
+///|
+test "maps that differ only in one key are not equal" {
+  @quickcheck.check(
+    (a : @arbitrary.ArbValue) => {
+      guard v(a) is Map(m) && m.length() > 0 && m.key_type == String else {
+        return true
+      }
+      let entries = m.entries().to_owned()
+      // A key that no generated string key uses.
+      entries[0] = (@value.Value::String("\u{1F600}fresh"), entries[0].1)
+      let changed = @value.MapValue::new(
+        key_type=m.key_type,
+        value_type=m.value_type,
+        entries,
+      )
+      !@value.eqg(v(a), @value.Value::Map(changed)) &&
+      @value.compare(v(a), @value.Value::Map(changed), nulls=NullsFirst) != 0
+    },
+    count=500,
+  )
+}

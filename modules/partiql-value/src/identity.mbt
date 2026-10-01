@@ -52,6 +52,13 @@ pub impl Eq for Bag with fn equal(a, b) {
 }
 
 ///|
+pub impl Eq for MapValue with fn equal(a, b) {
+  a.key_type == b.key_type &&
+  a.value_type == b.value_type &&
+  match_multiset(a.entries[:], b.entries[:], (x, y) => x.0 == y.0 && x.1 == y.1)
+}
+
+///|
 /// Structural identity (spec section 4.1).
 pub impl Eq for Value with fn equal(a, b) {
   match (a, b) {
@@ -73,6 +80,7 @@ pub impl Eq for Value with fn equal(a, b) {
       xs.iter().zip(ys.iter()).all(pair => pair.0 == pair.1)
     (Bag(x), Bag(y)) => x == y
     (Tuple(x), Tuple(y)) => x == y
+    (Map(x), Map(y)) => x == y
     (Ion(x), Ion(y)) => x.equals(y)
     _ => false
   }

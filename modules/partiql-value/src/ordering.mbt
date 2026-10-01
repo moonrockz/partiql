@@ -21,7 +21,10 @@ fn rank(v : Value) -> Int {
     List(_) => 10
     Tuple(_) => 11
     Bag(_) => 12
-    Ion(_) => 13 // never reached: values are lowered first
+    Map(_) => 13
+    // Only an Ion value that cannot be lowered (a symbol without text)
+    // keeps this rank; such values compare equal to each other.
+    Ion(_) => 14
   }
 }
 
@@ -118,6 +121,38 @@ fn compare_tuples(a : Tuple, b : Tuple, nulls : NullOrder) -> Int {
 }
 
 ///|
+fn compare_entry(
+  p : (Value, Value),
+  q : (Value, Value),
+  nulls : NullOrder,
+) -> Int {
+  let c = compare(p.0, q.0, nulls~)
+  if c != 0 {
+    c
+  } else {
+    compare(p.1, q.1, nulls~)
+  }
+}
+
+///|
+/// RFC 0104: sort each map's entries by key then value, then compare
+/// lexicographically (a shorter prefix first).
+fn compare_maps(a : MapValue, b : MapValue, nulls : NullOrder) -> Int {
+  let xs = a.entries().to_owned()
+  let ys = b.entries().to_owned()
+  xs.sort_by((p, q) => compare_entry(p, q, nulls))
+  ys.sort_by((p, q) => compare_entry(p, q, nulls))
+  let n = if xs.length() < ys.length() { xs.length() } else { ys.length() }
+  for k in 0..<n {
+    let c = compare_entry(xs[k], ys[k], nulls)
+    if c != 0 {
+      return c
+    }
+  }
+  sign(xs.length().compare(ys.length()))
+}
+
+///|
 fn lowered_or_self(v : Value) -> Value {
   try v.lower() catch {
     _ => v
@@ -186,6 +221,7 @@ pub fn compare(a : Value, b : Value, nulls~ : NullOrder) -> Int {
     (Clob(p) | Blob(p), Clob(q) | Blob(q)) => compare_octets(p, q)
     (List(p), List(q)) => compare_lists(p[:], q[:], nulls)
     (Tuple(p), Tuple(q)) => compare_tuples(p, q, nulls)
+    (Map(p), Map(q)) => compare_maps(p, q, nulls)
     (Bag(p), Bag(q)) =>
       compare_lists(
         sorted_values(p.items(), nulls)[:],

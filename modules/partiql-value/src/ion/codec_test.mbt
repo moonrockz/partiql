@@ -102,7 +102,7 @@ test "legacy forms decode like the new forms" {
 ///|
 test "unsupported and malformed inputs raise" {
   @expect.expect_all(soft => {
-    for text in ["$map::string::integer::[]", "$graph::{nodes: [], edges: []}"] {
+    for text in ["$graph::{nodes: [], edges: []}"] {
       soft
       .expect_call(() => decode(text), label=text)
       .to_raise_matching(
@@ -218,6 +218,133 @@ test "legacy zone fields out of range are malformed" {
       text in [
         "$time::{hour: 1, minute: 0, second: 0., timezone_hour: 71582788, timezone_minute: 0}",
         "$time::{hour: 1, minute: 0, second: 0., timezone_hour: 1, timezone_minute: 60}",
+      ] {
+      soft
+      .expect_call(() => decode(text), label=text)
+      .to_raise_matching(malformed, description="Malformed")
+    }
+  })
+}
+
+///|
+fn map_value(
+  key_type : @value.MapType,
+  value_type : @value.MapType,
+  pairs : Array[(@value.Value, @value.Value)],
+) -> @value.Value raise {
+  @value.Value::Map(@value.MapValue::new(key_type~, value_type~, pairs))
+}
+
+///|
+test "$map values decode" {
+  let s = (text : String) => @value.Value::String(text)
+  @expect.expect_all(soft => {
+    soft
+    .expect(
+      decode("$map::string::integer::[[\"math\", 90], [\"science\", 85]]"),
+    )
+    .to_equal(
+      map_value(String, Integer, [(s("math"), i(90)), (s("science"), i(85))]),
+    )
+    soft
+    .expect(decode("$map::string::dynamic::[]"))
+    .to_equal(map_value(String, Dynamic, []))
+    soft
+    .expect(decode("$map::string::integer::[[\"a\", 1], [\"b\", null]]"))
+    .to_equal(
+      map_value(String, Integer, [(s("a"), i(1)), (s("b"), @value.Value::Null)]),
+    )
+    soft
+    .expect(decode("$map::bool::string::[[true, \"yes\"], [false, \"no\"]]"))
+    .to_equal(
+      map_value(Bool, String, [
+        (@value.Value::Bool(true), s("yes")),
+        (@value.Value::Bool(false), s("no")),
+      ]),
+    )
+    soft
+    .expect(decode("$map::string::integer::null"))
+    .to_equal(@value.Value::Null)
+  })
+}
+
+///|
+test "$map date keys written as Ion timestamps decode to dates" {
+  let date = @value.Value::Date(@value.Date::new(year=2024, month=1, day=1))
+  @expect.expect(decode("$map::date::string::[[2024-01-01, \"new year\"]]")).to_equal(
+    map_value(Date, String, [(date, @value.Value::String("new year"))]),
+  )
+}
+
+///|
+test "$map round trip" {
+  @expect.expect_all(soft => {
+    for
+      text in [
+        "$map::decimal::string::[[2., \"two\"], [1.0, \"yes\"]]", "$map::date::string::[[2024-01-01, \"x\"]]",
+        "$map::string::bigint::[[\"a\", 1]]", "{m: $map::integer::string::[[1, \"one\"]]}",
+      ] {
+      let v = decode(text)
+      soft
+      .expect(@partiql_ion.from_ion(@partiql_ion.to_ion(v)), label=text)
+      .to_equal(v)
+    }
+  })
+}
+
+///|
+test "malformed $map values raise" {
+  @expect.expect_all(soft => {
+    for
+      text in [
+        "$map::string::[]", "$map::string::integer::extra::[]", "$map::foo::integer::[]",
+        "$map::string::integer::[[\"a\"]]", "$map::string::integer::[1]", "$map::string::integer::[[null, 1]]",
+        "$map::string::integer::[[\"a\", 1], [\"a\", 2]]", "$map::dynamic::integer::[]",
+        "$map::string::integer::{}",
+      ] {
+      soft
+      .expect_call(() => decode(text), label=text)
+      .to_raise_matching(malformed, description="Malformed")
+    }
+  })
+}
+
+///|
+test "$map date coercion applies only to day-precision timestamps" {
+  match decode("$map::string::date::[[\"a\", 2024-01-01T10:30Z]]") {
+    Map(m) => @expect.expect(m.entries()[0].1 is Timestamp(_)).to_be_true()
+    other => fail("unexpected \{@debug.to_string(other)}")
+  }
+}
+
+///|
+test "map timestamps in date positions round trip without coercion" {
+  let ts = @value.Value::Timestamp(
+    @value.Timestamp::new(
+      @value.Date::new(year=2024, month=1, day=1),
+      @value.Time::new(hour=0, minute=0, second=0, offset=Some(0)),
+    ),
+  )
+  let date = @value.Value::Date(@value.Date::new(year=2024, month=1, day=1))
+  let m = map_value(Date, Date, [(ts, @value.Value::String("x")), (date, ts)])
+  @expect.expect_all(soft => {
+    soft.expect(@partiql_ion.from_ion(@partiql_ion.to_ion(m))).to_equal(m)
+    // Only a plain day-precision Ion timestamp is a date.
+    match decode("$map::string::date::[[\"a\", 2024-01-01T00:00:00.000Z]]") {
+      Map(decoded) =>
+        soft.expect(decoded.entries()[0].1 is Timestamp(_)).to_be_true()
+      other => fail("unexpected \{@debug.to_string(other)}")
+    }
+  })
+}
+
+///|
+test "map keys are checked even when the value is MISSING" {
+  @expect.expect_all(soft => {
+    for
+      text in [
+        "$map::string::integer::[[null, $missing::null]]", "$map::string::integer::[[[\"x\"], $missing::null]]",
+        "$map::string::integer::[[\"a\", 1], [\"a\", $missing::null]]", "$map::string::integer::[foo::[\"a\", 1]]",
       ] {
       soft
       .expect_call(() => decode(text), label=text)

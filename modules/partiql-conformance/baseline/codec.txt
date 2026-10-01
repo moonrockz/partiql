@@ -139,6 +139,7 @@ eval/primitives/logical.ion::logical::andFalseTrue#env
 eval/primitives/logical.ion::logical::andNullFalse#env
 eval/primitives/logical.ion::logical::andTrueFalse#env
 eval/primitives/logical.ion::logical::orFalseFalse#env
+eval/primitives/map.ion::map::empty maps are equal#env
 eval/primitives/path.ion::path::pathDoubleWildCard#env
 eval/primitives/path.ion::path::pathIndexing#output[0]
 eval/primitives/path.ion::path::pathMissingDotName#env
@@ -176,6 +177,8 @@ eval/primitives/logical.ion::logical::andTrueMissing#env
 eval/primitives/logical.ion::logical::notFalse#output[0]
 eval/primitives/logical.ion::logical::orFalseMissing#env
 eval/primitives/logical.ion::logical::orMissingFalse#env
+eval/primitives/map.ion::map::construct an empty map#env
+eval/primitives/map.ion::map::map not equal operator#env
 eval/primitives/path.ion::path::pathIndexListLiteral#env
 eval/query/join/joins.ion::joins::selectCrossProduct#env
 eval/query/limitoffset.ion::limit_offset::offset 1-2#env
@@ -192,6 +195,8 @@ eval/primitives/basic.ion::basic::structLiteral#output[0]
 eval/primitives/functions/abs.ion::abs::ABS(-1)#output[0]
 eval/primitives/logical.ion::logical::andFalseMissing#env
 eval/primitives/logical.ion::logical::andMissingFalse#env
+eval/primitives/map.ion::map::map_keys with date keys#env
+eval/primitives/map.ion::map::size of environment map#env
 eval/primitives/path.ion::path::pathNullDotName#output[0]
 eval/primitives/path.ion::path::selectValuePath#output[0]
 eval/primitives/time.ion::time::time end of day#output[0]
@@ -209,6 +214,10 @@ eval/primitives/logical.ion::logical::orNullNull#output[0]
 eval/primitives/logical.ion::logical::orNullTrue#output[0]
 eval/primitives/logical.ion::logical::orTrueNull#output[0]
 eval/primitives/logical.ion::logical::orTrueTrue#output[0]
+eval/primitives/map.ion::map::NULL IS MAP returns NULL#env
+eval/primitives/map.ion::map::access map with date key#env
+eval/primitives/map.ion::map::access map with time key#env
+eval/primitives/map.ion::map::cast empty struct to MAP#env
 eval/primitives/path.ion::path::pathFieldStructLiteral#env
 eval/primitives/path.ion::path::pathIndexStructLiteral#env
 eval/primitives/path.ion::path::pathWildCardOverScalar#env
@@ -231,6 +240,9 @@ eval/primitives/logical.ion::logical::orFalseNull#output[0]
 eval/primitives/logical.ion::logical::orFalseTrue#output[0]
 eval/primitives/logical.ion::logical::orNullFalse#output[0]
 eval/primitives/logical.ion::logical::orTrueFalse#output[0]
+eval/primitives/map.ion::map::group by map access value#env
+eval/primitives/map.ion::map::order by map access value#env
+eval/primitives/map.ion::map::sum values grouped by key#env
 eval/primitives/path.ion::path::pathDotMissingAttribute#env
 eval/primitives/path.ion::path::pathSimpleDotOnly#output[0]
 eval/misc.ion::uncategorized::emptySymbolInGlobals#output[0]
@@ -249,7 +261,12 @@ eval/primitives/logical.ion::logical::andFalseTrue#output[0]
 eval/primitives/logical.ion::logical::andNullFalse#output[0]
 eval/primitives/logical.ion::logical::andTrueFalse#output[0]
 eval/primitives/logical.ion::logical::orFalseFalse#output[0]
+eval/primitives/map.ion::map::access map with bigint key#env
 eval/primitives/map.ion::map::empty maps are equal#output[0]
+eval/primitives/map.ion::map::map_keys with boolean keys#env
+eval/primitives/map.ion::map::map_keys with integer keys#env
+eval/primitives/map.ion::map::size of map with date keys#env
+eval/primitives/map.ion::map::unpivot map with date keys#env
 eval/primitives/path.ion::path::pathDoubleWildCard#output[0]
 eval/primitives/path.ion::path::pathMissingDotName#output[0]
 eval/primitives/path.ion::path::pathSimpleWildcard#output[0]
@@ -266,6 +283,8 @@ eval/primitives/logical.ion::logical::orMissingNull#output[0]
 eval/primitives/logical.ion::logical::orMissingTrue#output[0]
 eval/primitives/logical.ion::logical::orNullMissing#output[0]
 eval/primitives/logical.ion::logical::orTrueMissing#output[0]
+eval/primitives/map.ion::map::access map with boolean key#env
+eval/primitives/map.ion::map::struct IS MAP returns false#env
 eval/primitives/path.ion::path::pathDoubleUnpivotWildCard#env
 eval/primitives/path.ion::path::pathIndexBagLiteral#output[0]
 eval/primitives/path.ion::path::pathUnpivotWildcard#output[0]
@@ -284,7 +303,12 @@ eval/primitives/logical.ion::logical::andNullMissing#output[0]
 eval/primitives/logical.ion::logical::andTrueMissing#output[0]
 eval/primitives/logical.ion::logical::orFalseMissing#output[0]
 eval/primitives/logical.ion::logical::orMissingFalse#output[0]
+eval/primitives/map.ion::map::construct an empty map#output[0]
+eval/primitives/map.ion::map::filter rows by map key value#env
+eval/primitives/map.ion::map::integer IS MAP returns false#env
 eval/primitives/map.ion::map::map not equal operator#output[0]
+eval/primitives/map.ion::map::map_values with boolean keys#env
+eval/primitives/map.ion::map::map_values with integer keys#env
 eval/primitives/operators/in-operator.ion::in::inPredicate#env
 eval/primitives/path.ion::path::pathIndexListLiteral#output[0]
 eval/primitives/time.ion::time::explicit time simple#output[0]
@@ -305,8 +329,12 @@ eval/primitives/interval.ion::interval::interval nano#output[0]
 eval/primitives/interval.ion::interval::interval year#output[0]
 eval/primitives/logical.ion::logical::andFalseMissing#output[0]
 eval/primitives/logical.ion::logical::andMissingFalse#output[0]
+eval/primitives/map.ion::map::access map with timestamp key#env
+eval/primitives/map.ion::map::map_entries with integer keys#env
 eval/primitives/map.ion::map::map_keys with date keys#output[0]
 eval/primitives/map.ion::map::size of environment map#output[0]
+eval/primitives/map.ion::map::size of map with boolean keys#env
+eval/primitives/map.ion::map::unpivot map with boolean keys#env
 eval/query/limitoffset.ion::limit_offset::limit 10 offset 1#env
 eval/query/limitoffset.ion::limit_offset::offset 2^31#output[0]
 eval/query/limitoffset.ion::limit_offset::offset 2^63#output[0]
@@ -355,9 +383,15 @@ eval-equiv/spec-tests.ion::section-11::equiv group_all#output[0]
 eval/ion/primitives/functions/abs.ion::abs::ABS(`-0.`)#output[0]
 eval/primitives/logical.ion::logical::comparisonsConjuctTrue#env
 eval/primitives/logical.ion::logical::orMissingMissing#output[0]
+eval/primitives/map.ion::map::MISSING IS MAP returns MISSING#env
 eval/primitives/map.ion::map::NULL IS MAP returns NULL#output[0]
 eval/primitives/map.ion::map::access map with date key#output[0]
 eval/primitives/map.ion::map::access map with time key#output[0]
+eval/primitives/map.ion::map::cardinality of environment map#env
+eval/primitives/map.ion::map::cast empty struct to MAP#output[0]
+eval/primitives/map.ion::map::construct a map with date keys#env
+eval/primitives/map.ion::map::map equality with integer keys#env
+eval/primitives/map.ion::map::order unpivoted entries by key#env
 eval/primitives/path.ion::path::pathFieldStructLiteral#output[0]
 eval/primitives/path.ion::path::pathIndexStructLiteral#output[0]
 eval/primitives/path.ion::path::pathWildCardOverScalar#output[0]
@@ -384,6 +418,7 @@ eval/primitives/functions/mod.ion::mod::MOD(MISSING, 3)#output[0]
 eval/primitives/logical.ion::logical::andMissingMissing#output[0]
 eval/primitives/map.ion::map::group by map access value#output[0]
 eval/primitives/map.ion::map::order by map access value#output[0]
+eval/primitives/map.ion::map::size of a map with integer keys#env
 eval/primitives/map.ion::map::sum values grouped by key#output[0]
 eval/primitives/operators/case-operator.ion::case::simpleCase#env
 eval/primitives/operators/in-operator.ion::in::notInPredicate#env
@@ -415,6 +450,10 @@ eval/primitives/functions/abs.ion::abs::ABS(1.0) DECIMAL#output[0]
 eval/primitives/int.ion::int::leading zeros{sql:"01",result:1}#env
 eval/primitives/logical.ion::logical::comparisonsDisjunctFalse#env
 eval/primitives/map.ion::map::access map with bigint key#output[0]
+eval/primitives/map.ion::map::construct a map with bigint keys#env
+eval/primitives/map.ion::map::construct a map with string keys#env
+eval/primitives/map.ion::map::count entries in environment map#env
+eval/primitives/map.ion::map::map_get on NULL map returns NULL#env
 eval/primitives/map.ion::map::map_keys with boolean keys#output[0]
 eval/primitives/map.ion::map::map_keys with integer keys#output[0]
 eval/primitives/map.ion::map::size of map with date keys#output[0]
@@ -435,6 +474,11 @@ extended/eval/primitives/time.ion::timez::timez truncate#output[0]
 eval/ion/primitives/functions/abs.ion::abs::ABS(`-0.0d1`)#output[0]
 eval/primitives/int.ion::int::leading zeros{sql:"001",result:1}#env
 eval/primitives/map.ion::map::access map with boolean key#output[0]
+eval/primitives/map.ion::map::construct a map with boolean keys#env
+eval/primitives/map.ion::map::construct a map with decimal keys#env
+eval/primitives/map.ion::map::construct a map with integer keys#env
+eval/primitives/map.ion::map::map_keys on NULL map returns NULL#env
+eval/primitives/map.ion::map::size of an empty map returns zero#env
 eval/primitives/map.ion::map::struct IS MAP returns false#output[0]
 eval/primitives/operators/case-operator.ion::case::searchedCase#env
 eval/primitives/operators/nary-operators.ion::nary::addIntFloat#env
@@ -457,8 +501,12 @@ eval/primitives/int.ion::int::leading zeros{sql:"-01",result:-1}#env
 eval/primitives/int.ion::int::leading zeros{sql:"0001",result:1}#env
 eval/primitives/map.ion::map::filter rows by map key value#output[0]
 eval/primitives/map.ion::map::integer IS MAP returns false#output[0]
+eval/primitives/map.ion::map::map_get with null key returns null#env
+eval/primitives/map.ion::map::map_keys returns a bag of all keys#env
 eval/primitives/map.ion::map::map_values with boolean keys#output[0]
 eval/primitives/map.ion::map::map_values with integer keys#output[0]
+eval/primitives/map.ion::map::select values from environment map#env
+eval/primitives/map.ion::map::unpivot bool-keyed environment map#env
 eval/primitives/operators/in-operator.ion::in::inPredicate#output[0]
 eval/primitives/operators/nary-operators.ion::nary::lessIntFloat#env
 eval/primitives/operators/nary-operators.ion::nary::moreIntFloat#env
@@ -475,9 +523,13 @@ eval/query/select/select.ion::select_join::nestedSelectJoinLimit#env
 eval/spec-tests.ion::section-7::equality of scalar missing#output[0]
 eval/primitives/int.ion::int::leading zeros{sql:"-001",result:-1}#env
 eval/primitives/int.ion::int::leading zeros{sql:"00001",result:1}#env
+eval/primitives/map.ion::map::access map by key returns the value#env
 eval/primitives/map.ion::map::access map with timestamp key#output[0]
+eval/primitives/map.ion::map::cast struct to MAP with string keys#env
 eval/primitives/map.ion::map::map_entries with integer keys#output[0]
+eval/primitives/map.ion::map::map_values on NULL map returns NULL#env
 eval/primitives/map.ion::map::size of map with boolean keys#output[0]
+eval/primitives/map.ion::map::unpivot environment map with filter#env
 eval/primitives/map.ion::map::unpivot map with boolean keys#output[0]
 eval/primitives/operators/nary-operators.ion::nary::divDecimalInt#env
 eval/primitives/operators/nary-operators.ion::nary::equalIntFloat#env
@@ -542,9 +594,16 @@ eval/primitives/int.ion::int::leading zeros{sql:"-0001",result:-1}#env
 eval/primitives/int.ion::int::leading zeros{sql:"000001",result:1}#env
 eval/primitives/logical.ion::logical::comparisonsConjuctTrue#output[0]
 eval/primitives/map.ion::map::MISSING IS MAP returns MISSING#output[0]
+eval/primitives/map.ion::map::access map from environment variable#env
 eval/primitives/map.ion::map::cardinality of environment map#output[0]
+eval/primitives/map.ion::map::construct a map with date keys#output[0]
+eval/primitives/map.ion::map::construct a map with expression keys#env
+eval/primitives/map.ion::map::exists on an empty map returns false#env
 eval/primitives/map.ion::map::map equality with integer keys#output[0]
+eval/primitives/map.ion::map::order by map column sorts by entries#env
 eval/primitives/map.ion::map::order unpivoted entries by key#output[0]
+eval/primitives/map.ion::map::unpivot empty map produces empty bag#env
+eval/primitives/map.ion::map::unpivot literal map with string keys#env
 eval/primitives/operators/nary-operators.ion::nary::lessEqIntFloat#env
 eval/primitives/operators/nary-operators.ion::nary::moreEqIntFloat#env
 eval/primitives/operators/nary-operators.ion::nary::mulFloatIntInt#env
@@ -588,7 +647,11 @@ eval/primitives/int.ion::int::leading zeros{sql:"-00001",result:-1}#env
 eval/primitives/int.ion::int::leading zeros{sql:"0000001",result:1}#env
 eval/primitives/interval.ion::interval::interval day negative#output[0]
 eval/primitives/interval.ion::interval::interval day positive#output[0]
+eval/primitives/map.ion::map::access map with null key returns null#env
+eval/primitives/map.ion::map::map_get on bool-keyed environment map#env
 eval/primitives/map.ion::map::size of a map with integer keys#output[0]
+eval/primitives/map.ion::map::unpivot literal map with decimal keys#env
+eval/primitives/map.ion::map::unpivot literal map with integer keys#env
 eval/primitives/operators/case-operator.ion::case::simpleCase#output[0]
 eval/primitives/operators/case-operator.ion::case::simpleCaseNoElse#env
 eval/primitives/operators/in-operator.ion::in::notInPredicate#output[0]
@@ -658,8 +721,17 @@ eval/primitives/interval.ion::interval::interval nano positive#output[0]
 eval/primitives/interval.ion::interval::interval year negative#output[0]
 eval/primitives/interval.ion::interval::interval year positive#output[0]
 eval/primitives/logical.ion::logical::comparisonsDisjunctFalse#output[0]
+eval/primitives/map.ion::map::cardinality of a map with integer keys#env
+eval/primitives/map.ion::map::construct a map with bigint keys#output[0]
+eval/primitives/map.ion::map::construct a map with string keys#output[0]
 eval/primitives/map.ion::map::count entries in environment map#output[0]
+eval/primitives/map.ion::map::equal maps with same entries are equal#env
+eval/primitives/map.ion::map::exists on a non-empty map returns true#env
+eval/primitives/map.ion::map::map_get on MISSING map returns MISSING#env
 eval/primitives/map.ion::map::map_get on NULL map returns NULL#output[0]
+eval/primitives/map.ion::map::map_keys on bool-keyed environment map#env
+eval/primitives/map.ion::map::map_values returns a bag of all values#env
+eval/primitives/map.ion::map::maps with different keys are not equal#env
 eval/primitives/operators/in-operator.ion::in::inPredicateSingleExpr#env
 eval/primitives/operators/in-operator.ion::in::inPredicateSingleItem#env
 eval/primitives/operators/nary-operators.ion::nary::notEqualIntFloat#env
@@ -700,7 +772,17 @@ eval/primitives/int.ion::int::leading zeros{sql:"001",result:1}#output[0]
 eval/primitives/interval.ion::interval::interval day hour mixed#output[0]
 eval/primitives/interval.ion::interval::interval month negative#output[0]
 eval/primitives/interval.ion::interval::interval month positive#output[0]
+eval/primitives/map.ion::map::cast MAP to MAP with different key type#env
+eval/primitives/map.ion::map::construct a map with boolean keys#output[0]
+eval/primitives/map.ion::map::construct a map with decimal keys#output[0]
+eval/primitives/map.ion::map::construct a map with integer keys#output[0]
+eval/primitives/map.ion::map::filter environment map entries by value#env
+eval/primitives/map.ion::map::map_get with date key returns the value#env
+eval/primitives/map.ion::map::map_keys on MISSING map returns MISSING#env
 eval/primitives/map.ion::map::map_keys on NULL map returns NULL#output[0]
+eval/primitives/map.ion::map::map_keys on empty map returns empty bag#env
+eval/primitives/map.ion::map::maps with different sizes are not equal#env
+eval/primitives/map.ion::map::size of a map returns number of entries#env
 eval/primitives/map.ion::map::size of an empty map returns zero#output[0]
 eval/primitives/operators/case-operator.ion::case::searchedCase#output[0]
 eval/primitives/operators/case-operator.ion::case::searchedCaseNoElse#env
@@ -748,8 +830,12 @@ eval/primitives/interval.ion::interval::interval minute negative#output[0]
 eval/primitives/interval.ion::interval::interval minute positive#output[0]
 eval/primitives/interval.ion::interval::interval second negative#output[0]
 eval/primitives/interval.ion::interval::interval second positive#output[0]
+eval/primitives/map.ion::map::cardinality of an empty map returns zero#env
+eval/primitives/map.ion::map::map_get with missing key returns missing#env
 eval/primitives/map.ion::map::map_get with null key returns null#output[0]
 eval/primitives/map.ion::map::map_keys returns a bag of all keys#output[0]
+eval/primitives/map.ion::map::map_values on bool-keyed environment map#env
+eval/primitives/map.ion::map::maps with different values are not equal#env
 eval/primitives/map.ion::map::select values from environment map#output[0]
 eval/primitives/map.ion::map::unpivot bool-keyed environment map#output[0]
 eval/primitives/operators/nary-operators.ion::nary::equalIntFloatFalse#env
@@ -792,7 +878,13 @@ eval/primitives/int.ion::int::leading zeros{sql:"00001",result:1}#output[0]
 eval/primitives/interval.ion::interval::interval day minute mixed#output[0]
 eval/primitives/interval.ion::interval::interval day second mixed#output[0]
 eval/primitives/map.ion::map::access map by key returns the value#output[0]
+eval/primitives/map.ion::map::cast MAP to MAP with different value type#env
+eval/primitives/map.ion::map::cast struct to MAP with string keys#output[0]
+eval/primitives/map.ion::map::map IS MAP with integer keys returns true#env
+eval/primitives/map.ion::map::map_contains_key on NULL map returns NULL#env
+eval/primitives/map.ion::map::map_values on MISSING map returns MISSING#env
 eval/primitives/map.ion::map::map_values on NULL map returns NULL#output[0]
+eval/primitives/map.ion::map::map_values on empty map returns empty bag#env
 eval/primitives/map.ion::map::unpivot environment map with filter#output[0]
 eval/primitives/operators/in-operator.ion::in::inPredicateSingleListVar#env
 eval/primitives/operators/in-operator.ion::in::notInPredicateSingleExpr#env
@@ -843,8 +935,16 @@ eval/primitives/int.ion::int::leading zeros{sql:"000000000001",result:1}#env
 eval/primitives/int.ion::int::leading zeros{sql:"000001",result:1}#output[0]
 eval/primitives/interval.ion::interval::interval hour minute mixed#output[0]
 eval/primitives/interval.ion::interval::interval hour second mixed#output[0]
+eval/primitives/map.ion::map::access map by second key returns the value#env
 eval/primitives/map.ion::map::access map from environment variable#output[0]
+eval/primitives/map.ion::map::construct a map with expression keys#output[0]
+eval/primitives/map.ion::map::count entries per key across multiple maps#env
 eval/primitives/map.ion::map::exists on an empty map returns false#output[0]
+eval/primitives/map.ion::map::map_entries on empty map returns empty bag#env
+eval/primitives/map.ion::map::map_get with boolean key returns the value#env
+eval/primitives/map.ion::map::map_get with decimal key returns the value#env
+eval/primitives/map.ion::map::map_get with integer key returns the value#env
+eval/primitives/map.ion::map::order by map column sorts by entries#output[0]
 eval/primitives/map.ion::map::unpivot empty map produces empty bag#output[0]
 eval/primitives/map.ion::map::unpivot literal map with string keys#output[0]
 eval/primitives/operators/bag-operators.ion::bagOperators::outerUnionAll#env
@@ -904,7 +1004,12 @@ eval/primitives/int.ion::int::leading zeros{sql:"-00000000001",result:-1}#env
 eval/primitives/int.ion::int::leading zeros{sql:"-00001",result:-1}#output[0]
 eval/primitives/int.ion::int::leading zeros{sql:"0000000000001",result:1}#env
 eval/primitives/int.ion::int::leading zeros{sql:"0000001",result:1}#output[0]
+eval/primitives/map.ion::map::access map with missing key returns missing#env
 eval/primitives/map.ion::map::access map with null key returns null#output[0]
+eval/primitives/map.ion::map::exists on a map with date keys returns true#env
+eval/primitives/map.ion::map::map IS MAP with matching types returns true#env
+eval/primitives/map.ion::map::map_contains_key with date key returns true#env
+eval/primitives/map.ion::map::map_contains_key with null key returns null#env
 eval/primitives/map.ion::map::map_get on bool-keyed environment map#output[0]
 eval/primitives/map.ion::map::unpivot literal map with decimal keys#output[0]
 eval/primitives/map.ion::map::unpivot literal map with integer keys#output[0]
@@ -982,6 +1087,7 @@ eval/primitives/map.ion::map::cardinality of a map with integer keys#output[0]
 eval/primitives/map.ion::map::equal maps with same entries are equal#output[0]
 eval/primitives/map.ion::map::exists on a non-empty map returns true#output[0]
 eval/primitives/map.ion::map::map_get on MISSING map returns MISSING#output[0]
+eval/primitives/map.ion::map::map_get with nonexistent key returns missing#env
 eval/primitives/map.ion::map::map_keys on bool-keyed environment map#output[0]
 eval/primitives/map.ion::map::map_values returns a bag of all values#output[0]
 eval/primitives/map.ion::map::maps with different keys are not equal#output[0]
@@ -1052,7 +1158,12 @@ eval/primitives/int.ion::int::leading zeros{sql:"-0000000000001",result:-1}#env
 eval/primitives/int.ion::int::leading zeros{sql:"-0000001",result:-1}#output[0]
 eval/primitives/int.ion::int::leading zeros{sql:"000000000000001",result:1}#env
 eval/primitives/int.ion::int::leading zeros{sql:"000000001",result:1}#output[0]
+eval/primitives/map.ion::map::access map with integer key returns the value#env
+eval/primitives/map.ion::map::access map with key not found returns missing#env
+eval/primitives/map.ion::map::cast MAP to MAP with different key type#output[0]
 eval/primitives/map.ion::map::filter environment map entries by value#output[0]
+eval/primitives/map.ion::map::map_contains_key returns true when key exists#env
+eval/primitives/map.ion::map::map_get returns the value for an existing key#env
 eval/primitives/map.ion::map::map_get with date key returns the value#output[0]
 eval/primitives/map.ion::map::map_keys on MISSING map returns MISSING#output[0]
 eval/primitives/map.ion::map::map_keys on empty map returns empty bag#output[0]
@@ -1131,8 +1242,17 @@ eval/primitives/int.ion::int::equal and not equal{sql:"1 = -0",result:false}#env
 eval/primitives/int.ion::int::int arithmetic{sql:"10 % -11",result:10}#output[0]
 eval/primitives/int.ion::int::leading zeros{sql:"-00000001",result:-1}#output[0]
 eval/primitives/int.ion::int::leading zeros{sql:"0000000001",result:1}#output[0]
+eval/primitives/map.ion::map::cardinality of a map returns number of entries#env
 eval/primitives/map.ion::map::cardinality of an empty map returns zero#output[0]
+eval/primitives/map.ion::map::exists on a map with boolean keys returns true#env
+eval/primitives/map.ion::map::exists on a map with integer keys returns true#env
+eval/primitives/map.ion::map::map_contains_key on bool-keyed environment map#env
+eval/primitives/map.ion::map::map_contains_key with boolean key returns true#env
+eval/primitives/map.ion::map::map_contains_key with decimal key returns true#env
+eval/primitives/map.ion::map::map_contains_key with integer key returns true#env
+eval/primitives/map.ion::map::map_entries returns a bag of key-value structs#env
 eval/primitives/map.ion::map::map_get with missing key returns missing#output[0]
+eval/primitives/map.ion::map::map_keys on decimal-keyed map returns all keys#env
 eval/primitives/map.ion::map::map_values on bool-keyed environment map#output[0]
 eval/primitives/map.ion::map::maps with different values are not equal#output[0]
 eval/primitives/operators/bag-operators.ion::bagOperators::outerIntersectAll#env
@@ -1199,7 +1319,10 @@ eval/primitives/int.ion::int::equality operator binary relations{x:3,y:2,z:1}#en
 eval/primitives/int.ion::int::int arithmetic{sql:"-10 % 11",result:-10}#output[0]
 eval/primitives/int.ion::int::leading zeros{sql:"-000000001",result:-1}#output[0]
 eval/primitives/int.ion::int::leading zeros{sql:"00000000001",result:1}#output[0]
+eval/primitives/map.ion::map::access bool-keyed map from environment variable#env
+eval/primitives/map.ion::map::cast MAP to MAP with different value type#output[0]
 eval/primitives/map.ion::map::map IS MAP with integer keys returns true#output[0]
+eval/primitives/map.ion::map::map_contains_key on MISSING map returns MISSING#env
 eval/primitives/map.ion::map::map_contains_key on NULL map returns NULL#output[0]
 eval/primitives/map.ion::map::map_values on MISSING map returns MISSING#output[0]
 eval/primitives/map.ion::map::map_values on empty map returns empty bag#output[0]
@@ -1321,8 +1444,12 @@ eval/primitives/int.ion::int::leading zeros{sql:"0000000000001",result:1}#output
 eval/primitives/map.ion::map::access map with missing key returns missing#output[0]
 eval/primitives/map.ion::map::exists on a map with date keys returns true#output[0]
 eval/primitives/map.ion::map::map IS MAP with matching types returns true#output[0]
+eval/primitives/map.ion::map::map IS MAP with mismatched key type returns false#env
+eval/primitives/map.ion::map::map_contains_key returns false when key is absent#env
 eval/primitives/map.ion::map::map_contains_key with date key returns true#output[0]
+eval/primitives/map.ion::map::map_contains_key with missing key returns missing#env
 eval/primitives/map.ion::map::map_contains_key with null key returns null#output[0]
+eval/primitives/map.ion::map::map_get with explicit cast to different precision#env
 eval/primitives/operators/bag-operators.ion::bagOperators::outerExceptAll#output[0]
 eval/primitives/operators/bag-operators.ion::bagOperators::outerUnionCoerceList#env
 eval/primitives/operators/between-operator.ion::between::betweenPredicate#output[0]
@@ -1398,7 +1525,9 @@ eval/primitives/int.ion::int::leading zeros{sql:"-000000000001",result:-1}#outpu
 eval/primitives/int.ion::int::leading zeros{sql:"00000000000001",result:1}#output[0]
 eval/primitives/interval.ion::interval::interval year month mixed negative#output[0]
 eval/primitives/interval.ion::interval::interval year month mixed positive#output[0]
+eval/primitives/map.ion::map::access decimal-keyed map from environment variable#env
 eval/primitives/map.ion::map::map_get with nonexistent key returns missing#output[0]
+eval/primitives/map.ion::map::map_values on decimal-keyed map returns all values#env
 eval/primitives/operators/bag-operators.ion::bagOperators::outerExceptCoerceList#env
 eval/primitives/operators/between-operator.ion::between::betweenStringsPredicate#env
 eval/primitives/operators/comparison.ion::date_vs_date::date_lte_true_less#output[0]
@@ -1463,8 +1592,12 @@ eval/primitives/int.ion::int::leading zeros{sql:"-0000000000001",result:-1}#outp
 eval/primitives/int.ion::int::leading zeros{sql:"000000000000001",result:1}#output[0]
 eval/primitives/interval.ion::interval::interval day to hour with precision#output[0]
 eval/primitives/interval.ion::interval::interval minute second with decimal#output[0]
+eval/primitives/map.ion::map::MAP_GET on NULL map returns NULL (null propagation)#env
 eval/primitives/map.ion::map::access map with integer key returns the value#output[0]
 eval/primitives/map.ion::map::access map with key not found returns missing#output[0]
+eval/primitives/map.ion::map::equal maps with different insertion order are equal#env
+eval/primitives/map.ion::map::filter rows where key exists using map_contains_key#env
+eval/primitives/map.ion::map::map IS MAP with mismatched value type returns false#env
 eval/primitives/map.ion::map::map_contains_key returns true when key exists#output[0]
 eval/primitives/map.ion::map::map_get returns the value for an existing key#output[0]
 eval/primitives/operators/bag-operators.ion::bagOperators::outerIntersectDistinct#env
@@ -1548,9 +1681,11 @@ eval/primitives/int.ion::int::equal and not equal{sql:"0 <> 0",result:false}#out
 eval/primitives/int.ion::int::equal and not equal{sql:"1 <> -0",result:true}#output[0]
 eval/primitives/int.ion::int::equal and not equal{sql:"1 = -0",result:false}#output[0]
 eval/primitives/interval.ion::interval::interval second decimal microseconds#output[0]
+eval/primitives/map.ion::map::access map with explicit cast to different precision#env
 eval/primitives/map.ion::map::cardinality of a map returns number of entries#output[0]
 eval/primitives/map.ion::map::exists on a map with boolean keys returns true#output[0]
 eval/primitives/map.ion::map::exists on a map with integer keys returns true#output[0]
+eval/primitives/map.ion::map::filter with unpivot only entries with score above 80#env
 eval/primitives/map.ion::map::map_contains_key on bool-keyed environment map#output[0]
 eval/primitives/map.ion::map::map_contains_key with boolean key returns true#output[0]
 eval/primitives/map.ion::map::map_contains_key with decimal key returns true#output[0]
@@ -1616,6 +1751,7 @@ eval/primitives/int.ion::int::equality operator binary relations{x:3,y:2,z:1}#ou
 eval/primitives/interval.ion::interval::interval day to second with precision#output[0]
 eval/primitives/interval.ion::interval::interval year to month with precision#output[0]
 eval/primitives/map.ion::map::access bool-keyed map from environment variable#output[0]
+eval/primitives/map.ion::map::access map with integer key not found returns missing#env
 eval/primitives/map.ion::map::map_contains_key on MISSING map returns MISSING#output[0]
 eval/primitives/operators/bag-operators.ion::bagOperators::outerIntersectCoerceList#env
 eval/primitives/operators/bag-operators.ion::bagOperators::outerUnionDistinct#output[0]
@@ -1669,6 +1805,7 @@ eval/primitives/int.ion::int::equality operator binary relations{x:-1,y:2,z:3}#o
 eval/primitives/int.ion::int::equality operator binary relations{x:-3,y:2,z:1}#output[0]
 eval/primitives/int.ion::int::equality operator binary relations{x:1,y:2,z:-3}#output[0]
 eval/primitives/int.ion::int::equality operator binary relations{x:3,y:2,z:-1}#output[0]
+eval/primitives/map.ion::map::access map with cross-type cast integer to decimal key#env
 eval/primitives/null.ion::null::null comparison{sql:"NULL = NULL",result:null}#output[0]
 eval/primitives/operators/bag-operators.ion::bagOperators::outerExceptDistinct#output[0]
 eval/primitives/operators/between-operator.ion::between::between date date date true#env
@@ -1716,9 +1853,12 @@ eval/primitives/functions/position.ion::position::POSITION string not in string#
 eval/primitives/functions/upper.ion::upper::upper unsupported type{param:"1.0"}#output[1]
 eval/primitives/functions/upper.ion::upper::upper unsupported type{param:"1e0"}#output[1]
 eval/primitives/int.ion::int::comparison operators{sql:"-0  <   1",result:true}#output[0]
+eval/primitives/map.ion::map::cast struct with duplicate keys to MAP keeps last value#env
+eval/primitives/map.ion::map::construct a map with null key drops entry in permissive#env
 eval/primitives/map.ion::map::map IS MAP with mismatched key type returns false#output[0]
 eval/primitives/map.ion::map::map_contains_key returns false when key is absent#output[0]
 eval/primitives/map.ion::map::map_contains_key with missing key returns missing#output[0]
+eval/primitives/map.ion::map::map_get with cross-type integer key matches decimal map#env
 eval/primitives/map.ion::map::map_get with explicit cast to different precision#output[0]
 eval/primitives/null.ion::null::null comparison{sql:"NULL IS NULL",result:true}#output[0]
 eval/primitives/operators/bag-operators.ion::bagOperators::outerIntersectCoerceScalar#env
@@ -1998,7 +2138,11 @@ eval/primitives/int.ion::int::equal and not equal{sql:"max_int <> max_int",resul
 eval/primitives/int.ion::int::equal and not equal{sql:"min_int <> min_int",result:false}#env
 eval/primitives/interval.ion::interval::interval hour second with decimal negative#output[0]
 eval/primitives/map.ion::map::access map with explicit cast to different precision#output[0]
+eval/primitives/map.ion::map::construct a map with all MISSING values produces empty map#env
+eval/primitives/map.ion::map::construct a map with explicit null value preserves the key#env
+eval/primitives/map.ion::map::construct a map with missing key drops entry in permissive#env
 eval/primitives/map.ion::map::filter with unpivot only entries with score above 80#output[0]
+eval/primitives/map.ion::map::map_contains_key with explicit cast to different precision#env
 eval/primitives/null.ion::null::null comparison{sql:"MISSING IS NULL",result:true}#output[0]
 eval/primitives/operators/bag-operators.ion::bagOperators::outerExceptCoerceScalar#output[0]
 eval/primitives/operators/bag-operators.ion::bagOperators::outerExceptCoerceStruct#output[0]
@@ -2057,7 +2201,12 @@ eval/primitives/int.ion::int::comparison operators{sql:"max_int <= 1",result:fal
 eval/primitives/int.ion::int::comparison operators{sql:"min_int <= -0",result:true}#output[0]
 eval/primitives/int.ion::int::comparison operators{sql:"min_int >= 0",result:false}#output[0]
 eval/primitives/int.ion::int::comparison operators{sql:"min_int >= 1",result:false}#output[0]
+eval/primitives/map.ion::map::access integer-keyed map with incompatible string key fails#env
 eval/primitives/map.ion::map::access map with integer key not found returns missing#output[0]
+eval/primitives/map.ion::map::cast struct to MAP with non-string key type fails in strict#env
+eval/primitives/map.ion::map::construct a map with evaluated null value preserves the key#env
+eval/primitives/map.ion::map::construct a map with explicit missing value drops the entry#env
+eval/primitives/map.ion::map::map_contains_key with decimal key returns false when absent#env
 eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:""}#env
 eval/primitives/null.ion::null::null comparison{sql:"MISSING",result:missing::null}#output[0]
 eval/primitives/null.ion::null::null comparison{sql:"NULL IS MISSING",result:false}#output[0]
@@ -2124,6 +2273,7 @@ eval/primitives/functions/upper.ion::upper::upper valid cases{in:"nil",result:"N
 eval/primitives/int.ion::int::comparison operators{sql:"max_int <= -0",result:false}#output[0]
 eval/primitives/int.ion::int::comparison operators{sql:"min_int >= -0",result:false}#output[0]
 eval/primitives/map.ion::map::access map with cross-type cast integer to decimal key#output[0]
+eval/primitives/map.ion::map::construct a map with evaluated missing value drops the entry#env
 eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:" "}#env
 eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"%"}#env
 eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:","}#env
@@ -2185,6 +2335,9 @@ eval/primitives/coll-aggregate-function.ion::coll_some::COLL_SOME all non-bool, 
 eval/primitives/coll-aggregate-function.ion::coll_some::COLL_SOME one non-bool, non-unknown#env
 eval/primitives/functions/char_length.ion::char_length::CHARACTER_LENGTH invalid type#output[1]
 eval/primitives/functions/extract.ion::extract_invalid::invalid extract day from time#output[1]
+eval/primitives/map.ion::map::access decimal-keyed map with nonexistent key returns missing#env
+eval/primitives/map.ion::map::cast struct with duplicate keys to MAP keeps last value#output[0]
+eval/primitives/map.ion::map::construct a map with null key drops entry in permissive#output[0]
 eval/primitives/map.ion::map::construct a map with null key drops entry in permissive#output[1]
 eval/primitives/map.ion::map::map_get with cross-type integer key matches decimal map#output[0]
 eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"%d"}#env
@@ -2362,6 +2515,7 @@ eval/primitives/int.ion::int::equal and not equal{sql:"max_int = min_int",result
 eval/primitives/int.ion::int::equal and not equal{sql:"min_int <> max_int",result:true}#output[0]
 eval/primitives/int.ion::int::equal and not equal{sql:"min_int = max_int",result:false}#output[0]
 eval/primitives/interval.ion::interval::interval second fractional precision - truncate#output[0]
+eval/primitives/map.ion::map::map_get with incompatible string key on integer-keyed map fails#env
 eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"+0.0"}#env
 eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"-0.0"}#env
 eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"-1/2"}#env
@@ -2455,7 +2609,11 @@ eval/primitives/int.ion::int::comparison operators{sql:"min_int > min_int",resul
 eval/primitives/int.ion::int::comparison operators{sql:"min_int >= min_int",result:true}#output[0]
 eval/primitives/int.ion::int::equal and not equal{sql:"max_int <> max_int",result:false}#output[0]
 eval/primitives/int.ion::int::equal and not equal{sql:"min_int <> min_int",result:false}#output[0]
+eval/primitives/map.ion::map::construct a map with all MISSING values produces empty map#output[0]
+eval/primitives/map.ion::map::construct a map with explicit null value preserves the key#output[0]
+eval/primitives/map.ion::map::construct a map with missing key drops entry in permissive#output[0]
 eval/primitives/map.ion::map::construct a map with missing key drops entry in permissive#output[1]
+eval/primitives/map.ion::map::map_contains_key with cross-type integer key matches decimal map#env
 eval/primitives/map.ion::map::map_contains_key with explicit cast to different precision#output[0]
 eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"$1.00"}#env
 eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"%*.*s"}#env
@@ -2551,6 +2709,8 @@ eval/primitives/int.ion::int::greater than and less than operator binary relatio
 eval/primitives/int.ion::int::greater than and less than operator binary relations{x:2,y:1,z:0}#env
 eval/primitives/int.ion::int::greater than and less than operator binary relations{x:3,y:2,z:1}#env
 eval/primitives/map.ion::map::access integer-keyed map with incompatible string key fails#output[0]
+eval/primitives/map.ion::map::construct a map with evaluated null value preserves the key#output[0]
+eval/primitives/map.ion::map::construct a map with explicit missing value drops the entry#output[0]
 eval/primitives/map.ion::map::map_contains_key with decimal key returns false when absent#output[0]
 eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:""}#output[0]
 eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"(null)"}#env
@@ -2631,6 +2791,7 @@ eval/primitives/functions/upper.ion::upper::upper valid cases{in:"\u023e",result
 eval/primitives/int.ion::int::greater than and less than operator binary relations{x:-1,y:0,z:1}#env
 eval/primitives/int.ion::int::greater than and less than operator binary relations{x:1,y:0,z:-1}#env
 eval/primitives/interval.ion::interval::interval month negative with precision - flow over#output[0]
+eval/primitives/map.ion::map::construct a map with evaluated missing value drops the entry#output[0]
 eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:" "}#output[0]
 eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"%"}#output[0]
 eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"+++ATH0"}#env
@@ -3114,6 +3275,8 @@ eval/primitives/functions/extract.ion::extract::missing_propagation::EXTRACT(SEC
 eval/primitives/functions/nullif.ion::nullif::nullif valid cases{first:"2",second:"'2'",result:2}#output[0]
 eval/primitives/int.ion::int::greater than and less than operator binary relations{x:-2,y:-1,z:0}#output[0]
 eval/primitives/int.ion::int::greater than and less than operator binary relations{x:0,y:-1,z:-2}#output[0]
+eval/primitives/map.ion::map::access map from environment variable with nonexistent key returns missing#env
+eval/primitives/map.ion::map::construct a map with compatible heterogeneous keys coerces to common type#env
 eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"-2147483648/-1"}#env
 eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"1 000,00"}#output[0]
 eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"1 000.00"}#output[0]
@@ -3217,6 +3380,7 @@ eval/primitives/functions/extract.ion::extract::extract_null_propagation::EXTRAC
 eval/primitives/functions/extract.ion::extract::extract_null_propagation::EXTRACT(SECOND FROM NULL)#output[0]
 eval/primitives/int.ion::int::int boundary arithmetic{sql:"(max_int - 1) + 1",result:9223372036854775807}#env
 eval/primitives/interval.ion::interval::interval hour to second negative with precision - flow over#output[0]
+eval/primitives/map.ion::map::construct a map with compatible heterogeneous values coerces to common type#env
 eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{Thai script characters}#env
 eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"0xabad1dea"}#output[0]
 eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"0xffffffff"}#output[0]
@@ -3434,6 +3598,7 @@ eval/primitives/functions/extract.ion::extract_invalid::invalid extract day from
 eval/primitives/functions/trim.ion::trim::trim null and missing propagation{sql:"trim(both from null)"}#output[0]
 eval/primitives/interval.ion::interval::interval second fractional precision - truncate mixed flow over#output[0]
 eval/primitives/map.ion::map::access map from environment variable with nonexistent key returns missing#output[0]
+eval/primitives/map.ion::map::construct a map with compatible heterogeneous keys coerces to common type#output[0]
 eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"-2147483648/-1"}#output[0]
 eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"Kernel.exit(1)"}#output[0]
 eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"Linda Callahan"}#output[0]
@@ -3474,6 +3639,7 @@ eval/primitives/functions/extract.ion::extract_invalid::invalid extract hour fro
 eval/primitives/functions/extract.ion::extract_invalid::invalid extract year from day to second interval#output[1]
 eval/primitives/functions/nullif.ion::nullif::nullif valid cases{first:"null",second:"null",result:null}#output[0]
 eval/primitives/functions/upper.ion::upper::upper valid cases{Keycap Digit Emojis (0-10) Unicode String}#output[0]
+eval/primitives/map.ion::map::map_contains_key with incompatible string key on integer-keyed map returns false#env
 eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"00\u02d9\u0196-"}#output[0]
 eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"Horniman Museum"}#output[0]
 eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"JavaSCript:alert(123)"}#env
@@ -3515,6 +3681,7 @@ eval/primitives/functions/char_length.ion::char_length::char_length valid cases{
 eval/primitives/functions/coalesce.ion::coalesce::coalesce valid cases{args:"null, 2",result:(success 2)}#output[0]
 eval/primitives/functions/extract.ion::extract_invalid::invalid extract month from day to second interval#output[1]
 eval/primitives/int.ion::int::int boundary arithmetic{sql:"(max_int - 1) + 1",result:9223372036854775807}#output[0]
+eval/primitives/map.ion::map::construct a map with compatible heterogeneous values coerces to common type#output[0]
 eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{Thai script characters}#output[0]
 eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"(touch /tmp/blns.fail)"}#env
 eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"Dr. Herman I. Libshitz"}#env
@@ -3764,6 +3931,7 @@ eval/primitives/functions/extract.ion::extract::extract_date::EXTRACT(MONTH FROM
 eval/primitives/functions/trim.ion::trim::trim null and missing propagation{sql:"trim(trailing '' from null)"}#output[0]
 eval/primitives/functions/trim.ion::trim::trim null and missing propagation{sql:"trim(trailing from missing)"}#output[0]
 eval/primitives/functions/trim.ion::trim::trim null and missing propagation{sql:"trim(trailing null from '')"}#output[0]
+eval/primitives/map.ion::map::construct a map with duplicate key keeps last value in permissive and errors in strict#env
 eval/primitives/map.ion::map::map_contains_key with incompatible string key on integer-keyed map returns false#output[0]
 eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<foo val=\u201cbar\u201d />"}#env
 eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<foo val=\u201dbar\u201c />"}#env
@@ -4064,6 +4232,7 @@ eval/primitives/functions/extract.ion::extract::extract_time_precision::EXTRACT(
 eval/primitives/functions/extract.ion::extract::extract_time_precision::EXTRACT(SECOND FROM TIME (2) '01:23:45.678')#output[0]
 eval/primitives/functions/substring.ion::substring::substring valid cases 2 arguments{target:"",start:"0",result:""}#output[0]
 eval/primitives/functions/trim.ion::trim::trim valid cases{trim both emoji mixed characters - poop and grinning cat}#output[0]
+eval/primitives/map.ion::map::construct a map with duplicate key keeps last value in permissive and errors in strict#output[0]
 eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<foo val=\u201cbar\u201d />"}#output[0]
 eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<foo val=\u201dbar\u201c />"}#output[0]
 eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<script>alert(123)</script>"}#output[0]
