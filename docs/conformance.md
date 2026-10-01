@@ -98,17 +98,21 @@ files, so the codec must accept both.
 
 ## Current status
 
-At commit `2ef0ce2`, after M1 (data model):
+At commit `2ef0ce2`, after M1 (data model) and M1b MAP:
 
 | Check | Passed | Total | N/A |
 |---|---|---|---|
 | `syntax` | 0 | 672 | 247 |
 | `eval-parse` | 0 | 4985 | 0 |
-| `codec` | 6545 | 6822 | 0 |
+| `codec` | 6714 | 6822 | 0 |
 | `ion-roundtrip` | 39 | 39 | 0 |
 
-The 277 `codec` failures are the `$map` (169) and `$graph` (108) values, which
-M1b adds.
+The 108 `codec` failures are the `$graph` values (M1b graph). The `$map`
+values pass since M1b MAP.
+
+The future eval comparison must treat a DATE and a midnight UTC TIMESTAMP as
+equal where the corpus writes a date as a plain Ion timestamp outside a typed
+`$map` position (`eval/primitives/map.ion` lines 850 and 1194).
 
 All 172 `.ion` files decode with `moonrockz/ion` 0.2.0 (5,611 test cases).
 
