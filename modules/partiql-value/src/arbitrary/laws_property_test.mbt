@@ -64,6 +64,14 @@ fn contains_ion(x : @value.Value) -> Bool {
     List(items) => items.iter().any(contains_ion)
     Bag(b) => b.items().iter().any(contains_ion)
     Tuple(t) => t.fields().iter().any(pair => contains_ion(pair.1))
+    Map(m) =>
+      m
+      .entries()
+      .iter()
+      .any(pair => contains_ion(pair.0) || contains_ion(pair.1))
+    Graph(g) =>
+      g.nodes().iter().any(n => n.payload is Some(p) && contains_ion(p)) ||
+      g.edges().iter().any(e => e.payload is Some(p) && contains_ion(p))
     _ => false
   }
 }

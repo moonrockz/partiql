@@ -46,7 +46,34 @@ fn sign_value(negative : Bool) -> @ion_core.IonValue {
 
 ///|
 /// Encodes a value in canonical PartiQL-encoded Ion.
+
+///|
+/// Encodes a value in PartiQL-encoded Ion. A boxed Ion value is written as
+/// `$ion::x`.
 pub fn to_ion(v : @value.Value) -> @ion_core.IonValue {
+  encode(v, false)
+}
+
+///|
+/// Encodes a value for Ion data (the Ion-preserving mode): a boxed Ion
+/// value, at any depth, is written exactly as it was read; other values use
+/// the PartiQL-encoded forms. Read the output with `from_ion_data`, not
+/// `from_ion`: a boxed value whose own annotation is, for example, `$bag`
+/// is written as is, so `from_ion` would read it as a PartiQL bag.
+pub fn to_ion_data(v : @value.Value) -> @ion_core.IonValue {
+  encode(v, true)
+}
+
+///|
+/// Decodes Ion data in the Ion-preserving mode: the value is boxed, so every
+/// Ion detail is kept until a semantic lowers it (ADR 0005).
+pub fn from_ion_data(x : @ion_core.IonValue) -> @value.Value {
+  Ion(x)
+}
+
+///|
+/// The shared encoder. `preserve` writes boxed Ion values exactly.
+fn encode(v : @value.Value, preserve : Bool) -> @ion_core.IonValue {
   match v {
     Null => @ion_core.IonValue::untyped_null()
     Missing => annotate(@ion_core.IonValue::untyped_null(), "$missing")
@@ -111,21 +138,32 @@ pub fn to_ion(v : @value.Value) -> @ion_core.IonValue {
         ]),
         "$interval_dt",
       )
-    List(items) => @ion_core.IonValue::list(items.map(to_ion))
+    List(items) => @ion_core.IonValue::list(items.map(x => encode(x, preserve)))
     Bag(bag) =>
       annotate(
-        @ion_core.IonValue::list(bag.items().iter().map(to_ion).collect()),
+        @ion_core.IonValue::list(
+          bag.items().iter().map(x => encode(x, preserve)).collect(),
+        ),
         "$bag",
       )
     Tuple(t) =>
       struct_of(
-        t.fields().iter().map(pair => (pair.0, to_ion(pair.1))).collect(),
+        t
+        .fields()
+        .iter()
+        .map(pair => (pair.0, encode(pair.1, preserve)))
+        .collect(),
       )
     Map(m) => {
       let pairs = m
         .entries()
         .iter()
-        .map(pair => @ion_core.IonValue::list([to_ion(pair.0), to_ion(pair.1)]))
+        .map(pair => {
+          @ion_core.IonValue::list([
+            encode(pair.0, preserve),
+            encode(pair.1, preserve),
+          ])
+        })
         .collect()
       @ion_core.IonValue::list(pairs).with_annotations([
         @ion_core.SymbolToken::new("$map"),
@@ -133,8 +171,8 @@ pub fn to_ion(v : @value.Value) -> @ion_core.IonValue {
         @ion_core.SymbolToken::new(m.value_type.name()),
       ])
     }
-    Graph(g) => encode_graph(g)
-    Ion(x) => annotate(x, "$ion")
+    Graph(g) => encode_graph(g, preserve)
+    Ion(x) => if preserve { x } else { annotate(x, "$ion") }
   }
 }
 
@@ -149,6 +187,7 @@ fn symbol(text : String) -> @ion_core.IonValue {
 fn element_fields(
   labels : Array[String],
   payload : @value.Value?,
+  preserve : Bool,
 ) -> Array[(String, @ion_core.IonValue)] {
   let out : Array[(String, @ion_core.IonValue)] = []
   if !labels.is_empty() {
@@ -160,14 +199,14 @@ fn element_fields(
     )
   }
   if payload is Some(p) {
-    out.push(("payload", to_ion(p)))
+    out.push(("payload", encode(p, preserve)))
   }
   out
 }
 
 ///|
 /// `$graph::{nodes: [...], edges: [...]}` (the external graph format).
-fn encode_graph(g : @value.GraphValue) -> @ion_core.IonValue {
+fn encode_graph(g : @value.GraphValue, preserve : Bool) -> @ion_core.IonValue {
   let nodes = g
     .nodes()
     .iter()
@@ -175,7 +214,7 @@ fn encode_graph(g : @value.GraphValue) -> @ion_core.IonValue {
       struct_of(
         [
           ("id", symbol(n.id)),
-          ..element_fields(n.labels().to_owned(), n.payload),
+          ..element_fields(n.labels().to_owned(), n.payload, preserve),
         ],
       )
     })
@@ -193,7 +232,7 @@ fn encode_graph(g : @value.GraphValue) -> @ion_core.IonValue {
       struct_of(
         [
           ("id", symbol(e.id)),
-          ..element_fields(e.labels().to_owned(), e.payload),
+          ..element_fields(e.labels().to_owned(), e.payload, preserve),
           ("ends", ends),
         ],
       )

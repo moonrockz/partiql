@@ -451,3 +451,87 @@ test "malformed $graph values raise" {
     }
   })
 }
+
+///|
+test "Ion data passes through exactly" {
+  @expect.expect_all(soft => {
+    for
+      text in [
+        "sym", "a::b::(1 \"x\" y)", "null.int", "{x: y::[1, 2e0, 1.50], x: 2017T}",
+        "2017-01-01T00:00-00:00", "{{\"c\"}}", "$bag::[1]", "[$missing::null]",
+      ] {
+      let x = ion(text)
+      soft
+      .expect(
+        @partiql_ion.to_ion_data(@partiql_ion.from_ion_data(x)).equals(x),
+        label=text,
+      )
+      .to_be_true()
+    }
+  })
+}
+
+///|
+test "children of a navigated Ion container pass through exactly" {
+  @expect.expect_all(soft => {
+    for text in ["[a, b::(1 2), null.string]", "{k: sym, k: 'x y', t: 2017T}"] {
+      let x = ion(text)
+      let lowered = @value.Value::Ion(x).lower()
+      soft
+      .expect(@partiql_ion.to_ion_data(lowered).equals(x), label=text)
+      .to_be_true()
+    }
+  })
+}
+
+///|
+test "computed values use the PartiQL-encoded forms" {
+  let v = @value.Value::Bag(
+    @value.Bag::new([@value.Value::String("s"), @value.Value::Missing]),
+  )
+  @expect.expect(@partiql_ion.to_ion_data(v).equals(@partiql_ion.to_ion(v))).to_be_true()
+}
+
+///|
+test "Ion data inside maps, graphs and bags passes through exactly" {
+  let boxed = @value.Value::Ion(ion("a::(1 sym)"))
+  let m = @value.Value::Map(
+    @value.MapValue::new(key_type=String, value_type=Dynamic, [
+      (@value.Value::String("k"), boxed),
+    ]),
+  )
+  let g = @value.Value::Graph(
+    @value.GraphValue::new(
+      [@value.GraphNode::new(id="n", payload=Some(boxed))],
+      [
+        @value.GraphEdge::new(
+          id="e",
+          ends=Undirected("n", "n"),
+          payload=Some(@value.Value::Ion(ion("null.int"))),
+        ),
+      ],
+    ),
+  )
+  let b = @value.Value::Bag(@value.Bag::new([boxed]))
+  @expect.expect_all(soft => {
+    soft
+    .expect(
+      @partiql_ion.to_ion_data(m).equals(
+        ion("$map::string::dynamic::[[\"k\", a::(1 sym)]]"),
+      ),
+    )
+    .to_be_true()
+    soft
+    .expect(
+      @partiql_ion.to_ion_data(g).equals(
+        ion(
+          "$graph::{nodes: [{id: n, payload: a::(1 sym)}], edges: [{id: e, payload: null.int, ends: (n -- n)}]}",
+        ),
+      ),
+    )
+    .to_be_true()
+    soft
+    .expect(@partiql_ion.to_ion_data(b).equals(ion("$bag::[a::(1 sym)]")))
+    .to_be_true()
+  })
+}

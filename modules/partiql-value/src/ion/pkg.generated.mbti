@@ -9,7 +9,11 @@ import {
 // Values
 pub fn from_ion(@moonrockz/ion/ion.IonValue) -> @partiql-value.Value raise CodecError
 
+pub fn from_ion_data(@moonrockz/ion/ion.IonValue) -> @partiql-value.Value
+
 pub fn to_ion(@partiql-value.Value) -> @moonrockz/ion/ion.IonValue
+
+pub fn to_ion_data(@partiql-value.Value) -> @moonrockz/ion/ion.IonValue
 
 // Errors
 pub(all) suberror CodecError {
