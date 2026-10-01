@@ -81,3 +81,12 @@ test "datetime and interval literals" {
     "TIME WITH TIME PHONE '1'", "TIME [4] '1'", "TIME {4} '1'", "TIME 4 '1'", "INTERVAL '1'",
   ])
 }
+
+///|
+test "TRIM with FROM only; no empty parentheses" {
+  check_shapes([
+    ("trim(from '  x ')", "(trim '  x ')"),
+    ("[({'a': 1})]", "[{'a':1}]"),
+  ])
+  check_failures(["[()]", "()"])
+}

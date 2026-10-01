@@ -2,23 +2,21 @@
 package "moonrockz/partiql-syntax"
 
 import {
-  "moonbitlang/core/debug",
+  "moonrockz/partiql-syntax/ast",
 }
 
 // Values
-pub fn parse(String) -> Statement raise ParseError
+pub fn parse(String) -> @ast.Statement raise @ast.ParseError
 
 // Errors
-pub(all) suberror ParseError {
-  Unsupported(String)
-  Syntax(message~ : String, offset~ : Int)
-} derive(Eq, @debug.Debug)
 
 // Types and methods
-pub(all) struct Statement {
-  source : String
-} derive(Eq, @debug.Debug)
 
 // Type aliases
+pub using @ast {type ParseError}
+
+pub using @ast {type Span}
+
+pub using @ast {type Statement}
 
 // Traits

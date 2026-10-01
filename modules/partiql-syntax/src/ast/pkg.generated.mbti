@@ -30,6 +30,11 @@ pub(all) enum BinaryOp {
   Ge
 } derive(Eq, @debug.Debug)
 
+pub(all) enum Corresponding {
+  All
+  By(Array[Identifier])
+} derive(Eq, @debug.Debug)
+
 pub(all) enum DataType {
   Null
   Missing
@@ -127,6 +132,7 @@ pub(all) enum FromItem {
 } derive(Eq, @debug.Debug)
 
 pub(all) struct FromSource {
+  lateral : Bool
   expr : Expr
   as_ : Identifier?
   at : Identifier?
@@ -135,8 +141,7 @@ pub(all) struct FromSource {
 } derive(Eq, @debug.Debug)
 
 pub(all) struct GroupBy {
-  partial : Bool
-  keys : Array[GroupKey]
+  keys : GroupKeys
   group_as : Identifier?
   span : Span
 } derive(Eq, @debug.Debug)
@@ -145,6 +150,11 @@ pub(all) struct GroupKey {
   expr : Expr
   as_ : Identifier?
   span : Span
+} derive(Eq, @debug.Debug)
+
+pub(all) enum GroupKeys {
+  All
+  By(Array[GroupKey], partial~ : Bool)
 } derive(Eq, @debug.Debug)
 
 pub(all) struct Identifier {
@@ -236,6 +246,7 @@ pub(all) enum QueryBody {
   Select(Select)
   SetOp(SetOp)
   Expr(Expr)
+  Table(Expr)
 } derive(Eq, @debug.Debug)
 
 pub(all) struct Select {
@@ -258,6 +269,7 @@ pub(all) struct SetOp {
   op : SetOpKind
   quantifier : SetQuantifier?
   outer : Bool
+  corresponding : Corresponding?
   left : Query
   right : Query
   span : Span

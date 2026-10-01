@@ -93,7 +93,7 @@ fn Parser::sort_spec(self : Parser) -> @ast.SortSpec raise @ast.ParseError {
 fn Parser::set_operator(
   self : Parser,
   ops : Array[(String, @ast.SetOpKind)],
-) -> (@ast.SetOpKind, Bool, @ast.SetQuantifier?)? {
+) -> (@ast.SetOpKind, Bool, @ast.SetQuantifier?, @ast.Corresponding?)? raise @ast.ParseError {
   let outer = self.at_word("OUTER")
   let offset = if outer { 1 } else { 0 }
   for pair in ops {
@@ -108,7 +108,24 @@ fn Parser::set_operator(
       } else {
         None
       }
-      return Some((pair.1, outer, quantifier))
+      let corresponding : @ast.Corresponding? = if self.eat_word(
+          "CORRESPONDING",
+        ) {
+        if self.eat_word("BY") {
+          self.expect_punct('(')
+          let names = [self.identifier()]
+          while self.eat_punct(',') {
+            names.push(self.identifier())
+          }
+          self.expect_punct(')')
+          Some(By(names))
+        } else {
+          Some(All)
+        }
+      } else {
+        None
+      }
+      return Some((pair.1, outer, quantifier, corresponding))
     }
     self.note(pair.0)
   }
@@ -117,13 +134,21 @@ fn Parser::set_operator(
 
 ///|
 fn set_op(
-  op : (@ast.SetOpKind, Bool, @ast.SetQuantifier?),
+  op : (@ast.SetOpKind, Bool, @ast.SetQuantifier?, @ast.Corresponding?),
   left : @ast.Query,
   right : @ast.Query,
 ) -> @ast.Query {
   let span = left.span.merge(right.span)
   single(
-    SetOp({ op: op.0, outer: op.1, quantifier: op.2, left, right, span, }),
+    SetOp({
+      op: op.0,
+      outer: op.1,
+      quantifier: op.2,
+      corresponding: op.3,
+      left,
+      right,
+      span,
+    }),
     span,
   )
 }
@@ -153,6 +178,12 @@ fn Parser::set_term(self : Parser) -> @ast.Query raise @ast.ParseError {
 /// A SELECT or PIVOT block, or an expression (which includes a
 /// parenthesized query and VALUES).
 fn Parser::set_primary(self : Parser) -> @ast.Query raise @ast.ParseError {
+  if self.at_word("TABLE") {
+    let start = self.pos
+    ignore(self.advance())
+    let name = self.postfix()
+    return single(Table(name), self.span_from(start))
+  }
   if self.at_word("SELECT") || self.at_word("PIVOT") {
     let s = self.select()
     return single(Select(s), s.span)

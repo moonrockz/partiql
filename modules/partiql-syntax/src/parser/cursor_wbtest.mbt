@@ -46,10 +46,10 @@ test "words match case-insensitively and errors list what was expected" {
 ///|
 test "reserved words" {
   @expect.expect_all(soft => {
-    for w in ["TRUE", "table", "Select", "VALUE", "YEAR"] {
+    for w in ["TRUE", "table", "Select", "VALUE", "TIME"] {
       soft.expect(is_reserved(w), label=w).to_be_true()
     }
-    for w in ["count", "TRIM", "size", "exists", "foo"] {
+    for w in ["count", "TRIM", "size", "exists", "foo", "year", "Second"] {
       soft.expect(is_reserved(w), label=w).to_be_false()
     }
   })

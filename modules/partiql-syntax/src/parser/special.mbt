@@ -104,6 +104,9 @@ fn Parser::trim_args(self : Parser) -> @ast.ExprKind raise @ast.ParseError {
   } else {
     None
   }
+  if spec is None && self.eat_word("FROM") {
+    return Trim(spec=None, chars=None, self.expr())
+  }
   if spec is Some(_) {
     if self.eat_word("FROM") {
       return Trim(spec~, chars=None, self.expr())

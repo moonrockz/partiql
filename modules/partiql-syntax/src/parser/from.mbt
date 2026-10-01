@@ -107,12 +107,14 @@ fn Parser::from_base(self : Parser) -> @ast.FromItem raise @ast.ParseError {
     }
   }
   let start = self.pos
+  let lateral = self.eat_word("LATERAL")
   let unpivot = self.eat_word("UNPIVOT")
   let expr = self.expr()
   let as_ = self.as_alias()
   let at = if self.eat_word("AT") { Some(self.identifier()) } else { None }
   let by = if self.eat_word("BY") { Some(self.identifier()) } else { None }
   let source : @ast.FromSource = {
+    lateral,
     expr,
     as_,
     at,

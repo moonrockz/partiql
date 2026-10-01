@@ -12,7 +12,7 @@ fn opt_alias(prefix : String, i : @ast.Identifier?) -> String {
 fn from_shape(f : @ast.FromItem) -> String {
   match f {
     Scan(s) =>
-      "\{shape(s.expr)}\{opt_alias("as", s.as_)}\{opt_alias("at", s.at)}\{opt_alias("by", s.by)}"
+      "\{if s.lateral { "lateral " } else { "" }}\{shape(s.expr)}\{opt_alias("as", s.as_)}\{opt_alias("at", s.at)}\{opt_alias("by", s.by)}"
     Unpivot(s) =>
       "(unpivot \{shape(s.expr)}\{opt_alias("as", s.as_)}\{opt_alias("at", s.at)}\{opt_alias("by", s.by)})"
     Join(j) => {
@@ -60,11 +60,20 @@ fn select_shape(s : @ast.Select) -> String {
     parts.push("(where \{shape(w)})")
   }
   if s.group_by is Some(g) {
-    let keys = g.keys
-      .map(k => "\{shape(k.expr)}\{opt_alias("as", k.as_)}")
-      .join(", ")
-    let partial = if g.partial { "partial " } else { "" }
-    parts.push("(group \{partial}\{keys}\{opt_alias("group-as", g.group_as)})")
+    let keys = match g.keys {
+      All => "all"
+      By(ks, partial~) => {
+        let text = ks
+          .map(k => "\{shape(k.expr)}\{opt_alias("as", k.as_)}")
+          .join(", ")
+        if partial {
+          "partial \{text}"
+        } else {
+          text
+        }
+      }
+    }
+    parts.push("(group \{keys}\{opt_alias("group-as", g.group_as)})")
   }
   if s.having is Some(h) {
     parts.push("(having \{shape(h)})")
@@ -77,6 +86,7 @@ fn query_shape(q : @ast.Query) -> String {
   let body = match q.body {
     Select(s) => select_shape(s)
     Expr(e) => shape(e)
+    Table(e) => "(table \{shape(e)})"
     SetOp(op) => {
       let name = match op.op {
         Union => "union"
@@ -89,7 +99,12 @@ fn query_shape(q : @ast.Query) -> String {
         Some(Distinct) => "-distinct"
         None => ""
       }
-      "(\{outer}\{name}\{quantifier} \{query_shape(op.left)} \{query_shape(op.right)})"
+      let corresponding = match op.corresponding {
+        Some(All) => "-corresponding"
+        Some(By(names)) => "-corresponding(\{names.map(ident_shape).join(",")})"
+        None => ""
+      }
+      "(\{outer}\{name}\{quantifier}\{corresponding} \{query_shape(op.left)} \{query_shape(op.right)})"
     }
   }
   let parts : Array[String] = []

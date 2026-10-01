@@ -43,6 +43,8 @@ pub(all) enum QueryBody {
   Select(Select)
   SetOp(SetOp)
   Expr(Expr)
+  /// `TABLE name` (RFC 0007)
+  Table(Expr)
 } derive(Debug, Eq)
 
 ///|
@@ -53,10 +55,18 @@ pub(all) enum SetOpKind {
 } derive(Debug, Eq)
 
 ///|
+/// `CORRESPONDING [BY (names)]` (RFC 0007).
+pub(all) enum Corresponding {
+  All
+  By(Array[Identifier])
+} derive(Debug, Eq)
+
+///|
 pub(all) struct SetOp {
   op : SetOpKind
   quantifier : SetQuantifier?
   outer : Bool
+  corresponding : Corresponding?
   left : Query
   right : Query
   span : Span
@@ -100,6 +110,8 @@ pub(all) enum FromItem {
 ///|
 /// A FROM source with its `AS`, `AT` and `BY` variables.
 pub(all) struct FromSource {
+  /// `LATERAL` (spec section 5.7)
+  lateral : Bool
   expr : Expr
   as_ : Identifier?
   at : Identifier?
@@ -143,10 +155,17 @@ pub(all) struct LetBinding {
 
 ///|
 pub(all) struct GroupBy {
-  partial : Bool
-  keys : Array[GroupKey]
+  keys : GroupKeys
   group_as : Identifier?
   span : Span
+} derive(Debug, Eq)
+
+///|
+pub(all) enum GroupKeys {
+  /// `GROUP ALL` (spec section 11): one group of all rows.
+  All
+  /// `GROUP [PARTIAL] BY keys`
+  By(Array[GroupKey], partial~ : Bool)
 } derive(Debug, Eq)
 
 ///|

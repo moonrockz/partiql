@@ -132,3 +132,26 @@ test "set operations, WITH and VALUES" {
     "(1;)", "SELECT a FROM t UNION", "VALUES 1,2)", "WITH x AS SELECT 1",
   ])
 }
+
+///|
+test "spec forms found by the corpus" {
+  check_queries([
+    (
+      "SELECT * FROM c, LATERAL o AS x", "(select * (from (, c lateral o as x)))",
+    ),
+    (
+      "SELECT VALUE g FROM t GROUP ALL AS g", "(select (value g) (from t) (group all group-as g))",
+    ),
+    ("TABLE hr.employees", "(table (path hr .employees))"),
+    (
+      "TABLE a UNION ALL CORRESPONDING BY (name, title) TABLE b", "(union-all-corresponding(name,title) (table a) (table b))",
+    ),
+    ("a OUTER UNION CORRESPONDING b", "(outer-union-corresponding a b)"),
+    (
+      "((SELECT a FROM t LIMIT 1) UNION (SELECT b FROM u)) ORDER BY 1", "(query (union (query (select a (from t)) (limit 1)) (select b (from u))) (order 1))",
+    ),
+    (
+      "SELECT VALUE [year, month] FROM 1968 AS year, 4 AS month", "(select (value [year month]) (from (, 1968 as year 4 as month)))",
+    ),
+  ])
+}

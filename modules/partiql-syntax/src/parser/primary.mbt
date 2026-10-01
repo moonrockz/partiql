@@ -48,11 +48,17 @@ let special_forms : Array[String] = [
 ///|
 /// Words that start a query.
 fn Parser::at_query_start(self : Parser, offset : Int) -> Bool {
-  let t = self.peek_at(offset)
+  // `((SELECT ...) UNION ...)`: look through opening parentheses.
+  let mut k = offset
+  while self.peek_at(k).kind is Punct('(') {
+    k += 1
+  }
+  let t = self.peek_at(k)
   word_is(t, "SELECT") ||
   word_is(t, "WITH") ||
   word_is(t, "PIVOT") ||
-  word_is(t, "VALUES")
+  word_is(t, "VALUES") ||
+  word_is(t, "TABLE")
 }
 
 ///|

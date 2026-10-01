@@ -122,24 +122,36 @@ fn Parser::select(self : Parser) -> @ast.Select raise @ast.ParseError {
 fn Parser::group_by(self : Parser) -> @ast.GroupBy raise @ast.ParseError {
   let start = self.pos
   self.expect_word("GROUP")
-  let partial = self.eat_word("PARTIAL")
-  self.expect_word("BY")
-  let keys : Array[@ast.GroupKey] = []
-  while true {
-    let key_start = self.pos
-    let expr = self.expr()
-    let as_ = if self.eat_word("AS") { Some(self.identifier()) } else { None }
-    keys.push({ expr, as_, span: self.span_from(key_start), })
-    if !self.eat_punct(',') {
-      break
+  let keys : @ast.GroupKeys = if self.eat_word("ALL") {
+    All
+  } else {
+    let partial = self.eat_word("PARTIAL")
+    self.expect_word("BY")
+    let ks : Array[@ast.GroupKey] = []
+    while true {
+      let key_start = self.pos
+      let expr = self.expr()
+      let as_ = if self.eat_word("AS") { Some(self.identifier()) } else { None }
+      ks.push({ expr, as_, span: self.span_from(key_start), })
+      if !self.eat_punct(',') {
+        break
+      }
     }
+    By(ks, partial~)
   }
-  let group_as = if self.at_word("GROUP") && self.at_word_at(1, "AS") {
+  // `GROUP ALL AS g`; `GROUP BY .. GROUP AS g`.
+  let group_as = if keys is All {
+    if self.eat_word("AS") {
+      Some(self.identifier())
+    } else {
+      None
+    }
+  } else if self.at_word("GROUP") && self.at_word_at(1, "AS") {
     ignore(self.advance())
     ignore(self.advance())
     Some(self.identifier())
   } else {
     None
   }
-  { partial, keys, group_as, span: self.span_from(start), }
+  { keys, group_as, span: self.span_from(start), }
 }
