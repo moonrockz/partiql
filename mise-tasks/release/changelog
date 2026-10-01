@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+#MISE description="Generate CHANGELOG.md from conventional commits"
+set -euo pipefail
+
+VERSION=$(sed -nE 's/^version[[:space:]]*=[[:space:]]*"([^"]*)".*/\1/p' modules/partiql/moon.mod | head -1)
+git cliff --tag "v${VERSION}" -o CHANGELOG.md
+echo "CHANGELOG.md updated (v${VERSION})."

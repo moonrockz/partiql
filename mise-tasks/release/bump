@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+#MISE description="Set every module version, sibling import and the CLI version to the next release version"
+set -euo pipefail
+
+VERSION=$(mise run release:version 2>/dev/null | tail -1)
+
+for mod in modules/partiql-value modules/partiql-syntax modules/partiql modules/partiql-conformance; do
+  sed -E \
+    -e "s/^version[[:space:]]*=[[:space:]]*\"[^\"]*\"/version = \"$VERSION\"/" \
+    -e "s#\"(moonrockz/partiql[a-z-]*)@[^\"]+\"#\"\\1@$VERSION\"#g" \
+    "$mod/moon.mod" > "$mod/moon.mod.tmp"
+  mv "$mod/moon.mod.tmp" "$mod/moon.mod"
+done
+
+sed -E "s/^pub let version : String = \"[^\"]*\"/pub let version : String = \"$VERSION\"/" \
+  modules/partiql/src/cli/version.mbt > modules/partiql/src/cli/version.mbt.tmp
+mv modules/partiql/src/cli/version.mbt.tmp modules/partiql/src/cli/version.mbt
+
+mise run release:check-version "$VERSION"
+echo "Bumped all modules to $VERSION"
