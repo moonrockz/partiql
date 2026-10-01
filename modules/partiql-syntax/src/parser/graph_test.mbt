@@ -200,3 +200,19 @@ test "a graph MATCH as the right side of IN" {
     ("x NOT IN (g MATCH (a))", "(not-in x (match g (path (node a))))"),
   ])
 }
+
+///|
+test "a query as the graph operand needs its own parentheses" {
+  check_shapes([
+    (
+      "((SELECT VALUE g) MATCH (a))", "(match (select (value g)) (path (node a)))",
+    ),
+    (
+      "(((SELECT VALUE g)) MATCH (a))", "(match (select (value g)) (path (node a)))",
+    ),
+  ])
+  check_failures([
+    "(SELECT * FROM t WHERE x MATCH (a))", "(SELECT VALUE g UNION SELECT VALUE h MATCH (a))",
+    "((SELECT VALUE g) UNION (SELECT VALUE h) MATCH (a))", "((SELECT VALUE g) ORDER BY x MATCH (a))",
+  ])
+}
