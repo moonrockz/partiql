@@ -60,3 +60,15 @@ test "time ranges" {
     }
   }
 }
+
+///|
+test "years outside 1..9999 are valid (Java LocalDate range)" {
+  @expect.expect_all(soft => {
+    for year in [19998, 10000, 0, -1, 999999999, -999999999] {
+      soft.expect(@value.Date::new(year~, month=12, day=31).year).to_equal(year)
+    }
+    soft
+    .expect_call(() => @value.Date::new(year=1000000000, month=1, day=1))
+    .to_raise()
+  })
+}

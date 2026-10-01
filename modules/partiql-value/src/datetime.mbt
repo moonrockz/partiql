@@ -33,8 +33,10 @@ pub fn Date::new(
   month~ : Int,
   day~ : Int,
 ) -> Date raise DateTimeError {
-  if year < 1 || year > 9999 {
-    raise InvalidDate("year \{year} is not in 1..9999")
+  // The range of Java's LocalDate, which partiql-lang-kotlin uses; the
+  // extended conformance tests have years such as -1 and 19998.
+  if year < -999999999 || year > 999999999 {
+    raise InvalidDate("year \{year} is not in -999999999..999999999")
   }
   if month < 1 || month > 12 {
     raise InvalidDate("month \{month} is not in 1..12")
