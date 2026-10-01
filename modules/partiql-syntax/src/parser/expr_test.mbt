@@ -2,7 +2,10 @@
 fn check_shapes(cases : Array[(String, String)]) -> Unit raise {
   @expect.expect_all(soft => {
     for case in cases {
-      soft.expect(expr_shape(case.0), label=case.0).to_equal(case.1)
+      soft
+      .expect_call(() => expr_shape(case.0), label=case.0)
+      .to_return()
+      .to_equal(case.1)
     }
   })
 }
