@@ -1,5 +1,5 @@
 ///|
-let max_depth = 200
+let max_depth = 100
 
 ///|
 /// The parser state: a cursor over the tokens, the nesting depth, and what
