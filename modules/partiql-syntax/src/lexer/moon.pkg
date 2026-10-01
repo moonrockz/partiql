@@ -1,0 +1,13 @@
+// The PartiQL lexer: tokens with spans; Ion literals are scanned Ion-aware
+// and checked with the Ion text reader.
+
+import {
+  "moonrockz/partiql-syntax/ast",
+  "moonrockz/ion/text",
+  "moonbitlang/core/debug",
+}
+
+import {
+  "moonrockz/partiql-syntax/lexer",
+  "moonrockz/expect",
+} for "test"
