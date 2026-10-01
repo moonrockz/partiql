@@ -59,6 +59,21 @@ pub impl Eq for MapValue with fn equal(a, b) {
 }
 
 ///|
+pub impl Eq for Ends with fn equal(a, b) {
+  match (a, b) {
+    (Directed(from=f1, to=t1), Directed(from=f2, to=t2)) => f1 == f2 && t1 == t2
+    (Undirected(a1, b1), Undirected(a2, b2)) =>
+      (a1 == a2 && b1 == b2) || (a1 == b2 && b1 == a2)
+    _ => false
+  }
+}
+
+///|
+pub impl Eq for GraphValue with fn equal(a, b) {
+  same_graph(a, b, (x, y) => x == y)
+}
+
+///|
 /// Structural identity (spec section 4.1).
 pub impl Eq for Value with fn equal(a, b) {
   match (a, b) {
@@ -81,6 +96,7 @@ pub impl Eq for Value with fn equal(a, b) {
     (Bag(x), Bag(y)) => x == y
     (Tuple(x), Tuple(y)) => x == y
     (Map(x), Map(y)) => x == y
+    (Graph(x), Graph(y)) => x == y
     (Ion(x), Ion(y)) => x.equals(y)
     _ => false
   }

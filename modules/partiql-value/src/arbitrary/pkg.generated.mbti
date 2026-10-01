@@ -13,6 +13,8 @@ import {
 // Values
 pub fn gen_date(@splitmix.RandomState) -> @partiql-value.Date
 
+pub fn gen_graph(Int, @splitmix.RandomState) -> @partiql-value.GraphValue
+
 pub fn gen_interval_dt(@splitmix.RandomState) -> @partiql-value.IntervalDT
 
 pub fn gen_interval_ym(@splitmix.RandomState) -> @partiql-value.IntervalYM

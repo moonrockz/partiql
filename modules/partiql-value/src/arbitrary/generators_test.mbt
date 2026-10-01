@@ -33,6 +33,7 @@ test "generators cover the edge cases" {
   let mut missing_in_bag = false
   let mut ion = false
   let mut map = false
+  let mut graph = false
   let mut zoned = false
   let mut local_ts = false
   for _ in 0..<2000 {
@@ -44,6 +45,7 @@ test "generators cover the edge cases" {
           missing_in_bag = true
         Ion(_) => ion = true
         Map(m) if m.length() > 0 => map = true
+        Graph(g) if g.edges().length() > 0 => graph = true
         Timestamp(t) =>
           if t.time.offset is Some(_) {
             zoned = true
@@ -60,6 +62,7 @@ test "generators cover the edge cases" {
     soft.expect(missing_in_bag, label="MISSING in a bag").to_be_true()
     soft.expect(ion, label="Ion").to_be_true()
     soft.expect(map, label="non-empty MAP").to_be_true()
+    soft.expect(graph, label="graph with edges").to_be_true()
     soft.expect(zoned, label="timestamp with time zone").to_be_true()
     soft.expect(local_ts, label="timestamp without time zone").to_be_true()
   })

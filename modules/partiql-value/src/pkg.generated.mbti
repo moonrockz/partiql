@@ -22,6 +22,13 @@ pub(all) suberror DateTimeError {
   InvalidTime(String)
 } derive(Eq, @debug.Debug)
 
+pub(all) suberror GraphError {
+  DuplicateNodeId(String)
+  DuplicateEdgeId(String)
+  UnknownNode(String)
+  MissingPayload(String)
+} derive(Eq, @debug.Debug)
+
 pub(all) suberror IntervalError {
   Overflow(String)
 } derive(Eq, @debug.Debug)
@@ -52,6 +59,37 @@ pub struct Date {
 } derive(@debug.Debug)
 pub fn Date::new(year~ : Int, month~ : Int, day~ : Int) -> Self raise DateTimeError
 pub impl Eq for Date
+
+pub(all) enum Ends {
+  Directed(from~ : String, to~ : String)
+  Undirected(String, String)
+} derive(@debug.Debug)
+pub impl Eq for Ends
+
+pub struct GraphEdge {
+  id : String
+  ends : Ends
+  payload : Value?
+  // private fields
+} derive(@debug.Debug)
+pub fn GraphEdge::labels(Self) -> ArrayView[String]
+pub fn GraphEdge::new(id~ : String, ends~ : Ends, labels? : Array[String], payload? : Value?) -> Self
+
+pub struct GraphNode {
+  id : String
+  payload : Value?
+  // private fields
+} derive(@debug.Debug)
+pub fn GraphNode::labels(Self) -> ArrayView[String]
+pub fn GraphNode::new(id~ : String, labels? : Array[String], payload? : Value?) -> Self
+
+pub struct GraphValue {
+  // private fields
+} derive(@debug.Debug)
+pub fn GraphValue::edges(Self) -> ArrayView[GraphEdge]
+pub fn GraphValue::new(Array[GraphNode], Array[GraphEdge]) -> Self raise GraphError
+pub fn GraphValue::nodes(Self) -> ArrayView[GraphNode]
+pub impl Eq for GraphValue
 
 pub struct IntervalDT {
   seconds : Int64
@@ -160,6 +198,7 @@ pub(all) enum Value {
   Bag(Bag)
   Tuple(Tuple)
   Map(MapValue)
+  Graph(GraphValue)
   Ion(@ion.IonValue)
 } derive(@debug.Debug)
 pub fn Value::integer(@bigint.BigInt) -> Self

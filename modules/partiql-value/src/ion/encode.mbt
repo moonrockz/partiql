@@ -133,6 +133,77 @@ pub fn to_ion(v : @value.Value) -> @ion_core.IonValue {
         @ion_core.SymbolToken::new(m.value_type.name()),
       ])
     }
+    Graph(g) => encode_graph(g)
     Ion(x) => annotate(x, "$ion")
   }
+}
+
+///|
+fn symbol(text : String) -> @ion_core.IonValue {
+  @ion_core.IonValue::symbol(text)
+}
+
+///|
+/// The fields shared by nodes and edges: labels when there are any, and the
+/// payload when there is one.
+fn element_fields(
+  labels : Array[String],
+  payload : @value.Value?,
+) -> Array[(String, @ion_core.IonValue)] {
+  let out : Array[(String, @ion_core.IonValue)] = []
+  if !labels.is_empty() {
+    out.push(
+      (
+        "labels",
+        @ion_core.IonValue::list(labels.map(@ion_core.IonValue::string)),
+      ),
+    )
+  }
+  if payload is Some(p) {
+    out.push(("payload", to_ion(p)))
+  }
+  out
+}
+
+///|
+/// `$graph::{nodes: [...], edges: [...]}` (the external graph format).
+fn encode_graph(g : @value.GraphValue) -> @ion_core.IonValue {
+  let nodes = g
+    .nodes()
+    .iter()
+    .map(n => {
+      struct_of(
+        [
+          ("id", symbol(n.id)),
+          ..element_fields(n.labels().to_owned(), n.payload),
+        ],
+      )
+    })
+    .collect()
+  let edges = g
+    .edges()
+    .iter()
+    .map(e => {
+      let ends = match e.ends {
+        Directed(from~, to~) =>
+          @ion_core.IonValue::sexp([symbol(from), symbol("->"), symbol(to)])
+        Undirected(a, b) =>
+          @ion_core.IonValue::sexp([symbol(a), symbol("--"), symbol(b)])
+      }
+      struct_of(
+        [
+          ("id", symbol(e.id)),
+          ..element_fields(e.labels().to_owned(), e.payload),
+          ("ends", ends),
+        ],
+      )
+    })
+    .collect()
+  annotate(
+    struct_of([
+      ("nodes", @ion_core.IonValue::list(nodes)),
+      ("edges", @ion_core.IonValue::list(edges)),
+    ]),
+    "$graph",
+  )
 }

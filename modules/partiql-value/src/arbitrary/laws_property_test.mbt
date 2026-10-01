@@ -466,3 +466,86 @@ test "maps that differ only in one key are not equal" {
     count=500,
   )
 }
+
+///|
+fn rebuild(
+  g : @value.GraphValue,
+  nodes : Array[@value.GraphNode],
+  edges : Array[@value.GraphEdge],
+) -> @value.Value raise {
+  ignore(g)
+  @value.Value::Graph(@value.GraphValue::new(nodes, edges))
+}
+
+///|
+test "graphs ignore node and edge order, and undirected end order" {
+  @quickcheck.check(
+    (a : @arbitrary.ArbValue) => {
+      guard v(a) is Graph(g) else { return true }
+      let nodes = g.nodes().to_owned()
+      let edges = g.edges().to_owned()
+      let swapped = edges.map(e => {
+        @value.GraphEdge::new(
+          id=e.id,
+          labels=e.labels().to_owned().rev(),
+          payload=e.payload,
+          ends=match e.ends {
+            Undirected(x, y) => Undirected(y, x)
+            other => other
+          },
+        )
+      })
+      rebuild(g, nodes.rev(), edges.rev()) == v(a) &&
+      rebuild(g, nodes, swapped) == v(a)
+    },
+    count=200,
+  )
+}
+
+///|
+test "reversing a directed edge between two nodes changes the graph" {
+  @quickcheck.check(
+    (a : @arbitrary.ArbValue) => {
+      guard v(a) is Graph(g) else { return true }
+      let edges = g.edges().to_owned()
+      guard edges.search_by(e => e.ends is Directed(from~, to~) && from != to)
+        is Some(k) else {
+        return true
+      }
+      let e = edges[k]
+      guard e.ends is Directed(from~, to~) else { return true }
+      edges[k] = @value.GraphEdge::new(
+        id=e.id,
+        labels=e.labels().to_owned(),
+        payload=e.payload,
+        ends=Directed(from=to, to=from),
+      )
+      let changed = rebuild(g, g.nodes().to_owned(), edges)
+      !(changed == v(a)) &&
+      !@value.eqg(changed, v(a)) &&
+      @value.compare(changed, v(a), nulls=NullsFirst) != 0
+    },
+    count=500,
+  )
+}
+
+///|
+test "changing one node payload changes the graph" {
+  @quickcheck.check(
+    (a : @arbitrary.ArbValue) => {
+      guard v(a) is Graph(g) && g.nodes().length() > 0 else { return true }
+      let nodes = g.nodes().to_owned()
+      let n = nodes[0]
+      // A payload that no generator produces.
+      nodes[0] = @value.GraphNode::new(
+        id=n.id,
+        labels=n.labels().to_owned(),
+        payload=Some(@value.Value::String("\u{1F600}fresh")),
+      )
+      let changed = rebuild(g, nodes, g.edges().to_owned())
+      !@value.eqg(changed, v(a)) &&
+      @value.compare(changed, v(a), nulls=NullsFirst) != 0
+    },
+    count=500,
+  )
+}

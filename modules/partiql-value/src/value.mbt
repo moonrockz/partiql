@@ -31,6 +31,8 @@ pub(all) enum Value {
   Tuple(Tuple)
   /// A MAP (RFC 0104).
   Map(MapValue)
+  /// A graph (RFC 0025).
+  Graph(GraphValue)
   Ion(@ion_core.IonValue)
 } derive(Debug)
 

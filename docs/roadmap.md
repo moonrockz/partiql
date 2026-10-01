@@ -20,8 +20,8 @@ corpus with a ratchet baseline.
 
 ## M1 Data model
 
-Status: done. M1b MAP is done too: `codec` passes 6,714 of 6,822 corpus
-values; the rest are `$graph` values (M1b graph). Property laws cover identity, equality,
+Status: done, with M1b (MAP and graph): `codec` passes all 6,822 corpus
+values. Property laws cover identity, equality,
 ordering and the codec.
 
 The `Value` type covers every PartiQL value: the absent values `NULL` and
