@@ -8,12 +8,14 @@ test "syntax check treats Unsupported as failure" {
 
 ///|
 test "codec check accepts symbols and legacy forms" {
-  for
-    text in [
-      "{id: Enterprise}", "$date::2021-08-22", "$time::\"04:05:06\"", "$bag::[1, $missing::null]",
-    ] {
-    @expect.expect(check_codec(@text.read_ion(text)), label=text).to_equal(Pass)
-  }
+  @expect.expect_all(soft => {
+    for
+      text in [
+        "{id: Enterprise}", "$date::2021-08-22", "$time::\"04:05:06\"", "$bag::[1, $missing::null]",
+      ] {
+      soft.expect(check_codec(@text.read_ion(text)), label=text).to_equal(Pass)
+    }
+  })
 }
 
 ///|

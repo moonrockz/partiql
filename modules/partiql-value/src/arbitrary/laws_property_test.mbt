@@ -262,3 +262,150 @@ test "time zone presence breaks ties: without time zone sorts first" {
     count=200,
   )
 }
+
+///|
+test "Tuple::new: dropping MISSING first gives an equal tuple" {
+  @quickcheck.check(
+    (t : (@arbitrary.ArbValue, @arbitrary.ArbValue, @arbitrary.ArbValue)) => {
+      let pairs = [("a", v(t.0)), ("b", v(t.1)), ("a", v(t.2))]
+      let kept = pairs.filter(pair => !(pair.1 is Missing))
+      @value.Tuple::new(pairs) == @value.Tuple::new(kept)
+    },
+    count=200,
+  )
+}
+
+///|
+test "a value is eqg-equal to its lowered form" {
+  @quickcheck.check(
+    (a : @arbitrary.ArbValue) => {
+      v(a).is_absent() || @value.eqg(v(a), v(a).lower_deep())
+    },
+    count=200,
+  )
+}
+
+///|
+test "big integers equal their decimal and float forms" {
+  @quickcheck.check(
+    (m : Int) => {
+      let k = (m % 1000 + 1000) % 1000 + 1
+      let two64 = @bigint.BigInt::from_string("18446744073709551616")
+      let big = two64 * @bigint.BigInt::from_int(k)
+      let values : Array[@value.Value] = [
+        @value.Value::integer(big),
+        @value.Value::Decimal(@ion_core.Decimal::new(big * 100N, -2)),
+        @value.Value::Float(18446744073709551616.0 * k.to_double()),
+      ]
+      values[0] is BigInt(_) &&
+      values.iter().all(x => values.iter().all(y => @value.eqg(x, y)))
+    },
+    count=200,
+  )
+}
+
+///|
+test "Value::integer returns Int exactly when the value fits in Int64" {
+  @quickcheck.check(
+    (p : (Int64, Int)) => {
+      let n = p.0
+      let fits = @value.Value::integer(@bigint.BigInt::from_int64(n)) ==
+        @value.Value::Int(n)
+      let beyond = @bigint.BigInt::from_int64(9223372036854775807L) +
+        @bigint.BigInt::from_int((p.1 % 1000 + 1000) % 1000 + 1)
+      fits &&
+      @value.Value::integer(beyond) is BigInt(_) &&
+      @value.Value::integer(-beyond - 1N) is BigInt(_) &&
+      @value.Value::integer(-@bigint.BigInt::from_string("9223372036854775808")) ==
+      @value.Value::Int(-9223372036854775808L)
+    },
+    count=200,
+  )
+}
+
+///|
+fn leap(year : Int) -> Bool {
+  if year % 400 == 0 {
+    true
+  } else if year % 100 == 0 {
+    false
+  } else {
+    year % 4 == 0
+  }
+}
+
+///|
+fn month_days(year : Int, month : Int) -> Int {
+  [31, if leap(year) { 29 } else { 28 }, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31][month -
+  1]
+}
+
+///|
+test "Date::new accepts exactly the valid dates" {
+  @quickcheck.check(
+    (p : (Int, Int, Int)) => {
+      let year = p.0 % 3000
+      let month = p.1 % 15
+      let day = p.2 % 33
+      let valid = month >= 1 &&
+        month <= 12 &&
+        day >= 1 &&
+        day <= month_days(year, month)
+      let accepted = try @value.Date::new(year~, month~, day~) catch {
+        _ => false
+      } noraise {
+        _ => true
+      }
+      accepted == valid
+    },
+    count=500,
+  )
+}
+
+///|
+test "Time::new accepts exactly the valid times" {
+  @quickcheck.check(
+    (p : (Int, Int, Int, Int)) => {
+      let hour = p.0 % 26
+      let minute = p.1 % 62
+      let second = p.2 % 62
+      let offset = p.3 % 1500
+      let valid = hour >= 0 &&
+        hour <= 23 &&
+        minute >= 0 &&
+        minute <= 59 &&
+        second >= 0 &&
+        second <= 59 &&
+        offset >= -1439 &&
+        offset <= 1439
+      let accepted = try
+        @value.Time::new(hour~, minute~, second~, offset=Some(offset))
+      catch {
+        _ => false
+      } noraise {
+        _ => true
+      }
+      accepted == valid
+    },
+    count=500,
+  )
+}
+
+///|
+test "a decoded non-normalized interval equals the normalized value" {
+  @quickcheck.check(
+    (p : (Int, Int, Int, Int)) => {
+      let pos = (n : Int) => (n % 200 + 200) % 200
+      let (d, h, m, s) = (pos(p.0), pos(p.1), pos(p.2), pos(p.3))
+      let text = "$interval_dt::{days: \{d}, hours: \{h}, minutes: \{m}, seconds: \{s}, nanos: 1500000000}"
+      let decoded = @partiql_ion.from_ion(@text.read_ion(text))
+      let total = d.to_int64() * 86400L +
+        h.to_int64() * 3600L +
+        m.to_int64() * 60L +
+        s.to_int64()
+      decoded ==
+      @value.Value::IntervalDT(@value.IntervalDT::new(total, 1500000000L))
+    },
+    count=200,
+  )
+}
