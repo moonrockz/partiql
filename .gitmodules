@@ -1,0 +1,3 @@
+[submodule "modules/partiql-conformance/partiql-tests"]
+	path = modules/partiql-conformance/partiql-tests
+	url = https://github.com/partiql/partiql-tests

@@ -1,0 +1,12 @@
+// Conformance tests against partiql-tests. This package holds tests only.
+
+import {
+  "moonrockz/ion/ion",
+  "moonrockz/ion/text",
+  "moonbitlang/core/debug",
+  "moonrockz/expect",
+} for "test"
+
+// moonbitlang/x/fs supports these targets.
+
+supported_targets = "native+js"
