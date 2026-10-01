@@ -162,3 +162,25 @@ test "IN keeps a parenthesized right operand as a row" {
     ("a IN (SELECT VALUE x FROM t)", "(in a (select (value x) (from t)))"),
   ])
 }
+
+///|
+test "parentheses around an expression with a subquery do not make a subquery" {
+  // (The shape renderer flattens a query whose body is an expression, so this
+  // test looks at the node kinds.)
+  @expect.expect_all(soft => {
+    soft
+    .expect(
+      @parser.parse_expression("((SELECT 1) + 1)").kind is Binary(Add, _, _),
+    )
+    .to_be_true()
+    soft
+    .expect(
+      @parser.parse_expression("f((SELECT 1) + 1)").kind
+      is Call(_, [{ kind: Binary(Add, _, _), .. }], ..),
+    )
+    .to_be_true()
+    soft
+    .expect(@parser.parse_expression("((SELECT 1))").kind is Query(_))
+    .to_be_true()
+  })
+}

@@ -188,7 +188,7 @@ fn Parser::parenthesized(self : Parser) -> @ast.Expr raise @ast.ParseError {
     ignore(self.advance())
     let q = self.nested(() => self.query())
     self.expect_punct(')')
-    return make(Query(q), self.span_from(start))
+    return query_or_expr(q, self.span_from(start))
   }
   ignore(self.advance())
   let first = self.expr()
@@ -207,6 +207,16 @@ fn Parser::parenthesized(self : Parser) -> @ast.Expr raise @ast.ParseError {
   // A parenthesized query operand, such as `(SELECT ...) UNION ...`, is
   // handled by the query parser; here the parentheses only group.
   { ..first, span: self.span_from(start), }
+}
+
+///|
+/// A query that is only an expression, such as `(SELECT 1) + 1` reached
+/// through extra parentheses, is that expression, not a subquery.
+fn query_or_expr(q : @ast.Query, span : @ast.Span) -> @ast.Expr {
+  match q.body {
+    Expr(e) if !has_clauses(q) => { ..e, span, }
+    _ => make(Query(q), span)
+  }
 }
 
 ///|
@@ -291,7 +301,7 @@ fn Parser::call(self : Parser) -> @ast.Expr raise @ast.ParseError {
   if self.at_query_start(0) {
     let query_start = self.pos
     let q = self.nested(() => self.query())
-    let arg = make(Query(q), self.span_from(query_start))
+    let arg = query_or_expr(q, self.span_from(query_start))
     self.expect_punct(')')
     return make(Call(name, [arg], quantifier=None), self.span_from(start))
   }
