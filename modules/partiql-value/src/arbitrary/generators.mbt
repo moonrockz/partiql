@@ -199,9 +199,10 @@ pub fn gen_value(size : Int, rs : @splitmix.RandomState) -> @value.Value {
   } else {
     let n = pick(rs, 4)
     let child = size / 2
-    match pick(rs, 3) {
+    match pick(rs, 4) {
       0 => List(Array::makei(n, _ => gen_value(child, rs)))
       1 => Bag(@value.Bag::new(Array::makei(n, _ => gen_value(child, rs))))
+      2 => Map(gen_map(child, rs))
       _ => {
         let names = ["a", "b", "A"]
         Tuple(
@@ -215,6 +216,44 @@ pub fn gen_value(size : Int, rs : @splitmix.RandomState) -> @value.Value {
 }
 
 ///|
+/// A MAP with keys of one scalar kind, no duplicate keys, and values of any
+/// kind except MISSING.
+pub fn gen_map(size : Int, rs : @splitmix.RandomState) -> @value.MapValue {
+  let kinds : Array[(@value.MapType, (@splitmix.RandomState) -> @value.Value)] = [
+    (String, r => String(gen_string(r))),
+    (Integer, r => Int((pick(r, 7) - 3).to_int64())),
+    (Decimal, r => gen_number(r)),
+    (Bool, r => Bool(chance(r, 50))),
+    (Date, r => Date(gen_date(r))),
+  ]
+  let (key_type, gen_key) = kinds[pick(rs, kinds.length())]
+  let entries : Array[(@value.Value, @value.Value)] = []
+  for _ in 0..<pick(rs, 5) {
+    let key = gen_key(rs)
+    // Keys must be unique under eqg, and NaN keys are left out.
+    if key is Float(d) && d.is_nan() {
+      continue
+    }
+    if entries.iter().any(pair => @value.eqg(pair.0, key)) {
+      continue
+    }
+    let value = match gen_value(size, rs) {
+      Missing => @value.Value::Null
+      v => v
+    }
+    entries.push((key, value))
+  }
+  let value_type : @value.MapType = if chance(rs, 50) {
+    Dynamic
+  } else {
+    String
+  }
+  @value.MapValue::new(key_type~, value_type~, entries) catch {
+    _ => abort("unreachable: generated map entries are valid")
+  }
+}
+
+///|
 /// Whether a collection or tuple inside `v` holds NULL or MISSING.
 pub fn has_nested_absent(v : @value.Value) -> Bool {
   fn inside(x : @value.Value) -> Bool {
@@ -223,6 +262,7 @@ pub fn has_nested_absent(v : @value.Value) -> Bool {
       List(items) => items.iter().any(inside)
       Bag(bag) => bag.items().iter().any(inside)
       Tuple(t) => t.fields().iter().any(pair => inside(pair.1))
+      Map(m) => m.entries().iter().any(pair => inside(pair.1))
       Ion(i) => i.is_null() || ion_has_null(i)
       _ => false
     }
@@ -231,6 +271,7 @@ pub fn has_nested_absent(v : @value.Value) -> Bool {
     List(items) => items.iter().any(inside)
     Bag(bag) => bag.items().iter().any(inside)
     Tuple(t) => t.fields().iter().any(pair => inside(pair.1))
+    Map(m) => m.entries().iter().any(pair => inside(pair.1))
     Ion(i) => ion_has_null(i)
     _ => false
   }

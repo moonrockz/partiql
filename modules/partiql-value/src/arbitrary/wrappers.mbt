@@ -14,6 +14,8 @@ fn children(v : @value.Value) -> Array[@value.Value] {
     List(items) => items
     Bag(bag) => bag.items().to_owned()
     Tuple(t) => t.fields().iter().map(pair => pair.1).collect()
+    Map(m) =>
+      m.entries().iter().flat_map(pair => [pair.0, pair.1].iter()).collect()
     _ => []
   }
 }

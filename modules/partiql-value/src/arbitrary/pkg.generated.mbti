@@ -19,6 +19,8 @@ pub fn gen_interval_ym(@splitmix.RandomState) -> @partiql-value.IntervalYM
 
 pub fn gen_ion(Int, @splitmix.RandomState) -> @ion.IonValue
 
+pub fn gen_map(Int, @splitmix.RandomState) -> @partiql-value.MapValue
+
 pub fn gen_number(@splitmix.RandomState) -> @partiql-value.Value
 
 pub fn gen_time(@splitmix.RandomState) -> @partiql-value.Time

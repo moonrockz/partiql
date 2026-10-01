@@ -137,6 +137,9 @@ test "map equality follows RFC 0104" {
     .expect(@value.sql_equals(mv([(s("a"), i(1))]), mv([(s("a"), i(2))])))
     .to_equal(f)
     soft
+    .expect(@value.sql_equals(mv([(s("a"), i(1))]), mv([(s("b"), i(1))])))
+    .to_equal(f)
+    soft
     .expect(
       @value.sql_equals(
         mv([(s("a"), i(1))]),
