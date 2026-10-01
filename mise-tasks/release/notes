@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+#MISE description="Generate release notes for the release at HEAD"
+set -euo pipefail
+
+# On a tagged commit (tag push), use the commits of that tag.
+# Otherwise (workflow_dispatch before tagging), use the unreleased
+# commits under the next bumped version.
+if git describe --tags --exact-match HEAD &>/dev/null; then
+  git cliff --current --strip header
+else
+  git cliff --unreleased --bump --strip header
+fi

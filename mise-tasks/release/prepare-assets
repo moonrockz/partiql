@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+#MISE description="Collect CLI binaries from downloaded artifacts into release/"
+#USAGE arg "<version>" help="Release version, without a leading v"
+set -euo pipefail
+
+VERSION="${usage_version:-${1:-}}"
+VERSION="${VERSION#v}"
+rm -rf release
+mkdir -p release
+
+# Each artifact directory is artifacts/partiql-<os>-<arch>/ and keeps the
+# paths under _build/ (native/.../partiql.exe, wasm/.../partiql.wasm).
+for dir in artifacts/partiql-*; do
+  name=$(basename "$dir")
+  exe=$(find "$dir" -name partiql.exe -path '*native*' | head -1)
+  if [ -z "$exe" ]; then
+    echo "Error: no native binary in $dir" >&2
+    exit 1
+  fi
+  suffix=""
+  if [[ "$name" == *windows* ]]; then
+    suffix=".exe"
+  fi
+  cp "$exe" "release/${name}-v${VERSION}${suffix}"
+  chmod +x "release/${name}-v${VERSION}${suffix}"
+  wasm=$(find "$dir" -name partiql.wasm | head -1)
+  if [ -n "$wasm" ] && [ ! -f "release/partiql-v${VERSION}.wasm" ]; then
+    cp "$wasm" "release/partiql-v${VERSION}.wasm"
+  fi
+done
+ls -l release
