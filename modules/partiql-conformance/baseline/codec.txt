@@ -753,6 +753,8 @@ eval/query/select/select.ion::select_join::selectJoinOnClauseScoping#env
 eval/spec-tests.ion::section-5::single source FROM with scalar#output[0]
 eval-equiv/rfc/0007.ion::set::Example 2.2 — With CORRESPONDING Clause#env
 eval-equiv/spec-tests.ion::section-11::equiv group by with aggregates#env
+eval/experimental/graph/gpml-paper.ion::gpml_paper::where::edge WHERE#env
+eval/experimental/graph/gpml-paper.ion::gpml_paper::where::node WHERE#env
 eval/misc.ion::uncategorized::selectValueStructConstructorWithMissing#env
 eval/primitives/functions/abs.ion::abs::ABS(INTERVAL '-3' HOUR)#output[0]
 eval/primitives/functions/abs.ion::abs::ABS(INTERVAL '-5' YEAR)#output[0]
@@ -863,6 +865,7 @@ eval-equiv/spec-tests.ion::section-11::equiv aliases from select clause#env
 eval-equiv/spec-tests.ion::section-4::equiv tuple path navigation#output[0]
 eval-equiv/spec-tests.ion::section-4::equiv wildcard steps struct#output[0]
 eval-equiv/spec-tests.ion::section-6::equiv tupleunion with select list#env
+eval/experimental/graph/gpml-paper.ion::gpml_paper::labels::label :City#env
 eval/primitives/coll-aggregate-function.ion::coll_any::COLL_ANY missing#env
 eval/primitives/coll-aggregate-function.ion::coll_avg::COLL_AVG missing#env
 eval/primitives/coll-aggregate-function.ion::coll_max::COLL_MAX missing#env
@@ -915,6 +918,15 @@ eval/query/select/sql-aggregate.ion::sql_count::selectListCountVariable#env
 eval/query/select/sql-aggregate.ion::sql_some::SOME with GROUP BY#output[0]
 eval/rfc/0007.ion::set::Example 1 — Union of Compatible Relations#output[0]
 eval/rfc/0007.ion::set::Example 6 - Value Coercion not union-compatible#env
+eval/experimental/graph/gpml-paper.ion::gpml_paper::where::pattern WHERE#env
+eval/experimental/graph/small_graphs.ion::small_graphs::(N0E0 MATCH (x))#env
+eval/experimental/graph/small_graphs.ion::small_graphs::(N1D2 MATCH (x))#env
+eval/experimental/graph/small_graphs.ion::small_graphs::(N1E0 MATCH (x))#env
+eval/experimental/graph/small_graphs.ion::small_graphs::(N1U1 MATCH (x))#env
+eval/experimental/graph/small_graphs.ion::small_graphs::(N2D1 MATCH (x))#env
+eval/experimental/graph/small_graphs.ion::small_graphs::(N2E0 MATCH (x))#env
+eval/experimental/graph/small_graphs.ion::small_graphs::(N2U1 MATCH (x))#env
+eval/experimental/graph/small_graphs.ion::small_graphs::(N2U2 MATCH (x))#env
 eval/ion/primitives/functions/abs.ion::abs::ABS(`1d0`) Ion DECIMAL#output[0]
 eval/primitives/coll-aggregate-function.ion::coll_count::COLL_COUNT null#env
 eval/primitives/coll-aggregate-function.ion::coll_every::COLL_EVERY null#env
@@ -1045,6 +1057,9 @@ eval/spec-tests.ion::section-6::select value with tuple constructor#output[0]
 eval-equiv/rfc/0007.ion::bag::Example 6 — Value Coercion OUTER UNION#output[0]
 eval-equiv/spec-tests.ion::section-5::equiv of comma, cross join, and join#env
 eval-equiv/spec-tests.ion::section-5::equiv unnesting tuple in from source#env
+eval/experimental/graph/directionality.ion::directionality::Left shorthand#env
+eval/experimental/graph/gpml-paper.ion::gpml_paper::labels::label :Country#env
+eval/experimental/graph/gpml-paper.ion::gpml_paper::labels::label negation#env
 eval/ion/primitives/functions/abs.ion::abs::ABS(`nan`) special value#output[0]
 eval/primitives/coll-aggregate-function.ion::coll_any::COLL_ANY null#output[0]
 eval/primitives/coll-aggregate-function.ion::coll_any::COLL_ANY nulls only#env
@@ -1125,8 +1140,14 @@ eval-equiv/rfc/0007.ion::set::Example 2.2 — With CORRESPONDING Clause#output[0
 eval-equiv/spec-tests.ion::section-11::equiv group by with aggregates#output[0]
 eval-equiv/spec-tests.ion::section-4::equiv wildcard steps collection#output[0]
 eval-equiv/spec-tests.ion::section-6::equiv nested subquery in select value#env
+eval/experimental/graph/directionality.ion::directionality::Left with spots#env
+eval/experimental/graph/directionality.ion::directionality::Right shorthand#env
 eval/experimental/graph/gpml-paper.ion::gpml_paper::where::edge WHERE#output[0]
 eval/experimental/graph/gpml-paper.ion::gpml_paper::where::node WHERE#output[0]
+eval/experimental/graph/small_graphs.ion::small_graphs::(N1U1 MATCH ~[y]~ )#env
+eval/experimental/graph/small_graphs.ion::small_graphs::(N2U1 MATCH ~[y]~ )#env
+eval/experimental/graph/small_graphs.ion::small_graphs::(N2U2 MATCH ~[y]~ )#env
+eval/experimental/graph/small_graphs.ion::small_graphs::N: (N2D2 MATCH (x))#env
 eval/ion/primitives/functions/abs.ion::abs::ABS(`+inf`) special value#output[0]
 eval/ion/primitives/functions/abs.ion::abs::ABS(`-inf`) special value#output[0]
 eval/misc.ion::uncategorized::selectValueStructConstructorWithMissing#output[0]
@@ -1210,6 +1231,14 @@ eval/query/select/sql-aggregate.ion::sql_count::aggregateInSubqueryOfSelect#env
 eval/spec-tests.ion::section-11::group by with differenciated absent values#env
 eval/spec-tests.ion::section-5::single source FROM with tuple and AT clause#env
 extended/eval/primitives/timestamp.ion::timestamp::timestamp truncate#output[0]
+eval/experimental/graph/directionality.ion::directionality::Right with spots#env
+eval/experimental/graph/gpml-paper.ion::gpml_paper::where::sub pattern WHERE#env
+eval/experimental/graph/small_graphs.ion::small_graphs::(N0E0 MATCH -[y]-> )#env
+eval/experimental/graph/small_graphs.ion::small_graphs::(N1D2 MATCH -[y]-> )#env
+eval/experimental/graph/small_graphs.ion::small_graphs::(N1E0 MATCH -[y]-> )#env
+eval/experimental/graph/small_graphs.ion::small_graphs::(N2D1 MATCH -[y]-> )#env
+eval/experimental/graph/small_graphs.ion::small_graphs::(N2E0 MATCH -[y]-> )#env
+eval/experimental/graph/small_graphs.ion::small_graphs::N: (N2D2c MATCH (x))#env
 eval/misc.ion::uncategorized::explicitAliasSelectSingleSourceWithWhere#output[0]
 eval/primitives/coll-aggregate-function.ion::coll_any::COLL_ANY bag literals#env
 eval/primitives/coll-aggregate-function.ion::coll_any::COLL_ANY single false#env
@@ -1295,6 +1324,8 @@ eval-equiv/spec-tests.ion::section-11::equiv aliases from select clause#output[0
 eval-equiv/spec-tests.ion::section-12::equiv coercions with explicit literals#env
 eval-equiv/spec-tests.ion::section-6::equiv tupleunion with select list#output[0]
 eval/experimental/graph/gpml-paper.ion::gpml_paper::labels::label :City#output[0]
+eval/experimental/graph/gpml-paper.ion::gpml_paper::labels::label conjunction#env
+eval/experimental/graph/gpml-paper.ion::gpml_paper::labels::label disjunction#env
 eval/primitives/coll-aggregate-function.ion::coll_any::COLL_ANY missing#output[0]
 eval/primitives/coll-aggregate-function.ion::coll_avg::COLL_AVG missing#output[0]
 eval/primitives/coll-aggregate-function.ion::coll_avg::topLevelCollAvgOnlyInt#env
@@ -1427,6 +1458,8 @@ eval/query/select/sql-aggregate.ion::sql_any::ANY DISTINCT with GROUP BY#output[
 eval/rfc/0007.ion::set::Example 4 — Intersection of Compatible Relations#output[0]
 eval/spec-tests.ion::section-7::data type mismatch in logical expression#output[0]
 eval-equiv/spec-tests.ion::section-4::equiv path expression with wildcard steps#env
+eval/experimental/graph/directionality.ion::directionality::Left with variables#env
+eval/experimental/graph/small_graphs.ion::small_graphs::E: (N2D2 MATCH -[y]-> )#env
 eval/ion/primitives/functions/abs.ion::abs::ABS(`-0.0000`) preserve scale#output[0]
 eval/primitives/coll-aggregate-function.ion::coll_any::COLL_ANY nulls with true#env
 eval/primitives/coll-aggregate-function.ion::coll_every::COLL_EVERY single true#env
@@ -1489,8 +1522,12 @@ eval-equiv/spec-tests.ion::section-5::equiv attribute value pair unpivot missing
 eval-equiv/spec-tests.ion::section-5::equiv of comma, cross join, and join#output[0]
 eval-equiv/spec-tests.ion::section-5::equiv unnesting tuple in from source#output[0]
 eval/experimental/graph/directionality.ion::directionality::Left shorthand#output[0]
+eval/experimental/graph/directionality.ion::directionality::Left+right shorthand#env
+eval/experimental/graph/directionality.ion::directionality::Right with variables#env
+eval/experimental/graph/directionality.ion::directionality::Undirected shorthand#env
 eval/experimental/graph/gpml-paper.ion::gpml_paper::labels::label :Country#output[0]
 eval/experimental/graph/gpml-paper.ion::gpml_paper::labels::label negation#output[0]
+eval/experimental/graph/small_graphs.ion::small_graphs::E: (N2D2c MATCH -[y]-> )#env
 eval/primitives/coll-aggregate-function.ion::coll_any::COLL_ANY list expressions#env
 eval/primitives/coll-aggregate-function.ion::coll_any::COLL_ANY nulls only#output[0]
 eval/primitives/coll-aggregate-function.ion::coll_any::COLL_ANY nulls with false#env
@@ -1555,9 +1592,17 @@ eval/query/select/sql-aggregate.ion::sql_some::SOME DISTINCT with GROUP BY#outpu
 eval/spec-tests.ion::section-5::single source FROM with list and AT clause#output[0]
 eval-equiv/spec-tests.ion::section-6::equiv nested subquery in select value#output[0]
 eval/experimental/graph/directionality.ion::directionality::Left with spots#output[0]
+eval/experimental/graph/directionality.ion::directionality::Left+right with spots#env
 eval/experimental/graph/directionality.ion::directionality::Right shorthand#output[0]
+eval/experimental/graph/directionality.ion::directionality::Undirected with spots#env
+eval/experimental/graph/small_graphs.ion::small_graphs::(N1U1 MATCH (x)~[y]~(x) )#env
+eval/experimental/graph/small_graphs.ion::small_graphs::(N1U1 MATCH (x)~[y]~(z) )#env
 eval/experimental/graph/small_graphs.ion::small_graphs::(N1U1 MATCH ~[y]~ )#output[0]
+eval/experimental/graph/small_graphs.ion::small_graphs::(N2U1 MATCH (x)~[y]~(x) )#env
+eval/experimental/graph/small_graphs.ion::small_graphs::(N2U1 MATCH (x)~[y]~(z) )#env
 eval/experimental/graph/small_graphs.ion::small_graphs::(N2U1 MATCH ~[y]~ )#output[0]
+eval/experimental/graph/small_graphs.ion::small_graphs::(N2U2 MATCH (x)~[y]~(x) )#env
+eval/experimental/graph/small_graphs.ion::small_graphs::(N2U2 MATCH (x)~[y]~(z) )#env
 eval/experimental/graph/small_graphs.ion::small_graphs::(N2U2 MATCH ~[y]~ )#output[0]
 eval/experimental/graph/small_graphs.ion::small_graphs::N: (N2D2 MATCH (x))#output[0]
 eval/primitives/basic.ion::arithmetic with mixed type::plus with mixed StaticType#env
@@ -1635,10 +1680,19 @@ eval/spec-tests.ion::section-7::data type mismatch in comparison expression#outp
 eval/spec-tests.ion::section-7::equality of mixed non equal container types#output[0]
 eval/experimental/graph/directionality.ion::directionality::Right with spots#output[0]
 eval/experimental/graph/gpml-paper.ion::gpml_paper::where::sub pattern WHERE#output[0]
+eval/experimental/graph/small_graphs.ion::small_graphs::(N0E0 MATCH (x)-[y]->(z) )#env
 eval/experimental/graph/small_graphs.ion::small_graphs::(N0E0 MATCH -[y]-> )#output[0]
+eval/experimental/graph/small_graphs.ion::small_graphs::(N1D2 MATCH (x)-[y]->(x) )#env
+eval/experimental/graph/small_graphs.ion::small_graphs::(N1D2 MATCH (x)-[y]->(z) )#env
 eval/experimental/graph/small_graphs.ion::small_graphs::(N1D2 MATCH -[y]-> )#output[0]
+eval/experimental/graph/small_graphs.ion::small_graphs::(N1E0 MATCH (x)-[y]->(x) )#env
+eval/experimental/graph/small_graphs.ion::small_graphs::(N1E0 MATCH (x)-[y]->(z) )#env
 eval/experimental/graph/small_graphs.ion::small_graphs::(N1E0 MATCH -[y]-> )#output[0]
+eval/experimental/graph/small_graphs.ion::small_graphs::(N2D1 MATCH (x)-[y]->(x) )#env
+eval/experimental/graph/small_graphs.ion::small_graphs::(N2D1 MATCH (x)-[y]->(z) )#env
 eval/experimental/graph/small_graphs.ion::small_graphs::(N2D1 MATCH -[y]-> )#output[0]
+eval/experimental/graph/small_graphs.ion::small_graphs::(N2E0 MATCH (x)-[y]->(x) )#env
+eval/experimental/graph/small_graphs.ion::small_graphs::(N2E0 MATCH (x)-[y]->(z) )#env
 eval/experimental/graph/small_graphs.ion::small_graphs::(N2E0 MATCH -[y]-> )#output[0]
 eval/experimental/graph/small_graphs.ion::small_graphs::N: (N2D2c MATCH (x))#output[0]
 eval/primitives/basic.ion::arithmetic with mixed type::minus with mixed StaticType#env
@@ -1838,7 +1892,11 @@ eval/spec-tests.ion::section-6::pivot into a tuple with invalid attribute name#o
 extended/eval/primitives/timestamp.ion::timestamp::explicit timestamp truncate#output[0]
 eval-equiv/spec-tests.ion::section-4::equiv path expression with wildcard steps#output[0]
 eval/experimental/graph/directionality.ion::directionality::Left with variables#output[0]
+eval/experimental/graph/directionality.ion::directionality::Left+right with variables#env
+eval/experimental/graph/directionality.ion::directionality::Left+undirected shorthand#env
+eval/experimental/graph/directionality.ion::directionality::Undirected with variables#env
 eval/experimental/graph/small_graphs.ion::small_graphs::E: (N2D2 MATCH -[y]-> )#output[0]
+eval/experimental/graph/small_graphs.ion::small_graphs::L: (N2D2 MATCH (x)-[y]->(z) )#env
 eval/primitives/basic.ion::arithmetic with mixed type::division with mixed StaticType#env
 eval/primitives/coll-aggregate-function.ion::coll_any::COLL_ANY nulls with true#output[0]
 eval/primitives/coll-aggregate-function.ion::coll_every::COLL_EVERY nested collection#env
@@ -1908,9 +1966,12 @@ eval/spec-tests.ion::section-4::tuple navigation missing attribute dot notation#
 eval/spec-tests.ion::section-5::ranging over attribute value pairs with UNPIVOT#output[0]
 eval-equiv/spec-tests.ion::section-5::equiv attribute value pair unpivot missing#output[0]
 eval/experimental/graph/directionality.ion::directionality::Left+right shorthand#output[0]
+eval/experimental/graph/directionality.ion::directionality::Left+undirected with spots#env
 eval/experimental/graph/directionality.ion::directionality::Right with variables#output[0]
+eval/experimental/graph/directionality.ion::directionality::Right+undirected shorthand#env
 eval/experimental/graph/directionality.ion::directionality::Undirected shorthand#output[0]
 eval/experimental/graph/small_graphs.ion::small_graphs::E: (N2D2c MATCH -[y]-> )#output[0]
+eval/experimental/graph/small_graphs.ion::small_graphs::L: (N2D2c MATCH (x)-[y]->(z) )#env
 eval/primitives/coll-aggregate-function.ion::coll_any::COLL_ANY list expressions#output[0]
 eval/primitives/coll-aggregate-function.ion::coll_any::COLL_ANY nulls with false#output[0]
 eval/primitives/coll-aggregate-function.ion::coll_avg::COLL_AVG empty collection#output[0]
@@ -1993,7 +2054,9 @@ eval/spec-tests.ion::section-7::equality of different tuples with null attribute
 eval-equiv/spec-tests.ion::section-9::equiv coercion of a SELECT subquery into a scalar#env
 eval-equiv/spec-tests.ion::section-9::equiv coercion of a SELECT subquery into an array#env
 eval/experimental/graph/directionality.ion::directionality::Left+right with spots#output[0]
+eval/experimental/graph/directionality.ion::directionality::Right+undirected with spots#env
 eval/experimental/graph/directionality.ion::directionality::Undirected with spots#output[0]
+eval/experimental/graph/gpml-paper.ion::gpml_paper::where::pattern WHERE -- longer path#env
 eval/experimental/graph/small_graphs.ion::small_graphs::(N1U1 MATCH (x)~[y]~(x) )#output[0]
 eval/experimental/graph/small_graphs.ion::small_graphs::(N1U1 MATCH (x)~[y]~(z) )#output[0]
 eval/experimental/graph/small_graphs.ion::small_graphs::(N2U1 MATCH (x)~[y]~(x) )#output[0]
@@ -2174,6 +2237,7 @@ eval/query/select/sql-aggregate.ion::sql_avg::avg select{agg:'AVG(d)',result:1.2
 eval/query/select/sql-aggregate.ion::sql_max::max select{agg:'MAX(DISTINCT d)',result:2}#env
 eval/query/select/sql-aggregate.ion::sql_min::min select{agg:'MIN(DISTINCT d)',result:1}#env
 eval/query/select/sql-aggregate.ion::sql_sum::sum select{agg:'SUM(DISTINCT d)',result:3}#env
+eval/experimental/graph/small_graphs.ion::small_graphs::Cycle: (N2D2 MATCH (x)-[y]->(x) )#env
 eval/ion/primitives/operators/nary-operators.ion::nary::equalListDifferentTypesTrue#output[0]
 eval/ion/primitives/symbol.ion::empty-symbol::Empty Symbol in table (with Ion data)#output[0]
 eval/primitives/basic.ion::arithmetic with mixed type::arithmetic with null/missing#output[0]
@@ -2241,6 +2305,8 @@ eval/query/select/sql-aggregate.ion::sql_sum::sum select{agg:'SUM(ALL d)',result
 eval/spec-tests.ion::section-6::bag element evaluates to MISSING in bag constructor#output[0]
 eval-equiv/spec-tests.ion::section-4::equiv path collection expression with wildcard steps#env
 eval-equiv/spec-tests.ion::section-5::equiv attribute value pair unpivot non-missing#output[0]
+eval/experimental/graph/directionality.ion::directionality::Left+undirected with variables#env
+eval/experimental/graph/small_graphs.ion::small_graphs::Cycle: (N2D2c MATCH (x)-[y]->(x) )#env
 eval/ion/primitives/null.ion::null::null pass through{sql:"`null.null`",result:null}#output[0]
 eval/ion/query/select/projection.ion::project various container types::projectOfSexp#output[0]
 eval/primitives/cast.ion::cast-to-int::cast to int valid cases{value:"'0'",result:0}#output[0]
@@ -2313,7 +2379,9 @@ eval/query/select/sql-aggregate.ion::sql_avg::avg select{agg:'AVG(DISTINCT d)',r
 eval/spec-tests.ion::section-5::single source FROM with absent value missing and AT clause#env
 eval-equiv/spec-tests.ion::section-4::equiv tuple path navigation with array notation#output[0]
 eval/experimental/graph/directionality.ion::directionality::Left+right with variables#output[0]
+eval/experimental/graph/directionality.ion::directionality::Left+right+undirected shorthand#env
 eval/experimental/graph/directionality.ion::directionality::Left+undirected shorthand#output[0]
+eval/experimental/graph/directionality.ion::directionality::Right+undirected with variables#env
 eval/experimental/graph/directionality.ion::directionality::Undirected with variables#output[0]
 eval/experimental/graph/small_graphs.ion::small_graphs::L: (N2D2 MATCH (x)-[y]->(z) )#output[0]
 eval/ion/primitives/operators/nary-operators.ion::nary::equalListDifferentLengthsShortFirst#env
@@ -2388,6 +2456,7 @@ eval/query/select/select-star.ion::select-star::alias.* on a single table (perso
 eval/query/select/sql-aggregate.ion::sql_count::count select{agg:'COUNT(d)',result:4}#output[0]
 eval/rfc/0007.ion::bag::Example 7 — `engineering.employees OUTER UNION << MISSING >>`#output[0]
 eval/spec-tests.ion::section-7::equality of mixed non equal container types with null#output[0]
+eval/experimental/graph/directionality.ion::directionality::Left+right+undirected with spots#env
 eval/experimental/graph/directionality.ion::directionality::Left+undirected with spots#output[0]
 eval/experimental/graph/directionality.ion::directionality::Right+undirected shorthand#output[0]
 eval/experimental/graph/small_graphs.ion::small_graphs::L: (N2D2c MATCH (x)-[y]->(z) )#output[0]
@@ -2563,6 +2632,14 @@ eval/query/select/from-clause.ion::auto-generated aliases::cross-join-nested-aut
 eval/query/select/projection.ion::project various container types::projectOfUnpivotPath#output[0]
 eval/spec-tests.ion::section-5::single source FROM with absent value null and AT clause#output[0]
 extended/eval/query/group-by/group-by.ion::select-star-group-by::SELECT * with GROUP BY#output[0]
+eval/experimental/graph/small_graphs.ion::small_graphs::(N1U1 MATCH (x1)~[y1]~(x2)~[y2]~(x3) )#env
+eval/experimental/graph/small_graphs.ion::small_graphs::(N2D1 MATCH (x1)-[y1]-(x2)-[y2]-(x3) )#env
+eval/experimental/graph/small_graphs.ion::small_graphs::(N2U1 MATCH (x1)-[y1]-(x2)-[y2]-(x3) )#env
+eval/experimental/graph/small_graphs.ion::small_graphs::(N2U1 MATCH (x1)-[y1]-(x2)~[y2]~(x3) )#env
+eval/experimental/graph/small_graphs.ion::small_graphs::(N2U1 MATCH (x1)~[y1]~(x2)-[y2]-(x3) )#env
+eval/experimental/graph/small_graphs.ion::small_graphs::(N2U1 MATCH (x1)~[y1]~(x2)~[y2]~(x3) )#env
+eval/experimental/graph/small_graphs.ion::small_graphs::(N2U2 MATCH (x1)~[y1]~(x2)~[y2]~(x1) )#env
+eval/experimental/graph/small_graphs.ion::small_graphs::(N2U2 MATCH (x1)~[y1]~(x2)~[y2]~(x3) )#env
 eval/ion/primitives/null.ion::null::null comparison{sql:"`null.int` = NULL",result:null}#output[0]
 eval/primitives/basic.ion::arithmetic with mixed type::unary minus with mixed StaticType#output[0]
 eval/primitives/cast.ion::cast-to-int::cast to int valid cases{value:"'+0b10'",result:2}#output[0]
@@ -2668,6 +2745,10 @@ eval/query/select/sql-aggregate.ion::sql_max::max select{agg:'MAX(DISTINCT d)',r
 eval/query/select/sql-aggregate.ion::sql_min::min select{agg:'MIN(DISTINCT d)',result:1}#output[0]
 eval/query/select/sql-aggregate.ion::sql_sum::sum select{agg:'SUM(DISTINCT d)',result:3}#output[0]
 extended/eval/primitives/functions/date_add.ion::date_add_invalid::date_add overflow ion#output[0]
+eval/experimental/graph/directionality.ion::directionality::Left+right with variables and label#env
+eval/experimental/graph/directionality.ion::directionality::Undirected with variables and label#env
+eval/experimental/graph/small_graphs.ion::small_graphs::(N2D1 MATCH (x1)-[y1]-(x2)-[y2]->(x3) )#env
+eval/experimental/graph/small_graphs.ion::small_graphs::(N2D1 MATCH (x1)-[y1]->(x2)-[y2]-(x3) )#env
 eval/experimental/graph/small_graphs.ion::small_graphs::Cycle: (N2D2 MATCH (x)-[y]->(x) )#output[0]
 eval/ion/primitives/null.ion::null::null comparison{sql:"`null.blob` = NULL",result:null}#output[0]
 eval/ion/primitives/null.ion::null::null comparison{sql:"`null.bool` = NULL",result:null}#output[0]
@@ -2758,7 +2839,11 @@ eval/query/select/select-star.ion::select-star::* with no aliases on a single ta
 eval/query/select/sql-aggregate.ion::sql_count::count select{agg:'COUNT(ALL d)',result:4}#output[0]
 extended/eval/primitives/functions/date_add.ion::date_add_invalid::date_add year negative#output[0]
 eval-equiv/spec-tests.ion::section-4::equiv path collection expression with wildcard steps#output[0]
+eval/experimental/graph/directionality.ion::directionality::Left+right+undirected with variables#env
 eval/experimental/graph/directionality.ion::directionality::Left+undirected with variables#output[0]
+eval/experimental/graph/gpml-paper.ion::gpml_paper::where::pattern WHERE -- longer path with AND#env
+eval/experimental/graph/small_graphs.ion::small_graphs::(N1D2 MATCH (x1)-[y1]->(x2)-[y2]->(x3) )#env
+eval/experimental/graph/small_graphs.ion::small_graphs::(N2D1 MATCH (x1)-[y1]->(x2)-[y2]->(x3) )#env
 eval/experimental/graph/small_graphs.ion::small_graphs::Cycle: (N2D2c MATCH (x)-[y]->(x) )#output[0]
 eval/ion/primitives/null.ion::null::null comparison{sql:"`null.blob` IS NULL",result:true}#output[0]
 eval/ion/primitives/null.ion::null::null comparison{sql:"`null.bool` IS NULL",result:true}#output[0]
@@ -3056,6 +3141,7 @@ extended/eval/primitives/cast.ion::cast-to-int::cast to int valid cases{value:"1
 extended/eval/primitives/cast.ion::cast-to-int::cast to int valid cases{value:"1.5",result:2}#output[0]
 extended/eval/primitives/cast.ion::cast-to-int::cast to int valid cases{value:"1.9",result:2}#output[0]
 extended/eval/primitives/functions/text_replace.ion::text_replace::text_replace('', '', 'XX')#output[0]
+eval/experimental/graph/directionality.ion::directionality::Left+undirected with variables and label#env
 eval/experimental/graph/small_graphs.ion::small_graphs::(N1U1 MATCH (x1)~[y1]~(x2)~[y2]~(x3) )#output[0]
 eval/experimental/graph/small_graphs.ion::small_graphs::(N2D1 MATCH (x1)-[y1]-(x2)-[y2]-(x3) )#output[0]
 eval/experimental/graph/small_graphs.ion::small_graphs::(N2U1 MATCH (x1)-[y1]-(x2)-[y2]-(x3) )#output[0]
@@ -3143,6 +3229,7 @@ eval/experimental/graph/directionality.ion::directionality::Left+right with vari
 eval/experimental/graph/directionality.ion::directionality::Undirected with variables and label#output[0]
 eval/experimental/graph/small_graphs.ion::small_graphs::(N2D1 MATCH (x1)-[y1]-(x2)-[y2]->(x3) )#output[0]
 eval/experimental/graph/small_graphs.ion::small_graphs::(N2D1 MATCH (x1)-[y1]->(x2)-[y2]-(x3) )#output[0]
+eval/experimental/graph/small_graphs.ion::small_graphs::L/L: (N2D2 MATCH (x1)-[y1]->(x2)-[y2]->(x3) )#env
 eval/ion/primitives/functions/exists.ion::exists::exists valid cases{param:"`()`",result:false}#output[0]
 eval/ion/primitives/functions/exists.ion::exists::exists valid cases{param:"`(1)`",result:true}#output[0]
 eval/ion/primitives/functions/exists.ion::exists::exists valid cases{param:"`[1]`",result:true}#output[0]
@@ -3215,9 +3302,16 @@ extended/eval/primitives/cast.ion::cast-to-int::cast to int valid cases{value:"-
 extended/eval/primitives/cast.ion::cast-to-int::cast to int valid cases{value:"-1.9",result:-2}#output[0]
 extended/eval/primitives/functions/text_replace.ion::text_replace::text_replace NULL second arg#output[0]
 eval/experimental/graph/directionality.ion::directionality::Left+right+undirected with variables#output[0]
+eval/experimental/graph/directionality.ion::directionality::Right+undirected with variables and labels#env
+eval/experimental/graph/gpml-paper.ion::gpml_paper::mode_3_hop::Equivs: SEARCH MODE: 3 hop cycle: WALK#env
+eval/experimental/graph/gpml-paper.ion::gpml_paper::mode_4_hop::Equivs: SEARCH MODE: 4 hop cycle: WALK#env
+eval/experimental/graph/gpml-paper.ion::gpml_paper::mode_6_hop::Equivs: SEARCH MODE: 6 hop cycle: WALK#env
 eval/experimental/graph/gpml-paper.ion::gpml_paper::where::pattern WHERE -- longer path with AND#output[0]
 eval/experimental/graph/small_graphs.ion::small_graphs::(N1D2 MATCH (x1)-[y1]->(x2)-[y2]->(x3) )#output[0]
 eval/experimental/graph/small_graphs.ion::small_graphs::(N2D1 MATCH (x1)-[y1]->(x2)-[y2]->(x3) )#output[0]
+eval/experimental/graph/small_graphs.ion::small_graphs::L/L: (N2D2c MATCH (x1)-[y1]->(x2)-[y2]->(x3) )#env
+eval/experimental/graph/small_graphs.ion::small_graphs::L/LUR: (N2D2 MATCH (x1)-[y1]->(x2)-[y2]-(x3) )#env
+eval/experimental/graph/small_graphs.ion::small_graphs::LUR/L: (N2D2 MATCH (x1)-[y1]-(x2)-[y2]->(x3) )#env
 eval/ion/primitives/operators/nary-operators.ion::nary::equalBagDifferentTypesDifferentOrderTrue#output[0]
 eval/primitives/coll-aggregate-function.ion::coll_count::COLL_COUNT bag of heterogeneous element types#env
 eval/primitives/functions/abs.ion::abs::ABS(INTERVAL '-100 10:30:45.123456' DAY(3) TO SECOND(6))#output[0]
@@ -3265,6 +3359,12 @@ eval/query/select/from-clause.ion::path in from clause::selectFromScalarAndAtUnp
 eval/spec-tests.ion::section-9::inner select evaluating to collection with more than one element#output[0]
 extended/eval/primitives/functions/size.ion::size::size valid cases{param:"`[1, 1.0]`",result:2}#output[0]
 extended/eval/primitives/functions/text_replace.ion::text_replace::text_replace('', 'abc', 'XX')#output[0]
+eval/experimental/graph/gpml-paper.ion::gpml_paper::mode_3_hop::Equivs: SEARCH MODE: 3 hop cycle: TRAIL#env
+eval/experimental/graph/gpml-paper.ion::gpml_paper::mode_4_hop::Equivs: SEARCH MODE: 4 hop cycle: TRAIL#env
+eval/experimental/graph/gpml-paper.ion::gpml_paper::mode_6_hop::Equivs: SEARCH MODE: 6 hop cycle: TRAIL#env
+eval/experimental/graph/small_graphs.ion::small_graphs::L/LUR: (N2D2c MATCH (x1)-[y1]->(x2)-[y2]-(x3) )#env
+eval/experimental/graph/small_graphs.ion::small_graphs::LUR/L: (N2D2c MATCH (x1)-[y1]-(x2)-[y2]->(x3) )#env
+eval/experimental/graph/small_graphs.ion::small_graphs::LUR/LUR: (N2D2 MATCH (x1)-[y1]-(x2)-[y2]-(x3) )#env
 eval/primitives/cast.ion::cast_invalid::cast to int invalid target type{value:"[]",target:"LIST"}#output[1]
 eval/primitives/functions/exists.ion::exists::exists valid cases{param:"<<missing>>",result:true}#output[0]
 eval/primitives/functions/extract.ion::extract::extract_date::EXTRACT(DAY FROM DATE '2000-01-02')#output[0]
@@ -3315,6 +3415,10 @@ extended/eval/primitives/functions/size.ion::size::size valid cases{param:"`[mis
 extended/eval/primitives/functions/size.ion::size::size valid cases{param:"`{a: null}`",result:1}#output[0]
 extended/eval/primitives/functions/text_replace.ion::text_replace::text_replace MISSING first arg#output[0]
 extended/eval/primitives/functions/text_replace.ion::text_replace::text_replace MISSING third arg#output[0]
+eval/experimental/graph/gpml-paper.ion::gpml_paper::mode_3_hop::Equivs: SEARCH MODE: 3 hop cycle: SIMPLE#env
+eval/experimental/graph/gpml-paper.ion::gpml_paper::mode_4_hop::Equivs: SEARCH MODE: 4 hop cycle: SIMPLE#env
+eval/experimental/graph/gpml-paper.ion::gpml_paper::mode_6_hop::Equivs: SEARCH MODE: 6 hop cycle: SIMPLE#env
+eval/experimental/graph/small_graphs.ion::small_graphs::LUR/LUR: (N2D2c MATCH (x1)-[y1]-(x2)-[y2]-(x3) )#env
 eval/ion/primitives/cast.ion::cast-to-int::cast to int valid cases{value:" `\"100\"` ",result:100}#output[0]
 eval/ion/primitives/functions/exists.ion::exists::exists valid cases{param:"`(null)`",result:true}#output[0]
 eval/ion/primitives/functions/exists.ion::exists::exists valid cases{param:"`[null]`",result:true}#output[0]
@@ -3370,6 +3474,9 @@ eval/query/select/sql-aggregate.ion::sql_min::min group by{agg:'MIN(ALL t.b)',ex
 eval/query/select/sql-aggregate.ion::sql_sum::sum group by{agg:'SUM(ALL t.b)',expectedF1:5,expectedF2:6}#env
 extended/eval/primitives/functions/size.ion::size::size null and missing propagation{param:"null"}#output[0]
 extended/eval/primitives/functions/text_replace.ion::text_replace::text_replace MISSING second arg#output[0]
+eval/experimental/graph/gpml-paper.ion::gpml_paper::mode_3_hop::Equivs: SEARCH MODE: 3 hop cycle: ACYCLIC#env
+eval/experimental/graph/gpml-paper.ion::gpml_paper::mode_4_hop::Equivs: SEARCH MODE: 4 hop cycle: ACYCLIC#env
+eval/experimental/graph/gpml-paper.ion::gpml_paper::mode_6_hop::Equivs: SEARCH MODE: 6 hop cycle: ACYCLIC#env
 eval/primitives/cast.ion::cast_invalid::cast to int invalid target type{value:"<<1>>",target:"BAG"}#output[1]
 eval/primitives/cast.ion::cast_invalid::cast to int invalid target type{value:"{}",target:"STRUCT"}#output[1]
 eval/primitives/cast.ion::cast_invalid::cast to int invalid values{value:"'00b10'",target:"STRING"}#output[1]
@@ -3544,6 +3651,7 @@ eval/experimental/graph/directionality.ion::directionality::Right+undirected wit
 eval/experimental/graph/gpml-paper.ion::gpml_paper::mode_3_hop::Equivs: SEARCH MODE: 3 hop cycle: WALK#output[0]
 eval/experimental/graph/gpml-paper.ion::gpml_paper::mode_4_hop::Equivs: SEARCH MODE: 4 hop cycle: WALK#output[0]
 eval/experimental/graph/gpml-paper.ion::gpml_paper::mode_6_hop::Equivs: SEARCH MODE: 6 hop cycle: WALK#output[0]
+eval/experimental/graph/small_graphs.ion::small_graphs::L/L Cycle: (N2D2c MATCH (x1)-[y1]->(x2)-[y2]->(x1) )#env
 eval/experimental/graph/small_graphs.ion::small_graphs::L/L: (N2D2c MATCH (x1)-[y1]->(x2)-[y2]->(x3) )#output[0]
 eval/experimental/graph/small_graphs.ion::small_graphs::L/LUR: (N2D2 MATCH (x1)-[y1]->(x2)-[y2]-(x3) )#output[0]
 eval/experimental/graph/small_graphs.ion::small_graphs::LUR/L: (N2D2 MATCH (x1)-[y1]-(x2)-[y2]->(x3) )#output[0]
