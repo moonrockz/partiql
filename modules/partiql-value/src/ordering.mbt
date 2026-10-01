@@ -22,9 +22,10 @@ fn rank(v : Value) -> Int {
     Tuple(_) => 11
     Bag(_) => 12
     Map(_) => 13
+    Graph(_) => 14
     // Only an Ion value that cannot be lowered (a symbol without text)
     // keeps this rank; such values compare equal to each other.
-    Ion(_) => 14
+    Ion(_) => 15
   }
 }
 
