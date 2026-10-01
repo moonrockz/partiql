@@ -1,0 +1,24 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:recommended",
+    ":semanticCommits"
+  ],
+  "labels": ["dependencies"],
+  "schedule": ["before 6am on monday"],
+  "packageRules": [
+    {
+      "description": "GitHub Actions: one grouped PR, ci(deps) commits",
+      "matchManagers": ["github-actions"],
+      "groupName": "github-actions",
+      "semanticCommitType": "ci",
+      "semanticCommitScope": "deps"
+    },
+    {
+      "description": "mise dev tools: build(deps) commits",
+      "matchManagers": ["mise"],
+      "semanticCommitType": "build",
+      "semanticCommitScope": "deps"
+    }
+  ]
+}
