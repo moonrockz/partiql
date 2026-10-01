@@ -1,85 +1,17 @@
-# Claude Code Project Instructions
+# Agentic Instructions
 
-## Commit Messages
+Common agentic instructions are in AGENTS.md, imported here:
 
-All commits MUST use **Conventional Commits** format:
+@AGENTS.md
 
-```
-type(scope): description
-```
+Only place claude specific agentic instructions in this file.
 
-Types: `feat`, `fix`, `docs`, `refactor`, `perf`, `test`, `build`, `ci`, `chore`, `style`
+## Claude Code
 
-## Build & Test
-
-Use **`mise run`** for all operations:
-
-```bash
-mise run check               # all gates
-mise run test:unit           # MoonBit tests
-mise run test:conformance    # partiql-tests against the baseline
-```
-
-## Mise Tasks
-
-Tasks are **file-based scripts** in `mise-tasks/`. Never add inline `[tasks]` to `.mise.toml`.
-
-## Additional Agentic Instructions:
-
-Please see: [AGENTS.md](AGENTS.md) for additional agentic instructions.
-
-
-<!-- BEGIN BEADS INTEGRATION v:1 profile:minimal hash:1105d646 -->
-## Beads Issue Tracker
-
-This project uses **bd (beads)** for issue tracking. Run `bd prime` to see full workflow context and commands.
-
-### Quick Reference
-
-```bash
-bd ready              # Find available work
-bd show <id>          # View issue details
-bd update <id> --claim  # Claim work
-bd close <id>         # Complete work
-```
-
-### Rules
-
-- Use `bd` for ALL task tracking — do NOT use TodoWrite, TaskCreate, or markdown TODO lists
-- Run `bd prime` for detailed command reference and session close protocol
-- Use `bd remember` for persistent knowledge — do NOT use MEMORY.md files
-
-**Architecture in one line:** issues live in a local Dolt DB; sync uses `refs/dolt/data` on your git remote; `.beads/issues.jsonl` is a passive export. See https://github.com/gastownhall/beads/blob/main/docs/core-concepts/sync-concepts.md for details and anti-patterns.
-
-## Agent Context Profiles
-
-The managed Beads block is task-tracking guidance, not permission to override repository, user, or orchestrator instructions.
-
-- **Conservative (default)**: Use `bd` for task tracking. Do not run git commits, git pushes, or Dolt remote sync unless explicitly asked. At handoff, report changed files, validation, and suggested next commands.
-- **Minimal**: Keep tool instruction files as pointers to `bd prime`; use the same conservative git policy unless active instructions say otherwise.
-- **Team-maintainer**: Only when the repository explicitly opts in, agents may close beads, run quality gates, commit, and push as part of session close. A current "do not commit" or "do not push" instruction still wins.
-
-## Session Completion
-
-This protocol applies when ending a Beads implementation workflow. It is subordinate to explicit user, repository, and orchestrator instructions.
-
-1. **File issues for remaining work** - Create beads for anything that needs follow-up
-2. **Run quality gates** (if code changed) - Tests, linters, builds
-3. **Update issue status** - Close finished work, update in-progress items
-4. **Handle git/sync by active profile**:
-   ```bash
-   # Conservative/minimal/default: report status and proposed commands; wait for approval.
-   git status
-
-   # Team-maintainer opt-in only, unless current instructions forbid it:
-   git pull --rebase
-   git push
-   git status
-   ```
-5. **Hand off** - Summarize changes, validation, issue status, and any blocked sync/commit/push step
-
-**Critical rules:**
-- Explicit user or orchestrator instructions override this Beads block.
-- Do not commit or push without clear authority from the active profile or the current user request.
-- If a required sync or push is blocked, stop and report the exact command and error.
-<!-- END BEADS INTEGRATION -->
+- Track work in bd only (see AGENTS.md > Work Tracking). Do not use the
+  TodoWrite or TaskCreate tools.
+- Store persistent knowledge with `bd remember`, not in Claude Code auto
+  memory (`MEMORY.md`). See AGENTS.md > Persistent Memory.
+- Write superpowers specs and plans under `.dev/docs/superpowers/` (see
+  AGENTS.md > The `.dev/` Working Area), not under `docs/`.
+- Use `mise run <task>` for builds and tests, not ad hoc command chains.

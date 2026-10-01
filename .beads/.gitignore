@@ -80,3 +80,10 @@ bd.db
 # They would override fork protection in .git/info/exclude.
 # Config files (metadata.json, config.yaml) are tracked by git by default
 # since no pattern above ignores them.
+
+# Auto-import state marker (per-machine)
+.auto-import-issues.jsonl
+
+# Passive JSONL export (bd export). Issues sync through the Dolt remote
+# (refs/dolt/data), so the export is not committed.
+issues.jsonl
