@@ -25,12 +25,28 @@ fn Tally::record(self : Tally, id : String, outcome : Outcome) -> Unit {
 }
 
 ///|
+/// Records the codec check for one corpus value, and the ion-roundtrip check
+/// for each `$ion` payload inside it.
+fn record_value(
+  id : String,
+  value : @ion.IonValue,
+  codec : Tally,
+  ion_roundtrip : Tally,
+) -> Unit {
+  codec.record(id, check_codec(value))
+  for k, payload in ion_payloads(value) {
+    ion_roundtrip.record("\{id}#ion[\{k}]", check_ion_roundtrip(payload))
+  }
+}
+
+///|
 fn run_case(
   suite : Suite,
   case : TestCase,
   syntax : Tally,
   eval_parse : Tally,
   codec : Tally,
+  ion_roundtrip : Tally,
 ) -> Unit {
   let statements = suite.statements_of(case) catch {
     error => {
@@ -61,11 +77,11 @@ fn run_case(
     }
   }
   if case.env is Some(env) {
-    codec.record("\{case.id}#env", check_codec(env))
+    record_value("\{case.id}#env", env, codec, ion_roundtrip)
   }
   for i, assertion in case.assertions {
     if assertion is EvaluationSuccess(output~, ..) {
-      codec.record("\{case.id}#output[\{i}]", check_codec(output))
+      record_value("\{case.id}#output[\{i}]", output, codec, ion_roundtrip)
     }
   }
 }
@@ -101,6 +117,7 @@ test "partiql-tests" {
   let syntax = Tally::new("syntax")
   let eval_parse = Tally::new("eval-parse")
   let codec = Tally::new("codec")
+  let ion_roundtrip = Tally::new("ion-roundtrip")
   for root in data_roots {
     if !@fs.path_exists(root) {
       continue
@@ -114,7 +131,7 @@ test "partiql-tests" {
       }
       guard read_suite(path, file_id, syntax) is Some(suite) else { continue }
       for case in suite.cases {
-        run_case(suite, case, syntax, eval_parse, codec)
+        run_case(suite, case, syntax, eval_parse, codec, ion_roundtrip)
       }
     }
   }
@@ -122,7 +139,7 @@ test "partiql-tests" {
   let allow_drop = @env.get_env_var("PARTIQL_CONFORMANCE_ALLOW_DROP") ==
     Some("1")
   let mut regressions = 0
-  for tally in [syntax, eval_parse, codec] {
+  for tally in [syntax, eval_parse, codec, ion_roundtrip] {
     let comparison = compare(load_baseline(tally.check), tally.passed)
     report_conformance(
       suite=tally.check,
@@ -163,7 +180,8 @@ test "a case with several evaluation assertions is checked once per statement" {
   let syntax = Tally::new("syntax")
   let eval_parse = Tally::new("eval-parse")
   let codec = Tally::new("codec")
-  run_case(suite, suite.cases[0], syntax, eval_parse, codec)
+  let ion_roundtrip = Tally::new("ion-roundtrip")
+  run_case(suite, suite.cases[0], syntax, eval_parse, codec, ion_roundtrip)
   @expect.expect(eval_parse.records).to_equal(1)
   @expect.expect(syntax.records).to_equal(0)
 }
