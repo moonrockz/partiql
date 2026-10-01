@@ -13,5 +13,6 @@ import {
 
 import {
   "moonrockz/partiql-value/arbitrary",
+  "moonrockz/partiql-value/ion" @partiql_ion,
   "moonrockz/expect",
 } for "test"
