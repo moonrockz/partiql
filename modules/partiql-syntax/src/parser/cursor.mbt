@@ -95,7 +95,7 @@ fn is_category(x : String) -> Bool {
 
 ///|
 /// Tokens that only start an expression; `an expression` covers them.
-let expression_starts : Array[String] = ["`(`", "`+`", "`-`", "NOT"]
+let expression_starts : Array[String] = ["`(`", "`<<`", "`+`", "`-`", "NOT"]
 
 ///|
 fn Parser::curated(self : Parser) -> Array[String] {

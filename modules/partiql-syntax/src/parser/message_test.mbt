@@ -58,6 +58,9 @@ test "expected lists are curated" {
     .expect(expected_of("SELECT a FROM"))
     .to_equal(["LATERAL", "UNPIVOT", "an expression"])
     soft.expect(expected_of("SELECT 1 +")).to_equal(["an expression"])
+    soft
+    .expect(expected_of(" <-TIME"))
+    .to_equal(["WITH", "TABLE", "SELECT", "PIVOT", "an expression"])
     soft.expect(expected_of("SELECT a FROM t ORDER a")).to_equal(["BY"])
     soft
     .expect(expected_of("SELECT (a FROM t"))
