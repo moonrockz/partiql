@@ -110,7 +110,9 @@ fn to_pretty(root : Doc) -> @pretty.Doc {
   while steps.pop() is Some(step) {
     match step {
       Visit(Nil) => out.push(@pretty.empty())
-      Visit(Text(s)) => out.push(@pretty.text(s))
+      // Verbatim: a line feed inside a literal or a comment keeps its bytes
+      // (no indentation after it).
+      Visit(Text(s)) => out.push(@pretty.verbatim(s))
       Visit(Line) => out.push(@pretty.line())
       Visit(SoftLine) => out.push(@pretty.softline())
       Visit(HardLine) => out.push(@pretty.hardline())

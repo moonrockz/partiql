@@ -121,3 +121,40 @@ test "pretty scripts: blank lines and comments" {
     soft.expect(@syntax.format(once, width=20)).to_equal(once)
   })
 }
+
+///|
+test "pretty format keeps line feeds inside literals and comments" {
+  let cases = [
+    "SELECT 'a\nb' AS x FROM t", "SELECT f('a\nb') FROM t", "SELECT \"a\nb\" FROM t",
+    "SELECT `{a: 1, b: '''x\ny'''}` FROM t", "SELECT a, /* x\ny */ b FROM t",
+  ]
+  @expect.expect_all(soft => {
+    for source in cases {
+      let once = @syntax.format(source, width=20) catch {
+        e => {
+          soft.expect(@debug.to_string(e)).to_equal("")
+          continue
+        }
+      }
+      soft
+      .expect(@syntax.parse_script(once).strip_spans().statements)
+      .to_equal(@syntax.parse_script(source).strip_spans().statements)
+      soft.expect(@syntax.format(once, width=20)).to_equal(once)
+    }
+    soft
+    .expect(@syntax.format("SELECT 'a\nb' AS x FROM t", width=80))
+    .to_equal("SELECT\n  'a\nb' AS x\nFROM t;\n")
+  })
+}
+
+///|
+test "pretty text has no trailing spaces" {
+  @expect.expect_all(soft => {
+    soft
+    .expect(@syntax.format("SELECT COUNT(DISTINCT aaaaaaaa) FROM t", width=12))
+    .to_equal("SELECT\n  COUNT(\n    DISTINCT aaaaaaaa\n  )\nFROM t;\n")
+    soft
+    .expect(@syntax.format("SELECT COUNT(DISTINCT a, b) FROM t"))
+    .to_equal("SELECT COUNT(DISTINCT a, b) FROM t;\n")
+  })
+}

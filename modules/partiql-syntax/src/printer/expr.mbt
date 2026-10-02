@@ -243,18 +243,23 @@ fn Printer::expr_body(self : Printer, e : @ast.Expr) -> Doc {
         Text(")"),
       ])
     Call(name, args, quantifier~) => {
-      let q = match quantifier {
-        Some(Distinct) => "DISTINCT "
-        Some(All) => "ALL "
-        None => ""
-      }
       let inner = match (args, quantifier) {
         // `f(SELECT ..)`: a lone subquery argument needs no own parentheses.
         ([{ kind: Query(sub), span, }], None) =>
           [cat([self.leading(span), self.query(sub)])]
         _ => self.items(args)
       }
-      bracketed(ident_text(name) + "(" + q, inner, ")")
+      // The quantifier goes with the first argument, so that a broken call
+      // has no space at the end of its first line.
+      let q = match quantifier {
+        Some(Distinct) => "DISTINCT "
+        Some(All) => "ALL "
+        None => ""
+      }
+      if q != "" && !inner.is_empty() {
+        inner[0] = cat([Text(q), inner[0]])
+      }
+      bracketed(ident_text(name) + "(", inner, ")")
     }
     CallStar(name) => cat([ident_doc(name), Text("(*)")])
     List(xs) => bracketed("[", self.items(xs), "]")
