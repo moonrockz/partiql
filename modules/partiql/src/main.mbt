@@ -27,7 +27,7 @@ async fn main {
         Err(e) => raise e
       }
     },
-    color_default: false,
+    color_default: stderr_is_terminal() && @env.get_env_var("NO_COLOR") is None,
   }
   let outcome = @cli.run(args, io~)
   if outcome.stdout != "" {

@@ -19,6 +19,7 @@ pub(all) struct Io {
   read_file : (String) -> String raise
   write_file : (String, String) -> Unit raise
   read_stdin : () -> String raise
+  color_default : Bool
 }
 pub fn Io::unavailable() -> Self
 
