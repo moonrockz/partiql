@@ -43,3 +43,16 @@ test "deep left chains do not overflow the stack" {
     soft.expect(sx("1" + " + 1".repeat(n), width=80).length() > 0).to_be_true()
   })
 }
+
+///|
+test "atoms escape quotes and control characters" {
+  @expect.expect_all(soft => {
+    soft
+    .expect(sx("SELECT 'x)y', 'it''s', \"a\"\"b\" FROM t"))
+    .to_equal("(select 'x)y', 'it''s', \"a\"\"b\" (from t))")
+    soft
+    .expect(sx("SELECT 'a\nb' FROM t"))
+    .to_equal("(select 'a\\nb' (from t))")
+    soft.expect(sx("a.'it''s'")).to_equal("(path a .'it''s')")
+  })
+}

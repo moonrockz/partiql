@@ -108,8 +108,11 @@ fn Parser::interval_qualifier(
 fn Parser::data_type(self : Parser) -> @ast.DataType raise @ast.ParseError {
   let t = self.peek()
   guard t.kind is Word(w) else {
-    let name = self.identifier()
-    return Custom(name)
+    if t.kind is QuotedIdent(_) {
+      return Custom(self.identifier())
+    }
+    self.note("a type")
+    raise self.error("expected a type")
   }
   let upper = w.to_upper()
   let simple : @ast.DataType? = match upper {
@@ -203,9 +206,11 @@ fn Parser::data_type(self : Parser) -> @ast.DataType raise @ast.ParseError {
       }
     }
     _ => {
-      self.note("a type")
-      let name = self.identifier()
-      Custom(name)
+      if is_reserved(w) {
+        self.note("a type")
+        raise self.error("expected a type")
+      }
+      Custom(self.identifier())
     }
   }
 }

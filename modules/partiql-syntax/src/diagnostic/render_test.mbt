@@ -272,3 +272,13 @@ test "render: colour" {
     .to_be_false()
   })
 }
+
+///|
+test "render: control characters in the source line do not reach the terminal" {
+  let text = @diagnostic.render(
+    syntax("unexpected character U+001B", 1, 2, [], ""),
+    "a\u{1b}[31mb",
+    name="c",
+  )
+  @expect.expect(text.contains("\u{1b}")).to_be_false()
+}

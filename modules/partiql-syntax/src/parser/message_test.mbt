@@ -64,7 +64,7 @@ test "expected lists are curated" {
     soft.expect(expected_of("SELECT a FROM t ORDER a")).to_equal(["BY"])
     soft
     .expect(expected_of("SELECT (a FROM t"))
-    .to_equal(["MATCH", "`,`", "`)`", "an operator"])
+    .to_equal(["`,`", "`)`", "an operator"])
     soft
     .expect(expected_of("SELECT x BETWEEN 1 2 FROM t").contains("AND"))
     .to_be_true()
@@ -92,7 +92,8 @@ test "statements that later milestones parse are Unsupported" {
         "INSERT", "UPDATE", "DELETE", "REPLACE", "UPSERT", "REMOVE", "SET", "CREATE",
         "DROP", "EXEC", "EXPLAIN", "FROM",
       ] {
-      let source = word.to_lower() + " x y"
+      // INTO makes a non-reserved word such as REPLACE a statement keyword.
+      let source = word.to_lower() + " into x y"
       soft
       .expect_call(() => @parser.parse_statement(source), label=source)
       .to_raise_matching(
@@ -117,5 +118,44 @@ test "statements that later milestones parse are Unsupported" {
     .expect_call(() => @parser.parse_statement("replace('a')"))
     .not()
     .to_raise()
+  })
+}
+
+///|
+test "review fixes: messages" {
+  @expect.expect_all(soft => {
+    soft
+    .expect(failure("SELECT a BETWEEN 1 'aaaaaaaaaaaaaaaaaaa😀bbb'").1)
+    .to_equal("string `'aaaaaaaaaaaaaaaaaaa😀…'`")
+    soft
+    .expect(failure("SELECT a FROM t 'a\nb'").1)
+    .to_equal("string `'a\\nb'`")
+    soft
+    .expect(failure("SELECT CAST(a AS) FROM t"))
+    .to_equal(("expected a type", "`)`"))
+    let is_list = expected_of("SELECT a IS 3 FROM t")
+    soft
+    .expect(is_list.contains("a type") && is_list.contains("TRUE"))
+    .to_be_true()
+    soft
+    .expect(failure("SELECT <<1, 2 FROM t").0)
+    .to_equal("expected `,` or `>>`")
+    soft
+    .expect(expected_of("SELECT a FROM t WHERE (a = 1"))
+    .to_equal(["`,`", "`)`", "an operator"])
+    soft
+    .expect(expected_of("SELECT (a FROM t"))
+    .to_equal(["`,`", "`)`", "an operator"])
+    soft.expect_call(() => @parser.parse_statement("replace")).not().to_raise()
+    soft
+    .expect_call(() => @parser.parse_statement("replace.a + 1"))
+    .not()
+    .to_raise()
+    soft
+    .expect_call(() => @parser.parse_statement("replace into t value 1"))
+    .to_raise_matching(
+      e => e is @ast.ParseError::Unsupported(_),
+      description="Unsupported",
+    )
   })
 }

@@ -69,7 +69,7 @@ test "literals" {
     ("1", "1"),
     ("1.50", "1.50"),
     ("-5e0", "(neg 5e0)"),
-    ("'it''s'", "'it's'"),
+    ("'it''s'", "'it''s'"),
     ("NULL", "null"),
     ("missing", "missing"),
     ("TRUE", "true"),

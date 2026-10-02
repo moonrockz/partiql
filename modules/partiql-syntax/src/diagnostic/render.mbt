@@ -34,7 +34,16 @@ fn or_list(items : Array[String]) -> String {
 ///|
 /// Expands tabs to 4 spaces.
 fn expand(text : String) -> String {
-  text.replace_all(old="\t", new="    ")
+  let buf = StringBuilder()
+  for c in text {
+    match c {
+      '\t' => buf.write_string("    ")
+      // Control characters never reach the terminal.
+      _ if c.to_int() < 0x20 || c.to_int() == 0x7F => buf.write_char('\u{FFFD}')
+      _ => buf.write_char(c)
+    }
+  }
+  buf.to_string()
 }
 
 ///|

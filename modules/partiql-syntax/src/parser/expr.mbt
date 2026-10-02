@@ -123,6 +123,10 @@ fn Parser::predicate(self : Parser) -> @ast.Expr raise @ast.ParseError {
       if negated {
         ignore(self.advance())
       }
+      // IS also takes a truth value (handled by bool_test): list it.
+      self.note("TRUE")
+      self.note("FALSE")
+      self.note("UNKNOWN")
       let kind : @ast.ExprKind = if self.eat_word("NULL") {
         IsNull(left, negated~)
       } else if self.eat_word("MISSING") {
@@ -152,7 +156,7 @@ fn Parser::predicate(self : Parser) -> @ast.Expr raise @ast.ParseError {
         let start = self.pos
         ignore(self.advance())
         let first = self.expr()
-        if self.at_word("MATCH") {
+        if self.cont(() => self.at_word("MATCH")) {
           self.graph_match_rest(first, start)
         } else {
           let items = [first]

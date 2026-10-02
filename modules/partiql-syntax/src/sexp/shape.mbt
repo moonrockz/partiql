@@ -3,10 +3,41 @@
 ///|
 fn ident_text(i : @ast.Identifier) -> String {
   if i.delimited {
-    "\"\{i.text}\""
+    quoted(i.text, '"')
   } else {
     i.text
   }
+}
+
+///|
+/// `s` with control characters escaped (`\n`, `\t`, `\r`, `\u{..}`).
+fn escape_controls(s : String) -> String {
+  let buf = StringBuilder()
+  for c in s {
+    match c {
+      '\n' => buf.write_string("\\n")
+      '\t' => buf.write_string("\\t")
+      '\r' => buf.write_string("\\r")
+      _ if c.to_int() < 0x20 || c.to_int() == 0x7F =>
+        buf.write_string("\\u{\{c.to_int().to_string(radix=16)}}")
+      _ => buf.write_char(c)
+    }
+  }
+  buf.to_string()
+}
+
+///|
+/// `s` between `q` quotes, with `q` doubled inside (PartiQL escaping) and
+/// control characters escaped, so that every atom reads back unambiguously.
+fn quoted(s : String, q : Char) -> String {
+  let doubled = StringBuilder()
+  for c in s {
+    if c == q {
+      doubled.write_char(q)
+    }
+    doubled.write_char(c)
+  }
+  "\{q}\{escape_controls(doubled.to_string())}\{q}"
 }
 
 ///|
@@ -97,22 +128,22 @@ fn literal_sx(l : @ast.Literal) -> Sx {
     Missing => Atom("missing")
     Bool(b) => Atom("\{b}")
     Int(t) | Decimal(t) | Float(t) => Atom(t)
-    String(s) => Atom("'\{s}'")
-    Ion(t, _) => Atom("`\{t}`")
-    Date(s) => list("date", [Atom("'\{s}'")])
+    String(s) => Atom(quoted(s, '\''))
+    Ion(t, _) => Atom("`\{escape_controls(t)}`")
+    Date(s) => list("date", [Atom(quoted(s, '\''))])
     Time(s, precision~, with_tz~) =>
       list(
         "time\{opt_int(precision)}",
-        (if with_tz { [Atom("tz")] } else { [] }) + [Atom("'\{s}'")],
+        (if with_tz { [Atom("tz")] } else { [] }) + [Atom(quoted(s, '\''))],
       )
     Timestamp(s, precision~, with_tz~) =>
       list(
         "timestamp\{opt_int(precision)}",
-        (if with_tz { [Atom("tz")] } else { [] }) + [Atom("'\{s}'")],
+        (if with_tz { [Atom("tz")] } else { [] }) + [Atom(quoted(s, '\''))],
       )
     Interval(s, negative~, qualifier~) =>
       list("interval", [
-        Atom("\{if negative { "-" } else { "" }}'\{s}'"),
+        Atom("\{if negative { "-" } else { "" }}\{quoted(s, '\'')}"),
         Atom(qualifier_text(qualifier)),
       ])
   }
@@ -242,7 +273,7 @@ fn node_sx(e : @ast.Expr) -> Sx {
       let parts = steps.map(step => {
         match step {
           Field(i) => Atom(".\{ident_text(i)}")
-          FieldString(s, ..) => Atom(".'\{s}'")
+          FieldString(s, ..) => Atom("." + quoted(s, '\''))
           Index(x) => Seq("[", [expr_sx(x)], "]")
           AllElements(_) => Atom("[*]")
           AllFields(_) => Atom(".*")

@@ -220,11 +220,8 @@ fn scan(
       s.pos += 1
       Punct(c.unsafe_to_char())
     } else {
-      raise error(
-        "unexpected character `\{c.unsafe_to_char()}`",
-        start,
-        start + 1,
-      )
+      let (text, width) = char_text(c, s.at(1))
+      raise error("unexpected character \{text}", start, start + width)
     }
     tokens.push({ kind, span: { start, end: s.pos, }, })
     if kind is End {
@@ -246,4 +243,27 @@ pub fn lex_with_comments(
   source : String,
 ) -> (Array[Token], Array[@ast.Comment]) raise @ast.ParseError {
   scan(source)
+}
+
+///|
+/// `U+XXXX` for a code point.
+fn u_plus(c : Int) -> String {
+  let hex = c.to_string(radix=16).to_upper()
+  "U+" + "0".repeat(if hex.length() < 4 { 4 - hex.length() } else { 0 }) + hex
+}
+
+///|
+/// How an error names the character `c` (followed by code unit `next`): in
+/// backquotes, a surrogate pair as one character, and a control character or
+/// a lone surrogate as `U+XXXX`, so that no message carries raw control
+/// codes.
+fn char_text(c : Int, next : Int) -> (String, Int) {
+  if c >= 0xD800 && c <= 0xDBFF && next >= 0xDC00 && next <= 0xDFFF {
+    let code = 0x10000 + ((c - 0xD800) << 10) + (next - 0xDC00)
+    ("`\{code.unsafe_to_char()}`", 2)
+  } else if c < 0x20 || c == 0x7F || (c >= 0xD800 && c <= 0xDFFF) {
+    (u_plus(c), 1)
+  } else {
+    ("`\{c.unsafe_to_char()}`", 1)
+  }
 }

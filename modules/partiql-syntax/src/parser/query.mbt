@@ -244,8 +244,11 @@ let unsupported_statements : Array[String] = [
 fn Parser::reject_unsupported(self : Parser) -> Unit raise @ast.ParseError {
   guard self.peek().kind is Word(w) else { return }
   let upper = w.to_upper()
+  // A non-reserved word (such as REPLACE) is a statement keyword only before
+  // INTO; otherwise it can be a variable.
   if unsupported_statements.contains(upper) &&
-    !(self.peek_at(1).kind is Punct('(')) {
+    !(self.peek_at(1).kind is Punct('(')) &&
+    (is_reserved(w) || word_is(self.peek_at(1), "INTO")) {
     raise @ast.ParseError::Unsupported(
       message="\{upper} statements are not supported yet",
       span=self.peek().span,

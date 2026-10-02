@@ -113,7 +113,9 @@ fn Parser::primary(self : Parser) -> @ast.Expr raise @ast.ParseError {
           if self.eat_op(">>") {
             break
           }
-          self.expect_punct(',')
+          if !self.eat_punct(',') {
+            self.fail("expected `,` or `>>`")
+          }
         }
       }
       make(Bag(items), self.span_from(start))
@@ -182,7 +184,7 @@ fn Parser::parenthesized(self : Parser) -> @ast.Expr raise @ast.ParseError {
   if self.at_query_start(1) {
     ignore(self.advance())
     let q = self.nested(() => self.query())
-    if self.at_word("MATCH") {
+    if self.cont(() => self.at_word("MATCH")) {
       // A query operand is one parenthesized group, as Kotlin's exprPrimary.
       if !self.one_group(start + 1, self.pos) {
         raise self.error(
@@ -196,7 +198,7 @@ fn Parser::parenthesized(self : Parser) -> @ast.Expr raise @ast.ParseError {
   }
   ignore(self.advance())
   let first = self.expr()
-  if self.at_word("MATCH") {
+  if self.cont(() => self.at_word("MATCH")) {
     return self.graph_match_rest(first, start)
   }
   if self.eat_punct(',') {

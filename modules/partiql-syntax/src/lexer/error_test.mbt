@@ -33,3 +33,18 @@ test "lexer errors name the problem" {
     soft.expect((start, end, found)).to_equal((7, 14, ""))
   })
 }
+
+///|
+test "lexer errors name astral and control characters safely" {
+  @expect.expect_all(soft => {
+    soft
+    .expect(lex_error("SELECT 😀 FROM t"))
+    .to_equal(("unexpected character `😀`", 7, 9, ""))
+    soft
+    .expect(lex_error("SELECT a\u{0}b"))
+    .to_equal(("unexpected character U+0000", 8, 9, ""))
+    soft
+    .expect(lex_error("SELECT a\u{1b}b"))
+    .to_equal(("unexpected character U+001B", 8, 9, ""))
+  })
+}

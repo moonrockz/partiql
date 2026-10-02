@@ -285,6 +285,39 @@ fn Parser::span_from(self : Parser, start : Int) -> @ast.Span {
 }
 
 ///|
+/// `s` with control characters escaped (`\n`, `\t`, `\r`, `\u{..}`), so
+/// that no message carries raw control codes.
+fn escape_text(s : String) -> String {
+  let buf = StringBuilder()
+  for c in s {
+    match c {
+      '\n' => buf.write_string("\\n")
+      '\t' => buf.write_string("\\t")
+      '\r' => buf.write_string("\\r")
+      _ if c.to_int() < 0x20 || c.to_int() == 0x7F =>
+        buf.write_string("\\u{\{c.to_int().to_string(radix=16)}}")
+      _ => buf.write_char(c)
+    }
+  }
+  buf.to_string()
+}
+
+///|
+/// The first 20 characters of `s` (code points), then `…` when longer.
+fn shorten(s : String) -> String {
+  let buf = StringBuilder()
+  let mut n = 0
+  for c in s {
+    if n == 20 {
+      return escape_text(buf.to_string()) + "…"
+    }
+    buf.write_char(c)
+    n += 1
+  }
+  escape_text(buf.to_string())
+}
+
+///|
 /// How an error names the token it found (spec M3c §4.1).
 fn describe(t : @lexer.Token) -> String {
   match t.kind {
@@ -294,15 +327,8 @@ fn describe(t : @lexer.Token) -> String {
       } else {
         "identifier `\{w}`"
       }
-    QuotedIdent(w) => "identifier `\"\{w}\"`"
-    StringLit(s) => {
-      let text = if s.length() > 20 {
-        s.view(end_offset=20).to_owned() + "…"
-      } else {
-        s
-      }
-      "string `'\{text}'`"
-    }
+    QuotedIdent(w) => "identifier `\"\{escape_text(w)}\"`"
+    StringLit(s) => "string `'\{shorten(s)}'`"
     IntLit(n) | DecimalLit(n) | FloatLit(n) => "number `\{n}`"
     IonLit(_, _) => "Ion literal"
     Punct(c) => "`\{c}`"
