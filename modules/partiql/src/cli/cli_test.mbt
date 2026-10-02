@@ -88,6 +88,7 @@ test "root help snapshot" {
       #|Tools for PartiQL, the SQL-compatible query language for nested and semi-structured data.
       #|
       #|Commands:
+      #|  format   Print PartiQL in canonical form, keeping comments.
       #|  version  Print the version.
       #|  help     Print help for the command line or for one command.
       #|
@@ -96,8 +97,9 @@ test "root help snapshot" {
       #|  -V, --version  Show the version.
       #|
       #|Examples:
+      #|  partiql format query.sql
       #|  partiql version
-      #|  partiql help version
+      #|  partiql help format
       #|
     ),
   )

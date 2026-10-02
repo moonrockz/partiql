@@ -6,7 +6,7 @@
 
 ///|
 /// The commands, in the order help lists them.
-let command_names : Array[String] = ["version", "help"]
+let command_names : Array[String] = ["format", "version", "help"]
 
 ///|
 /// The command `name`. `prefix` goes before the name in its usage line:
@@ -14,6 +14,34 @@ let command_names : Array[String] = ["version", "help"]
 fn command(name : String, prefix : String) -> @argparse.Command {
   let named = prefix + name
   match name {
+    "format" =>
+      @argparse.Command(
+        named,
+        about="Print PartiQL in canonical form, keeping comments.",
+        flags=[
+          @argparse.FlagArg(
+            "write",
+            short='w',
+            about="Rewrite the files in place instead of printing them.",
+          ),
+        ],
+        options=[
+          @argparse.OptionArg(
+            "expr",
+            short='e',
+            about="Format this statement instead of files or stdin.",
+            allow_hyphen_values=true,
+          ),
+        ],
+        positionals=[
+          @argparse.PositionArg(
+            "file",
+            about="Files to format; '-' or none reads stdin.",
+            num_args=@argparse.ValueRange(lower=0),
+            allow_hyphen_values=true,
+          ),
+        ],
+      )
     "version" => @argparse.Command(named, about="Print the version.")
     _ =>
       @argparse.Command(
@@ -55,7 +83,12 @@ fn command_line() -> @argparse.Command {
 /// Example lines for the help of the command line (`[]`) or of one command.
 fn examples(path : ArrayView[String]) -> Array[String] {
   match path {
-    [] => ["partiql version", "partiql help version"]
+    [] => ["partiql format query.sql", "partiql version", "partiql help format"]
+    ["format"] =>
+      [
+        "partiql format query.sql", "partiql format --write *.sql", "partiql format -e 'select a from t'",
+        "cat query.sql | partiql format",
+      ]
     ["version"] => ["partiql version", "partiql --version"]
     ["help"] => ["partiql help", "partiql help version"]
     _ => []

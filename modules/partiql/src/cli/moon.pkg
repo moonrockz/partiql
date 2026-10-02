@@ -3,6 +3,7 @@
 
 import {
   "moonbitlang/core/argparse",
+  "moonrockz/partiql-syntax" @syntax,
 }
 
 import {
