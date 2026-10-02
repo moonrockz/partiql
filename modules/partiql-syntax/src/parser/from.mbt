@@ -148,7 +148,7 @@ fn Parser::from_base(self : Parser) -> @ast.FromItem raise @ast.ParseError {
   let unpivot = self.eat_word("UNPIVOT")
   let expr_start = self.pos
   let expr = self.expr()
-  let expr = if !unpivot && self.eat_word("MATCH") {
+  let expr = if !unpivot && self.cont(() => self.eat_word("MATCH")) {
     let pattern = self.graph_pattern(many=false)
     let span = self.span_from(expr_start)
     make(GraphMatch({ graph: expr, pattern, span, }), span)

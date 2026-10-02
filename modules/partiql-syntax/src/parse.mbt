@@ -11,8 +11,8 @@ pub using @ast {
 ///|
 /// Parses one PartiQL statement: a query, with an optional final `;`.
 /// Raises `ParseError::Syntax` for invalid input and `ParseError::Unsupported`
-/// for valid input that this version does not parse yet (reserved for later
-/// milestones; nothing raises it since M2b).
+/// for valid input that this version does not parse yet (DML and DDL
+/// statements such as INSERT or CREATE, which later milestones parse).
 pub fn parse(source : String) -> Statement raise ParseError {
   @parser.parse_statement(source)
 }
@@ -40,4 +40,30 @@ pub fn print_script(script : Script) -> String {
 /// comments.
 pub fn format(source : String) -> String raise ParseError {
   @printer.print_script(@parser.parse_script(source))
+}
+
+///|
+pub using @diagnostic {type Position}
+
+///|
+/// The rendered diagnostic of a parse error (spec M3c §5).
+pub fn render(
+  error : ParseError,
+  source : String,
+  name~ : String,
+  color? : Bool = false,
+) -> String {
+  @diagnostic.render(error, source, name~, color~)
+}
+
+///|
+/// The 1-based line and code-point column of a UTF-16 offset.
+pub fn position(source : String, offset : Int) -> Position {
+  @diagnostic.position(source, offset)
+}
+
+///|
+/// The S-expression of a statement (spec M3c §7).
+pub fn to_sexp(statement : Statement, width? : Int = 80) -> String {
+  @sexp.to_sexp(statement, width~)
 }

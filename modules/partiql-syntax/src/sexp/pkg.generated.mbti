@@ -1,0 +1,21 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "moonrockz/partiql-syntax/sexp"
+
+import {
+  "moonrockz/partiql-syntax/ast",
+}
+
+// Values
+pub fn expr_to_sexp(@ast.Expr, width? : Int) -> String
+
+pub fn query_to_sexp(@ast.Query, width? : Int) -> String
+
+pub fn to_sexp(@ast.Statement, width? : Int) -> String
+
+// Errors
+
+// Types and methods
+
+// Type aliases
+
+// Traits

@@ -3,6 +3,7 @@ package "moonrockz/partiql-syntax"
 
 import {
   "moonrockz/partiql-syntax/ast",
+  "moonrockz/partiql-syntax/diagnostic",
 }
 
 // Values
@@ -12,9 +13,15 @@ pub fn parse(String) -> @ast.Statement raise @ast.ParseError
 
 pub fn parse_script(String) -> @ast.Script raise @ast.ParseError
 
+pub fn position(String, Int) -> @diagnostic.Position
+
 pub fn print(@ast.Statement) -> String
 
 pub fn print_script(@ast.Script) -> String
+
+pub fn render(@ast.ParseError, String, name~ : String, color? : Bool) -> String
+
+pub fn to_sexp(@ast.Statement, width? : Int) -> String
 
 // Errors
 
@@ -26,6 +33,8 @@ pub using @ast {type Comment}
 pub using @ast {type CommentKind}
 
 pub using @ast {type ParseError}
+
+pub using @diagnostic {type Position}
 
 pub using @ast {type Script}
 

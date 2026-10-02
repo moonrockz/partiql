@@ -10,7 +10,7 @@ fn Scanner::skip_ion_quoted(
     self.pos += 3
     while !(self.at(0) == q && self.at(1) == q && self.at(2) == q) {
       if self.at(0) == -1 {
-        raise error("unterminated Ion literal", start, self.pos)
+        raise error("unterminated Ion literal", start, start + 1)
       }
       // An escape skips the next unit, but never past the end.
       if self.at(0) == '\\'.to_int() && self.at(1) != -1 {
@@ -24,7 +24,7 @@ fn Scanner::skip_ion_quoted(
   self.pos += 1
   while self.at(0) != q {
     if self.at(0) == -1 {
-      raise error("unterminated Ion literal", start, self.pos)
+      raise error("unterminated Ion literal", start, start + 1)
     }
     // An escape skips the next unit, but never past the end.
     if self.at(0) == '\\'.to_int() && self.at(1) != -1 {
@@ -46,13 +46,13 @@ fn ion_literal(s : Scanner) -> TokenKind raise @ast.ParseError {
   while s.at(0) != '`'.to_int() {
     let c = s.at(0)
     if c == -1 {
-      raise error("unterminated Ion literal", start, s.pos)
+      raise error("unterminated Ion literal", start, start + 1)
     } else if c == '{'.to_int() && s.at(1) == '{'.to_int() {
       // A blob or clob: base64 may contain `//`, and a clob holds a string.
       s.pos += 2
       while !(s.at(0) == '}'.to_int() && s.at(1) == '}'.to_int()) {
         if s.at(0) == -1 {
-          raise error("unterminated Ion literal", start, s.pos)
+          raise error("unterminated Ion literal", start, start + 1)
         } else if s.at(0) == '"'.to_int() || s.at(0) == '\''.to_int() {
           s.skip_ion_quoted(start)
         } else {
@@ -70,7 +70,7 @@ fn ion_literal(s : Scanner) -> TokenKind raise @ast.ParseError {
       s.pos += 2
       while !(s.at(0) == '*'.to_int() && s.at(1) == '/'.to_int()) {
         if s.at(0) == -1 {
-          raise error("unterminated Ion literal", start, s.pos)
+          raise error("unterminated Ion literal", start, start + 1)
         }
         s.pos += 1
       }
@@ -84,10 +84,10 @@ fn ion_literal(s : Scanner) -> TokenKind raise @ast.ParseError {
   let value = @text.read_ion(body) catch {
     e =>
       raise @ast.ParseError::Syntax(
-        message="invalid Ion literal: \{@debug.to_string(e)}",
+        message="invalid Ion literal: \{e.message()}",
         span={ start, end: s.pos, },
         expected=[],
-        found="Ion literal",
+        found="",
       )
   }
   IonLit(body, value)

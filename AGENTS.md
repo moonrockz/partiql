@@ -204,6 +204,9 @@ Rules:
   `examples`, a help test and a usage-error test.
 - Commands read files and stdin only through the injected `Io` record
   (`run(args, io~)`); `src/main.mbt` provides the real one. Tests pass fakes.
+  `parse`, `check` and `format` share `read_inputs` (`-e`, files, stdin).
+- Parse errors print as rendered diagnostics (`@syntax.render`); colour
+  follows `--color` and `Io.color_default`.
 - Exit status 1 means the input was invalid or could not be read.
 
 ## Mise Tasks

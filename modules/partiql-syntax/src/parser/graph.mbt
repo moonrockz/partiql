@@ -69,7 +69,7 @@ fn Parser::edge(self : Parser) -> @ast.EdgePattern raise @ast.ParseError {
   } else if self.eat_punct('~') {
     '~'
   } else {
-    self.note("graph pattern")
+    self.note("a graph pattern")
     raise self.error("expected a node, edge or group pattern")
   }
   let filler : @ast.EdgeFiller? = if self.at_punct('[') {
@@ -173,7 +173,7 @@ fn Parser::label_primary(self : Parser) -> @ast.Label raise @ast.ParseError {
     let name = self.identifier()
     return { kind: Name(name), span: name.span, }
   }
-  self.note("label")
+  self.note("a label")
   raise self.error("expected a label")
 }
 
@@ -315,7 +315,7 @@ fn Parser::path_pattern(
     parts.push(self.path_part())
   }
   if parts.is_empty() {
-    self.note("graph pattern")
+    self.note("a graph pattern")
     raise self.error("expected a node, edge or group pattern")
   }
   { restrictor, variable, parts, span: self.span_from(start), }

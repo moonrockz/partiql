@@ -88,13 +88,18 @@ graph TD
     nested parentheses near 150 on wasm, 300 on js and 500 on wasm-gc;
     native passed 500 of both. Graph
     MATCH (GPML) is in `graph.mbt`.
+  - `diagnostic`: `render(ParseError, source, name~, color?)` (rustc-style
+    diagnostics) and `position` (1-based line, column in code points).
+  - `sexp`: `to_sexp` and `expr_to_sexp`, the public S-expression format,
+    laid out with `moonrockz/pretty`; deep chains are built with loops.
   - `printer`: syntax tree to canonical text. It builds a document
     (Wadler-style algebra) and renders it flat; comments from the source are
     written at the nearest node boundary. Depends only on `ast`.
 - `partiql`
   - root: the executable.
-  - `cli`: `run(args, io?) -> Outcome`, with the commands `format`,
-    `version` and `help`. File and stdin access comes in through the `Io`
+  - `cli`: `run(args, io?) -> Outcome`, with the commands `parse`, `check`,
+    `format`, `version` and `help`, and the global `--color`. Errors print as
+    rendered diagnostics. File and stdin access comes in through the `Io`
     record, which `main.mbt` provides (`moonbitlang/x/fs` and
     `moonbitlang/async` stdin). See the CLI section of `AGENTS.md`.
 

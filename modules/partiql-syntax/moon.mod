@@ -22,5 +22,6 @@ warnings = "-implicit_impl_as_method"
 
 import {
   "moonrockz/ion@0.2.0",
+  "moonrockz/pretty@0.1.0",
   "moonrockz/expect@0.6.0",
 }

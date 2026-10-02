@@ -11,6 +11,7 @@ import {
 import {
   "moonrockz/partiql-syntax/parser",
   "moonrockz/partiql-syntax/printer",
+  "moonrockz/partiql-syntax/sexp",
   "moonrockz/expect",
   "moonbitlang/core/quickcheck",
   "moonbitlang/core/quickcheck/splitmix",

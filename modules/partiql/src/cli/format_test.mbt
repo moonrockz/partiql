@@ -14,6 +14,7 @@ fn fake_io(
     },
     write_file: (path, text) => written.set(path, text),
     read_stdin: () => stdin,
+    color_default: false,
   }
   (io, written)
 }
@@ -59,7 +60,8 @@ test "format reports parse errors with the position and keeps going" {
   let outcome = @cli.run(["format", "bad.sql", "good.sql"], io~)
   @expect.expect_all(soft => {
     soft.expect(outcome.status).to_equal(1)
-    soft.expect(outcome.stderr.has_prefix("bad.sql:3:8: ")).to_be_true()
+    soft.expect(outcome.stderr.has_prefix("error: ")).to_be_true()
+    soft.expect(outcome.stderr.contains(" --> bad.sql:3:8")).to_be_true()
     soft.expect(outcome.stdout).to_equal("-- good.sql\nSELECT 1;\n")
     soft.expect(@cli.run(["format", "missing.sql"], io~).status).to_equal(1)
     soft
@@ -67,8 +69,8 @@ test "format reports parse errors with the position and keeps going" {
     .to_equal("partiql format: missing.sql: no such file: missing.sql\n")
     soft
     .expect(
-      @cli.run(["format", "-e", "select from"], io~).stderr.has_prefix(
-        "<expr>:1:8: ",
+      @cli.run(["format", "-e", "select from"], io~).stderr.contains(
+        " --> <expr>:1:8",
       ),
     )
     .to_be_true()

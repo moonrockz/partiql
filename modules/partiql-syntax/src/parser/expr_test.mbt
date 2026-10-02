@@ -69,7 +69,7 @@ test "literals" {
     ("1", "1"),
     ("1.50", "1.50"),
     ("-5e0", "(neg 5e0)"),
-    ("'it''s'", "'it's'"),
+    ("'it''s'", "'it''s'"),
     ("NULL", "null"),
     ("missing", "missing"),
     ("TRUE", "true"),
@@ -106,7 +106,7 @@ test "collections" {
     ("{}", "{}"),
     ("MAP{'k': 1}", "(map 'k':1)"),
     ("LIST(1, 2)", "[1 2]"),
-    ("SEXP()", "(sexp )"),
+    ("SEXP()", "(sexp)"),
     ("ROW(1, 2)", "(row 1 2)"),
     ("(1, 2)", "(row 1 2)"),
   ])
@@ -145,7 +145,7 @@ test "errors report what was expected" {
         expected~,
         ..
       ) &&
-      expected.contains("']'")
+      expected.contains("`]`")
     },
     description="Syntax at the end, expecting ']'",
   )

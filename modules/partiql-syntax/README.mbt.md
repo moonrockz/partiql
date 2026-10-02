@@ -25,9 +25,24 @@ let text = @syntax.format("select a from t -- note")
 | `moonrockz/partiql-syntax/printer` | `print`, `print_script` |
 
 Errors: `ParseError::Syntax(message~, span~, expected~, found~)` for invalid
-input. `ParseError::Unsupported` is reserved for valid PartiQL that a later
-version parses; nothing raises it yet.
+input. `ParseError::Unsupported` reports valid PartiQL that a later version parses:
+DML and DDL statements such as `INSERT` or `CREATE`.
 `Span::line_column(source)` gives 1-based line and column numbers.
+
+`render` prints a parse error for people, and `to_sexp` prints a tree as an
+S-expression:
+
+```moonbit
+let source = "SELECT FROM t"
+let text = try {
+  ignore(@syntax.parse(source))
+  ""
+} catch {
+  e => @syntax.render(e, source, name="query.sql")
+}
+// error: expected an expression, found keyword `FROM`
+//  --> query.sql:1:8
+```
 
 Input nested more than 100 levels deep (parentheses, subqueries, collections,
 graph groups) is a `Syntax` error, "nesting is too deep", on every target.

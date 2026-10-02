@@ -5,7 +5,7 @@ fn Parser::postfix(self : Parser) -> @ast.Expr raise @ast.ParseError {
   let base = self.primary()
   let steps : Array[@ast.PathStep] = []
   while true {
-    if self.at_punct('.') {
+    if self.cont(() => self.at_punct('.')) {
       ignore(self.advance())
       let t = self.peek()
       if self.eat_punct('*') {
@@ -16,7 +16,7 @@ fn Parser::postfix(self : Parser) -> @ast.Expr raise @ast.ParseError {
       } else {
         steps.push(Field(self.identifier(allow_path_words=true)))
       }
-    } else if self.at_punct('[') {
+    } else if self.cont(() => self.at_punct('[')) {
       let open = self.advance()
       if self.at_punct('*') && self.peek_at(1).kind is Punct(']') {
         ignore(self.advance())
@@ -113,7 +113,9 @@ fn Parser::primary(self : Parser) -> @ast.Expr raise @ast.ParseError {
           if self.eat_op(">>") {
             break
           }
-          self.expect_punct(',')
+          if !self.eat_punct(',') {
+            self.fail("expected `,` or `>>`")
+          }
         }
       }
       make(Bag(items), self.span_from(start))
@@ -121,7 +123,7 @@ fn Parser::primary(self : Parser) -> @ast.Expr raise @ast.ParseError {
     Punct('(') => self.parenthesized()
     Word(w) => self.word_primary(w)
     _ => {
-      self.note("expression")
+      self.note("an expression")
       raise self.error("expected an expression")
     }
   }
@@ -143,7 +145,7 @@ fn Parser::expr_list(
       break
     }
     if !self.eat_punct(',') {
-      self.fail("expected ',' or '\{close}'")
+      self.fail("expected `,` or `\{close}`")
     }
   }
   items
@@ -168,7 +170,7 @@ fn Parser::fields(
       break
     }
     if !self.eat_punct(',') {
-      self.fail("expected ',' or '\{close}'")
+      self.fail("expected `,` or `\{close}`")
     }
   }
   out
@@ -182,7 +184,7 @@ fn Parser::parenthesized(self : Parser) -> @ast.Expr raise @ast.ParseError {
   if self.at_query_start(1) {
     ignore(self.advance())
     let q = self.nested(() => self.query())
-    if self.at_word("MATCH") {
+    if self.cont(() => self.at_word("MATCH")) {
       // A query operand is one parenthesized group, as Kotlin's exprPrimary.
       if !self.one_group(start + 1, self.pos) {
         raise self.error(
@@ -196,7 +198,7 @@ fn Parser::parenthesized(self : Parser) -> @ast.Expr raise @ast.ParseError {
   }
   ignore(self.advance())
   let first = self.expr()
-  if self.at_word("MATCH") {
+  if self.cont(() => self.at_word("MATCH")) {
     return self.graph_match_rest(first, start)
   }
   if self.eat_punct(',') {
@@ -264,6 +266,11 @@ fn Parser::word_primary(
   }
   if next_is_open && !is_reserved(w) {
     return self.call()
+  }
+  // A reserved word that starts no expression: say what is missing.
+  if is_reserved(w) {
+    self.note("an expression")
+    raise self.error("expected an expression")
   }
   let name = self.identifier()
   ignore(t)

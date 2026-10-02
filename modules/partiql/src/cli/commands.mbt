@@ -6,7 +6,9 @@
 
 ///|
 /// The commands, in the order help lists them.
-let command_names : Array[String] = ["format", "version", "help"]
+let command_names : Array[String] = [
+  "parse", "check", "format", "version", "help",
+]
 
 ///|
 /// The command `name`. `prefix` goes before the name in its usage line:
@@ -25,22 +27,22 @@ fn command(name : String, prefix : String) -> @argparse.Command {
             about="Rewrite the files in place instead of printing them.",
           ),
         ],
-        options=[
-          @argparse.OptionArg(
-            "expr",
-            short='e',
-            about="Format this statement instead of files or stdin.",
-            allow_hyphen_values=true,
-          ),
-        ],
-        positionals=[
-          @argparse.PositionArg(
-            "file",
-            about="Files to format; '-' or none reads stdin.",
-            num_args=@argparse.ValueRange(lower=0),
-            allow_hyphen_values=true,
-          ),
-        ],
+        options=input_options(),
+        positionals=input_positionals(),
+      )
+    "parse" =>
+      @argparse.Command(
+        named,
+        about="Print the syntax tree of PartiQL as S-expressions.",
+        options=input_options(),
+        positionals=input_positionals(),
+      )
+    "check" =>
+      @argparse.Command(
+        named,
+        about="Check that PartiQL parses; print errors only.",
+        options=input_options(),
+        positionals=input_positionals(),
       )
     "version" => @argparse.Command(named, about="Print the version.")
     _ =>
@@ -75,6 +77,13 @@ fn command_line() -> @argparse.Command {
       ),
       @argparse.FlagArg("version", short='V', about="Show the version."),
     ],
+    options=[
+      @argparse.OptionArg(
+        "color",
+        about="Colour in error output: auto, always or never.",
+        global=true,
+      ),
+    ],
     subcommands=command_names.map(name => command(name, "")),
   )
 }
@@ -83,7 +92,19 @@ fn command_line() -> @argparse.Command {
 /// Example lines for the help of the command line (`[]`) or of one command.
 fn examples(path : ArrayView[String]) -> Array[String] {
   match path {
-    [] => ["partiql format query.sql", "partiql version", "partiql help format"]
+    [] =>
+      [
+        "partiql check query.sql", "partiql parse -e 'select a from t'", "partiql format query.sql",
+        "partiql help format",
+      ]
+    ["parse"] =>
+      [
+        "partiql parse query.sql", "partiql parse -e 'select a from t'", "cat query.sql | partiql parse",
+      ]
+    ["check"] =>
+      [
+        "partiql check *.sql", "partiql check -e 'select a from t'", "partiql --color=always check query.sql",
+      ]
     ["format"] =>
       [
         "partiql format query.sql", "partiql format --write *.sql", "partiql format -e 'select a from t'",
@@ -93,4 +114,28 @@ fn examples(path : ArrayView[String]) -> Array[String] {
     ["help"] => ["partiql help", "partiql help version"]
     _ => []
   }
+}
+
+///|
+fn input_options() -> Array[@argparse.OptionArg] {
+  [
+    @argparse.OptionArg(
+      "expr",
+      short='e',
+      about="Use this statement instead of files or stdin.",
+      allow_hyphen_values=true,
+    ),
+  ]
+}
+
+///|
+fn input_positionals() -> Array[@argparse.PositionArg] {
+  [
+    @argparse.PositionArg(
+      "file",
+      about="Files to read; '-' or none reads stdin.",
+      num_args=@argparse.ValueRange(lower=0),
+      allow_hyphen_values=true,
+    ),
+  ]
 }

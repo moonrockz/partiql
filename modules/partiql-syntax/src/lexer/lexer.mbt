@@ -53,12 +53,7 @@ fn is_space(c : Int) -> Bool {
 
 ///|
 fn error(message : String, start : Int, end : Int) -> @ast.ParseError {
-  @ast.ParseError::Syntax(
-    message~,
-    span={ start, end, },
-    expected=[],
-    found="invalid input",
-  )
+  @ast.ParseError::Syntax(message~, span={ start, end, }, expected=[], found="")
 }
 
 ///|
@@ -91,7 +86,7 @@ fn Scanner::skip_trivia(
       self.pos += 2
       while !(self.at(0) == '*'.to_int() && self.at(1) == '/'.to_int()) {
         if self.at(0) == -1 {
-          raise error("unterminated comment", start, self.pos)
+          raise error("unterminated comment", start, start + 2)
         }
         self.pos += 1
       }
@@ -117,7 +112,15 @@ fn Scanner::quoted(self : Scanner, quote : Int) -> String raise @ast.ParseError 
   while true {
     let c = self.at(0)
     if c == -1 {
-      raise error("unterminated quoted text", start, self.pos)
+      raise error(
+        if quote == '\''.to_int() {
+          "unterminated string"
+        } else {
+          "unterminated quoted identifier"
+        },
+        start,
+        start + 1,
+      )
     }
     if c == quote {
       buf.write_string(self.text(chunk, self.pos))
@@ -217,7 +220,8 @@ fn scan(
       s.pos += 1
       Punct(c.unsafe_to_char())
     } else {
-      raise error("unexpected character", start, start + 1)
+      let (text, width) = char_text(c, s.at(1))
+      raise error("unexpected character \{text}", start, start + width)
     }
     tokens.push({ kind, span: { start, end: s.pos, }, })
     if kind is End {
@@ -239,4 +243,27 @@ pub fn lex_with_comments(
   source : String,
 ) -> (Array[Token], Array[@ast.Comment]) raise @ast.ParseError {
   scan(source)
+}
+
+///|
+/// `U+XXXX` for a code point.
+fn u_plus(c : Int) -> String {
+  let hex = c.to_string(radix=16).to_upper()
+  "U+" + "0".repeat(if hex.length() < 4 { 4 - hex.length() } else { 0 }) + hex
+}
+
+///|
+/// How an error names the character `c` (followed by code unit `next`): in
+/// backquotes, a surrogate pair as one character, and a control character or
+/// a lone surrogate as `U+XXXX`, so that no message carries raw control
+/// codes.
+fn char_text(c : Int, next : Int) -> (String, Int) {
+  if c >= 0xD800 && c <= 0xDBFF && next >= 0xDC00 && next <= 0xDFFF {
+    let code = 0x10000 + ((c - 0xD800) << 10) + (next - 0xDC00)
+    ("`\{code.unsafe_to_char()}`", 2)
+  } else if c < 0x20 || c == 0x7F || (c >= 0xD800 && c <= 0xDFFF) {
+    (u_plus(c), 1)
+  } else {
+    ("`\{c.unsafe_to_char()}`", 1)
+  }
 }

@@ -2,6 +2,8 @@ import {
   "moonrockz/partiql-syntax/ast",
   "moonrockz/partiql-syntax/parser",
   "moonrockz/partiql-syntax/printer",
+  "moonrockz/partiql-syntax/diagnostic",
+  "moonrockz/partiql-syntax/sexp",
 }
 
 import {

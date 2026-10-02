@@ -16,6 +16,10 @@ priv struct Parser {
   /// Token positions where a parenthesized join was tried and failed; the
   /// attempt is never repeated there, so parsing stays linear.
   failed_joins : @hashset.HashSet[Int]
+  /// Notes taken now are operator continuations (spec M3c §4.3).
+  mut continuation : Bool
+  /// An operator could have continued the expression at this position.
+  mut saw_operator : Bool
   /// Token positions where a parenthesized join was read, with the join and
   /// the position after it; a second visit reuses them (spec M2b 7.3).
   joins : Map[Int, (@ast.FromItem, Int)]
@@ -29,6 +33,8 @@ fn Parser::new(tokens : Array[@lexer.Token]) -> Parser {
     depth: 0,
     expected: [],
     failed_joins: @hashset.from_array([]),
+    continuation: false,
+    saw_operator: false,
     joins: {},
   }
 }
@@ -56,14 +62,59 @@ fn Parser::advance(self : Parser) -> @lexer.Token {
     self.pos += 1
   }
   self.expected.clear()
+  self.saw_operator = false
   t
 }
 
 ///|
+/// Runs `check` as an operator-continuation check: its notes fold into
+/// `an operator` (spec M3c §4.3).
+fn[T] Parser::cont(self : Parser, check : () -> T) -> T {
+  let saved = self.continuation
+  self.continuation = true
+  let result = check()
+  self.continuation = saved
+  result
+}
+
+///|
 fn Parser::note(self : Parser, what : String) -> Unit {
+  if self.continuation {
+    self.saw_operator = true
+    return
+  }
   if !self.expected.contains(what) {
     self.expected.push(what)
   }
+}
+
+///|
+fn is_category(x : String) -> Bool {
+  x.has_prefix("a ") || x.has_prefix("an ") || x == "end of input"
+}
+
+///|
+/// Tokens that only start an expression; `an expression` covers them.
+let expression_starts : Array[String] = ["`(`", "`<<`", "`+`", "`-`", "NOT"]
+
+///|
+fn Parser::curated(self : Parser) -> Array[String] {
+  let has_expression = self.expected.contains("an expression")
+  let out : Array[String] = []
+  for x in self.expected {
+    if !is_category(x) && !(has_expression && expression_starts.contains(x)) {
+      out.push(x)
+    }
+  }
+  if self.saw_operator {
+    out.push("an operator")
+  }
+  for x in self.expected {
+    if is_category(x) {
+      out.push(x)
+    }
+  }
+  out
 }
 
 ///|
@@ -73,8 +124,8 @@ fn Parser::error(self : Parser, message : String) -> @ast.ParseError {
   @ast.ParseError::Syntax(
     message~,
     span=t.span,
-    expected=self.expected.copy(),
-    found=t.kind.describe(),
+    expected=self.curated(),
+    found=describe(t),
   )
 }
 
@@ -128,7 +179,7 @@ fn Parser::at_punct(self : Parser, c : Char) -> Bool {
   if self.peek().kind is Punct(p) && p == c {
     true
   } else {
-    self.note("'\{c}'")
+    self.note("`\{c}`")
     false
   }
 }
@@ -146,7 +197,7 @@ fn Parser::eat_punct(self : Parser, c : Char) -> Bool {
 ///|
 fn Parser::expect_punct(self : Parser, c : Char) -> Unit raise @ast.ParseError {
   if !self.eat_punct(c) {
-    self.fail("expected '\{c}'")
+    self.fail("expected `\{c}`")
   }
 }
 
@@ -158,11 +209,11 @@ fn Parser::at_op(self : Parser, op : String) -> Bool {
   for k, c in chars {
     let t = self.peek_at(k)
     guard t.kind is Punct(p) && p == c else {
-      self.note("'\{op}'")
+      self.note("`\{op}`")
       return false
     }
     if k > 0 && self.peek_at(k - 1).span.end != t.span.start {
-      self.note("'\{op}'")
+      self.note("`\{op}`")
       return false
     }
   }
@@ -216,7 +267,7 @@ fn Parser::identifier(
       { text: w, delimited: true, span: t.span, }
     }
     _ => {
-      self.note("identifier")
+      self.note("an identifier")
       raise self.error("expected an identifier")
     }
   }
@@ -231,4 +282,56 @@ fn Parser::span_from(self : Parser, start : Int) -> @ast.Span {
   }
   let last = self.tokens[self.pos - 1].span
   { start: first.start, end: last.end, }
+}
+
+///|
+/// `s` with control characters escaped (`\n`, `\t`, `\r`, `\u{..}`), so
+/// that no message carries raw control codes.
+fn escape_text(s : String) -> String {
+  let buf = StringBuilder()
+  for c in s {
+    match c {
+      '\n' => buf.write_string("\\n")
+      '\t' => buf.write_string("\\t")
+      '\r' => buf.write_string("\\r")
+      _ if c.to_int() < 0x20 || c.to_int() == 0x7F =>
+        buf.write_string("\\u{\{c.to_int().to_string(radix=16)}}")
+      _ => buf.write_char(c)
+    }
+  }
+  buf.to_string()
+}
+
+///|
+/// The first 20 characters of `s` (code points), then `…` when longer.
+fn shorten(s : String) -> String {
+  let buf = StringBuilder()
+  let mut n = 0
+  for c in s {
+    if n == 20 {
+      return escape_text(buf.to_string()) + "…"
+    }
+    buf.write_char(c)
+    n += 1
+  }
+  escape_text(buf.to_string())
+}
+
+///|
+/// How an error names the token it found (spec M3c §4.1).
+fn describe(t : @lexer.Token) -> String {
+  match t.kind {
+    Word(w) =>
+      if is_reserved(w) {
+        "keyword `\{w}`"
+      } else {
+        "identifier `\{w}`"
+      }
+    QuotedIdent(w) => "identifier `\"\{escape_text(w)}\"`"
+    StringLit(s) => "string `'\{shorten(s)}'`"
+    IntLit(n) | DecimalLit(n) | FloatLit(n) => "number `\{n}`"
+    IonLit(_, _) => "Ion literal"
+    Punct(c) => "`\{c}`"
+    End => "end of input"
+  }
 }

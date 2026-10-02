@@ -5,7 +5,6 @@ import {
   "moonrockz/partiql-syntax/ast",
   "moonrockz/ion/text",
   "moonrockz/ion/ion" @ion_core,
-  "moonbitlang/core/debug",
 }
 
 import {

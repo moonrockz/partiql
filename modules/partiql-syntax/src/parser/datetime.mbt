@@ -8,7 +8,7 @@ fn Parser::string_literal(self : Parser) -> String raise @ast.ParseError {
       s
     }
     _ => {
-      self.note("string")
+      self.note("a string")
       raise self.error("expected a string")
     }
   }

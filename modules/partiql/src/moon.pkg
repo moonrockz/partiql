@@ -15,3 +15,7 @@ import {
 supported_targets = "native+wasm"
 
 pkgtype(kind: "executable")
+
+options(
+  targets: { "tty_native.mbt": [ "native" ], "tty_wasm.mbt": [ "wasm" ] },
+)
