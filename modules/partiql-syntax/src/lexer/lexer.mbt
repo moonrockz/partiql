@@ -62,16 +62,30 @@ fn error(message : String, start : Int, end : Int) -> @ast.ParseError {
 }
 
 ///|
-/// Skips whitespace and comments.
-fn Scanner::skip_trivia(self : Scanner) -> Unit raise @ast.ParseError {
+/// Skips whitespace and comments, and records each comment in `comments`.
+fn Scanner::skip_trivia(
+  self : Scanner,
+  comments : Array[@ast.Comment],
+) -> Unit raise @ast.ParseError {
   while true {
     let c = self.at(0)
     if is_space(c) {
       self.pos += 1
     } else if c == '-'.to_int() && self.at(1) == '-'.to_int() {
+      let start = self.pos
       while self.at(0) != -1 && self.at(0) != '\n'.to_int() {
         self.pos += 1
       }
+      let end = if self.pos > start && self.at(-1) == '\r'.to_int() {
+        self.pos - 1
+      } else {
+        self.pos
+      }
+      comments.push({
+        kind: Line,
+        text: self.text(start, end),
+        span: { start, end, },
+      })
     } else if c == '/'.to_int() && self.at(1) == '*'.to_int() {
       let start = self.pos
       self.pos += 2
@@ -82,6 +96,11 @@ fn Scanner::skip_trivia(self : Scanner) -> Unit raise @ast.ParseError {
         self.pos += 1
       }
       self.pos += 2
+      comments.push({
+        kind: Block,
+        text: self.text(start, self.pos),
+        span: { start, end: self.pos, },
+      })
     } else {
       break
     }
@@ -163,12 +182,15 @@ fn continues_path(previous : Token?, pos : Int) -> Bool {
 }
 
 ///|
-/// Splits PartiQL text into tokens. The last token is `End`.
-pub fn lex(source : String) -> Array[Token] raise @ast.ParseError {
+/// The tokens of `source` and its comments.
+fn scan(
+  source : String,
+) -> (Array[Token], Array[@ast.Comment]) raise @ast.ParseError {
   let s : Scanner = { source, pos: 0, }
   let tokens : Array[Token] = []
+  let comments : Array[@ast.Comment] = []
   while true {
-    s.skip_trivia()
+    s.skip_trivia(comments)
     let start = s.pos
     let c = s.at(0)
     let kind : TokenKind = if c == -1 {
@@ -202,5 +224,19 @@ pub fn lex(source : String) -> Array[Token] raise @ast.ParseError {
       break
     }
   }
-  tokens
+  (tokens, comments)
+}
+
+///|
+/// Splits PartiQL text into tokens. The last token is `End`.
+pub fn lex(source : String) -> Array[Token] raise @ast.ParseError {
+  scan(source).0
+}
+
+///|
+/// The tokens of `source` and its comments, in source order.
+pub fn lex_with_comments(
+  source : String,
+) -> (Array[Token], Array[@ast.Comment]) raise @ast.ParseError {
+  scan(source)
 }
