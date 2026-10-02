@@ -331,6 +331,7 @@ fn describe(t : @lexer.Token) -> String {
     StringLit(s) => "string `'\{shorten(s)}'`"
     IntLit(n) | DecimalLit(n) | FloatLit(n) => "number `\{n}`"
     IonLit(_, _) => "Ion literal"
+    Invalid => "invalid text"
     Punct(c) => "`\{c}`"
     End => "end of input"
   }
