@@ -2,6 +2,7 @@
 
 import {
   "moonrockz/partiql-syntax/ast",
+  "moonrockz/pretty",
 }
 
 import {

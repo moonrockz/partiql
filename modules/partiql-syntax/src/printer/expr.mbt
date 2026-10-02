@@ -273,7 +273,7 @@ fn Printer::expr_body(self : Printer, e : @ast.Expr) -> Doc {
       })
       cat([Text("VALUES "), sep(docs, ", ")])
     }
-    Query(q) => parens(self.query(q))
+    Query(q) => sub(self.query(q))
     GraphMatch(m) => self.graph(m)
   }
 }

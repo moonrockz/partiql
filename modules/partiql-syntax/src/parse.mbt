@@ -24,22 +24,24 @@ pub fn parse_script(source : String) -> Script raise ParseError {
 }
 
 ///|
-/// The canonical text of a statement (no comments, no final `;`).
-pub fn print(statement : Statement) -> String {
-  @printer.print(statement)
+/// The text of a statement (no comments, no final `;`): canonical without
+/// `width`, the pretty layout at `width` with it.
+pub fn print(statement : Statement, width? : Int) -> String {
+  @printer.print(statement, width?)
 }
 
 ///|
-/// The canonical text of a script, with its comments.
-pub fn print_script(script : Script) -> String {
-  @printer.print_script(script)
+/// The text of a script, with its comments: canonical without `width`, the
+/// pretty layout at `width` with it.
+pub fn print_script(script : Script, width? : Int) -> String {
+  @printer.print_script(script, width?)
 }
 
 ///|
-/// Parses `source` as a script and prints it in canonical form, keeping the
-/// comments.
-pub fn format(source : String) -> String raise ParseError {
-  @printer.print_script(@parser.parse_script(source))
+/// Parses `source` as a script and prints it, keeping the comments:
+/// canonical without `width`, the pretty layout at `width` with it.
+pub fn format(source : String, width? : Int) -> String raise ParseError {
+  @printer.print_script(@parser.parse_script(source), width?)
 }
 
 ///|

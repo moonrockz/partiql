@@ -7,7 +7,7 @@ import {
 }
 
 // Values
-pub fn format(String) -> String raise @ast.ParseError
+pub fn format(String, width? : Int) -> String raise @ast.ParseError
 
 pub fn parse(String) -> @ast.Statement raise @ast.ParseError
 
@@ -15,9 +15,9 @@ pub fn parse_script(String) -> @ast.Script raise @ast.ParseError
 
 pub fn position(String, Int) -> @diagnostic.Position
 
-pub fn print(@ast.Statement) -> String
+pub fn print(@ast.Statement, width? : Int) -> String
 
-pub fn print_script(@ast.Script) -> String
+pub fn print_script(@ast.Script, width? : Int) -> String
 
 pub fn render(@ast.ParseError, String, name~ : String, color? : Bool) -> String
 
