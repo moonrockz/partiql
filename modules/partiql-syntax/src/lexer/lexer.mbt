@@ -53,12 +53,7 @@ fn is_space(c : Int) -> Bool {
 
 ///|
 fn error(message : String, start : Int, end : Int) -> @ast.ParseError {
-  @ast.ParseError::Syntax(
-    message~,
-    span={ start, end, },
-    expected=[],
-    found="invalid input",
-  )
+  @ast.ParseError::Syntax(message~, span={ start, end, }, expected=[], found="")
 }
 
 ///|
@@ -91,7 +86,7 @@ fn Scanner::skip_trivia(
       self.pos += 2
       while !(self.at(0) == '*'.to_int() && self.at(1) == '/'.to_int()) {
         if self.at(0) == -1 {
-          raise error("unterminated comment", start, self.pos)
+          raise error("unterminated comment", start, start + 2)
         }
         self.pos += 1
       }
@@ -117,7 +112,15 @@ fn Scanner::quoted(self : Scanner, quote : Int) -> String raise @ast.ParseError 
   while true {
     let c = self.at(0)
     if c == -1 {
-      raise error("unterminated quoted text", start, self.pos)
+      raise error(
+        if quote == '\''.to_int() {
+          "unterminated string"
+        } else {
+          "unterminated quoted identifier"
+        },
+        start,
+        start + 1,
+      )
     }
     if c == quote {
       buf.write_string(self.text(chunk, self.pos))
@@ -217,7 +220,11 @@ fn scan(
       s.pos += 1
       Punct(c.unsafe_to_char())
     } else {
-      raise error("unexpected character", start, start + 1)
+      raise error(
+        "unexpected character `\{c.unsafe_to_char()}`",
+        start,
+        start + 1,
+      )
     }
     tokens.push({ kind, span: { start, end: s.pos, }, })
     if kind is End {
