@@ -6,6 +6,7 @@ import {
 }
 
 import {
+  "moonrockz/partiql-syntax/ast",
   "moonrockz/partiql-syntax/sexp",
   "moonrockz/partiql-syntax/parser",
   "moonrockz/expect",

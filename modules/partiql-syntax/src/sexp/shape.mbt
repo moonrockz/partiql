@@ -269,6 +269,7 @@ fn node_sx(e : @ast.Expr) -> Sx {
     VarRef(i, qualified~) =>
       Atom(if qualified { "@\{ident_text(i)}" } else { ident_text(i) })
     Parameter => Atom("?")
+    Error => list("error", [])
     Path(root, steps) => {
       let parts = steps.map(step => {
         match step {
@@ -732,6 +733,7 @@ fn graph_sx(m : @ast.GraphMatch) -> Sx {
 pub fn to_sexp(statement : @ast.Statement, width? : Int = 80) -> String {
   match statement {
     Query(q) => layout(query_sx(q), width)
+    Error(_) => layout(list("error", []), width)
   }
 }
 

@@ -3,6 +3,7 @@ fn script_shapes(source : String) -> Array[String] raise {
   @parser.parse_script(source).statements.map(s => {
     match s {
       Query(q) => query_shape(q)
+      Error(_) => "(error)"
     }
   })
 }

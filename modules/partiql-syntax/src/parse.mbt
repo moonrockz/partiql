@@ -6,6 +6,7 @@ pub using @ast {
   type Script,
   type Comment,
   type CommentKind,
+  type Recovered,
 }
 
 ///|

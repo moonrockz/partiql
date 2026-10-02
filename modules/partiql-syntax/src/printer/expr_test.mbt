@@ -136,3 +136,22 @@ test "special forms and calls" {
     ),
   ])
 }
+
+///|
+test "error nodes print as a comment" {
+  let error_expr : @ast.Expr = { kind: Error, span: { start: 0, end: 0, }, }
+  let s = @parser.parse_statement("SELECT a FROM t")
+  guard s is Query({ body: Select(sel), .. } as q) else { fail("not a select") }
+  let broken : @ast.Statement = Query({
+    ..q,
+    body: Select({ ..sel, where_: Some(error_expr), }),
+  })
+  @expect.expect_all(soft => {
+    soft
+    .expect(@printer.print(broken))
+    .to_equal("SELECT a FROM t WHERE /* error */")
+    soft
+    .expect(@printer.print(@ast.Statement::Error({ start: 0, end: 0, })))
+    .to_equal("/* error */")
+  })
+}

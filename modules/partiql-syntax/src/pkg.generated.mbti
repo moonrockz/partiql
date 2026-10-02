@@ -36,6 +36,8 @@ pub using @ast {type ParseError}
 
 pub using @diagnostic {type Position}
 
+pub using @ast {type Recovered}
+
 pub using @ast {type Script}
 
 pub using @ast {type Span}

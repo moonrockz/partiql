@@ -95,6 +95,9 @@ pub(all) enum ExprKind {
   Query(Query)
   /// `(graph MATCH pattern)` (GPML).
   GraphMatch(GraphMatch)
+  /// A missing or broken expression in a recovered tree (spec M3d); its span
+  /// covers the skipped tokens.
+  Error
 } derive(Debug, Eq)
 
 ///|
