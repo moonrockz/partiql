@@ -202,6 +202,7 @@ fn Parser::set_primary(self : Parser) -> @ast.Query raise @ast.ParseError {
 /// Parses one statement from `source`: a query with an optional final `;`.
 pub fn parse_statement(source : String) -> @ast.Statement raise @ast.ParseError {
   let p = Parser::new(@lexer.lex(source))
+  p.reject_unsupported()
   let q = p.query()
   ignore(p.eat_punct(';'))
   if !(p.peek().kind is End) {
@@ -222,6 +223,7 @@ pub fn parse_script(source : String) -> @ast.Script raise @ast.ParseError {
     if p.eat_punct(';') {
       continue
     }
+    p.reject_unsupported()
     statements.push(Query(p.query()))
     if !(p.peek().kind is End) && !p.eat_punct(';') {
       p.note("end of input")
@@ -229,4 +231,24 @@ pub fn parse_script(source : String) -> @ast.Script raise @ast.ParseError {
     }
   }
   { statements, comments, span: { start: 0, end: source.length(), }, }
+}
+
+///|
+/// Statement kinds that later milestones parse (spec M3c §4.5).
+let unsupported_statements : Array[String] = [
+  "INSERT", "UPDATE", "DELETE", "REPLACE", "UPSERT", "REMOVE", "SET", "CREATE", "DROP",
+  "EXEC", "EXPLAIN", "FROM",
+]
+
+///|
+fn Parser::reject_unsupported(self : Parser) -> Unit raise @ast.ParseError {
+  guard self.peek().kind is Word(w) else { return }
+  let upper = w.to_upper()
+  if unsupported_statements.contains(upper) &&
+    !(self.peek_at(1).kind is Punct('(')) {
+    raise @ast.ParseError::Unsupported(
+      message="\{upper} statements are not supported yet",
+      span=self.peek().span,
+    )
+  }
 }

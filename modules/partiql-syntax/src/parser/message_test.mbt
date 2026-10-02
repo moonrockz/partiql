@@ -80,3 +80,39 @@ test "expected lists are curated" {
     .to_be_false()
   })
 }
+
+///|
+test "statements that later milestones parse are Unsupported" {
+  @expect.expect_all(soft => {
+    for
+      word in [
+        "INSERT", "UPDATE", "DELETE", "REPLACE", "UPSERT", "REMOVE", "SET", "CREATE",
+        "DROP", "EXEC", "EXPLAIN", "FROM",
+      ] {
+      let source = word.to_lower() + " x y"
+      soft
+      .expect_call(() => @parser.parse_statement(source), label=source)
+      .to_raise_matching(
+        e => {
+          match e {
+            @ast.ParseError::Unsupported(message~, span~) =>
+              message == "\{word} statements are not supported yet" &&
+              span == ({ start: 0, end: word.length(), } : @ast.Span)
+            _ => false
+          }
+        },
+        description="Unsupported",
+      )
+    }
+    soft
+    .expect_call(() => @parser.parse_script("SELECT 1; DELETE FROM t"))
+    .to_raise_matching(
+      e => e is @ast.ParseError::Unsupported(_),
+      description="Unsupported",
+    )
+    soft
+    .expect_call(() => @parser.parse_statement("replace('a')"))
+    .not()
+    .to_raise()
+  })
+}
