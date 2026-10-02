@@ -25,8 +25,8 @@ let text = @syntax.format("select a from t -- note")
 | `moonrockz/partiql-syntax/printer` | `print`, `print_script` |
 
 Errors: `ParseError::Syntax(message~, span~, expected~, found~)` for invalid
-input. `ParseError::Unsupported` is reserved for valid PartiQL that a later
-version parses; nothing raises it yet.
+input. `ParseError::Unsupported` reports valid PartiQL that a later version parses:
+DML and DDL statements such as `INSERT` or `CREATE`.
 `Span::line_column(source)` gives 1-based line and column numbers.
 
 `render` prints a parse error for people, and `to_sexp` prints a tree as an

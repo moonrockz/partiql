@@ -101,7 +101,10 @@ fn examples(path : ArrayView[String]) -> Array[String] {
       [
         "partiql parse query.sql", "partiql parse -e 'select a from t'", "cat query.sql | partiql parse",
       ]
-    ["check"] => ["partiql check *.sql", "partiql check -e 'select a from t'"]
+    ["check"] =>
+      [
+        "partiql check *.sql", "partiql check -e 'select a from t'", "partiql --color=always check query.sql",
+      ]
     ["format"] =>
       [
         "partiql format query.sql", "partiql format --write *.sql", "partiql format -e 'select a from t'",
