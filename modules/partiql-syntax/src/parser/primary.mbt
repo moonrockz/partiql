@@ -121,7 +121,7 @@ fn Parser::primary(self : Parser) -> @ast.Expr raise @ast.ParseError {
     Punct('(') => self.parenthesized()
     Word(w) => self.word_primary(w)
     _ => {
-      self.note("expression")
+      self.note("an expression")
       raise self.error("expected an expression")
     }
   }
@@ -143,7 +143,7 @@ fn Parser::expr_list(
       break
     }
     if !self.eat_punct(',') {
-      self.fail("expected ',' or '\{close}'")
+      self.fail("expected `,` or `\{close}`")
     }
   }
   items
@@ -168,7 +168,7 @@ fn Parser::fields(
       break
     }
     if !self.eat_punct(',') {
-      self.fail("expected ',' or '\{close}'")
+      self.fail("expected `,` or `\{close}`")
     }
   }
   out
@@ -264,6 +264,11 @@ fn Parser::word_primary(
   }
   if next_is_open && !is_reserved(w) {
     return self.call()
+  }
+  // A reserved word that starts no expression: say what is missing.
+  if is_reserved(w) {
+    self.note("an expression")
+    raise self.error("expected an expression")
   }
   let name = self.identifier()
   ignore(t)

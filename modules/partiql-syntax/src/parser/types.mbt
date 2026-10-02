@@ -10,7 +10,7 @@ fn Parser::int_literal(self : Parser) -> Int raise @ast.ParseError {
       }
     }
     _ => {
-      self.note("integer")
+      self.note("an integer")
       raise self.error("expected an integer")
     }
   }
@@ -203,7 +203,7 @@ fn Parser::data_type(self : Parser) -> @ast.DataType raise @ast.ParseError {
       }
     }
     _ => {
-      self.note("type")
+      self.note("a type")
       let name = self.identifier()
       Custom(name)
     }

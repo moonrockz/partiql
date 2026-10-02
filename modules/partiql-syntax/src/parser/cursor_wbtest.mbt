@@ -36,7 +36,7 @@ test "words match case-insensitively and errors list what was expected" {
     .expect_call(() => p.expect_punct('('))
     .to_raise_matching(
       e => {
-        e is @ast.ParseError::Syntax(expected=["'('"], found="end of input", ..)
+        e is @ast.ParseError::Syntax(expected=["`(`"], found="end of input", ..)
       },
       description="Syntax expecting '('",
     )

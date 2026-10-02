@@ -145,7 +145,7 @@ test "errors report what was expected" {
         expected~,
         ..
       ) &&
-      expected.contains("']'")
+      expected.contains("`]`")
     },
     description="Syntax at the end, expecting ']'",
   )

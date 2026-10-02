@@ -74,7 +74,7 @@ fn Parser::error(self : Parser, message : String) -> @ast.ParseError {
     message~,
     span=t.span,
     expected=self.expected.copy(),
-    found=t.kind.describe(),
+    found=describe(t),
   )
 }
 
@@ -128,7 +128,7 @@ fn Parser::at_punct(self : Parser, c : Char) -> Bool {
   if self.peek().kind is Punct(p) && p == c {
     true
   } else {
-    self.note("'\{c}'")
+    self.note("`\{c}`")
     false
   }
 }
@@ -146,7 +146,7 @@ fn Parser::eat_punct(self : Parser, c : Char) -> Bool {
 ///|
 fn Parser::expect_punct(self : Parser, c : Char) -> Unit raise @ast.ParseError {
   if !self.eat_punct(c) {
-    self.fail("expected '\{c}'")
+    self.fail("expected `\{c}`")
   }
 }
 
@@ -158,11 +158,11 @@ fn Parser::at_op(self : Parser, op : String) -> Bool {
   for k, c in chars {
     let t = self.peek_at(k)
     guard t.kind is Punct(p) && p == c else {
-      self.note("'\{op}'")
+      self.note("`\{op}`")
       return false
     }
     if k > 0 && self.peek_at(k - 1).span.end != t.span.start {
-      self.note("'\{op}'")
+      self.note("`\{op}`")
       return false
     }
   }
@@ -216,7 +216,7 @@ fn Parser::identifier(
       { text: w, delimited: true, span: t.span, }
     }
     _ => {
-      self.note("identifier")
+      self.note("an identifier")
       raise self.error("expected an identifier")
     }
   }
@@ -231,4 +231,30 @@ fn Parser::span_from(self : Parser, start : Int) -> @ast.Span {
   }
   let last = self.tokens[self.pos - 1].span
   { start: first.start, end: last.end, }
+}
+
+///|
+/// How an error names the token it found (spec M3c §4.1).
+fn describe(t : @lexer.Token) -> String {
+  match t.kind {
+    Word(w) =>
+      if is_reserved(w) {
+        "keyword `\{w}`"
+      } else {
+        "identifier `\{w}`"
+      }
+    QuotedIdent(w) => "identifier `\"\{w}\"`"
+    StringLit(s) => {
+      let text = if s.length() > 20 {
+        s.view(end_offset=20).to_owned() + "…"
+      } else {
+        s
+      }
+      "string `'\{text}'`"
+    }
+    IntLit(n) | DecimalLit(n) | FloatLit(n) => "number `\{n}`"
+    IonLit(_, _) => "Ion literal"
+    Punct(c) => "`\{c}`"
+    End => "end of input"
+  }
 }
