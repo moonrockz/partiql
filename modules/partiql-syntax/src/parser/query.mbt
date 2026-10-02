@@ -37,14 +37,28 @@ fn Parser::query(self : Parser) -> @ast.Query raise @ast.ParseError {
   if self.eat_word("ORDER") {
     self.expect_word("BY")
     while true {
-      order_by.push(self.sort_spec())
-      if !self.eat_punct(',') {
+      let read = self.clause(
+        () => {
+          order_by.push(self.sort_spec())
+          true
+        },
+        _ => false,
+      )
+      if !read || !self.eat_punct(',') {
         break
       }
     }
   }
-  let limit = if self.eat_word("LIMIT") { Some(self.expr()) } else { None }
-  let offset = if self.eat_word("OFFSET") { Some(self.expr()) } else { None }
+  let limit = if self.eat_word("LIMIT") {
+    Some(self.clause(() => self.expr(), error_expr))
+  } else {
+    None
+  }
+  let offset = if self.eat_word("OFFSET") {
+    Some(self.clause(() => self.expr(), error_expr))
+  } else {
+    None
+  }
   let clauses = !with_.is_empty() ||
     !order_by.is_empty() ||
     limit is Some(_) ||
@@ -231,6 +245,76 @@ pub fn parse_script(source : String) -> @ast.Script raise @ast.ParseError {
     }
   }
   { statements, comments, span: { start: 0, end: source.length(), }, }
+}
+
+///|
+/// Parses a script and recovers from errors (spec M3d): the partial script,
+/// with `Error` nodes where the source is broken, and every error in source
+/// order (at most 100).
+pub fn parse_script_recovering(source : String) -> @ast.Recovered {
+  let (tokens, comments, lex_errors) = @lexer.lex_recovering(source)
+  let p = Parser::new(tokens)
+  p.recovering = true
+  p.lex_errors = lex_errors.length()
+  for e in lex_errors {
+    p.error_starts.add(error_span(e).start)
+  }
+  let statements : Array[@ast.Statement] = []
+  while !(p.peek().kind is End) {
+    if p.eat_punct(';') {
+      continue
+    }
+    let start = p.pos
+    let statement = p.recover(
+      Statement,
+      () => {
+        p.reject_unsupported()
+        let q = p.query()
+        if !(p.peek().kind is End) && !p.eat_punct(';') {
+          p.note("end of input")
+          p.record(p.error("unexpected input after the statement"))
+          p.skip_to(Statement)
+        }
+        @ast.Statement::Query(q)
+      },
+      span => @ast.Statement::Error(span),
+    ) catch {
+      _ => {
+        // The error limit: the rest of the source is one error statement.
+        let from = p.tokens[start].span.start
+        statements.push(Error({ start: from, end: source.length(), }))
+        break
+      }
+    }
+    statements.push(statement)
+  }
+  {
+    script: { statements, comments, span: { start: 0, end: source.length(), }, },
+    errors: merge_errors(lex_errors, p.errors),
+  }
+}
+
+///|
+/// Two error lists, each in source order, merged by span start (stable:
+/// at the same start, lexer errors come first).
+fn merge_errors(
+  a : Array[@ast.ParseError],
+  b : Array[@ast.ParseError],
+) -> Array[@ast.ParseError] {
+  let out : Array[@ast.ParseError] = []
+  let mut i = 0
+  let mut j = 0
+  while i < a.length() || j < b.length() {
+    if j >= b.length() ||
+      (i < a.length() && error_span(a[i]).start <= error_span(b[j]).start) {
+      out.push(a[i])
+      i += 1
+    } else {
+      out.push(b[j])
+      j += 1
+    }
+  }
+  out
 }
 
 ///|

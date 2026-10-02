@@ -103,7 +103,9 @@ fn Parser::from_base(self : Parser) -> @ast.FromItem raise @ast.ParseError {
     let saved = self.pos
     let saved_depth = self.depth
     ignore(self.advance())
-    let joined = try self.nested(() => self.from_clause()) catch {
+    let joined = try
+      self.strictly(() => self.nested(() => self.from_clause()))
+    catch {
       // Deep input fails the same way in every reading; report it.
       Syntax(message=m, ..) as e if m == too_deep => raise e
       _ => None
@@ -122,7 +124,9 @@ fn Parser::from_base(self : Parser) -> @ast.FromItem raise @ast.ParseError {
         let join_end = self.pos
         self.pos = saved
         self.depth = saved_depth
-        let graph = try self.nested(() => self.parenthesized()) catch {
+        let graph = try
+          self.strictly(() => self.nested(() => self.parenthesized()))
+        catch {
           _ => false
         } noraise {
           e => e.kind is GraphMatch(_)

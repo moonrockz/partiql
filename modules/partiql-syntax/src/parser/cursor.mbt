@@ -23,6 +23,16 @@ priv struct Parser {
   /// Token positions where a parenthesized join was read, with the join and
   /// the position after it; a second visit reuses them (spec M2b 7.3).
   joins : Map[Int, (@ast.FromItem, Int)]
+  /// Recovery mode (spec M3d §4): recovery points record errors.
+  mut recovering : Bool
+  /// The parser's recorded errors.
+  errors : Array[@ast.ParseError]
+  /// Span starts of recorded errors, lexer errors included (no cascades).
+  error_starts : @hashset.HashSet[Int]
+  /// The number of lexer errors, counted against the limit.
+  mut lex_errors : Int
+  /// The error limit was reached: recovery points re-raise.
+  mut stopped : Bool
 }
 
 ///|
@@ -36,6 +46,11 @@ fn Parser::new(tokens : Array[@lexer.Token]) -> Parser {
     continuation: false,
     saw_operator: false,
     joins: {},
+    recovering: false,
+    errors: [],
+    error_starts: @hashset.from_array([]),
+    lex_errors: 0,
+    stopped: false,
   }
 }
 
@@ -197,7 +212,15 @@ fn Parser::eat_punct(self : Parser, c : Char) -> Bool {
 ///|
 fn Parser::expect_punct(self : Parser, c : Char) -> Unit raise @ast.ParseError {
   if !self.eat_punct(c) {
-    self.fail("expected `\{c}`")
+    let e = self.error("expected `\{c}`")
+    // A missing closer at a boundary is taken as present (spec M3d §4).
+    if self.recovering &&
+      (c == ')' || c == ']' || c == '}') &&
+      self.at_boundary() {
+      self.record(e)
+      return
+    }
+    raise e
   }
 }
 

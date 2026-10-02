@@ -44,7 +44,7 @@ fn Parser::projection(self : Parser) -> @ast.Projection raise @ast.ParseError {
   let items : Array[@ast.SelectItem] = []
   while true {
     let start = self.pos
-    let e = self.expr()
+    let e = self.item(() => self.expr())
     match all_fields(e) {
       Some(root) => items.push(AllFields(root, span=self.span_from(start)))
       None => {
@@ -80,32 +80,64 @@ fn Parser::select(self : Parser) -> @ast.Select raise @ast.ParseError {
     } else {
       None
     }
-    (quantifier, self.projection())
+    let projection = self.clause(() => self.projection(), span => {
+      Items([Expr(error_expr(span), as_=None, span~)])
+    })
+    (quantifier, projection)
   }
-  let from = if self.eat_word("FROM") { Some(self.from_clause()) } else { None }
+  let from = if self.eat_word("FROM") {
+    Some(
+      self.clause(() => self.from_clause(), span => {
+        Scan({
+          lateral: false,
+          expr: error_expr(span),
+          as_: None,
+          at: None,
+          by: None,
+          span,
+        })
+      }),
+    )
+  } else {
+    None
+  }
   if projection is Pivot(..) && from is None {
     self.fail("PIVOT needs FROM")
   }
   let let_ : Array[@ast.LetBinding] = []
   if self.eat_word("LET") {
     while true {
-      let binding_start = self.pos
-      let expr = self.expr()
-      self.expect_word("AS")
-      let name = self.identifier()
-      let_.push({ expr, name, span: self.span_from(binding_start), })
-      if !self.eat_punct(',') {
+      let read = self.clause(
+        () => {
+          let binding_start = self.pos
+          let expr = self.expr()
+          self.expect_word("AS")
+          let name = self.identifier()
+          let_.push({ expr, name, span: self.span_from(binding_start), })
+          true
+        },
+        _ => false,
+      )
+      if !read || !self.eat_punct(',') {
         break
       }
     }
   }
-  let where_ = if self.eat_word("WHERE") { Some(self.expr()) } else { None }
-  let group_by = if self.at_word("GROUP") && !self.at_word_at(1, "AS") {
-    Some(self.group_by())
+  let where_ = if self.eat_word("WHERE") {
+    Some(self.clause(() => self.expr(), error_expr))
   } else {
     None
   }
-  let having = if self.eat_word("HAVING") { Some(self.expr()) } else { None }
+  let group_by = if self.at_word("GROUP") && !self.at_word_at(1, "AS") {
+    self.clause(() => Some(self.group_by()), _ => None)
+  } else {
+    None
+  }
+  let having = if self.eat_word("HAVING") {
+    Some(self.clause(() => self.expr(), error_expr))
+  } else {
+    None
+  }
   {
     quantifier,
     projection,

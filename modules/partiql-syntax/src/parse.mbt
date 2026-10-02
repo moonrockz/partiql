@@ -10,6 +10,13 @@ pub using @ast {
 }
 
 ///|
+/// Parses a script and recovers from syntax errors: the partial script and
+/// every error, in source order (spec M3d).
+pub fn parse_script_recovering(source : String) -> Recovered {
+  @parser.parse_script_recovering(source)
+}
+
+///|
 /// Parses one PartiQL statement: a query, with an optional final `;`.
 /// Raises `ParseError::Syntax` for invalid input and `ParseError::Unsupported`
 /// for valid input that this version does not parse yet (DML and DDL

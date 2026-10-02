@@ -10,6 +10,8 @@ pub fn parse_expression(String) -> @ast.Expr raise @ast.ParseError
 
 pub fn parse_script(String) -> @ast.Script raise @ast.ParseError
 
+pub fn parse_script_recovering(String) -> @ast.Recovered
+
 pub fn parse_statement(String) -> @ast.Statement raise @ast.ParseError
 
 // Errors

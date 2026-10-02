@@ -77,6 +77,11 @@ fn Parser::primary(self : Parser) -> @ast.Expr raise @ast.ParseError {
     FloatLit(n) => self.literal(Float(n))
     StringLit(s) => self.literal(String(s))
     IonLit(text, value) => self.literal(Ion(text, value))
+    // The recovering lexer recorded the error.
+    Invalid => {
+      ignore(self.advance())
+      error_expr(t.span)
+    }
     QuotedIdent(_) => {
       let name = self.identifier()
       make(VarRef(name, qualified=false), name.span)
@@ -109,12 +114,9 @@ fn Parser::primary(self : Parser) -> @ast.Expr raise @ast.ParseError {
       let items : Array[@ast.Expr] = []
       if !self.eat_op(">>") {
         while true {
-          items.push(self.expr())
-          if self.eat_op(">>") {
+          items.push(self.item(() => self.expr()))
+          if !self.list_next(">>") {
             break
-          }
-          if !self.eat_punct(',') {
-            self.fail("expected `,` or `>>`")
           }
         }
       }
@@ -139,13 +141,11 @@ fn Parser::expr_list(
   if self.eat_punct(close) {
     return items
   }
+  let closer = close.to_string()
   while true {
-    items.push(self.expr())
-    if self.eat_punct(close) {
+    items.push(self.item(() => self.expr()))
+    if !self.list_next(closer) {
       break
-    }
-    if !self.eat_punct(',') {
-      self.fail("expected `,` or `\{close}`")
     }
   }
   items
@@ -161,16 +161,21 @@ fn Parser::fields(
   if self.eat_punct(close) {
     return out
   }
+  let closer = close.to_string()
   while true {
-    let key = self.expr()
-    self.expect_punct(':')
-    let value = self.expr()
-    out.push((key, value))
-    if self.eat_punct(close) {
+    out.push(
+      self.recover(
+        Item,
+        () => {
+          let key = self.expr()
+          self.expect_punct(':')
+          (key, self.expr())
+        },
+        span => (error_expr(span), error_expr(span)),
+      ),
+    )
+    if !self.list_next(closer) {
       break
-    }
-    if !self.eat_punct(',') {
-      self.fail("expected `,` or `\{close}`")
     }
   }
   out
@@ -284,10 +289,14 @@ fn Parser::values(self : Parser) -> @ast.Expr raise @ast.ParseError {
   self.expect_word("VALUES")
   let rows : Array[@ast.Expr] = []
   while true {
-    let row_start = self.pos
-    self.expect_punct('(')
-    let items = self.expr_list(')')
-    rows.push(make(Row(items), self.span_from(row_start)))
+    rows.push(
+      self.item(() => {
+        let row_start = self.pos
+        self.expect_punct('(')
+        let items = self.expr_list(')')
+        make(Row(items), self.span_from(row_start))
+      }),
+    )
     if !self.eat_punct(',') {
       break
     }
