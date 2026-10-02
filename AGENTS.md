@@ -238,12 +238,13 @@ Tasks are file-based scripts in `mise-tasks/`. Never add inline `[tasks]` to
 
 ## Conformance
 
-`modules/partiql-conformance` runs partiql-tests with five checks:
+`modules/partiql-conformance` runs partiql-tests with six checks:
 `syntax` (SyntaxSuccess and SyntaxFail cases), `eval-parse` (every evaluation
 statement must parse), `codec` (every `env` and `output` value must
 round-trip through the PartiQL-encoded Ion codec), `ion-roundtrip` (each
-`$ion` payload) and `print-roundtrip` (parse, print and parse again give the
-same tree). See `docs/conformance.md`.
+`$ion` payload), `print-roundtrip` (parse, print and parse again give the
+same tree) and `pretty-roundtrip` (the same with the pretty layout at width
+40). See `docs/conformance.md`.
 
 Rules:
 

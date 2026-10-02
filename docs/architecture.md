@@ -66,7 +66,8 @@ graph TD
     can reuse the generators.
 - `partiql-syntax`
   - root: `parse(String) -> Statement raise ParseError`, `parse_script`,
-    `print`, `print_script` and `format(String) -> String raise ParseError`
+    `print`, `print_script` and `format(String, width?) -> String raise
+    ParseError`
     (re-exports `Statement`, `Script`, `Comment`, `ParseError` and `Span`
     from `ast`).
   - `ast`: the syntax tree (Kotlin v1 style, one node per form, every node
@@ -92,9 +93,11 @@ graph TD
     diagnostics) and `position` (1-based line, column in code points).
   - `sexp`: `to_sexp` and `expr_to_sexp`, the public S-expression format,
     laid out with `moonrockz/pretty`; deep chains are built with loops.
-  - `printer`: syntax tree to canonical text. It builds a document
-    (Wadler-style algebra) and renders it flat; comments from the source are
-    written at the nearest node boundary. Depends only on `ast`.
+  - `printer`: syntax tree to text. It builds a document (Wadler-style
+    algebra with groups and nests) and renders it flat for the canonical
+    form, or through `moonrockz/pretty` at a width for the pretty layout;
+    comments from the source are written at the nearest node boundary.
+    Depends on `ast` and `moonrockz/pretty`.
 - `partiql`
   - root: the executable.
   - `cli`: `run(args, io?) -> Outcome`, with the commands `parse`, `check`,

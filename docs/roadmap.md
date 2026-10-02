@@ -68,7 +68,16 @@ M3 has four parts, done in this order:
   DML/DDL statements report `Unsupported`. `to_sexp` prints a syntax tree as
   an S-expression (laid out with `moonrockz/pretty`). The CLI gains
   `partiql parse`, `partiql check` and a global `--color`.
-- **M3b: pretty layout.** A width-aware layout for the printer.
+- **M3b (done): pretty layout.** `print`, `print_script` and `format`
+  take an optional `width`. Without it they print the canonical one-line
+  form as before; with it, `moonrockz/pretty` lays the statement out: a
+  statement that fits stays on one line, a wider one puts each clause on its
+  own line, and long lists, joins, operator chains, calls, CASE, subqueries
+  and graph MATCH break further (2-space indentation). The
+  `pretty-roundtrip` conformance check prints every corpus statement at
+  width 40 and parses it again: all 5310 statements that parse give the same
+  tree. `partiql format` prints the layout at width 80, with `--width N`
+  and `--compact` (the one-line form).
 - **M3d: error recovery.** Several diagnostics per statement.
 
 ## Tracking

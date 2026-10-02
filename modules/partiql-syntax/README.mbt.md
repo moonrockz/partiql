@@ -16,6 +16,13 @@ let text = @syntax.format("select a from t -- note")
 // text == "SELECT a FROM t;\n-- note\n"
 ```
 
+With a `width`, both lay the text out to fit that line width:
+
+```moonbit
+let text = @syntax.format("select a, b from t where x = 1", width=20)
+// text == "SELECT a, b\nFROM t\nWHERE x = 1;\n"
+```
+
 | Package | Content |
 |---|---|
 | `moonrockz/partiql-syntax` | `parse(String) -> Statement raise ParseError` |
