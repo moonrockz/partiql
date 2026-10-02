@@ -1,0 +1,10 @@
+// Rendered parse errors (spec M3c sections 3 and 5).
+
+import {
+  "moonrockz/partiql-syntax/ast",
+}
+
+import {
+  "moonrockz/partiql-syntax/diagnostic",
+  "moonrockz/expect",
+} for "test"

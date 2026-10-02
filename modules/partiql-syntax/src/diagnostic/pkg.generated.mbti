@@ -1,0 +1,24 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "moonrockz/partiql-syntax/diagnostic"
+
+import {
+  "moonbitlang/core/debug",
+  "moonrockz/partiql-syntax/ast",
+}
+
+// Values
+pub fn position(String, Int) -> Position
+
+pub fn render(@ast.ParseError, String, name~ : String, color? : Bool) -> String
+
+// Errors
+
+// Types and methods
+pub(all) struct Position {
+  line : Int
+  column : Int
+} derive(Eq, @debug.Debug)
+
+// Type aliases
+
+// Traits
