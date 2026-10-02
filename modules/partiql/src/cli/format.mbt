@@ -1,6 +1,15 @@
 // `partiql format` (spec M3a section 9).
 
 ///|
+/// The message of an I/O error: the text of a `Failure`, else the error.
+fn error_text(e : Error) -> String {
+  match e {
+    Failure(message) => message
+    _ => e.to_string()
+  }
+}
+
+///|
 fn position_message(
   label : String,
   source : String,
@@ -50,7 +59,7 @@ fn format_command(m : @argparse.Matches, io : Io) -> Outcome {
       e =>
         return {
           stdout: "",
-          stderr: "partiql format: <stdin>: \{e}\n",
+          stderr: "partiql format: <stdin>: \{error_text(e)}\n",
           status: 1,
         }
     }
@@ -67,7 +76,7 @@ fn format_command(m : @argparse.Matches, io : Io) -> Outcome {
   for path in files {
     let source = (io.read_file)(path) catch {
       e => {
-        err.write_string("partiql format: \{path}: \{e}\n")
+        err.write_string("partiql format: \{path}: \{error_text(e)}\n")
         continue
       }
     }
@@ -76,7 +85,7 @@ fn format_command(m : @argparse.Matches, io : Io) -> Outcome {
       Ok(text) =>
         if write {
           (io.write_file)(path, text) catch {
-            e => err.write_string("partiql format: \{path}: \{e}\n")
+            e => err.write_string("partiql format: \{path}: \{error_text(e)}\n")
           }
         } else {
           if files.length() > 1 {

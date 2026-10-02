@@ -9,7 +9,7 @@ fn fake_io(
     read_file: path => {
       match files.get(path) {
         Some(text) => text
-        None => fail("no such file: \{path}")
+        None => raise Failure("no such file: \{path}")
       }
     },
     write_file: (path, text) => written.set(path, text),
@@ -62,6 +62,9 @@ test "format reports parse errors with the position and keeps going" {
     soft.expect(outcome.stderr.has_prefix("bad.sql:3:8: ")).to_be_true()
     soft.expect(outcome.stdout).to_equal("-- good.sql\nSELECT 1;\n")
     soft.expect(@cli.run(["format", "missing.sql"], io~).status).to_equal(1)
+    soft
+    .expect(@cli.run(["format", "missing.sql"], io~).stderr)
+    .to_equal("partiql format: missing.sql: no such file: missing.sql\n")
     soft
     .expect(
       @cli.run(["format", "-e", "select from"], io~).stderr.has_prefix(

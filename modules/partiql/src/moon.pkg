@@ -4,6 +4,9 @@ import {
   "moonrockz/partiql/cli",
   "moonbitlang/core/env",
   "moonbitlang/x/sys",
+  "moonbitlang/x/fs",
+  "moonbitlang/async",
+  "moonbitlang/async/stdio",
 }
 
 // On js, `@env.args()` starts with the node binary, so the argument
