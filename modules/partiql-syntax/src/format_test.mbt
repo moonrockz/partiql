@@ -88,3 +88,36 @@ test "format prints long left-associative chains without deep recursion" {
     .to_equal("SELECT * FROM t" + " CROSS JOIN t".repeat(n) + ";\n")
   })
 }
+
+///|
+test "pretty scripts: blank lines and comments" {
+  let commented = "select a, -- first\n b from t"
+  @expect.expect_all(soft => {
+    soft
+    .expect(
+      @syntax.format(
+        "select 1; select a, b, c from t where x = 1 and y = 2; select 2",
+        width=30,
+      ),
+    )
+    .to_equal(
+      "SELECT 1;\n\nSELECT a, b, c\nFROM t\nWHERE x = 1 AND y = 2;\n\nSELECT 2;\n",
+    )
+    soft
+    .expect(@syntax.format("select 1; select 2", width=30))
+    .to_equal("SELECT 1;\nSELECT 2;\n")
+    soft
+    .expect(@syntax.format(commented, width=80))
+    .to_equal("SELECT\n  a,\n  -- first\n  b\nFROM t;\n")
+    soft
+    .expect(
+      @syntax.format("select a from t where x = 1 -- why\n and y = 2", width=80),
+    )
+    .to_equal("SELECT a\nFROM t\nWHERE x = 1\n  AND -- why\n  y = 2;\n")
+    soft
+    .expect(@syntax.format("-- top\nselect 1; -- end", width=80))
+    .to_equal("-- top\nSELECT 1;\n-- end\n")
+    let once = @syntax.format(commented, width=20)
+    soft.expect(@syntax.format(once, width=20)).to_equal(once)
+  })
+}

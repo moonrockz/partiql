@@ -167,6 +167,17 @@ test "print-roundtrip check" {
 }
 
 ///|
+test "pretty-roundtrip check" {
+  @expect.expect_all(soft => {
+    soft
+    .expect(check_pretty_roundtrip("select a, b from t where x = 1 and y = 2"))
+    .to_equal(Pass)
+    soft.expect(check_pretty_roundtrip("(g MATCH (a)->(b))")).to_equal(Pass)
+    soft.expect(check_pretty_roundtrip("SELECT FROM")).to_equal(NotApplicable)
+  })
+}
+
+///|
 /// The M3 exit criterion: printing a parsed statement and parsing the text
 /// gives the same tree (spans aside), and printing is a fixpoint. Statements
 /// that do not parse are not applicable.
@@ -184,6 +195,27 @@ fn check_print_roundtrip(statement : String) -> Outcome {
   }
   if @syntax.print(second) != printed {
     return Fail("printing is not a fixpoint: \{printed}")
+  }
+  Pass
+}
+
+///|
+/// The M3b criterion: the pretty layout at width 40 parses to the same tree,
+/// and printing that tree again at width 40 gives the same text.
+fn check_pretty_roundtrip(statement : String) -> Outcome {
+  let first = @syntax.parse(statement) catch { _ => return NotApplicable }
+  let printed = @syntax.print(first, width=40)
+  let second = @syntax.parse(printed) catch {
+    e =>
+      return Fail(
+        "pretty text does not parse: \{printed}: \{@debug.to_string(e)}",
+      )
+  }
+  if second.strip_spans() != first.strip_spans() {
+    return Fail("a different tree after pretty printing: \{printed}")
+  }
+  if @syntax.print(second, width=40) != printed {
+    return Fail("pretty printing is not a fixpoint: \{printed}")
   }
   Pass
 }

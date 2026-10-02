@@ -102,14 +102,23 @@ pub fn print_script(script : @ast.Script, width? : Int) -> String {
 }
 
 ///|
-/// The pretty text of a script: each statement laid out on its own.
+/// The pretty text of a script: each statement laid out on its own, with a
+/// blank line between two statements when either spans several lines.
 fn pretty_script(script : @ast.Script, width : Int) -> String {
   let p = Printer::new(script.comments)
   let out = StringBuilder()
-  for s in script.statements {
-    out.write_string(render(p.own_lines(statement_span(s)), width))
-    out.write_string(render(cat([p.statement(s), Text(";")]), width))
+  let mut previous_multi = false
+  for i, s in script.statements {
+    let comments = render(p.own_lines(statement_span(s)), width)
+    let text = render(cat([p.statement(s), Text(";")]), width)
+    let multi = text.contains("\n")
+    if i > 0 && (multi || previous_multi) {
+      out.write_string("\n")
+    }
+    out.write_string(comments)
+    out.write_string(text)
     out.write_string("\n")
+    previous_multi = multi
   }
   out.write_string(
     render(
