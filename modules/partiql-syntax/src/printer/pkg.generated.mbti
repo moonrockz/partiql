@@ -1,0 +1,19 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "moonrockz/partiql-syntax/printer"
+
+import {
+  "moonrockz/partiql-syntax/ast",
+}
+
+// Values
+pub fn print(@ast.Statement) -> String
+
+pub fn print_script(@ast.Script) -> String
+
+// Errors
+
+// Types and methods
+
+// Type aliases
+
+// Traits

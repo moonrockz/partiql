@@ -30,6 +30,17 @@ pub(all) enum BinaryOp {
   Ge
 } derive(Eq, @debug.Debug)
 
+pub(all) struct Comment {
+  kind : CommentKind
+  text : String
+  span : Span
+} derive(Eq, @debug.Debug)
+
+pub(all) enum CommentKind {
+  Line
+  Block
+} derive(Eq, @debug.Debug)
+
 pub(all) enum Corresponding {
   All
   By(Array[Identifier])
@@ -107,6 +118,7 @@ pub(all) struct Expr {
   kind : ExprKind
   span : Span
 } derive(Eq, @debug.Debug)
+pub fn Expr::strip_spans(Self) -> Self
 
 pub(all) enum ExprKind {
   Lit(Literal)
@@ -336,6 +348,7 @@ pub(all) struct Query {
   offset : Expr?
   span : Span
 } derive(Eq, @debug.Debug)
+pub fn Query::strip_spans(Self) -> Self
 
 pub(all) enum QueryBody {
   Select(Select)
@@ -350,6 +363,13 @@ pub(all) enum Restrictor {
   Acyclic
   Simple
 } derive(Eq, @debug.Debug)
+
+pub(all) struct Script {
+  statements : Array[Statement]
+  comments : Array[Comment]
+  span : Span
+} derive(Eq, @debug.Debug)
+pub fn Script::strip_spans(Self) -> Self
 
 pub(all) struct Select {
   quantifier : SetQuantifier?
@@ -423,6 +443,7 @@ pub fn Span::merge(Self, Self) -> Self
 pub(all) enum Statement {
   Query(Query)
 } derive(Eq, @debug.Debug)
+pub fn Statement::strip_spans(Self) -> Self
 
 pub(all) enum TrimSpec {
   Both

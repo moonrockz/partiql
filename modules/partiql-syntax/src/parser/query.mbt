@@ -210,3 +210,23 @@ pub fn parse_statement(source : String) -> @ast.Statement raise @ast.ParseError 
   }
   Query(q)
 }
+
+///|
+/// Parses a script: statements separated by `;`, with the comments of the
+/// source. Empty statements are skipped; a script may have no statements.
+pub fn parse_script(source : String) -> @ast.Script raise @ast.ParseError {
+  let (tokens, comments) = @lexer.lex_with_comments(source)
+  let p = Parser::new(tokens)
+  let statements : Array[@ast.Statement] = []
+  while !(p.peek().kind is End) {
+    if p.eat_punct(';') {
+      continue
+    }
+    statements.push(Query(p.query()))
+    if !(p.peek().kind is End) && !p.eat_punct(';') {
+      p.note("end of input")
+      p.fail("unexpected input after the statement")
+    }
+  }
+  { statements, comments, span: { start: 0, end: source.length(), }, }
+}

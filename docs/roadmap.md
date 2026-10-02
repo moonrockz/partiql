@@ -53,8 +53,18 @@ with later milestones.
 
 ## M3 Printer and errors
 
-The printer writes an AST back as PartiQL text. Parse errors carry source
-spans.
+M3 has four parts, done in this order:
+
+- **M3a (done): canonical printer.** `print` writes a syntax tree back as
+  canonical PartiQL text, and `format` parses a script and prints it,
+  keeping its comments. `parse_script` parses several statements separated
+  by `;`. The `print-roundtrip` conformance check parses, prints and parses
+  every corpus statement again: all 5310 statements that parse give the same
+  tree. The CLI has its first working command, `partiql format`.
+- **M3c: diagnostics.** Rendered parse errors (line and column, the source
+  line, a marker, expected and found), `partiql parse` and `partiql check`.
+- **M3b: pretty layout.** A width-aware layout for the printer.
+- **M3d: error recovery.** Several diagnostics per statement.
 
 ## Tracking
 

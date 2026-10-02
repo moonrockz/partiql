@@ -198,3 +198,96 @@ test "deep input inside a parenthesized join reports the depth" {
     }
   })
 }
+
+///|
+/// SoupText with random comments between the pieces.
+struct CommentedText {
+  text : String
+  comments : Array[String]
+} derive(Debug)
+
+///|
+let commented_bases : Array[String] = [
+  "SELECT a , b FROM t WHERE x = 1 ORDER BY a", "( g MATCH ( a ) -[ e ]-> ( b ) )",
+  "SELECT VALUE { 'k' : 1 } FROM t AS x ; SELECT 2", "a UNION SELECT b FROM u LIMIT 3",
+]
+
+///|
+impl @quickcheck.Arbitrary for CommentedText with fn arbitrary(_, rs) {
+  let base = commented_bases[rs
+    .next_uint(limit=commented_bases.length().reinterpret_as_uint())
+    .reinterpret_as_int()]
+  let buf = StringBuilder()
+  let comments : Array[String] = []
+  for i, word in base.split(" ").map(v => v.to_owned()).collect() {
+    if i > 0 {
+      buf.write_char(' ')
+    }
+    match rs.next_uint(limit=6) {
+      0 => {
+        let c = "/* c\{i} */"
+        comments.push(c)
+        buf.write_string(c + " ")
+      }
+      1 => {
+        let c = "-- l\{i}"
+        comments.push(c)
+        buf.write_string(c + "\n")
+      }
+      _ => ()
+    }
+    buf.write_string(word)
+  }
+  { text: buf.to_string(), comments, }
+}
+
+///|
+impl @quickcheck.Shrink for CommentedText
+
+///|
+test "law 3: format keeps every comment, in order, and the tree" {
+  @quickcheck.check(
+    (c : CommentedText) => {
+      try {
+        let out = @syntax.format(c.text)
+        let script = @syntax.parse_script(out)
+        script.comments.map(x => x.text) == c.comments &&
+        script.strip_spans().statements ==
+        @syntax.parse_script(c.text).strip_spans().statements
+      } catch {
+        _ => false
+      }
+    },
+    count=500,
+  )
+}
+
+///|
+test "law 4: format is idempotent" {
+  @quickcheck.check(
+    (c : CommentedText) => {
+      try {
+        let once = @syntax.format(c.text)
+        @syntax.format(once) == once
+      } catch {
+        _ => false
+      }
+    },
+    count=300,
+  )
+}
+
+///|
+test "law 5: format never aborts" {
+  @quickcheck.check(
+    (s : SoupText) => {
+      try {
+        ignore(@syntax.format(s.text))
+        true
+      } catch {
+        _ => true
+      }
+    },
+    count=1000,
+  )
+}

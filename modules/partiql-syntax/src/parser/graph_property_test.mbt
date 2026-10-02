@@ -247,3 +247,21 @@ test "law 6: a pattern list in FROM parentheses keeps every path" {
     count=300,
   )
 }
+
+///|
+test "law 9: printing a graph MATCH round-trips" {
+  @quickcheck.check(
+    (spec : GraphSpec) => {
+      try {
+        let first = @parser.parse_statement(render(spec))
+        let printed = @printer.print(first)
+        let second = @parser.parse_statement(printed)
+        second.strip_spans() == first.strip_spans() &&
+        @printer.print(second) == printed
+      } catch {
+        _ => false
+      }
+    },
+    count=300,
+  )
+}

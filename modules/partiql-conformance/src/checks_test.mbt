@@ -154,3 +154,36 @@ fn check_ion_roundtrip(payload : @ion.IonValue) -> Outcome {
     other => Fail("decoded to \{@debug.to_string(other)}, not an Ion value")
   }
 }
+
+///|
+test "print-roundtrip check" {
+  @expect.expect_all(soft => {
+    soft
+    .expect(check_print_roundtrip("select a from t where x = 1"))
+    .to_equal(Pass)
+    soft.expect(check_print_roundtrip("(g MATCH (a)->(b))")).to_equal(Pass)
+    soft.expect(check_print_roundtrip("SELECT FROM")).to_equal(NotApplicable)
+  })
+}
+
+///|
+/// The M3 exit criterion: printing a parsed statement and parsing the text
+/// gives the same tree (spans aside), and printing is a fixpoint. Statements
+/// that do not parse are not applicable.
+fn check_print_roundtrip(statement : String) -> Outcome {
+  let first = @syntax.parse(statement) catch { _ => return NotApplicable }
+  let printed = @syntax.print(first)
+  let second = @syntax.parse(printed) catch {
+    e =>
+      return Fail(
+        "printed text does not parse: \{printed}: \{@debug.to_string(e)}",
+      )
+  }
+  if second.strip_spans() != first.strip_spans() {
+    return Fail("a different tree after printing: \{printed}")
+  }
+  if @syntax.print(second) != printed {
+    return Fail("printing is not a fixpoint: \{printed}")
+  }
+  Pass
+}

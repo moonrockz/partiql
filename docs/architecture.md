@@ -65,11 +65,14 @@ graph TD
     the property laws of the data model. Published so that later milestones
     can reuse the generators.
 - `partiql-syntax`
-  - root: `parse(String) -> Statement raise ParseError` (re-exports
-    `Statement`, `ParseError` and `Span` from `ast`).
+  - root: `parse(String) -> Statement raise ParseError`, `parse_script`,
+    `print`, `print_script` and `format(String) -> String raise ParseError`
+    (re-exports `Statement`, `Script`, `Comment`, `ParseError` and `Span`
+    from `ast`).
   - `ast`: the syntax tree (Kotlin v1 style, one node per form, every node
     with a `Span` of UTF-16 offsets), `Span` and `ParseError` (`Syntax` with
-    message, span, expected tokens and the found token; `Unsupported`).
+    message, span, expected tokens and the found token; `Unsupported`),
+    `Script` and `Comment`, and `strip_spans` (structural equality).
   - `lexer`: tokens; keywords are words that the parser classifies;
     punctuation is one character per token and the parser composes `<<`,
     `<=`, `||` and similar operators from touching tokens; Ion literals are
@@ -85,10 +88,15 @@ graph TD
     nested parentheses near 150 on wasm, 300 on js and 500 on wasm-gc;
     native passed 500 of both. Graph
     MATCH (GPML) is in `graph.mbt`.
-  - M3 adds the printer.
+  - `printer`: syntax tree to canonical text. It builds a document
+    (Wadler-style algebra) and renders it flat; comments from the source are
+    written at the nearest node boundary. Depends only on `ast`.
 - `partiql`
   - root: the executable.
-  - `cli`: `run(args) -> Outcome`. See the CLI section of `AGENTS.md`.
+  - `cli`: `run(args, io?) -> Outcome`, with the commands `format`,
+    `version` and `help`. File and stdin access comes in through the `Io`
+    record, which `main.mbt` provides (`moonbitlang/x/fs` and
+    `moonbitlang/async` stdin). See the CLI section of `AGENTS.md`.
 
 ## Rules
 

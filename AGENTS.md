@@ -202,6 +202,9 @@ Rules:
 - Exit status: 0 for success, 2 for a usage error.
 - Every new command gets an entry in `command_names`, `command` and
   `examples`, a help test and a usage-error test.
+- Commands read files and stdin only through the injected `Io` record
+  (`run(args, io~)`); `src/main.mbt` provides the real one. Tests pass fakes.
+- Exit status 1 means the input was invalid or could not be read.
 
 ## Mise Tasks
 
@@ -232,10 +235,12 @@ Tasks are file-based scripts in `mise-tasks/`. Never add inline `[tasks]` to
 
 ## Conformance
 
-`modules/partiql-conformance` runs partiql-tests with three checks:
+`modules/partiql-conformance` runs partiql-tests with five checks:
 `syntax` (SyntaxSuccess and SyntaxFail cases), `eval-parse` (every evaluation
-statement must parse) and `codec` (every `env` and `output` value must
-round-trip through the PartiQL-encoded Ion codec). See `docs/conformance.md`.
+statement must parse), `codec` (every `env` and `output` value must
+round-trip through the PartiQL-encoded Ion codec), `ion-roundtrip` (each
+`$ion` payload) and `print-roundtrip` (parse, print and parse again give the
+same tree). See `docs/conformance.md`.
 
 Rules:
 
