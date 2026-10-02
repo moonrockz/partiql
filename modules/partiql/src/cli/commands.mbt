@@ -19,15 +19,25 @@ fn command(name : String, prefix : String) -> @argparse.Command {
     "format" =>
       @argparse.Command(
         named,
-        about="Print PartiQL in canonical form, keeping comments.",
+        about="Print PartiQL in a readable layout, keeping comments.",
         flags=[
           @argparse.FlagArg(
             "write",
             short='w',
             about="Rewrite the files in place instead of printing them.",
           ),
+          @argparse.FlagArg(
+            "compact",
+            about="Print each statement on one line (the canonical form).",
+          ),
         ],
-        options=input_options(),
+        options=[
+          ..input_options(),
+          @argparse.OptionArg(
+            "width",
+            about="Fit the layout to this line width (default 80).",
+          ),
+        ],
         positionals=input_positionals(),
       )
     "parse" =>
@@ -108,6 +118,7 @@ fn examples(path : ArrayView[String]) -> Array[String] {
     ["format"] =>
       [
         "partiql format query.sql", "partiql format --write *.sql", "partiql format -e 'select a from t'",
+        "partiql format --width 100 query.sql", "partiql format --compact query.sql",
         "cat query.sql | partiql format",
       ]
     ["version"] => ["partiql version", "partiql --version"]
