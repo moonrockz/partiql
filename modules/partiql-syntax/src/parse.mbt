@@ -1,5 +1,12 @@
 ///|
-pub using @ast {type Statement, type ParseError, type Span}
+pub using @ast {
+  type Statement,
+  type ParseError,
+  type Span,
+  type Script,
+  type Comment,
+  type CommentKind,
+}
 
 ///|
 /// Parses one PartiQL statement: a query, with an optional final `;`.
@@ -8,4 +15,10 @@ pub using @ast {type Statement, type ParseError, type Span}
 /// milestones; nothing raises it since M2b).
 pub fn parse(source : String) -> Statement raise ParseError {
   @parser.parse_statement(source)
+}
+
+///|
+/// Parses a script: statements separated by `;`, with its comments.
+pub fn parse_script(source : String) -> Script raise ParseError {
+  @parser.parse_script(source)
 }

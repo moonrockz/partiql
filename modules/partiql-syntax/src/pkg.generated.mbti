@@ -8,12 +8,20 @@ import {
 // Values
 pub fn parse(String) -> @ast.Statement raise @ast.ParseError
 
+pub fn parse_script(String) -> @ast.Script raise @ast.ParseError
+
 // Errors
 
 // Types and methods
 
 // Type aliases
+pub using @ast {type Comment}
+
+pub using @ast {type CommentKind}
+
 pub using @ast {type ParseError}
+
+pub using @ast {type Script}
 
 pub using @ast {type Span}
 
