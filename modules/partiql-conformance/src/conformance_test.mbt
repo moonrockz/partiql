@@ -48,6 +48,7 @@ fn run_case(
   codec : Tally,
   ion_roundtrip : Tally,
   print_roundtrip : Tally,
+  pretty_roundtrip : Tally,
 ) -> Unit {
   let statements = suite.statements_of(case) catch {
     error => {
@@ -78,6 +79,7 @@ fn run_case(
     }
     if expects_success || evaluates {
       print_roundtrip.record(id, check_print_roundtrip(statement))
+      pretty_roundtrip.record(id, check_pretty_roundtrip(statement))
     }
   }
   if case.env is Some(env) {
@@ -123,6 +125,7 @@ test "partiql-tests" {
   let codec = Tally::new("codec")
   let ion_roundtrip = Tally::new("ion-roundtrip")
   let print_roundtrip = Tally::new("print-roundtrip")
+  let pretty_roundtrip = Tally::new("pretty-roundtrip")
   for root in data_roots {
     if !@fs.path_exists(root) {
       continue
@@ -138,6 +141,7 @@ test "partiql-tests" {
       for case in suite.cases {
         run_case(
           suite, case, syntax, eval_parse, codec, ion_roundtrip, print_roundtrip,
+          pretty_roundtrip,
         )
       }
     }
@@ -146,7 +150,10 @@ test "partiql-tests" {
   let allow_drop = @env.get_env_var("PARTIQL_CONFORMANCE_ALLOW_DROP") ==
     Some("1")
   let mut regressions = 0
-  for tally in [syntax, eval_parse, codec, ion_roundtrip, print_roundtrip] {
+  for
+    tally in [
+      syntax, eval_parse, codec, ion_roundtrip, print_roundtrip, pretty_roundtrip,
+    ] {
     let comparison = compare(load_baseline(tally.check), tally.passed)
     report_conformance(
       suite=tally.check,
@@ -189,6 +196,7 @@ test "a case with several evaluation assertions is checked once per statement" {
   let codec = Tally::new("codec")
   let ion_roundtrip = Tally::new("ion-roundtrip")
   let print_roundtrip = Tally::new("print-roundtrip")
+  let pretty_roundtrip = Tally::new("pretty-roundtrip")
   run_case(
     suite,
     suite.cases[0],
@@ -197,6 +205,7 @@ test "a case with several evaluation assertions is checked once per statement" {
     codec,
     ion_roundtrip,
     print_roundtrip,
+    pretty_roundtrip,
   )
   @expect.expect(eval_parse.records).to_equal(1)
   @expect.expect(syntax.records).to_equal(0)

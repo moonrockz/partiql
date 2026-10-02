@@ -90,7 +90,7 @@ test "root help snapshot" {
       #|Commands:
       #|  parse    Print the syntax tree of PartiQL as S-expressions.
       #|  check    Check that PartiQL parses; print errors only.
-      #|  format   Print PartiQL in canonical form, keeping comments.
+      #|  format   Print PartiQL in a readable layout, keeping comments.
       #|  version  Print the version.
       #|  help     Print help for the command line or for one command.
       #|

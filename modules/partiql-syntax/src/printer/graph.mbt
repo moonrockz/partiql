@@ -161,15 +161,25 @@ fn selector_doc(s : @ast.Selector) -> Doc {
 }
 
 ///|
+/// `(g MATCH patterns WHERE c)`; broken, the patterns start on the next line
+/// indented by 2, one per line.
 fn Printer::graph(self : Printer, m : @ast.GraphMatch) -> Doc {
-  let words : Array[Doc] = [self.full(m.graph), Text("MATCH")]
-  if m.pattern.selector is Some(s) {
-    words.push(selector_doc(s))
+  let head = match m.pattern.selector {
+    Some(s) => cat([Text(" MATCH "), selector_doc(s)])
+    None => Text(" MATCH")
   }
-  words.push(sep(m.pattern.paths.map(p => self.path_pattern(p)), ", "))
-  if m.pattern.where_ is Some(w) {
-    words.push(Text("WHERE"))
-    words.push(self.full(w))
+  let paths = m.pattern.paths.map(p => self.path_pattern(p))
+  let where_ = match m.pattern.where_ {
+    Some(w) => cat([Text(" WHERE "), self.full(w)])
+    None => Nil
   }
-  parens(spaced(words))
+  Group(
+    cat([
+      Text("("),
+      self.full(m.graph),
+      head,
+      Nest(2, cat([Line, break_items(paths), where_])),
+      Text(")"),
+    ]),
+  )
 }

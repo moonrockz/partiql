@@ -18,16 +18,14 @@ fn Printer::query(self : Printer, q : @ast.Query) -> Doc {
         self.leading(w.span),
         ident_doc(w.name),
         Text(" AS "),
-        parens(self.query(w.query)),
+        sub(self.query(w.query)),
       ])
     })
-    words.push(cat([Text("WITH "), sep(bindings, ", ")]))
+    words.push(list_clause("WITH", bindings))
   }
   words.push(self.body(q.body))
   if !q.order_by.is_empty() {
-    words.push(
-      cat([Text("ORDER BY "), sep(q.order_by.map(s => self.sort_spec(s)), ", ")]),
-    )
+    words.push(list_clause("ORDER BY", q.order_by.map(s => self.sort_spec(s))))
   }
   if q.limit is Some(l) {
     words.push(cat([Text("LIMIT "), self.full(l)]))
@@ -35,7 +33,7 @@ fn Printer::query(self : Printer, q : @ast.Query) -> Doc {
   if q.offset is Some(o) {
     words.push(cat([Text("OFFSET "), self.full(o)]))
   }
-  cat([lead, spaced(words)])
+  cat([lead, Group(lines(words))])
 }
 
 ///|
@@ -88,7 +86,7 @@ fn Printer::set_operand(self : Printer, q : @ast.Query, min : Int) -> Doc {
     })
   if needs {
     let lead = self.leading(q.span)
-    cat([lead, parens(self.query(q))])
+    cat([lead, sub(self.query(q))])
   } else {
     self.query(q)
   }
@@ -135,7 +133,8 @@ fn Printer::set_op(self : Printer, op : @ast.SetOp) -> Doc {
   docs.push(self.set_operand(cur.left, set_level(cur.op)))
   for i = spine.length() - 1; i >= 0; i = i - 1 {
     let o = spine[i]
-    docs.push(Text(" " + set_op_words(o)))
+    docs.push(Line)
+    docs.push(Text(set_op_words(o)))
     match o.corresponding {
       Some(All) => docs.push(Text(" CORRESPONDING"))
       Some(By(names)) =>
@@ -148,37 +147,36 @@ fn Printer::set_op(self : Printer, op : @ast.SetOp) -> Doc {
         )
       None => ()
     }
-    docs.push(Text(" "))
+    docs.push(Line)
     // Left associative: a right operand at the same level takes parentheses.
     docs.push(self.set_operand(o.right, set_level(o.op) + 1))
   }
-  cat(docs)
+  Group(cat(docs))
 }
 
 ///|
+/// A SELECT: each clause is one unit, so that the enclosing query's group
+/// puts each clause on its own line when it breaks.
 fn Printer::select(self : Printer, s : @ast.Select) -> Doc {
   let lead = self.leading(s.span)
-  let words : Array[Doc] = []
+  let clauses : Array[Doc] = []
+  let head = "SELECT" +
+    (match s.quantifier {
+      Some(Distinct) => " DISTINCT"
+      Some(All) => " ALL"
+      None => ""
+    })
   match s.projection {
-    Pivot(value~, key~) => {
-      words.push(Text("PIVOT"))
-      words.push(self.full(value))
-      words.push(Text("AT"))
-      words.push(self.full(key))
-    }
-    projection => {
-      words.push(Text("SELECT"))
-      match s.quantifier {
-        Some(Distinct) => words.push(Text("DISTINCT"))
-        Some(All) => words.push(Text("ALL"))
-        None => ()
-      }
-      words.push(self.projection(projection))
-    }
+    Pivot(value~, key~) =>
+      clauses.push(
+        cat([Text("PIVOT "), self.full(value), Text(" AT "), self.full(key)]),
+      )
+    Star(_) => clauses.push(Text(head + " *"))
+    Value(e) => clauses.push(cat([Text(head + " VALUE "), self.full(e)]))
+    Items(items) => clauses.push(list_clause(head, self.select_items(items)))
   }
   if s.from is Some(f) {
-    words.push(Text("FROM"))
-    words.push(self.from_item(f))
+    clauses.push(cat([Text("FROM "), self.from_item(f)]))
   }
   if !s.let_.is_empty() {
     let bindings = s.let_.map(l => {
@@ -189,64 +187,50 @@ fn Printer::select(self : Printer, s : @ast.Select) -> Doc {
         ident_doc(l.name),
       ])
     })
-    words.push(cat([Text("LET "), sep(bindings, ", ")]))
+    clauses.push(list_clause("LET", bindings))
   }
   if s.where_ is Some(w) {
-    words.push(Text("WHERE"))
-    words.push(self.full(w))
+    clauses.push(cat([Text("WHERE "), self.full(w)]))
   }
   if s.group_by is Some(g) {
-    words.push(self.group_by(g))
+    clauses.push(self.group_by(g))
   }
   if s.having is Some(h) {
-    words.push(Text("HAVING"))
-    words.push(self.full(h))
+    clauses.push(cat([Text("HAVING "), self.full(h)]))
   }
-  cat([lead, spaced(words)])
+  cat([lead, lines(clauses)])
 }
 
 ///|
-fn Printer::projection(self : Printer, p : @ast.Projection) -> Doc {
-  match p {
-    Star(_) => Text("*")
-    Value(e) => cat([Text("VALUE "), self.full(e)])
-    Pivot(..) => Nil
-    Items(items) => {
-      let docs = items.map(i => {
-        match i {
-          Expr(e, as_~, span~) => {
-            let lead = self.leading(span)
-            match as_ {
-              Some(a) => cat([lead, self.full(e), Text(" AS "), ident_doc(a)])
-              None => cat([lead, self.full(e)])
-            }
-          }
-          AllFields(e, span~) =>
-            cat([self.leading(span), self.path_base(e), Text(".*")])
+fn Printer::select_items(
+  self : Printer,
+  items : Array[@ast.SelectItem],
+) -> Array[Doc] {
+  items.map(i => {
+    match i {
+      Expr(e, as_~, span~) => {
+        let lead = self.leading(span)
+        match as_ {
+          Some(a) => cat([lead, self.full(e), Text(" AS "), ident_doc(a)])
+          None => cat([lead, self.full(e)])
         }
-      })
-      sep(docs, ", ")
+      }
+      AllFields(e, span~) =>
+        cat([self.leading(span), self.path_base(e), Text(".*")])
     }
-  }
+  })
 }
 
 ///|
 fn Printer::group_by(self : Printer, g : @ast.GroupBy) -> Doc {
   let lead = self.leading(g.span)
-  let words : Array[Doc] = [Text("GROUP")]
+  let group_as = match g.group_as {
+    Some(a) => Text(" AS " + ident_text(a))
+    None => Nil
+  }
   match g.keys {
-    All => {
-      words.push(Text("ALL"))
-      if g.group_as is Some(a) {
-        words.push(Text("AS"))
-        words.push(ident_doc(a))
-      }
-    }
+    All => cat([lead, Text("GROUP ALL"), group_as])
     By(keys, partial~) => {
-      if partial {
-        words.push(Text("PARTIAL"))
-      }
-      words.push(Text("BY"))
       let docs = keys.map(k => {
         let d = cat([self.leading(k.span), self.full(k.expr)])
         match k.as_ {
@@ -254,14 +238,17 @@ fn Printer::group_by(self : Printer, g : @ast.GroupBy) -> Doc {
           None => d
         }
       })
-      words.push(sep(docs, ", "))
-      if g.group_as is Some(a) {
-        words.push(Text("GROUP AS"))
-        words.push(ident_doc(a))
-      }
+      let keyword = if partial { "GROUP PARTIAL BY" } else { "GROUP BY" }
+      cat([
+        lead,
+        list_clause(keyword, docs),
+        match g.group_as {
+          Some(_) => cat([Text(" GROUP"), group_as])
+          None => Nil
+        },
+      ])
     }
   }
-  cat([lead, spaced(words)])
 }
 
 ///|
@@ -341,6 +328,7 @@ fn Printer::join(self : Printer, j : @ast.Join) -> Doc {
   for node in spine {
     docs.push(self.leading(node.span))
   }
+  let rest : Array[Doc] = []
   docs.push(
     if join_left_parens(cur, cur.left) {
       parens(self.from_item(cur.left))
@@ -362,12 +350,18 @@ fn Printer::join(self : Printer, j : @ast.Join) -> Doc {
       self.from_item(node.right)
     }
     let keyword = join_keyword(node.kind, node.form)
-    docs.push(Text(if keyword == "," { ", " } else { " " + keyword + " " }))
-    docs.push(right)
+    rest.push(
+      if keyword == "," {
+        cat([Text(","), Line])
+      } else {
+        cat([Line, Text(keyword + " ")])
+      },
+    )
+    rest.push(right)
     if node.form is On(c) {
-      docs.push(Text(" ON "))
-      docs.push(self.full(c))
+      rest.push(Group(Nest(2, cat([Line, Text("ON "), self.full(c)]))))
     }
   }
-  cat(docs)
+  docs.push(Nest(2, cat(rest)))
+  Group(cat(docs))
 }

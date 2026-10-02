@@ -88,3 +88,73 @@ test "format prints long left-associative chains without deep recursion" {
     .to_equal("SELECT * FROM t" + " CROSS JOIN t".repeat(n) + ";\n")
   })
 }
+
+///|
+test "pretty scripts: blank lines and comments" {
+  let commented = "select a, -- first\n b from t"
+  @expect.expect_all(soft => {
+    soft
+    .expect(
+      @syntax.format(
+        "select 1; select a, b, c from t where x = 1 and y = 2; select 2",
+        width=30,
+      ),
+    )
+    .to_equal(
+      "SELECT 1;\n\nSELECT a, b, c\nFROM t\nWHERE x = 1 AND y = 2;\n\nSELECT 2;\n",
+    )
+    soft
+    .expect(@syntax.format("select 1; select 2", width=30))
+    .to_equal("SELECT 1;\nSELECT 2;\n")
+    soft
+    .expect(@syntax.format(commented, width=80))
+    .to_equal("SELECT\n  a,\n  -- first\n  b\nFROM t;\n")
+    soft
+    .expect(
+      @syntax.format("select a from t where x = 1 -- why\n and y = 2", width=80),
+    )
+    .to_equal("SELECT a\nFROM t\nWHERE x = 1\n  AND -- why\n  y = 2;\n")
+    soft
+    .expect(@syntax.format("-- top\nselect 1; -- end", width=80))
+    .to_equal("-- top\nSELECT 1;\n-- end\n")
+    let once = @syntax.format(commented, width=20)
+    soft.expect(@syntax.format(once, width=20)).to_equal(once)
+  })
+}
+
+///|
+test "pretty format keeps line feeds inside literals and comments" {
+  let cases = [
+    "SELECT 'a\nb' AS x FROM t", "SELECT f('a\nb') FROM t", "SELECT \"a\nb\" FROM t",
+    "SELECT `{a: 1, b: '''x\ny'''}` FROM t", "SELECT a, /* x\ny */ b FROM t",
+  ]
+  @expect.expect_all(soft => {
+    for source in cases {
+      let once = @syntax.format(source, width=20) catch {
+        e => {
+          soft.expect(@debug.to_string(e)).to_equal("")
+          continue
+        }
+      }
+      soft
+      .expect(@syntax.parse_script(once).strip_spans().statements)
+      .to_equal(@syntax.parse_script(source).strip_spans().statements)
+      soft.expect(@syntax.format(once, width=20)).to_equal(once)
+    }
+    soft
+    .expect(@syntax.format("SELECT 'a\nb' AS x FROM t", width=80))
+    .to_equal("SELECT\n  'a\nb' AS x\nFROM t;\n")
+  })
+}
+
+///|
+test "pretty text has no trailing spaces" {
+  @expect.expect_all(soft => {
+    soft
+    .expect(@syntax.format("SELECT COUNT(DISTINCT aaaaaaaa) FROM t", width=12))
+    .to_equal("SELECT\n  COUNT(\n    DISTINCT aaaaaaaa\n  )\nFROM t;\n")
+    soft
+    .expect(@syntax.format("SELECT COUNT(DISTINCT a, b) FROM t"))
+    .to_equal("SELECT COUNT(DISTINCT a, b) FROM t;\n")
+  })
+}

@@ -50,9 +50,14 @@ fn Printer::statement(self : Printer, s : @ast.Statement) -> Doc {
 }
 
 ///|
-/// The canonical text of a statement, without comments.
-pub fn print(statement : @ast.Statement) -> String {
-  render_flat(Printer::new([]).statement(statement))
+/// The text of a statement, without comments: the canonical one-line form
+/// without `width`, the pretty layout at `width` with it (spec M3b).
+pub fn print(statement : @ast.Statement, width? : Int) -> String {
+  let doc = Printer::new([]).statement(statement)
+  match width {
+    None => render_flat(doc)
+    Some(w) => render(doc, w)
+  }
 }
 
 ///|
@@ -76,8 +81,12 @@ fn Printer::own_lines(self : Printer, span : @ast.Span) -> Doc {
 
 ///|
 /// The canonical text of a script: each statement on its own line followed by
-/// `;`, with the script's comments (spec M3a section 7).
-pub fn print_script(script : @ast.Script) -> String {
+/// `;`, with the script's comments (spec M3a section 7). With `width`, each
+/// statement has the pretty layout at that width (spec M3b).
+pub fn print_script(script : @ast.Script, width? : Int) -> String {
+  if width is Some(w) {
+    return pretty_script(script, w)
+  }
   let p = Printer::new(script.comments)
   let docs : Array[Doc] = []
   for s in script.statements {
@@ -90,4 +99,32 @@ pub fn print_script(script : @ast.Script) -> String {
     p.own_lines({ start: script.span.end + 1, end: script.span.end + 1, }),
   )
   render_flat(cat(docs))
+}
+
+///|
+/// The pretty text of a script: each statement laid out on its own, with a
+/// blank line between two statements when either spans several lines.
+fn pretty_script(script : @ast.Script, width : Int) -> String {
+  let p = Printer::new(script.comments)
+  let out = StringBuilder()
+  let mut previous_multi = false
+  for i, s in script.statements {
+    let comments = render(p.own_lines(statement_span(s)), width)
+    let text = render(cat([p.statement(s), Text(";")]), width)
+    let multi = text.contains("\n")
+    if i > 0 && (multi || previous_multi) {
+      out.write_string("\n")
+    }
+    out.write_string(comments)
+    out.write_string(text)
+    out.write_string("\n")
+    previous_multi = multi
+  }
+  out.write_string(
+    render(
+      p.own_lines({ start: script.span.end + 1, end: script.span.end + 1, }),
+      width,
+    ),
+  )
+  out.to_string()
 }

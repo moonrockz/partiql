@@ -100,6 +100,8 @@ test "format help and stdin detection" {
     soft.expect(help.status).to_equal(0)
     soft.expect(help.stdout).to_contain("partiql format")
     soft.expect(help.stdout).to_contain("Examples:")
+    soft.expect(help.stdout).to_contain("--width <width>")
+    soft.expect(help.stdout).to_contain("--compact")
     soft.expect(@cli.reads_stdin(["format"])).to_be_true()
     soft.expect(@cli.reads_stdin(["format", "-"])).to_be_true()
     soft.expect(@cli.reads_stdin(["format", "a.sql"])).to_be_false()
@@ -116,5 +118,73 @@ test "format help and stdin detection" {
       ] {
       soft.expect(@cli.reads_stdin(args), label=args.join(" ")).to_be_false()
     }
+  })
+}
+
+///|
+test "format widths and compact output" {
+  let long = "select a, b, c from t where x = 1 and y = 2"
+  let wide = "select aaaaaaaaaa, bbbbbbbbbb, cccccccccc, dddddddddd from tttttttttt where xxxxxxxxxx = 1"
+  let (io, written) = fake_io({ "q.sql": long })
+  @expect.expect_all(soft => {
+    soft
+    .expect(@cli.run(["format", "-e", long], io~).stdout)
+    .to_equal("SELECT a, b, c FROM t WHERE x = 1 AND y = 2;\n")
+    soft
+    .expect(@cli.run(["format", "-e", wide], io~).stdout)
+    .to_equal(
+      "SELECT aaaaaaaaaa, bbbbbbbbbb, cccccccccc, dddddddddd\nFROM tttttttttt\nWHERE xxxxxxxxxx = 1;\n",
+    )
+    soft
+    .expect(@cli.run(["format", "--compact", "-e", wide], io~).stdout)
+    .to_equal(
+      "SELECT aaaaaaaaaa, bbbbbbbbbb, cccccccccc, dddddddddd FROM tttttttttt WHERE xxxxxxxxxx = 1;\n",
+    )
+    soft
+    .expect(@cli.run(["format", "--width", "30", "-e", long], io~).stdout)
+    .to_equal("SELECT a, b, c\nFROM t\nWHERE x = 1 AND y = 2;\n")
+    soft
+    .expect(@cli.run(["format", "--width", "1", "-e", "select a"], io~).stdout)
+    .to_equal("SELECT\n  a;\n")
+    soft
+    .expect(
+      @cli.run(["format", "--compact", "-e", "select a, -- c\n b from t"], io~).stdout,
+    )
+    .to_equal("SELECT a, -- c\nb FROM t;\n")
+    ignore(@cli.run(["format", "--write", "--width", "20", "q.sql"], io~))
+    soft
+    .expect(written.get("q.sql"))
+    .to_equal(Some("SELECT a, b, c\nFROM t\nWHERE x = 1\n  AND y = 2;\n"))
+  })
+}
+
+///|
+test "format width usage errors" {
+  let (io, _) = fake_io(Map([]))
+  @expect.expect_all(soft => {
+    soft
+    .expect(
+      @cli.run(["format", "--compact", "--width", "30", "-e", "select a"], io~),
+    )
+    .to_equal({
+      stdout: "",
+      stderr: "partiql format: --compact takes no --width\nRun 'partiql help format' for more information.\n",
+      status: 2,
+    })
+    soft
+    .expect(@cli.run(["format", "--width", "0", "-e", "select a"], io~))
+    .to_equal({
+      stdout: "",
+      stderr: "partiql format: --width must be a whole number of at least 1\nRun 'partiql help format' for more information.\n",
+      status: 2,
+    })
+    soft
+    .expect(@cli.run(["format", "--width", "x", "-e", "select a"], io~).stderr)
+    .to_equal(
+      "partiql format: --width must be a whole number of at least 1\nRun 'partiql help format' for more information.\n",
+    )
+    soft
+    .expect(@cli.run(["format", "--width", "-3", "-e", "select a"], io~).status)
+    .to_equal(2)
   })
 }

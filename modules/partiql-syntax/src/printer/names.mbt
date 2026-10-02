@@ -18,8 +18,17 @@ fn quote(s : String, q : Char) -> String {
 ///|
 /// A delimited identifier stays quoted (it is case-sensitive); a regular one
 /// prints as written.
+fn ident_text(i : @ast.Identifier) -> String {
+  if i.delimited {
+    quote(i.text, '"')
+  } else {
+    i.text
+  }
+}
+
+///|
 fn ident_doc(i : @ast.Identifier) -> Doc {
-  Text(if i.delimited { quote(i.text, '"') } else { i.text })
+  Text(ident_text(i))
 }
 
 ///|
