@@ -91,3 +91,46 @@ test "set operations" {
     ),
   ])
 }
+
+///|
+/// Printing `source` gives `expected`, and parsing it gives the same tree.
+fn check_round_trips(cases : Array[(String, String)]) -> Unit raise {
+  @expect.expect_all(soft => {
+    for case in cases {
+      let tree = @parser.parse_statement(case.0).strip_spans()
+      soft
+      .expect_call(() => canon(case.0), label=case.0)
+      .to_return()
+      .to_equal(case.1)
+      soft
+      .expect_call(
+        () => @parser.parse_statement(canon(case.0)).strip_spans() == tree,
+        label=case.0,
+      )
+      .to_return()
+      .to_be_true()
+    }
+  })
+}
+
+///|
+test "rows that start with a subquery, and rows in FROM" {
+  check_round_trips([
+    ("ROW((SELECT a FROM t), 2)", "ROW((SELECT a FROM t), 2)"),
+    ("ROW((SELECT a FROM t) + 1, 2)", "ROW((SELECT a FROM t) + 1, 2)"),
+    ("ROW((VALUES (1)), 2)", "ROW((VALUES (1)), 2)"),
+    ("ROW(((SELECT 1) OR x) + 1, 2)", "ROW(((SELECT 1) OR x) + 1, 2)"),
+    ("(1, 2) = ROW((SELECT 1), 2)", "(1, 2) = ROW((SELECT 1), 2)"),
+    ("x IN ROW((SELECT a FROM t), 2)", "x IN ROW((SELECT a FROM t), 2)"),
+    ("x IN ROW((SELECT a FROM t))", "x IN ROW((SELECT a FROM t))"),
+    ("x IN ROW((SELECT 2) + 1)", "x IN ROW((SELECT 2) + 1)"),
+    ("x IN ROW(VALUES (1))", "x IN ROW((VALUES (1)))"),
+    ("x IN (1, (SELECT a FROM t))", "x IN (1, (SELECT a FROM t))"),
+    ("SELECT * FROM ROW(1, 2)", "SELECT * FROM ROW(1, 2)"),
+    ("SELECT * FROM a, ROW(1, 2)", "SELECT * FROM a, ROW(1, 2)"),
+    (
+      "SELECT * FROM a CROSS JOIN ROW(1, 2)", "SELECT * FROM a CROSS JOIN ROW(1, 2)",
+    ),
+    ("SELECT * FROM ROW(1, 2) AS x", "SELECT * FROM ROW(1, 2) AS x"),
+  ])
+}

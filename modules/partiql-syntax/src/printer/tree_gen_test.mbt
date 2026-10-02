@@ -164,7 +164,7 @@ let fields : Array[@ast.DatetimeField] = [
 /// that prints starting with `(` and is not a row cannot be written there).
 fn gen_in_rhs(rs : @splitmix.RandomState, depth : Int) -> @ast.Expr raise {
   match pick(rs, 4) {
-    0 => mk(Row(lead_safe(rs, gen_list(rs, depth, 1, 3))))
+    0 => mk(Row(gen_list(rs, depth, 1, 3)))
     1 => mk(Query(gen_query(rs, depth - 1)))
     2 => mk(VarRef(gen_ident(rs), qualified=false))
     _ => mk(List(gen_list(rs, depth, 0, 2)))
@@ -305,7 +305,7 @@ fn gen_expr(rs : @splitmix.RandomState, depth : Int) -> @ast.Expr raise {
           0 => List(xs)
           1 => Bag(xs)
           2 => Sexp(xs)
-          _ => Row(if xs.length() >= 2 { lead_safe(rs, xs) } else { xs })
+          _ => Row(xs)
         },
       )
     }
@@ -356,10 +356,11 @@ fn gen_item(rs : @splitmix.RandomState, depth : Int) -> @ast.SelectItem raise {
 
 ///|
 fn gen_source(rs : @splitmix.RandomState, depth : Int) -> @ast.FromItem raise {
-  // Sources that print without a leading `(` except subqueries: a `(` would
-  // start a parenthesized-join attempt in FROM.
-  let expr = match pick(rs, 3) {
+  // Rows print as ROW(..) in FROM; other sources avoid a leading `(`,
+  // which would start a parenthesized-join attempt.
+  let expr = match pick(rs, 4) {
     0 => mk(Query(gen_query(rs, depth - 1)))
+    3 => mk(Row(gen_list(rs, depth, 0, 3)))
     1 =>
       mk(
         Path(mk(VarRef(gen_ident(rs), qualified=false)), [
@@ -621,9 +622,9 @@ fn starts_with_query(e : @ast.Expr) -> Bool {
 }
 
 ///|
-/// A list whose first item does not start with a parenthesized query: the
-/// parser reads `((SELECT 1), 2)` and `f((SELECT 1), 2)` as a subquery that
-/// must end at the first `)` (parser bug, see beads).
+/// Call arguments whose first item does not start with a parenthesized
+/// query: the parser reads `f((SELECT 1), 2)` as a subquery that must end at
+/// the first `)` (parser bug partiql-eic), and calls have no other spelling.
 fn lead_safe(
   rs : @splitmix.RandomState,
   xs : Array[@ast.Expr],

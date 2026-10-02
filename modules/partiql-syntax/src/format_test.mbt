@@ -63,3 +63,28 @@ test "format keeps the tree and is idempotent" {
     }
   })
 }
+
+///|
+test "format prints long left-associative chains without deep recursion" {
+  let n = 1000
+  @expect.expect_all(soft => {
+    soft
+    .expect(@syntax.format("select a from t where a" + " and a = 1".repeat(n)))
+    .to_equal("SELECT a FROM t WHERE a" + " AND a = 1".repeat(n) + ";\n")
+    soft
+    .expect(@syntax.format("1" + " + 1".repeat(n)))
+    .to_equal("1" + " + 1".repeat(n) + ";\n")
+    soft
+    .expect(@syntax.format("a" + " is null".repeat(n)))
+    .to_equal("a" + " IS NULL".repeat(n) + ";\n")
+    soft
+    .expect(@syntax.format("select 1" + " union select 1".repeat(n)))
+    .to_equal("SELECT 1" + " UNION SELECT 1".repeat(n) + ";\n")
+    soft
+    .expect(@syntax.format("select * from t" + ", t".repeat(n)))
+    .to_equal("SELECT * FROM t" + ", t".repeat(n) + ";\n")
+    soft
+    .expect(@syntax.format("select * from t" + " cross join t".repeat(n)))
+    .to_equal("SELECT * FROM t" + " CROSS JOIN t".repeat(n) + ";\n")
+  })
+}

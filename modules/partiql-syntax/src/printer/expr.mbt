@@ -97,15 +97,6 @@ fn Printer::fields(self : Printer, fs : Array[(@ast.Expr, @ast.Expr)]) -> Doc {
 }
 
 ///|
-fn negated_word(negated : Bool) -> Doc {
-  if negated {
-    Text("NOT")
-  } else {
-    Nil
-  }
-}
-
-///|
 fn Printer::step(self : Printer, s : @ast.PathStep) -> Doc {
   match s {
     Field(i) => cat([Text("."), ident_doc(i)])
@@ -144,84 +135,18 @@ fn Printer::expr_body(self : Printer, e : @ast.Expr) -> Doc {
       }
       cat([Text(sign + gap), self.operand(x, 9)])
     }
-    Binary(op, a, b) => {
-      let (l, symbol) = binary_info(op)
-      // `x IS ARRAY < y` would read `ARRAY<` as an element type.
-      let left = if symbol.has_prefix("<") &&
-        a.kind is IsType(_, Array(None), ..) {
-        cat([self.leading(a.span), parens(self.expr_body(a))])
-      } else {
-        self.operand(a, l)
-      }
-      spaced([left, Text(symbol), self.operand(b, l + 1)])
-    }
-    And(a, b) => spaced([self.operand(a, 2), Text("AND"), self.operand(b, 3)])
-    Or(a, b) => spaced([self.operand(a, 1), Text("OR"), self.operand(b, 2)])
+    Binary(_, _, _)
+    | And(_, _)
+    | Or(_, _)
+    | BoolTest(_, _, ..)
+    | Like(_, ..)
+    | Between(_, ..)
+    | In(_, _, ..)
+    | IsNull(_, ..)
+    | IsMissing(_, ..)
+    | IsType(_, _, ..)
+    | Overlaps(_, _) => self.chain(e)
     Not(x) => spaced([Text("NOT"), self.operand(x, 3)])
-    BoolTest(x, value, negated~) =>
-      spaced([
-        self.operand(x, 4),
-        Text("IS"),
-        negated_word(negated),
-        Text(
-          match value {
-            Some(true) => "TRUE"
-            Some(false) => "FALSE"
-            None => "UNKNOWN"
-          },
-        ),
-      ])
-    Like(x, pattern~, escape~, negated~) =>
-      spaced([
-        self.operand(x, 5),
-        negated_word(negated),
-        Text("LIKE"),
-        self.operand(pattern, 6),
-        match escape {
-          Some(c) => spaced([Text("ESCAPE"), self.operand(c, 6)])
-          None => Nil
-        },
-      ])
-    Between(x, low~, high~, negated~) =>
-      spaced([
-        self.operand(x, 5),
-        negated_word(negated),
-        Text("BETWEEN"),
-        self.operand(low, 6),
-        Text("AND"),
-        self.operand(high, 6),
-      ])
-    In(a, b, negated~) => {
-      let right = match b.kind {
-        // `IN (e, ..)` is a row, also with one element.
-        Row(items) => cat([self.leading(b.span), parens(self.list(items))])
-        _ => self.operand(b, 6)
-      }
-      spaced([self.operand(a, 5), negated_word(negated), Text("IN"), right])
-    }
-    IsNull(x, negated~) =>
-      spaced([
-        self.operand(x, 5),
-        Text("IS"),
-        negated_word(negated),
-        Text("NULL"),
-      ])
-    IsMissing(x, negated~) =>
-      spaced([
-        self.operand(x, 5),
-        Text("IS"),
-        negated_word(negated),
-        Text("MISSING"),
-      ])
-    IsType(x, t, negated~) =>
-      spaced([
-        self.operand(x, 5),
-        Text("IS"),
-        negated_word(negated),
-        Text(type_text(t)),
-      ])
-    Overlaps(a, b) =>
-      spaced([self.operand(a, 5), Text("OVERLAPS"), self.operand(b, 6)])
     Case(operand~, branches~, default~) => {
       let words : Array[Doc] = [Text("CASE")]
       if operand is Some(o) {
@@ -333,7 +258,8 @@ fn Printer::expr_body(self : Printer, e : @ast.Expr) -> Doc {
     Struct(fs) => cat([Text("{"), self.fields(fs), Text("}")])
     Map(fs) => cat([Text("MAP{"), self.fields(fs), Text("}")])
     Row(xs) =>
-      if xs.length() >= 2 {
+      // `(a)` reads as `a`, and `((SELECT ..), b)` as a subquery.
+      if xs.length() >= 2 && !starts_with_query(xs[0]) && !self.row_calls {
         parens(self.list(xs))
       } else {
         cat([Text("ROW("), self.list(xs), Text(")")])
@@ -350,4 +276,150 @@ fn Printer::expr_body(self : Printer, e : @ast.Expr) -> Doc {
     Query(q) => parens(self.query(q))
     GraphMatch(m) => self.graph(m)
   }
+}
+
+///|
+/// The left operand of a left-recursive form, and the level it needs.
+fn left_operand(e : @ast.Expr) -> (@ast.Expr, Int)? {
+  match e.kind {
+    Or(a, _) => Some((a, 1))
+    And(a, _) => Some((a, 2))
+    BoolTest(a, _, ..) => Some((a, 4))
+    Binary(op, a, _) => Some((a, binary_info(op).0))
+    Like(a, ..)
+    | Between(a, ..)
+    | In(a, _, ..)
+    | IsNull(a, ..)
+    | IsMissing(a, ..)
+    | IsType(a, _, ..)
+    | Overlaps(a, _) => Some((a, 5))
+    _ => None
+  }
+}
+
+///|
+/// Whether the left operand `a` of `parent` prints in parentheses.
+fn left_needs_parens(a : @ast.Expr, min : Int, parent : @ast.Expr) -> Bool {
+  // `x IS ARRAY < y` would read `ARRAY<` as an element type.
+  let bare_array_before_lt = match parent.kind {
+    Binary(Lt | Le | Ne, _, _) => a.kind is IsType(_, Array(None), ..)
+    _ => false
+  }
+  level(a) < min || bare_array_before_lt
+}
+
+///|
+/// A chain of left-recursive forms (`a AND b AND c`, `a + b + c`, `a IS NULL
+/// IS NULL`), printed with a loop over the left spine: the parser builds
+/// such chains without a depth limit.
+fn Printer::chain(self : Printer, e : @ast.Expr) -> Doc {
+  let spine = [e]
+  let mut cur = e
+  while left_operand(cur) is Some((a, min)) &&
+        !left_needs_parens(a, min, cur) &&
+        left_operand(a) is Some(_) {
+    spine.push(a)
+    cur = a
+  }
+  let docs : Array[Doc] = []
+  // All spine nodes start where the leftmost operand starts.
+  for node in spine {
+    docs.push(self.leading(node.span))
+  }
+  guard left_operand(cur) is Some((leaf, min)) else { return cat(docs) }
+  docs.push(
+    if left_needs_parens(leaf, min, cur) {
+      cat([self.leading(leaf.span), parens(self.expr_body(leaf))])
+    } else {
+      self.expr(leaf)
+    },
+  )
+  for i = spine.length() - 1; i >= 0; i = i - 1 {
+    docs.push(self.suffix(spine[i]))
+  }
+  cat(docs)
+}
+
+///|
+fn not_text(negated : Bool) -> String {
+  if negated {
+    " NOT"
+  } else {
+    ""
+  }
+}
+
+///|
+/// What follows the left operand of a left-recursive form.
+fn Printer::suffix(self : Printer, e : @ast.Expr) -> Doc {
+  match e.kind {
+    Or(_, b) => cat([Text(" OR "), self.operand(b, 2)])
+    And(_, b) => cat([Text(" AND "), self.operand(b, 3)])
+    BoolTest(_, value, negated~) =>
+      Text(
+        " IS" +
+        not_text(negated) +
+        (match value {
+          Some(true) => " TRUE"
+          Some(false) => " FALSE"
+          None => " UNKNOWN"
+        }),
+      )
+    Binary(op, _, b) => {
+      let (l, symbol) = binary_info(op)
+      cat([Text(" " + symbol + " "), self.operand(b, l + 1)])
+    }
+    Like(_, pattern~, escape~, negated~) =>
+      cat([
+        Text(not_text(negated) + " LIKE "),
+        self.operand(pattern, 6),
+        match escape {
+          Some(c) => cat([Text(" ESCAPE "), self.operand(c, 6)])
+          None => Nil
+        },
+      ])
+    Between(_, low~, high~, negated~) =>
+      cat([
+        Text(not_text(negated) + " BETWEEN "),
+        self.operand(low, 6),
+        Text(" AND "),
+        self.operand(high, 6),
+      ])
+    In(_, b, negated~) => {
+      let right = match b.kind {
+        // `IN (e, ..)` is a row, also with one element.
+        Row(items) if !(items.length() > 0 && starts_with_query(items[0])) =>
+          cat([self.leading(b.span), parens(self.list(items))])
+        _ => self.operand(b, 6)
+      }
+      cat([Text(not_text(negated) + " IN "), right])
+    }
+    IsNull(_, negated~) => Text(" IS" + not_text(negated) + " NULL")
+    IsMissing(_, negated~) => Text(" IS" + not_text(negated) + " MISSING")
+    IsType(_, t, negated~) =>
+      Text(" IS" + not_text(negated) + " " + type_text(t))
+    Overlaps(_, b) => cat([Text(" OVERLAPS "), self.operand(b, 6)])
+    _ => Nil
+  }
+}
+
+///|
+/// Whether `e` prints starting with a parenthesized query: `(SELECT ..)` or
+/// `(VALUES ..)` as its leftmost part. The parser reads `((SELECT ..), b)`
+/// as a subquery, so such a row prints as `ROW(..)`.
+fn starts_with_query(e : @ast.Expr) -> Bool {
+  let mut cur = e
+  while true {
+    match cur.kind {
+      Query(_) | Values(_) => return true
+      Path(a, _) => cur = a
+      GraphMatch(m) => cur = m.graph
+      _ =>
+        match left_operand(cur) {
+          Some((a, _)) => cur = a
+          None => return false
+        }
+    }
+  }
+  false
 }

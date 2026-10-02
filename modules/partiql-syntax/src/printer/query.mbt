@@ -95,41 +95,64 @@ fn Printer::set_operand(self : Printer, q : @ast.Query, min : Int) -> Doc {
 }
 
 ///|
+/// The operator words of a set operation, without its operands.
+fn set_op_words(op : @ast.SetOp) -> String {
+  let words = [
+    if op.outer {
+      "OUTER "
+    } else {
+      ""
+    },
+    match op.op {
+      Union => "UNION"
+      Intersect => "INTERSECT"
+      Except => "EXCEPT"
+    },
+    match op.quantifier {
+      Some(All) => " ALL"
+      Some(Distinct) => " DISTINCT"
+      None => ""
+    },
+  ]
+  words.join("")
+}
+
+///|
+/// A chain of set operations, printed with a loop over the left spine (the
+/// parser builds these chains without a depth limit).
 fn Printer::set_op(self : Printer, op : @ast.SetOp) -> Doc {
-  let l = set_level(op.op)
-  let words : Array[Doc] = [self.set_operand(op.left, l)]
-  if op.outer {
-    words.push(Text("OUTER"))
+  let spine = [op]
+  let leads : Array[Doc] = []
+  let mut cur = op
+  while !has_clauses(cur.left) &&
+        cur.left.body is SetOp(inner) &&
+        set_level(inner.op) >= set_level(cur.op) {
+    leads.push(self.leading(cur.left.span))
+    spine.push(inner)
+    cur = inner
   }
-  words.push(
-    Text(
-      match op.op {
-        Union => "UNION"
-        Intersect => "INTERSECT"
-        Except => "EXCEPT"
-      },
-    ),
-  )
-  match op.quantifier {
-    Some(All) => words.push(Text("ALL"))
-    Some(Distinct) => words.push(Text("DISTINCT"))
-    None => ()
+  let docs = leads
+  docs.push(self.set_operand(cur.left, set_level(cur.op)))
+  for i = spine.length() - 1; i >= 0; i = i - 1 {
+    let o = spine[i]
+    docs.push(Text(" " + set_op_words(o)))
+    match o.corresponding {
+      Some(All) => docs.push(Text(" CORRESPONDING"))
+      Some(By(names)) =>
+        docs.push(
+          cat([
+            Text(" CORRESPONDING BY ("),
+            sep(names.map(ident_doc), ", "),
+            Text(")"),
+          ]),
+        )
+      None => ()
+    }
+    docs.push(Text(" "))
+    // Left associative: a right operand at the same level takes parentheses.
+    docs.push(self.set_operand(o.right, set_level(o.op) + 1))
   }
-  match op.corresponding {
-    Some(All) => words.push(Text("CORRESPONDING"))
-    Some(By(names)) =>
-      words.push(
-        cat([
-          Text("CORRESPONDING BY ("),
-          sep(names.map(ident_doc), ", "),
-          Text(")"),
-        ]),
-      )
-    None => ()
-  }
-  // Left associative: a right operand at the same level takes parentheses.
-  words.push(self.set_operand(op.right, l + 1))
-  spaced(words)
+  cat(docs)
 }
 
 ///|
@@ -264,7 +287,10 @@ fn Printer::from_source(
   if unpivot {
     words.push(Text("UNPIVOT"))
   }
+  let saved = self.row_calls
+  self.row_calls = true
   words.push(self.full(s.expr))
+  self.row_calls = saved
   for clause in [("AS", s.as_), ("AT", s.at), ("BY", s.by)] {
     if clause.1 is Some(a) {
       words.push(Text(clause.0))
@@ -280,46 +306,68 @@ fn is_comma(f : @ast.FromItem) -> Bool {
 }
 
 ///|
+fn join_keyword(kind : @ast.JoinKind, form : @ast.JoinForm) -> String {
+  match (kind, form) {
+    (_, Comma) => ","
+    (Inner, Cross) => "CROSS JOIN"
+    (Left, Cross) => "LEFT CROSS JOIN"
+    (Right, Cross) => "RIGHT CROSS JOIN"
+    (Full, Cross) => "FULL CROSS JOIN"
+    (Inner, _) => "JOIN"
+    (Left, _) => "LEFT JOIN"
+    (Right, _) => "RIGHT JOIN"
+    (Full, _) => "FULL JOIN"
+  }
+}
+
+///|
+/// Whether the left side `left` of join `j` prints in parentheses: a comma
+/// join under a JOIN.
+fn join_left_parens(j : @ast.Join, left : @ast.FromItem) -> Bool {
+  !(j.form is Comma) && is_comma(left)
+}
+
+///|
+/// A chain of joins, printed with a loop over the left spine (FROM lists and
+/// join chains have no depth limit).
 fn Printer::join(self : Printer, j : @ast.Join) -> Doc {
-  let lead = self.leading(j.span)
-  match j.form {
-    Comma => {
-      let left = self.from_item(j.left)
-      let right = if is_comma(j.right) {
-        parens(self.from_item(j.right))
-      } else {
-        self.from_item(j.right)
-      }
-      cat([lead, left, Text(", "), right])
+  let spine = [j]
+  let mut cur = j
+  while cur.left is Join(inner) && !join_left_parens(cur, cur.left) {
+    spine.push(inner)
+    cur = inner
+  }
+  let docs : Array[Doc] = []
+  for node in spine {
+    docs.push(self.leading(node.span))
+  }
+  docs.push(
+    if join_left_parens(cur, cur.left) {
+      parens(self.from_item(cur.left))
+    } else {
+      self.from_item(cur.left)
+    },
+  )
+  for i = spine.length() - 1; i >= 0; i = i - 1 {
+    let node = spine[i]
+    // The right side is one FROM item: a join there (for JOIN), or a comma
+    // join (for a comma), takes parentheses.
+    let right_parens = match node.form {
+      Comma => is_comma(node.right)
+      _ => node.right is Join(_)
     }
-    form => {
-      let left = if is_comma(j.left) {
-        parens(self.from_item(j.left))
-      } else {
-        self.from_item(j.left)
-      }
-      let keyword = match (j.kind, form) {
-        (Inner, Cross) => "CROSS JOIN"
-        (Left, Cross) => "LEFT CROSS JOIN"
-        (Right, Cross) => "RIGHT CROSS JOIN"
-        (Full, Cross) => "FULL CROSS JOIN"
-        (Inner, _) => "JOIN"
-        (Left, _) => "LEFT JOIN"
-        (Right, _) => "RIGHT JOIN"
-        (Full, _) => "FULL JOIN"
-      }
-      // The right side of a join is one FROM source: a join there takes
-      // parentheses.
-      let right = if j.right is Join(_) {
-        parens(self.from_item(j.right))
-      } else {
-        self.from_item(j.right)
-      }
-      let on = match form {
-        On(c) => cat([Text(" ON "), self.full(c)])
-        _ => Nil
-      }
-      cat([lead, left, Text(" " + keyword + " "), right, on])
+    let right = if right_parens {
+      parens(self.from_item(node.right))
+    } else {
+      self.from_item(node.right)
+    }
+    let keyword = join_keyword(node.kind, node.form)
+    docs.push(Text(if keyword == "," { ", " } else { " " + keyword + " " }))
+    docs.push(right)
+    if node.form is On(c) {
+      docs.push(Text(" ON "))
+      docs.push(self.full(c))
     }
   }
+  cat(docs)
 }

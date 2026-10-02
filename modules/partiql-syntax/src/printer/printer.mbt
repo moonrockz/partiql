@@ -5,11 +5,14 @@
 priv struct Printer {
   comments : Array[@ast.Comment]
   mut next : Int
+  /// Print every row as `ROW(..)`: set inside a FROM source, where a
+  /// leading `(` would start a parenthesized join.
+  mut row_calls : Bool
 }
 
 ///|
 fn Printer::new(comments : Array[@ast.Comment]) -> Printer {
-  { comments, next: 0, }
+  { comments, next: 0, row_calls: false, }
 }
 
 ///|
