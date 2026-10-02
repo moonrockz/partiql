@@ -1,10 +1,19 @@
 # moonrockz/partiql-syntax
 
-A PartiQL parser for MoonBit: queries (DQL), including graph `MATCH`
-(GPML), into a typed syntax tree with source spans.
+A PartiQL parser and printer for MoonBit: queries (DQL), including graph
+`MATCH` (GPML), into a typed syntax tree with source spans, and back to
+canonical text.
 
 ```moonbit
 let statement = @syntax.parse("SELECT a FROM t WHERE a > 1")
+```
+
+`print` writes a tree back as canonical text, and `format` does parse and
+print for a whole script, keeping its comments:
+
+```moonbit
+let text = @syntax.format("select a from t -- note")
+// text == "SELECT a FROM t;\n-- note\n"
 ```
 
 | Package | Content |
@@ -12,7 +21,8 @@ let statement = @syntax.parse("SELECT a FROM t WHERE a > 1")
 | `moonrockz/partiql-syntax` | `parse(String) -> Statement raise ParseError` |
 | `moonrockz/partiql-syntax/ast` | the syntax tree, `Span`, `ParseError` |
 | `moonrockz/partiql-syntax/lexer` | `lex(String) -> Array[Token]` |
-| `moonrockz/partiql-syntax/parser` | `parse_statement`, `parse_expression` |
+| `moonrockz/partiql-syntax/parser` | `parse_statement`, `parse_expression`, `parse_script` |
+| `moonrockz/partiql-syntax/printer` | `print`, `print_script` |
 
 Errors: `ParseError::Syntax(message~, span~, expected~, found~)` for invalid
 input. `ParseError::Unsupported` is reserved for valid PartiQL that a later
