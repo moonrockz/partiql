@@ -51,3 +51,40 @@ fn Printer::statement(self : Printer, s : @ast.Statement) -> Doc {
 pub fn print(statement : @ast.Statement) -> String {
   render_flat(Printer::new([]).statement(statement))
 }
+
+///|
+fn statement_span(s : @ast.Statement) -> @ast.Span {
+  match s {
+    Query(q) => q.span
+  }
+}
+
+///|
+/// Pending comments before `span`, each on its own line.
+fn Printer::own_lines(self : Printer, span : @ast.Span) -> Doc {
+  let docs : Array[Doc] = []
+  while self.pending(span) {
+    docs.push(Text(self.comments[self.next].text))
+    docs.push(HardLine)
+    self.next += 1
+  }
+  cat(docs)
+}
+
+///|
+/// The canonical text of a script: each statement on its own line followed by
+/// `;`, with the script's comments (spec M3a section 7).
+pub fn print_script(script : @ast.Script) -> String {
+  let p = Printer::new(script.comments)
+  let docs : Array[Doc] = []
+  for s in script.statements {
+    docs.push(p.own_lines(statement_span(s)))
+    docs.push(p.statement(s))
+    docs.push(Text(";"))
+    docs.push(HardLine)
+  }
+  docs.push(
+    p.own_lines({ start: script.span.end + 1, end: script.span.end + 1, }),
+  )
+  render_flat(cat(docs))
+}

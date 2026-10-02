@@ -22,3 +22,22 @@ pub fn parse(source : String) -> Statement raise ParseError {
 pub fn parse_script(source : String) -> Script raise ParseError {
   @parser.parse_script(source)
 }
+
+///|
+/// The canonical text of a statement (no comments, no final `;`).
+pub fn print(statement : Statement) -> String {
+  @printer.print(statement)
+}
+
+///|
+/// The canonical text of a script, with its comments.
+pub fn print_script(script : Script) -> String {
+  @printer.print_script(script)
+}
+
+///|
+/// Parses `source` as a script and prints it in canonical form, keeping the
+/// comments.
+pub fn format(source : String) -> String raise ParseError {
+  @printer.print_script(@parser.parse_script(source))
+}

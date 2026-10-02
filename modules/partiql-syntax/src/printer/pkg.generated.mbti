@@ -8,6 +8,8 @@ import {
 // Values
 pub fn print(@ast.Statement) -> String
 
+pub fn print_script(@ast.Script) -> String
+
 // Errors
 
 // Types and methods

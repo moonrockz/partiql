@@ -6,9 +6,15 @@ import {
 }
 
 // Values
+pub fn format(String) -> String raise @ast.ParseError
+
 pub fn parse(String) -> @ast.Statement raise @ast.ParseError
 
 pub fn parse_script(String) -> @ast.Script raise @ast.ParseError
+
+pub fn print(@ast.Statement) -> String
+
+pub fn print_script(@ast.Script) -> String
 
 // Errors
 
