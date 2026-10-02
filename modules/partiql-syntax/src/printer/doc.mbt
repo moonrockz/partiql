@@ -176,3 +176,20 @@ fn list_clause(keyword : String, items : Array[Doc]) -> Doc {
 fn sub(d : Doc) -> Doc {
   Group(cat([Text("("), Nest(2, cat([SoftLine, d])), SoftLine, Text(")")]))
 }
+
+///|
+/// `open item, item close`; broken, each item is on its own line indented by
+/// 2, and the closing bracket is on its own line.
+fn bracketed(open : String, items : Array[Doc], close : String) -> Doc {
+  if items.is_empty() {
+    return Text(open + close)
+  }
+  Group(
+    cat([
+      Text(open),
+      Nest(2, cat([SoftLine, break_items(items)])),
+      SoftLine,
+      Text(close),
+    ]),
+  )
+}
