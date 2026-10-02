@@ -103,5 +103,16 @@ test "format help and stdin detection" {
     soft.expect(@cli.reads_stdin(["format", "a.sql"])).to_be_false()
     soft.expect(@cli.reads_stdin(["format", "-e", "x"])).to_be_false()
     soft.expect(@cli.reads_stdin(["version"])).to_be_false()
+    for
+      args in [
+        ["format", "--help"],
+        ["format", "-h"],
+        ["--help", "format"],
+        ["help", "format"],
+        ["format", "--write"],
+        ["format", "--write", "-"],
+      ] {
+      soft.expect(@cli.reads_stdin(args), label=args.join(" ")).to_be_false()
+    }
   })
 }

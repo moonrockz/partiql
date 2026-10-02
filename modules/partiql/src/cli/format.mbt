@@ -51,10 +51,10 @@ fn format_command(m : @argparse.Matches, io : Io) -> Outcome {
       Err(line) => { stdout: "", stderr: line, status: 1, }
     }
   }
-  if files.is_empty() || files == ["-"] {
-    if write {
-      return usage("--write needs at least one file")
-    }
+  if write && (files.is_empty() || files == ["-"]) {
+    return usage("--write needs at least one file")
+  }
+  if stdin_wanted(m) {
     let source = (io.read_stdin)() catch {
       e =>
         return {
@@ -110,14 +110,25 @@ fn format_command(m : @argparse.Matches, io : Io) -> Outcome {
 ///|
 /// Whether `args` make `run` read stdin, so that `main` reads it first.
 pub fn reads_stdin(args : ArrayView[String]) -> Bool {
+  // `run` answers help before it parses (see `help_request`).
+  if help_request(args) is Some(_) {
+    return false
+  }
   let matches = command_line().parse(argv=args, env={}) catch {
     _ => return false
   }
   match matches.subcommand {
-    Some(("format", m)) => {
-      let files = m.values.get("file").unwrap_or([])
-      m.values.get("expr") is None && (files.is_empty() || files == ["-"])
-    }
+    Some(("format", m)) => stdin_wanted(m)
     _ => false
   }
+}
+
+///|
+/// Whether `format` reads stdin: no `-e`, no `--write`, and no file or only
+/// `-`. `format_command` and `reads_stdin` share this rule.
+fn stdin_wanted(m : @argparse.Matches) -> Bool {
+  let files = m.values.get("file").unwrap_or([])
+  m.values.get("expr") is None &&
+  m.flags.get("write") != Some(true) &&
+  (files.is_empty() || files == ["-"])
 }
