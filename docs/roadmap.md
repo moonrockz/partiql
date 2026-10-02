@@ -61,8 +61,13 @@ M3 has four parts, done in this order:
   by `;`. The `print-roundtrip` conformance check parses, prints and parses
   every corpus statement again: all 5310 statements that parse give the same
   tree. The CLI has its first working command, `partiql format`.
-- **M3c: diagnostics.** Rendered parse errors (line and column, the source
-  line, a marker, expected and found), `partiql parse` and `partiql check`.
+- **M3c (done): diagnostics.** `render` prints a parse error rustc style:
+  the location (line and character column), the source line, a marker, and
+  what was expected. Messages name keywords as keywords, expected lists are
+  curated (operators fold into "an operator"), lexer errors are named, and
+  DML/DDL statements report `Unsupported`. `to_sexp` prints a syntax tree as
+  an S-expression (laid out with `moonrockz/pretty`). The CLI gains
+  `partiql parse`, `partiql check` and a global `--color`.
 - **M3b: pretty layout.** A width-aware layout for the printer.
 - **M3d: error recovery.** Several diagnostics per statement.
 

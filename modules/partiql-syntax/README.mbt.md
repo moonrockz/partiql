@@ -29,6 +29,21 @@ input. `ParseError::Unsupported` is reserved for valid PartiQL that a later
 version parses; nothing raises it yet.
 `Span::line_column(source)` gives 1-based line and column numbers.
 
+`render` prints a parse error for people, and `to_sexp` prints a tree as an
+S-expression:
+
+```moonbit
+let source = "SELECT FROM t"
+let text = try {
+  ignore(@syntax.parse(source))
+  ""
+} catch {
+  e => @syntax.render(e, source, name="query.sql")
+}
+// error: expected an expression, found keyword `FROM`
+//  --> query.sql:1:8
+```
+
 Input nested more than 100 levels deep (parentheses, subqueries, collections,
 graph groups) is a `Syntax` error, "nesting is too deep", on every target.
 
