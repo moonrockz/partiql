@@ -146,7 +146,14 @@ fn Printer::expr_body(self : Printer, e : @ast.Expr) -> Doc {
     }
     Binary(op, a, b) => {
       let (l, symbol) = binary_info(op)
-      spaced([self.operand(a, l), Text(symbol), self.operand(b, l + 1)])
+      // `x IS ARRAY < y` would read `ARRAY<` as an element type.
+      let left = if symbol.has_prefix("<") &&
+        a.kind is IsType(_, Array(None), ..) {
+        cat([self.leading(a.span), parens(self.expr_body(a))])
+      } else {
+        self.operand(a, l)
+      }
+      spaced([left, Text(symbol), self.operand(b, l + 1)])
     }
     And(a, b) => spaced([self.operand(a, 2), Text("AND"), self.operand(b, 3)])
     Or(a, b) => spaced([self.operand(a, 1), Text("OR"), self.operand(b, 2)])

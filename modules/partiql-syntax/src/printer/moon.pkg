@@ -12,4 +12,7 @@ import {
   "moonrockz/partiql-syntax/printer",
   "moonrockz/partiql-syntax/parser",
   "moonrockz/expect",
+  "moonbitlang/core/quickcheck",
+  "moonbitlang/core/quickcheck/splitmix",
+  "moonrockz/ion/text",
 } for "test"
