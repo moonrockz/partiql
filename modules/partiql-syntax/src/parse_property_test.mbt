@@ -292,3 +292,23 @@ test "law 5: format never aborts" {
     count=1000,
   )
 }
+
+///|
+test "law: pretty format keeps comments and is idempotent" {
+  @quickcheck.check(
+    (c : CommentedText) => {
+      let width = 1 + c.text.length() % 60
+      try {
+        let once = @syntax.format(c.text, width~)
+        let script = @syntax.parse_script(once)
+        script.comments.map(x => x.text) == c.comments &&
+        script.strip_spans().statements ==
+        @syntax.parse_script(c.text).strip_spans().statements &&
+        @syntax.format(once, width~) == once
+      } catch {
+        _ => false
+      }
+    },
+    count=500,
+  )
+}
