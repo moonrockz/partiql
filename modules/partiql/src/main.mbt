@@ -27,6 +27,7 @@ async fn main {
         Err(e) => raise e
       }
     },
+    color_default: false,
   }
   let outcome = @cli.run(args, io~)
   if outcome.stdout != "" {

@@ -44,10 +44,16 @@ pub fn run(args : ArrayView[String], io? : Io = Io::unavailable()) -> Outcome {
   if matches.flags.get("version") == Some(true) {
     return success("partiql \{version}\n")
   }
+  let color = match color_choice(matches, io) {
+    Ok(c) => c
+    Err(outcome) => return outcome
+  }
   match matches.subcommand {
     Some(("version", _)) => success("partiql \{version}\n")
     Some(("help", sub)) => help_outcome(sub.values.get("command").unwrap_or([]))
-    Some(("format", sub)) => format_command(sub, io)
+    Some(("format", sub)) => format_command(sub, io, color)
+    Some(("parse", sub)) => parse_command(sub, io, color)
+    Some(("check", sub)) => check_command(sub, io, color)
     Some((name, _)) => usage_error("partiql: command not handled: \{name}\n")
     None => usage_error(help_text([]).unwrap_or(""))
   }
@@ -60,6 +66,9 @@ pub(all) struct Io {
   read_file : (String) -> String raise
   write_file : (String, String) -> Unit raise
   read_stdin : () -> String raise
+  /// Whether colour is on when `--color` is `auto` (stderr is a terminal and
+  /// `NO_COLOR` is unset).
+  color_default : Bool
 }
 
 ///|
@@ -69,5 +78,26 @@ pub fn Io::unavailable() -> Io {
     read_file: _ => fail("file access is not available"),
     write_file: (_, _) => fail("file access is not available"),
     read_stdin: () => fail("stdin is not available"),
+    color_default: false,
+  }
+}
+
+///|
+/// `--color=auto|always|never` (global; given before or after the command).
+fn color_choice(m : @argparse.Matches, io : Io) -> Result[Bool, Outcome] {
+  let value = match m.subcommand {
+    Some((_, sub)) if sub.values.get("color") is Some(v) => Some(v)
+    _ => m.values.get("color")
+  }
+  match value {
+    None | Some(["auto", ..]) => Ok(io.color_default)
+    Some(["always", ..]) => Ok(true)
+    Some(["never", ..]) => Ok(false)
+    Some(_) =>
+      Err(
+        usage_error(
+          "partiql: --color must be auto, always or never\nRun 'partiql help' for more information.\n",
+        ),
+      )
   }
 }
