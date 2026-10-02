@@ -21,7 +21,7 @@ fn Parser::expr(self : Parser) -> @ast.Expr raise @ast.ParseError {
 ///|
 fn Parser::or_expr(self : Parser) -> @ast.Expr raise @ast.ParseError {
   let mut left = self.and_expr()
-  while self.eat_word("OR") {
+  while self.cont(() => self.eat_word("OR")) {
     let right = self.and_expr()
     left = make(Or(left, right), spanning(left, right))
   }
@@ -31,7 +31,7 @@ fn Parser::or_expr(self : Parser) -> @ast.Expr raise @ast.ParseError {
 ///|
 fn Parser::and_expr(self : Parser) -> @ast.Expr raise @ast.ParseError {
   let mut left = self.not_expr()
-  while self.eat_word("AND") {
+  while self.cont(() => self.eat_word("AND")) {
     let right = self.not_expr()
     left = make(And(left, right), spanning(left, right))
   }
@@ -66,7 +66,7 @@ fn Parser::bool_test_value(self : Parser, offset : Int) -> Bool?? {
 ///|
 fn Parser::bool_test(self : Parser) -> @ast.Expr raise @ast.ParseError {
   let mut operand = self.predicate()
-  while self.at_word("IS") {
+  while self.cont(() => self.at_word("IS")) {
     let negated = self.at_word_at(1, "NOT")
     let offset = if negated { 2 } else { 1 }
     guard self.bool_test_value(offset) is Some(value) else { break }
@@ -108,12 +108,12 @@ fn Parser::comparison_op(self : Parser) -> @ast.BinaryOp? {
 fn Parser::predicate(self : Parser) -> @ast.Expr raise @ast.ParseError {
   let mut left = self.concat()
   while true {
-    if self.comparison_op() is Some(op) {
+    if self.cont(() => self.comparison_op()) is Some(op) {
       let right = self.concat()
       left = make(Binary(op, left, right), spanning(left, right))
       continue
     }
-    if self.at_word("IS") {
+    if self.cont(() => self.at_word("IS")) {
       let negated = self.at_word_at(1, "NOT")
       let offset = if negated { 2 } else { 1 }
       if self.bool_test_value(offset) is Some(_) {
@@ -133,16 +133,18 @@ fn Parser::predicate(self : Parser) -> @ast.Expr raise @ast.ParseError {
       left = make(kind, left.span.merge(self.tokens[self.pos - 1].span))
       continue
     }
-    let negated = self.at_word("NOT") &&
+    let negated = self.cont(() => {
+      self.at_word("NOT") &&
       (
         self.at_word_at(1, "IN") ||
         self.at_word_at(1, "LIKE") ||
         self.at_word_at(1, "BETWEEN")
       )
+    })
     if negated {
       ignore(self.advance())
     }
-    if self.eat_word("IN") {
+    if self.cont(() => self.eat_word("IN")) {
       // `IN (e, ..)` is a row even with one element (Kotlin's IN '(' expr ')'
       // alternative): `x IN (5)` and `x IN 5` differ. A subquery stays a
       // subquery, and `IN (g MATCH ..)` is a graph MATCH.
@@ -165,7 +167,7 @@ fn Parser::predicate(self : Parser) -> @ast.Expr raise @ast.ParseError {
         self.concat()
       }
       left = make(In(left, right, negated~), spanning(left, right))
-    } else if self.eat_word("LIKE") {
+    } else if self.cont(() => self.eat_word("LIKE")) {
       let pattern = self.concat()
       let escape = if self.eat_word("ESCAPE") {
         Some(self.concat())
@@ -177,14 +179,14 @@ fn Parser::predicate(self : Parser) -> @ast.Expr raise @ast.ParseError {
         None => pattern.span
       }
       left = make(Like(left, pattern~, escape~, negated~), left.span.merge(end))
-    } else if self.eat_word("BETWEEN") {
+    } else if self.cont(() => self.eat_word("BETWEEN")) {
       let low = self.concat()
       self.expect_word("AND")
       let high = self.concat()
       left = make(Between(left, low~, high~, negated~), spanning(left, high))
     } else if negated {
       self.fail("expected IN, LIKE or BETWEEN")
-    } else if self.eat_word("OVERLAPS") {
+    } else if self.cont(() => self.eat_word("OVERLAPS")) {
       let right = self.concat()
       left = make(Overlaps(left, right), spanning(left, right))
     } else {
@@ -197,7 +199,7 @@ fn Parser::predicate(self : Parser) -> @ast.Expr raise @ast.ParseError {
 ///|
 fn Parser::concat(self : Parser) -> @ast.Expr raise @ast.ParseError {
   let mut left = self.additive()
-  while self.eat_op("||") {
+  while self.cont(() => self.eat_op("||")) {
     let right = self.additive()
     left = make(Binary(Concat, left, right), spanning(left, right))
   }
@@ -208,9 +210,9 @@ fn Parser::concat(self : Parser) -> @ast.Expr raise @ast.ParseError {
 fn Parser::additive(self : Parser) -> @ast.Expr raise @ast.ParseError {
   let mut left = self.multiplicative()
   while true {
-    let op : @ast.BinaryOp = if self.eat_punct('+') {
+    let op : @ast.BinaryOp = if self.cont(() => self.eat_punct('+')) {
       Add
-    } else if self.eat_punct('-') {
+    } else if self.cont(() => self.eat_punct('-')) {
       Sub
     } else {
       break
@@ -225,11 +227,11 @@ fn Parser::additive(self : Parser) -> @ast.Expr raise @ast.ParseError {
 fn Parser::multiplicative(self : Parser) -> @ast.Expr raise @ast.ParseError {
   let mut left = self.unary()
   while true {
-    let op : @ast.BinaryOp = if self.eat_punct('*') {
+    let op : @ast.BinaryOp = if self.cont(() => self.eat_punct('*')) {
       Mul
-    } else if self.eat_punct('/') {
+    } else if self.cont(() => self.eat_punct('/')) {
       Div
-    } else if self.eat_punct('%') {
+    } else if self.cont(() => self.eat_punct('%')) {
       Mod
     } else {
       break

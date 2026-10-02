@@ -16,6 +16,10 @@ priv struct Parser {
   /// Token positions where a parenthesized join was tried and failed; the
   /// attempt is never repeated there, so parsing stays linear.
   failed_joins : @hashset.HashSet[Int]
+  /// Notes taken now are operator continuations (spec M3c §4.3).
+  mut continuation : Bool
+  /// An operator could have continued the expression at this position.
+  mut saw_operator : Bool
   /// Token positions where a parenthesized join was read, with the join and
   /// the position after it; a second visit reuses them (spec M2b 7.3).
   joins : Map[Int, (@ast.FromItem, Int)]
@@ -29,6 +33,8 @@ fn Parser::new(tokens : Array[@lexer.Token]) -> Parser {
     depth: 0,
     expected: [],
     failed_joins: @hashset.from_array([]),
+    continuation: false,
+    saw_operator: false,
     joins: {},
   }
 }
@@ -56,14 +62,59 @@ fn Parser::advance(self : Parser) -> @lexer.Token {
     self.pos += 1
   }
   self.expected.clear()
+  self.saw_operator = false
   t
 }
 
 ///|
+/// Runs `check` as an operator-continuation check: its notes fold into
+/// `an operator` (spec M3c §4.3).
+fn[T] Parser::cont(self : Parser, check : () -> T) -> T {
+  let saved = self.continuation
+  self.continuation = true
+  let result = check()
+  self.continuation = saved
+  result
+}
+
+///|
 fn Parser::note(self : Parser, what : String) -> Unit {
+  if self.continuation {
+    self.saw_operator = true
+    return
+  }
   if !self.expected.contains(what) {
     self.expected.push(what)
   }
+}
+
+///|
+fn is_category(x : String) -> Bool {
+  x.has_prefix("a ") || x.has_prefix("an ") || x == "end of input"
+}
+
+///|
+/// Tokens that only start an expression; `an expression` covers them.
+let expression_starts : Array[String] = ["`(`", "`+`", "`-`", "NOT"]
+
+///|
+fn Parser::curated(self : Parser) -> Array[String] {
+  let has_expression = self.expected.contains("an expression")
+  let out : Array[String] = []
+  for x in self.expected {
+    if !is_category(x) && !(has_expression && expression_starts.contains(x)) {
+      out.push(x)
+    }
+  }
+  if self.saw_operator {
+    out.push("an operator")
+  }
+  for x in self.expected {
+    if is_category(x) {
+      out.push(x)
+    }
+  }
+  out
 }
 
 ///|
@@ -73,7 +124,7 @@ fn Parser::error(self : Parser, message : String) -> @ast.ParseError {
   @ast.ParseError::Syntax(
     message~,
     span=t.span,
-    expected=self.expected.copy(),
+    expected=self.curated(),
     found=describe(t),
   )
 }

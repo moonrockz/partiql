@@ -37,3 +37,46 @@ test "found names keywords, identifiers and literals" {
     soft.expect(failure("SELECT a FROM").1).to_equal("end of input")
   })
 }
+
+///|
+fn expected_of(source : String) -> Array[String] raise {
+  try @parser.parse_statement(source) catch {
+    Syntax(expected~, ..) => expected
+    _ => fail("not a syntax error")
+  } noraise {
+    _ => fail("no error for \{source}")
+  }
+}
+
+///|
+test "expected lists are curated" {
+  @expect.expect_all(soft => {
+    soft
+    .expect(expected_of("SELECT FROM t"))
+    .to_equal(["DISTINCT", "ALL", "`*`", "VALUE", "an expression"])
+    soft
+    .expect(expected_of("SELECT a FROM"))
+    .to_equal(["LATERAL", "UNPIVOT", "an expression"])
+    soft.expect(expected_of("SELECT 1 +")).to_equal(["an expression"])
+    soft.expect(expected_of("SELECT a FROM t ORDER a")).to_equal(["BY"])
+    soft
+    .expect(expected_of("SELECT (a FROM t"))
+    .to_equal(["MATCH", "`,`", "`)`", "an operator"])
+    soft
+    .expect(expected_of("SELECT x BETWEEN 1 2 FROM t").contains("AND"))
+    .to_be_true()
+    soft
+    .expect(expected_of("SELECT <<1, 2 FROM t").contains("`>>`"))
+    .to_be_true()
+    soft
+    .expect(expected_of("(g MATCH (a)-[e->(b))"))
+    .to_equal(["`:`", "WHERE", "`]`"])
+    let after = expected_of("SELECT a FROM t t2 t3")
+    soft.expect(after.contains("end of input")).to_be_true()
+    soft
+    .expect(
+      after.contains("`<<`") || after.contains("`!=`") || after.contains("OR"),
+    )
+    .to_be_false()
+  })
+}

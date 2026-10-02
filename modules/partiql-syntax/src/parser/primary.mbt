@@ -5,7 +5,7 @@ fn Parser::postfix(self : Parser) -> @ast.Expr raise @ast.ParseError {
   let base = self.primary()
   let steps : Array[@ast.PathStep] = []
   while true {
-    if self.at_punct('.') {
+    if self.cont(() => self.at_punct('.')) {
       ignore(self.advance())
       let t = self.peek()
       if self.eat_punct('*') {
@@ -16,7 +16,7 @@ fn Parser::postfix(self : Parser) -> @ast.Expr raise @ast.ParseError {
       } else {
         steps.push(Field(self.identifier(allow_path_words=true)))
       }
-    } else if self.at_punct('[') {
+    } else if self.cont(() => self.at_punct('[')) {
       let open = self.advance()
       if self.at_punct('*') && self.peek_at(1).kind is Punct(']') {
         ignore(self.advance())
