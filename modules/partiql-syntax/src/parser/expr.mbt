@@ -161,7 +161,7 @@ fn Parser::predicate(self : Parser) -> @ast.Expr raise @ast.ParseError {
         } else {
           let items = [first]
           if self.eat_punct(',') {
-            items.append(self.expr_list(')'))
+            items.append(self.more_items(')'))
           } else {
             self.expect_punct(')')
           }

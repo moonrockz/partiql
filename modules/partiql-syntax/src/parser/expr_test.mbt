@@ -184,3 +184,24 @@ test "parentheses around an expression with a subquery do not make a subquery" {
     .to_be_true()
   })
 }
+
+///|
+test "a row or call whose first item is a parenthesized query" {
+  check_shapes([
+    ("((SELECT 1), 2)", "(row (select 1) 2)"),
+    ("f((SELECT a), b)", "(call f (select a) b)"),
+    ("x IN ((VALUES (1)), 2)", "(in x (row (values (row 1)) 2))"),
+    ("(((SELECT 1)), 2)", "(row (select 1) 2)"),
+    (
+      "((SELECT 1) UNION (SELECT 2), 3)", "(row (union (select 1) (select 2)) 3)",
+    ),
+    ("f((SELECT a))", "(call f (select a))"),
+    ("((SELECT 1))", "(select 1)"),
+  ])
+  check_failures(["((SELECT 1), )", "f((SELECT a), )", "((SELECT 1) 2)"])
+}
+
+///|
+test "a row has no trailing comma" {
+  check_failures(["(1, )", "x IN (1, )", "(a, b, )"])
+}
