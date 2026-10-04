@@ -11,12 +11,14 @@ moonx moonrockz/partiql format --compact q.sql     # one line per statement
 moonx moonrockz/partiql format --write *.sql       # rewrite files in place
 moonx moonrockz/partiql format -e 'select a from t'
 cat query.sql | moonx moonrockz/partiql format     # read stdin
-moonx moonrockz/partiql check *.sql                # report parse errors
+moonx moonrockz/partiql check *.sql                # report every parse error
 moonx moonrockz/partiql parse -e 'select a from t' # print the syntax tree
 ```
 
-`format` keeps comments. A parse error prints a rendered diagnostic (the
-location, the source line and a marker) and exits with status 1. Colour:
+`format` keeps comments. Each parse error prints a rendered diagnostic (the
+location, the source line and a marker); every error of an input is
+reported, and the exit status is 1. `format` leaves an input with errors
+unchanged. Colour:
 `--color=auto|always|never` (auto: on when stderr is a terminal and `NO_COLOR`
 is unset).
 

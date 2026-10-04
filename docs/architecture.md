@@ -66,18 +66,22 @@ graph TD
     can reuse the generators.
 - `partiql-syntax`
   - root: `parse(String) -> Statement raise ParseError`, `parse_script`,
-    `print`, `print_script` and `format(String, width?) -> String raise
-    ParseError`
-    (re-exports `Statement`, `Script`, `Comment`, `ParseError` and `Span`
-    from `ast`).
+    `parse_script_recovering(String) -> Recovered`, `print`, `print_script`
+    and `format(String, width?) -> String raise ParseError`
+    (re-exports `Statement`, `Script`, `Comment`, `ParseError`, `Span` and
+    `Recovered` from `ast`).
   - `ast`: the syntax tree (Kotlin v1 style, one node per form, every node
     with a `Span` of UTF-16 offsets), `Span` and `ParseError` (`Syntax` with
     message, span, expected tokens and the found token; `Unsupported`),
-    `Script` and `Comment`, and `strip_spans` (structural equality).
+    `Script` and `Comment`, `Recovered` (a partial script and its errors),
+    the `Error` nodes of recovered trees (`ExprKind::Error`,
+    `Statement::Error`), and `strip_spans` (structural equality).
   - `lexer`: tokens; keywords are words that the parser classifies;
     punctuation is one character per token and the parser composes `<<`,
     `<=`, `||` and similar operators from touching tokens; Ion literals are
-    scanned Ion-aware and checked with the Ion text reader.
+    scanned Ion-aware and checked with the Ion text reader. `lex_recovering`
+    records every lexical error and marks broken literals as `Invalid`
+    tokens.
   - `parser`: recursive descent with a precedence ladder for expressions
     (OR, AND, NOT, IS TRUE/FALSE/UNKNOWN, predicates, `||`, `+ -`,
     `* / %`, signs, path steps), special forms by name, a reserved-word table
@@ -87,7 +91,11 @@ graph TD
     overflow at these depths (measured 2026-10-01): nested queries
     (`(SELECT VALUE …)`) near 100 on wasm and near 200 on wasm-gc and js;
     nested parentheses near 150 on wasm, 300 on js and 500 on wasm-gc;
-    native passed 500 of both. Graph
+    native passed 500 of both. `parse_script_recovering` recovers from
+    errors (`recover.mbt`): recovery points at statements, clauses and list
+    items catch an error, record it, skip to a synchronizing token and
+    return an `Error` node; trial parses and graph patterns run strict.
+    Graph
     MATCH (GPML) is in `graph.mbt`.
   - `diagnostic`: `render(ParseError, source, name~, color?)` (rustc-style
     diagnostics) and `position` (1-based line, column in code points).
