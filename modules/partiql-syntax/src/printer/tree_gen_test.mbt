@@ -289,7 +289,6 @@ fn gen_expr(rs : @splitmix.RandomState, depth : Int) -> @ast.Expr raise {
     25 => mk(DateAdd(one_of(rs, fields), gen_expr(rs, d), gen_expr(rs, d)))
     26 => {
       let args = gen_list(rs, depth, 0, 3)
-      let args = if args.length() >= 2 { lead_safe(rs, args) } else { args }
       let quantifier : @ast.SetQuantifier? = if args.is_empty() {
         None
       } else {
@@ -598,39 +597,3 @@ impl @quickcheck.Arbitrary for ExprSpec with fn arbitrary(size, rs) {
 
 ///|
 impl @quickcheck.Shrink for ExprSpec
-
-///|
-/// Whether `e` prints starting with a parenthesized query: `(SELECT ..)`
-/// or `(VALUES ..)` as its leftmost part.
-fn starts_with_query(e : @ast.Expr) -> Bool {
-  match e.kind {
-    Query(_) | Values(_) => true
-    Path(a, _)
-    | Binary(_, a, _)
-    | And(a, _)
-    | Or(a, _)
-    | BoolTest(a, _, ..)
-    | Like(a, ..)
-    | Between(a, ..)
-    | In(a, _, ..)
-    | IsNull(a, ..)
-    | IsMissing(a, ..)
-    | IsType(a, _, ..)
-    | Overlaps(a, _) => starts_with_query(a)
-    _ => false
-  }
-}
-
-///|
-/// Call arguments whose first item does not start with a parenthesized
-/// query: the parser reads `f((SELECT 1), 2)` as a subquery that must end at
-/// the first `)` (parser bug partiql-eic), and calls have no other spelling.
-fn lead_safe(
-  rs : @splitmix.RandomState,
-  xs : Array[@ast.Expr],
-) -> Array[@ast.Expr] {
-  if !xs.is_empty() && starts_with_query(xs[0]) {
-    xs[0] = gen_atom(rs) catch { _ => mk(Parameter) }
-  }
-  xs
-}

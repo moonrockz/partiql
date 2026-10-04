@@ -152,6 +152,21 @@ fn Parser::expr_list(
 }
 
 ///|
+/// After a `,`: one or more comma-separated expressions up to `close`
+/// (consumed). A trailing `,` is an error.
+fn Parser::more_items(
+  self : Parser,
+  close : Char,
+) -> Array[@ast.Expr] raise @ast.ParseError {
+  let closer = close.to_string()
+  let items = [self.item(() => self.expr())]
+  while self.list_next(closer) {
+    items.push(self.item(() => self.expr()))
+  }
+  items
+}
+
+///|
 /// `key: value` pairs up to `close` (consumed); may be empty.
 fn Parser::fields(
   self : Parser,
@@ -198,6 +213,13 @@ fn Parser::parenthesized(self : Parser) -> @ast.Expr raise @ast.ParseError {
       }
       return self.graph_match_rest(query_or_expr(q, q.span), start)
     }
+    // `((SELECT 1), 2)`: a query read through extra parentheses is the first
+    // item of a row.
+    if self.tokens[start + 1].kind is Punct('(') && self.eat_punct(',') {
+      let items = [query_or_expr(q, self.span_from(start + 1))]
+      items.append(self.more_items(')'))
+      return make(Row(items), self.span_from(start))
+    }
     self.expect_punct(')')
     return query_or_expr(q, self.span_from(start))
   }
@@ -208,7 +230,7 @@ fn Parser::parenthesized(self : Parser) -> @ast.Expr raise @ast.ParseError {
   }
   if self.eat_punct(',') {
     let items = [first]
-    items.append(self.expr_list(')'))
+    items.append(self.more_items(')'))
     return make(Row(items), self.span_from(start))
   }
   self.expect_punct(')')
@@ -319,6 +341,13 @@ fn Parser::call(self : Parser) -> @ast.Expr raise @ast.ParseError {
     let query_start = self.pos
     let q = self.nested(() => self.query())
     let arg = query_or_expr(q, self.span_from(query_start))
+    // `f((SELECT a), b)`: a query read through extra parentheses is the
+    // first argument.
+    if self.tokens[query_start].kind is Punct('(') && self.eat_punct(',') {
+      let args = [arg]
+      args.append(self.more_items(')'))
+      return make(Call(name, args, quantifier=None), self.span_from(start))
+    }
     self.expect_punct(')')
     return make(Call(name, [arg], quantifier=None), self.span_from(start))
   }
