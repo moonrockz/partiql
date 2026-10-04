@@ -140,3 +140,47 @@ test "the first error is the strict error" {
     }
   })
 }
+
+///|
+test "good statements around a broken one survive" {
+  @expect.expect_all(soft => {
+    // (source, errors): two unclosed brackets give two errors.
+    for
+      case in [
+        ("SELECT 1; SELECT (a b; SELECT 2; SELECT 3", 1),
+        ("SELECT 1; SELECT * FROM t WHERE (a b; SELECT 2; SELECT 3", 1),
+        ("SELECT 1; SELECT * FROM (SELECT a b c FROM t; SELECT 2; SELECT 3", 1),
+        ("SELECT 1; SELECT [(a b; SELECT 2; SELECT 3", 2),
+        ("SELECT 1; SELECT f(x, (a b; SELECT 2; SELECT 3", 2),
+      ] {
+      let (trees, errors) = recovered(case.0)
+      soft.expect(trees.length()).to_equal(4)
+      soft.expect(trees.last()).to_equal(Some("(select 3)"))
+      soft.expect(errors.length()).to_equal(case.1)
+    }
+  })
+}
+
+///|
+test "no recovery inside a FROM graph pattern" {
+  let (trees, errors) = recovered(
+    "SELECT * FROM g MATCH (a WHERE f(1 2)) WHERE y",
+  )
+  @expect.expect_all(soft => {
+    soft.expect(errors.length()).to_equal(1)
+    soft.expect(trees[0]).to_equal("(select * (from (error)) (where y))")
+  })
+}
+
+///|
+test "broken ORDER BY and GROUP BY items leave error markers" {
+  @expect.expect_all(soft => {
+    let (trees, errors) = recovered("SELECT a FROM t GROUP BY , x")
+    soft.expect(errors.length()).to_equal(1)
+    soft.expect(trees[0]).to_contain("(error)")
+    let (trees, errors) = recovered("SELECT a FROM t ORDER BY a, , b")
+    soft.expect(errors.length()).to_equal(1)
+    soft.expect(trees[0]).to_contain("(error)")
+    soft.expect(trees[0]).to_contain("b")
+  })
+}

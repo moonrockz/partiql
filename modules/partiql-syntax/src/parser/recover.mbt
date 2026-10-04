@@ -93,7 +93,9 @@ fn Parser::skip_to(self : Parser, sync : Sync, depth? : Int = 0) -> Unit {
     let t = self.peek()
     match t.kind {
       End => return
-      Punct(';') if depth == 0 || sync is Statement => return
+      // `;` cannot be inside brackets: strings and literals are single
+      // tokens, so it always ends the skip.
+      Punct(';') => return
       Punct(',') if depth == 0 && sync is Item => return
       Punct('(' | '[' | '{') => depth += 1
       Punct('<') if self.pair_at(0, '<') => {

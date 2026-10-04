@@ -153,7 +153,8 @@ fn Parser::from_base(self : Parser) -> @ast.FromItem raise @ast.ParseError {
   let expr_start = self.pos
   let expr = self.expr()
   let expr = if !unpivot && self.cont(() => self.eat_word("MATCH")) {
-    let pattern = self.graph_pattern(many=false)
+    // No recovery inside patterns (spec M3d §4).
+    let pattern = self.strictly(() => self.graph_pattern(many=false))
     let span = self.span_from(expr_start)
     make(GraphMatch({ graph: expr, pattern, span, }), span)
   } else {

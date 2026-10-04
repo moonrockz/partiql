@@ -37,14 +37,16 @@ fn Parser::query(self : Parser) -> @ast.Query raise @ast.ParseError {
   if self.eat_word("ORDER") {
     self.expect_word("BY")
     while true {
-      let read = self.clause(
-        () => {
-          order_by.push(self.sort_spec())
-          true
-        },
-        _ => false,
+      // Each key is a list item: a broken key is an Error key.
+      order_by.push(
+        self.recover(Item, () => self.sort_spec(), span => {
+          expr: error_expr(span),
+          order: None,
+          nulls: None,
+          span,
+        }),
       )
-      if !read || !self.eat_punct(',') {
+      if !self.eat_punct(',') {
         break
       }
     }

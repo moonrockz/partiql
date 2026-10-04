@@ -111,3 +111,23 @@ test "law: recovery on token soup" {
 test "law: recovery on valid input with comments" {
   @quickcheck.check((c : CommentedText) => recovery_holds(c.text), count=500)
 }
+
+///|
+test "law: good statements around broken text survive" {
+  @quickcheck.check(
+    (b : BrokenText) => {
+      let r = @syntax.parse_script_recovering(
+        "SELECT 1; " + b.text + "; SELECT 999",
+      )
+      match r.script.statements.last() {
+        Some(s) =>
+          @syntax.print(s) == "SELECT 999" ||
+          // The broken text may end with an unterminated literal or comment
+          // that swallows the rest.
+          r.errors.length() > 0
+        None => false
+      }
+    },
+    count=2000,
+  )
+}

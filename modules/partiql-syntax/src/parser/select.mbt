@@ -129,7 +129,13 @@ fn Parser::select(self : Parser) -> @ast.Select raise @ast.ParseError {
     None
   }
   let group_by = if self.at_word("GROUP") && !self.at_word_at(1, "AS") {
-    self.clause(() => Some(self.group_by()), _ => None)
+    self.clause(() => Some(self.group_by()), span => {
+      Some({
+        keys: By([{ expr: error_expr(span), as_: None, span, }], partial=false),
+        group_as: None,
+        span,
+      })
+    })
   } else {
     None
   }
