@@ -49,6 +49,7 @@ fn run_case(
   ion_roundtrip : Tally,
   print_roundtrip : Tally,
   pretty_roundtrip : Tally,
+  recovery : Tally,
 ) -> Unit {
   let statements = suite.statements_of(case) catch {
     error => {
@@ -80,6 +81,9 @@ fn run_case(
     if expects_success || evaluates {
       print_roundtrip.record(id, check_print_roundtrip(statement))
       pretty_roundtrip.record(id, check_pretty_roundtrip(statement))
+    }
+    if expects_success || expects_failure || evaluates {
+      recovery.record(id, check_recovery(statement))
     }
   }
   if case.env is Some(env) {
@@ -126,6 +130,7 @@ test "partiql-tests" {
   let ion_roundtrip = Tally::new("ion-roundtrip")
   let print_roundtrip = Tally::new("print-roundtrip")
   let pretty_roundtrip = Tally::new("pretty-roundtrip")
+  let recovery = Tally::new("recovery")
   for root in data_roots {
     if !@fs.path_exists(root) {
       continue
@@ -141,7 +146,7 @@ test "partiql-tests" {
       for case in suite.cases {
         run_case(
           suite, case, syntax, eval_parse, codec, ion_roundtrip, print_roundtrip,
-          pretty_roundtrip,
+          pretty_roundtrip, recovery,
         )
       }
     }
@@ -153,6 +158,7 @@ test "partiql-tests" {
   for
     tally in [
       syntax, eval_parse, codec, ion_roundtrip, print_roundtrip, pretty_roundtrip,
+      recovery,
     ] {
     let comparison = compare(load_baseline(tally.check), tally.passed)
     report_conformance(
@@ -197,6 +203,7 @@ test "a case with several evaluation assertions is checked once per statement" {
   let ion_roundtrip = Tally::new("ion-roundtrip")
   let print_roundtrip = Tally::new("print-roundtrip")
   let pretty_roundtrip = Tally::new("pretty-roundtrip")
+  let recovery = Tally::new("recovery")
   run_case(
     suite,
     suite.cases[0],
@@ -206,6 +213,7 @@ test "a case with several evaluation assertions is checked once per statement" {
     ion_roundtrip,
     print_roundtrip,
     pretty_roundtrip,
+    recovery,
   )
   @expect.expect(eval_parse.records).to_equal(1)
   @expect.expect(syntax.records).to_equal(0)
