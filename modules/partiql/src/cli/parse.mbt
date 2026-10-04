@@ -1,4 +1,4 @@
-// `partiql parse` and `partiql check` (spec M3c §6).
+// `partiql parse` and `partiql check` (spec M3c §6; every error from M3d).
 
 ///|
 fn parse_command(m : @argparse.Matches, io : Io, color : Bool) -> Outcome {
@@ -10,20 +10,18 @@ fn parse_command(m : @argparse.Matches, io : Io, color : Bool) -> Outcome {
   }
   let many = m.values.get("file").unwrap_or([]).length() > 1
   for input in inputs {
-    try @syntax.parse_script(input.source) catch {
-      e =>
-        errors.write_string(
-          @syntax.render(e, input.source, name=input.name, color~),
-        )
-    } noraise {
-      script => {
-        if many {
-          out.write_string(";; \{input.name}\n")
-        }
-        for s in script.statements {
-          out.write_string(@syntax.to_sexp(s) + "\n")
-        }
-      }
+    let r = @syntax.parse_script_recovering(input.source)
+    for e in r.errors {
+      errors.write_string(
+        @syntax.render(e, input.source, name=input.name, color~),
+      )
+    }
+    if many {
+      out.write_string(";; \{input.name}\n")
+    }
+    // A broken input prints its partial tree; broken parts are (error).
+    for s in r.script.statements {
+      out.write_string(@syntax.to_sexp(s) + "\n")
     }
   }
   finish(out, errors)
@@ -37,11 +35,10 @@ fn check_command(m : @argparse.Matches, io : Io, color : Bool) -> Outcome {
     Err(outcome) => return outcome
   }
   for input in inputs {
-    ignore(@syntax.parse_script(input.source)) catch {
-      e =>
-        errors.write_string(
-          @syntax.render(e, input.source, name=input.name, color~),
-        )
+    for e in @syntax.parse_script_recovering(input.source).errors {
+      errors.write_string(
+        @syntax.render(e, input.source, name=input.name, color~),
+      )
     }
   }
   finish(StringBuilder(), errors)

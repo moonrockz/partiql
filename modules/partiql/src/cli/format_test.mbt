@@ -188,3 +188,25 @@ test "format width usage errors" {
     .to_equal(2)
   })
 }
+
+///|
+test "format reports every error and writes nothing" {
+  let (io, written) = fake_io({
+    "bad.sql": "SELECT a, , b FROM t; SELECT 1 FROM WHERE x",
+    "ok.sql": "select 1",
+  })
+  let outcome = @cli.run(["format", "--write", "bad.sql", "ok.sql"], io~)
+  @expect.expect_all(soft => {
+    soft.expect(outcome.status).to_equal(1)
+    soft
+    .expect(
+      outcome.stderr
+      .split("\n")
+      .filter(line => line.has_prefix("error:"))
+      .count(),
+    )
+    .to_equal(2)
+    soft.expect(written.get("bad.sql")).to_equal(None)
+    soft.expect(written.get("ok.sql")).to_equal(Some("SELECT 1;\n"))
+  })
+}
