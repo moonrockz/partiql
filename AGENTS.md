@@ -206,7 +206,9 @@ Rules:
   (`run(args, io~)`); `src/main.mbt` provides the real one. Tests pass fakes.
   `parse`, `check` and `format` share `read_inputs` (`-e`, files, stdin).
 - Parse errors print as rendered diagnostics (`@syntax.render`); colour
-  follows `--color` and `Io.color_default`.
+  follows `--color` and `Io.color_default`. Commands report every error of
+  an input (`parse_script_recovering`); `format` prints or writes nothing
+  for an input with errors.
 - Exit status 1 means the input was invalid or could not be read.
 
 ## Mise Tasks
@@ -238,13 +240,14 @@ Tasks are file-based scripts in `mise-tasks/`. Never add inline `[tasks]` to
 
 ## Conformance
 
-`modules/partiql-conformance` runs partiql-tests with six checks:
+`modules/partiql-conformance` runs partiql-tests with seven checks:
 `syntax` (SyntaxSuccess and SyntaxFail cases), `eval-parse` (every evaluation
 statement must parse), `codec` (every `env` and `output` value must
 round-trip through the PartiQL-encoded Ion codec), `ion-roundtrip` (each
 `$ion` payload), `print-roundtrip` (parse, print and parse again give the
-same tree) and `pretty-roundtrip` (the same with the pretty layout at width
-40). See `docs/conformance.md`.
+same tree), `pretty-roundtrip` (the same with the pretty layout at width
+40) and `recovery` (error recovery gives the strict tree on valid input and
+includes the strict error on invalid input). See `docs/conformance.md`.
 
 Rules:
 

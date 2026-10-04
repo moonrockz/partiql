@@ -18,6 +18,9 @@ pub(all) enum TokenKind {
   /// The text between the backticks of an Ion literal, and its value (the
   /// lexer reads the text once, to check it).
   IonLit(String, @ion_core.IonValue)
+  /// Text the recovering lexer could not read; its error is in the lexer's
+  /// error list (spec M3d §3).
+  Invalid
   Punct(Char)
   End
 } derive(Debug)
@@ -34,7 +37,7 @@ pub impl Eq for TokenKind with fn equal(a, b) {
     | (DecimalLit(x), DecimalLit(y))
     | (FloatLit(x), FloatLit(y)) => x == y
     (Punct(x), Punct(y)) => x == y
-    (End, End) => true
+    (End, End) | (Invalid, Invalid) => true
     _ => false
   }
 }
@@ -55,6 +58,7 @@ pub fn TokenKind::describe(self : TokenKind) -> String {
     IntLit(n) | DecimalLit(n) | FloatLit(n) => "number \{n}"
     IonLit(_, _) => "Ion literal"
     Punct(c) => "'\{c}'"
+    Invalid => "invalid text"
     End => "end of input"
   }
 }

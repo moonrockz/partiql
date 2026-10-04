@@ -43,14 +43,14 @@ fn command(name : String, prefix : String) -> @argparse.Command {
     "parse" =>
       @argparse.Command(
         named,
-        about="Print the syntax tree of PartiQL as S-expressions.",
+        about="Print the syntax tree of PartiQL as S-expressions; broken parts are (error).",
         options=input_options(),
         positionals=input_positionals(),
       )
     "check" =>
       @argparse.Command(
         named,
-        about="Check that PartiQL parses; print errors only.",
+        about="Check that PartiQL parses; print every error.",
         options=input_options(),
         positionals=input_positionals(),
       )

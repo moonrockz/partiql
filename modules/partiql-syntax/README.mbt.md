@@ -23,12 +23,21 @@ let text = @syntax.format("select a, b from t where x = 1", width=20)
 // text == "SELECT a, b\nFROM t\nWHERE x = 1;\n"
 ```
 
+`parse_script_recovering` does not stop at the first error: it returns the
+partial script, with `Error` nodes where the source is broken, and every
+error in source order:
+
+```moonbit
+let r = @syntax.parse_script_recovering("SELECT a, , b FROM t; SELECT 1")
+// r.errors.length() == 1, and r.script holds both statements
+```
+
 | Package | Content |
 |---|---|
-| `moonrockz/partiql-syntax` | `parse(String) -> Statement raise ParseError` |
+| `moonrockz/partiql-syntax` | `parse(String) -> Statement raise ParseError`, `parse_script_recovering` |
 | `moonrockz/partiql-syntax/ast` | the syntax tree, `Span`, `ParseError` |
-| `moonrockz/partiql-syntax/lexer` | `lex(String) -> Array[Token]` |
-| `moonrockz/partiql-syntax/parser` | `parse_statement`, `parse_expression`, `parse_script` |
+| `moonrockz/partiql-syntax/lexer` | `lex(String) -> Array[Token]`, `lex_recovering` |
+| `moonrockz/partiql-syntax/parser` | `parse_statement`, `parse_expression`, `parse_script`, `parse_script_recovering` |
 | `moonrockz/partiql-syntax/printer` | `print`, `print_script` |
 
 Errors: `ParseError::Syntax(message~, span~, expected~, found~)` for invalid

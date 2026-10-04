@@ -6,6 +6,14 @@ pub using @ast {
   type Script,
   type Comment,
   type CommentKind,
+  type Recovered,
+}
+
+///|
+/// Parses a script and recovers from syntax errors: the partial script and
+/// every error, in source order (spec M3d).
+pub fn parse_script_recovering(source : String) -> Recovered {
+  @parser.parse_script_recovering(source)
 }
 
 ///|

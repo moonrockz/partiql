@@ -46,6 +46,7 @@ fn Printer::pending(self : Printer, span : @ast.Span) -> Bool {
 fn Printer::statement(self : Printer, s : @ast.Statement) -> Doc {
   match s {
     Query(q) => self.query(q)
+    Error(_) => Text("/* error */")
   }
 }
 
@@ -64,6 +65,7 @@ pub fn print(statement : @ast.Statement, width? : Int) -> String {
 fn statement_span(s : @ast.Statement) -> @ast.Span {
   match s {
     Query(q) => q.span
+    Error(span) => span
   }
 }
 

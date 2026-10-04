@@ -2,6 +2,8 @@
 /// A parsed statement. M2 parses queries (DQL).
 pub(all) enum Statement {
   Query(Query)
+  /// A statement that error recovery could not read (spec M3d).
+  Error(Span)
 } derive(Debug, Eq)
 
 ///|

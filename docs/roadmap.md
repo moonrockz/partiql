@@ -78,7 +78,14 @@ M3 has four parts, done in this order:
   width 40 and parses it again: all 5310 statements that parse give the same
   tree. `partiql format` prints the layout at width 80, with `--width N`
   and `--compact` (the one-line form).
-- **M3d: error recovery.** Several diagnostics per statement.
+- **M3d (done): error recovery.** `parse_script_recovering` reports every
+  syntax error of a source and returns a partial tree: broken parts are
+  `Error` nodes. The parser recovers at statements (up to `;`), clauses (up
+  to the next clause keyword) and list items (up to `,` or the closer), and
+  takes a missing closer as present; the lexer skips unexpected characters
+  and marks broken literals. The first error is the strict parser's error.
+  The `recovery` conformance check passes for all 5410 corpus statements.
+  `partiql check`, `parse` and `format` report every error.
 
 ## Tracking
 

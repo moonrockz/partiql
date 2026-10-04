@@ -36,6 +36,7 @@ CI turns these lines into a job summary (`.github/scripts/conformance_summary.py
 | `ion-roundtrip` | each `$ion::` value inside a corpus value | it decodes to an `Ion` value and encodes back to an Ion-equal value |
 | `print-roundtrip` | each `SyntaxSuccess` and evaluation statement | parsing the printed statement gives the same tree (spans aside), and printing it again gives the same text; a statement that does not parse is N/A |
 | `pretty-roundtrip` | each `SyntaxSuccess` and evaluation statement | the same as `print-roundtrip`, with the pretty layout at width 40 |
+| `recovery` | each `SyntaxSuccess`, `SyntaxFail` and evaluation statement | if the strict `parse_script` succeeds, `parse_script_recovering` gives the same tree and no errors; if it raises, the recovered errors include its error |
 
 `ParseError::Unsupported` and `CodecError::Unsupported` always count as
 failures.
@@ -101,7 +102,8 @@ files, so the codec must accept both.
 ## Current status
 
 At commit `2ef0ce2`, after M1 (data model), M1b (MAP and graph), M2
-(parser), M2b (graph MATCH), M3a (printer) and M3b (pretty layout):
+(parser), M2b (graph MATCH), M3a (printer), M3b (pretty layout) and M3d
+(error recovery):
 
 | Check | Passed | Total | N/A |
 |---|---|---|---|
@@ -111,6 +113,7 @@ At commit `2ef0ce2`, after M1 (data model), M1b (MAP and graph), M2
 | `ion-roundtrip` | 39 | 39 | 0 |
 | `print-roundtrip` | 5310 | 5313 | 3 |
 | `pretty-roundtrip` | 5310 | 5313 | 3 |
+| `recovery` | 5410 | 5410 | 0 |
 
 The 3 `eval-parse` failures are corpus defects (bead `partiql-zhj.9`):
 

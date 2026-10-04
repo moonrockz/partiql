@@ -57,10 +57,28 @@ fn error(message : String, start : Int, end : Int) -> @ast.ParseError {
 }
 
 ///|
+/// At most this many errors are recorded by the recovering lexer.
+let max_lex_errors = 100
+
+///|
+/// Records `e` when recovering (`errors` given, at most `max_lex_errors`),
+/// else raises it.
+fn record(
+  errors : Array[@ast.ParseError]?,
+  e : @ast.ParseError,
+) -> Unit raise @ast.ParseError {
+  match errors {
+    None => raise e
+    Some(list) => if list.length() < max_lex_errors { list.push(e) }
+  }
+}
+
+///|
 /// Skips whitespace and comments, and records each comment in `comments`.
 fn Scanner::skip_trivia(
   self : Scanner,
   comments : Array[@ast.Comment],
+  errors : Array[@ast.ParseError]?,
 ) -> Unit raise @ast.ParseError {
   while true {
     let c = self.at(0)
@@ -86,7 +104,8 @@ fn Scanner::skip_trivia(
       self.pos += 2
       while !(self.at(0) == '*'.to_int() && self.at(1) == '/'.to_int()) {
         if self.at(0) == -1 {
-          raise error("unterminated comment", start, start + 2)
+          record(errors, error("unterminated comment", start, start + 2))
+          return
         }
         self.pos += 1
       }
@@ -185,15 +204,17 @@ fn continues_path(previous : Token?, pos : Int) -> Bool {
 }
 
 ///|
-/// The tokens of `source` and its comments.
+/// The tokens of `source` and its comments. With `errors`, lexical errors
+/// are recorded there and scanning continues (spec M3d §3).
 fn scan(
   source : String,
+  errors? : Array[@ast.ParseError],
 ) -> (Array[Token], Array[@ast.Comment]) raise @ast.ParseError {
   let s : Scanner = { source, pos: 0, }
   let tokens : Array[Token] = []
   let comments : Array[@ast.Comment] = []
   while true {
-    s.skip_trivia(comments)
+    s.skip_trivia(comments, errors)
     let start = s.pos
     let c = s.at(0)
     let kind : TokenKind = if c == -1 {
@@ -210,18 +231,45 @@ fn scan(
         !continues_path(tokens.last(), start)
       ) {
       s.number()
-    } else if c == '\''.to_int() {
-      StringLit(s.quoted(c))
-    } else if c == '"'.to_int() {
-      QuotedIdent(s.quoted(c))
+    } else if c == '\''.to_int() || c == '"'.to_int() {
+      try s.quoted(c) catch {
+        e => {
+          // Unterminated: the rest of the source.
+          record(errors, e)
+          s.pos = source.length()
+          Invalid
+        }
+      } noraise {
+        text =>
+          if c == '\''.to_int() {
+            StringLit(text)
+          } else {
+            QuotedIdent(text)
+          }
+      }
     } else if c == '`'.to_int() {
-      ion_literal(s)
+      ion_literal(s) catch {
+        e => {
+          record(errors, e)
+          // An invalid literal ends after its closing backquote; an
+          // unterminated one is the rest of the source.
+          if e is Syntax(message=m, ..) && m == "unterminated Ion literal" {
+            s.pos = source.length()
+          }
+          Invalid
+        }
+      }
     } else if punctuation.contains_code_unit(c.to_uint16()) {
       s.pos += 1
       Punct(c.unsafe_to_char())
     } else {
       let (text, width) = char_text(c, s.at(1))
-      raise error("unexpected character \{text}", start, start + width)
+      record(
+        errors,
+        error("unexpected character \{text}", start, start + width),
+      )
+      s.pos = start + width
+      continue
     }
     tokens.push({ kind, span: { start, end: s.pos, }, })
     if kind is End {
@@ -229,6 +277,24 @@ fn scan(
     }
   }
   (tokens, comments)
+}
+
+///|
+/// The tokens, the comments and every lexical error (spec M3d §3): an
+/// unexpected character is skipped; an invalid or unterminated literal is an
+/// `Invalid` token. At most 100 errors are recorded.
+pub fn lex_recovering(
+  source : String,
+) -> (Array[Token], Array[@ast.Comment], Array[@ast.ParseError]) {
+  let errors : Array[@ast.ParseError] = []
+  // With `errors`, `scan` records instead of raising.
+  let (tokens, comments) = scan(source, errors~) catch {
+    _ => {
+      let end = source.length()
+      ([{ kind: End, span: { start: end, end, }, }], [])
+    }
+  }
+  (tokens, comments, errors)
 }
 
 ///|

@@ -219,3 +219,37 @@ fn check_pretty_roundtrip(statement : String) -> Outcome {
   }
   Pass
 }
+
+///|
+test "recovery check" {
+  @expect.expect_all(soft => {
+    soft.expect(check_recovery("select a from t")).to_equal(Pass)
+    soft.expect(check_recovery("SELECT FROM")).to_equal(Pass)
+    soft.expect(check_recovery("SELECT a, , b FROM t")).to_equal(Pass)
+    soft.expect(check_recovery("INSERT INTO t VALUES (1)")).to_equal(Pass)
+  })
+}
+
+///|
+/// M3d: on valid input, error recovery gives the strict tree and no errors;
+/// on invalid input, it reports errors that include the strict error.
+fn check_recovery(statement : String) -> Outcome {
+  let r = @syntax.parse_script_recovering(statement)
+  try @syntax.parse_script(statement) catch {
+    e =>
+      if r.errors.contains(e) {
+        Pass
+      } else {
+        Fail("the strict error is not reported: \{@debug.to_string(e)}")
+      }
+  } noraise {
+    s =>
+      if !r.errors.is_empty() {
+        Fail("errors on valid input: \{@debug.to_string(r.errors)}")
+      } else if r.script.strip_spans() != s.strip_spans() {
+        Fail("a different tree after recovery")
+      } else {
+        Pass
+      }
+  }
+}

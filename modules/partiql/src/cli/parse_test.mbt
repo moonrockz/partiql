@@ -127,3 +127,26 @@ test "parse and check usage, help and stdin" {
     soft.expect(@cli.reads_stdin(["parse", "--help"])).to_be_false()
   })
 }
+
+///|
+/// The number of rendered diagnostics in `stderr`.
+fn diagnostics(stderr : String) -> Int {
+  stderr.split("\n").filter(line => line.has_prefix("error:")).count()
+}
+
+///|
+test "check and parse report every error" {
+  let (io, _) = fake_io({
+    "bad.sql": "SELECT a, , b FROM t;\nSELECT 1 FROM WHERE x;\nSELECT 1",
+  })
+  @expect.expect_all(soft => {
+    let checked = @cli.run(["check", "bad.sql"], io~)
+    soft.expect(checked.status).to_equal(1)
+    soft.expect(diagnostics(checked.stderr)).to_equal(2)
+    let parsed = @cli.run(["parse", "bad.sql"], io~)
+    soft.expect(parsed.status).to_equal(1)
+    soft.expect(diagnostics(parsed.stderr)).to_equal(2)
+    soft.expect(parsed.stdout).to_contain("(error)")
+    soft.expect(parsed.stdout).to_contain("(select 1)")
+  })
+}

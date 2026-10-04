@@ -160,6 +160,7 @@ pub(all) enum ExprKind {
   Values(Array[Expr])
   Query(Query)
   GraphMatch(GraphMatch)
+  Error
 } derive(Eq, @debug.Debug)
 
 pub(all) enum FromItem {
@@ -357,6 +358,11 @@ pub(all) enum QueryBody {
   Table(Array[Identifier])
 } derive(Eq, @debug.Debug)
 
+pub(all) struct Recovered {
+  script : Script
+  errors : Array[ParseError]
+} derive(Eq, @debug.Debug)
+
 pub(all) enum Restrictor {
   Walk
   Trail
@@ -442,6 +448,7 @@ pub fn Span::merge(Self, Self) -> Self
 
 pub(all) enum Statement {
   Query(Query)
+  Error(Span)
 } derive(Eq, @debug.Debug)
 pub fn Statement::strip_spans(Self) -> Self
 

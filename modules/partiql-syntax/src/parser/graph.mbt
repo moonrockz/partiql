@@ -27,7 +27,8 @@ fn Parser::graph_match_rest(
   start : Int,
 ) -> @ast.Expr raise @ast.ParseError {
   self.expect_word("MATCH")
-  let pattern = self.graph_pattern(many=true)
+  // No recovery inside patterns (spec M3d §4).
+  let pattern = self.strictly(() => self.graph_pattern(many=true))
   self.expect_punct(')')
   let span = self.span_from(start)
   make(GraphMatch({ graph, pattern, span, }), span)

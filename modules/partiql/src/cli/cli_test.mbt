@@ -88,8 +88,8 @@ test "root help snapshot" {
       #|Tools for PartiQL, the SQL-compatible query language for nested and semi-structured data.
       #|
       #|Commands:
-      #|  parse    Print the syntax tree of PartiQL as S-expressions.
-      #|  check    Check that PartiQL parses; print errors only.
+      #|  parse    Print the syntax tree of PartiQL as S-expressions; broken parts are (error).
+      #|  check    Check that PartiQL parses; print every error.
       #|  format   Print PartiQL in a readable layout, keeping comments.
       #|  version  Print the version.
       #|  help     Print help for the command line or for one command.

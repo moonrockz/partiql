@@ -56,3 +56,16 @@ test "atoms escape quotes and control characters" {
     soft.expect(sx("a.'it''s'")).to_equal("(path a .'it''s')")
   })
 }
+
+///|
+test "error nodes" {
+  let error_expr : @ast.Expr = { kind: Error, span: { start: 0, end: 0, }, }
+  let statement : @ast.Statement = Error({ start: 0, end: 3, })
+  @expect.expect_all(soft => {
+    soft.expect(@sexp.expr_to_sexp(error_expr)).to_equal("(error)")
+    soft.expect(@sexp.to_sexp(statement)).to_equal("(error)")
+    soft
+    .expect(statement.strip_spans())
+    .to_equal(@ast.Statement::Error({ start: 0, end: 0, }))
+  })
+}

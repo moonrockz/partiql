@@ -53,7 +53,7 @@ fn strip_step(s : PathStep) -> PathStep {
 ///|
 fn strip_expr(e : Expr) -> Expr {
   let kind : ExprKind = match e.kind {
-    Lit(_) | Parameter => e.kind
+    Lit(_) | Parameter | Error => e.kind
     VarRef(i, qualified~) => VarRef(strip_ident(i), qualified~)
     Path(b, steps) => Path(strip_expr(b), steps.map(strip_step))
     Unary(op, x) => Unary(op, strip_expr(x))
@@ -337,6 +337,7 @@ pub fn Query::strip_spans(self : Query) -> Query {
 pub fn Statement::strip_spans(self : Statement) -> Statement {
   match self {
     Query(q) => Query(strip_query(q))
+    Error(_) => Error(no_span)
   }
 }
 
