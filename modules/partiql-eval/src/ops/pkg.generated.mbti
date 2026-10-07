@@ -1,9 +1,24 @@
 // Generated using `moon info`, DON'T EDIT IT
 package "moonrockz/partiql-eval/ops"
 
+import {
+  "moonbitlang/core/debug",
+  "moonrockz/partiql-value",
+}
+
 // Values
+pub fn all_elements(@partiql-value.Value) -> Array[@partiql-value.Value] raise TypeFailure
+
+pub fn all_fields(@partiql-value.Value) -> Array[@partiql-value.Value] raise TypeFailure
+
+pub fn field(@partiql-value.Value, String, delimited~ : Bool) -> @partiql-value.Value raise TypeFailure
+
+pub fn index(@partiql-value.Value, @partiql-value.Value, named~ : Bool) -> @partiql-value.Value raise TypeFailure
 
 // Errors
+pub(all) suberror TypeFailure {
+  TypeFailure(String)
+} derive(Eq, @debug.Debug)
 
 // Types and methods
 

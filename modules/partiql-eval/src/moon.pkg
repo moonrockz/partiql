@@ -13,6 +13,7 @@ import {
   "moonrockz/partiql-eval" @eval,
   "moonrockz/partiql-value" @value,
   "moonrockz/ion/ion",
+  "moonrockz/ion/text",
   "moonbitlang/core/bigint",
   "moonrockz/expect",
 } for "test"

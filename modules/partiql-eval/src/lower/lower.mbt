@@ -4,6 +4,39 @@ fn integer_value(text : String) -> @value.Value {
 }
 
 ///|
+/// The most digits a PartiQL decimal keeps (spec M4a §5).
+let max_decimal_digits : Int = 38
+
+///|
+/// Rounds a decimal to 38 significant digits, half to even.
+fn round_decimal(d : @ion_core.Decimal) -> @ion_core.Decimal {
+  let digits = d.coefficient().to_string()
+  let negative = digits.has_prefix("-")
+  let magnitude = if negative {
+    digits.view(start_offset=1).to_owned()
+  } else {
+    digits
+  }
+  let drop = magnitude.length() - max_decimal_digits
+  if drop <= 0 {
+    return d
+  }
+  let kept = @bigint.BigInt::from_string(
+    magnitude.view(end_offset=max_decimal_digits).to_owned(),
+  )
+  let rest = magnitude.view(start_offset=max_decimal_digits).to_owned()
+  let half = "5" + "0".repeat(drop - 1)
+  let up = match rest.lexical_compare(half) {
+    -1 => false
+    1 => true
+    _ => kept % @bigint.BigInt::from_int(2) == @bigint.BigInt::from_int(1)
+  }
+  let rounded = if up { kept + @bigint.BigInt::from_int(1) } else { kept }
+  let signed = if negative { -rounded } else { rounded }
+  @ion_core.Decimal::new(signed, d.exponent() + drop)
+}
+
+///|
 fn literal(
   l : @ast.Literal,
   span : @ast.Span,
@@ -17,7 +50,7 @@ fn literal(
       try @ion_core.Decimal::parse(text) catch {
         _ => raise DataError(message="invalid decimal literal \{text}", span~)
       } noraise {
-        d => Decimal(d)
+        d => Decimal(round_decimal(d))
       }
     Float(text) =>
       try @string.parse_double(text) catch {
@@ -55,6 +88,17 @@ fn lower_pairs(
 }
 
 ///|
+fn lower_step(s : @ast.PathStep) -> @plan.Step raise @plan.EvalError {
+  match s {
+    Field(id) => Field(id.text, delimited=id.delimited)
+    FieldString(name, ..) => Field(name, delimited=true)
+    Index(e) => Index(lower(e))
+    AllElements(_) => AllElements
+    AllFields(_) => AllFields
+  }
+}
+
+///|
 /// Lowers an expression. Recursion is safe: the parser rejects input nested
 /// deeper than its limit.
 pub fn lower(e : @ast.Expr) -> @plan.Expr raise @plan.EvalError {
@@ -72,14 +116,15 @@ pub fn lower(e : @ast.Expr) -> @plan.Expr raise @plan.EvalError {
     GraphMatch(_) => unsupported("graph MATCH (later)", span)
     Parameter => unsupported("a parameter (later)", span)
     Error => raise DataError(message="a broken expression", span~)
-    Path(_, _) => unsupported("a path", span)
+    Path(base, steps) => Path(lower(base), steps.map(lower_step), span)
     Unary(_, _) | Binary(_, _, _) => unsupported("an operator", span)
     And(_, _) | Or(_, _) | Not(_) | BoolTest(_, _, ..) =>
       unsupported("a logical operator", span)
     Like(_, ..) | Between(_, ..) | In(_, _, ..) =>
       unsupported("a predicate", span)
-    IsNull(_, ..) | IsMissing(_, ..) | IsType(_, _, ..) =>
-      unsupported("an IS test", span)
+    IsNull(x, negated~) => IsNull(lower(x), negated~, span)
+    IsMissing(x, negated~) => IsMissing(lower(x), negated~, span)
+    IsType(_, _, ..) => unsupported("an IS type test", span)
     Case(..) | Coalesce(_) | NullIf(_, _) => unsupported("a conditional", span)
     Overlaps(_, _)
     | Cast(_, _)

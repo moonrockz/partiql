@@ -61,8 +61,8 @@ test "bindings and struct keys" {
     soft
     .expect_call(() => @eval.evaluate_text("\"foo\"", env~))
     .to_raise_matching(
-      e => e is @eval.EvalError::DataError(..),
-      description="DataError",
+      e => e is @eval.EvalError::TypeError(..),
+      description="TypeError",
     )
     soft
     .expect(ev("{1: 2, 'a': 3}"))

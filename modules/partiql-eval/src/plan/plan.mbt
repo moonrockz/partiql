@@ -13,6 +13,15 @@ pub(all) suberror EvalError {
 } derive(Debug, Eq)
 
 ///|
+/// One step of a path.
+pub(all) enum Step {
+  Field(String, delimited~ : Bool)
+  Index(Expr)
+  AllElements
+  AllFields
+} derive(Debug)
+
+///|
 /// A lowered scalar expression (spec M4a §3). Names are resolved, literals
 /// are values.
 pub(all) enum Expr {
@@ -22,4 +31,7 @@ pub(all) enum Expr {
   BagOf(Array[Expr], @ast.Span)
   TupleOf(Array[(Expr, Expr)], @ast.Span)
   MapOf(Array[(Expr, Expr)], @ast.Span)
+  Path(Expr, Array[Step], @ast.Span)
+  IsNull(Expr, negated~ : Bool, @ast.Span)
+  IsMissing(Expr, negated~ : Bool, @ast.Span)
 } derive(Debug)

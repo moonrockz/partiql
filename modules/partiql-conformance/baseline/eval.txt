@@ -1,3 +1,25 @@
+eval/ion/primitives/null.ion::null::null comparison{sql:"`null.blob` IS NULL",result:true}#coerce
+eval/ion/primitives/null.ion::null::null comparison{sql:"`null.blob` IS NULL",result:true}#error
+eval/ion/primitives/null.ion::null::null comparison{sql:"`null.bool` IS NULL",result:true}#coerce
+eval/ion/primitives/null.ion::null::null comparison{sql:"`null.bool` IS NULL",result:true}#error
+eval/ion/primitives/null.ion::null::null comparison{sql:"`null.clob` IS NULL",result:true}#coerce
+eval/ion/primitives/null.ion::null::null comparison{sql:"`null.clob` IS NULL",result:true}#error
+eval/ion/primitives/null.ion::null::null comparison{sql:"`null.decimal` IS NULL",result:true}#coerce
+eval/ion/primitives/null.ion::null::null comparison{sql:"`null.decimal` IS NULL",result:true}#error
+eval/ion/primitives/null.ion::null::null comparison{sql:"`null.int` IS NULL",result:true}#coerce
+eval/ion/primitives/null.ion::null::null comparison{sql:"`null.int` IS NULL",result:true}#error
+eval/ion/primitives/null.ion::null::null comparison{sql:"`null.list` IS NULL",result:true}#coerce
+eval/ion/primitives/null.ion::null::null comparison{sql:"`null.list` IS NULL",result:true}#error
+eval/ion/primitives/null.ion::null::null comparison{sql:"`null.null` IS NULL",result:true}#coerce
+eval/ion/primitives/null.ion::null::null comparison{sql:"`null.null` IS NULL",result:true}#error
+eval/ion/primitives/null.ion::null::null comparison{sql:"`null.sexp` IS NULL",result:true}#coerce
+eval/ion/primitives/null.ion::null::null comparison{sql:"`null.sexp` IS NULL",result:true}#error
+eval/ion/primitives/null.ion::null::null comparison{sql:"`null.string` IS NULL",result:true}#coerce
+eval/ion/primitives/null.ion::null::null comparison{sql:"`null.string` IS NULL",result:true}#error
+eval/ion/primitives/null.ion::null::null comparison{sql:"`null.struct` IS NULL",result:true}#coerce
+eval/ion/primitives/null.ion::null::null comparison{sql:"`null.struct` IS NULL",result:true}#error
+eval/ion/primitives/null.ion::null::null comparison{sql:"`null.symbol` IS NULL",result:true}#coerce
+eval/ion/primitives/null.ion::null::null comparison{sql:"`null.symbol` IS NULL",result:true}#error
 eval/ion/primitives/null.ion::null::null pass through{sql:"`null.blob`",result:null.blob}#coerce
 eval/ion/primitives/null.ion::null::null pass through{sql:"`null.blob`",result:null.blob}#error
 eval/ion/primitives/null.ion::null::null pass through{sql:"`null.bool`",result:null.bool}#coerce
@@ -22,6 +44,10 @@ eval/ion/primitives/null.ion::null::null pass through{sql:"`null.symbol`",result
 eval/ion/primitives/null.ion::null::null pass through{sql:"`null.symbol`",result:null.symbol}#error
 eval/primitives/basic.ion::basic::bagLiteral#coerce
 eval/primitives/basic.ion::basic::bagLiteral#error
+eval/primitives/basic.ion::basic::decimalRoundDown#coerce
+eval/primitives/basic.ion::basic::decimalRoundDown#error
+eval/primitives/basic.ion::basic::decimalRoundUp#coerce
+eval/primitives/basic.ion::basic::decimalRoundUp#error
 eval/primitives/basic.ion::basic::emptyBagLiteral#coerce
 eval/primitives/basic.ion::basic::emptyBagLiteral#error
 eval/primitives/basic.ion::basic::emptyListLiteral#coerce
@@ -84,10 +110,164 @@ eval/primitives/int.ion::int::leading zeros{sql:"001",result:1}#coerce
 eval/primitives/int.ion::int::leading zeros{sql:"001",result:1}#error
 eval/primitives/int.ion::int::leading zeros{sql:"01",result:1}#coerce
 eval/primitives/int.ion::int::leading zeros{sql:"01",result:1}#error
+eval/primitives/map.ion::map::access bool-keyed map from environment variable#coerce
+eval/primitives/map.ion::map::access bool-keyed map from environment variable#error
+eval/primitives/map.ion::map::access decimal-keyed map from environment variable#coerce
+eval/primitives/map.ion::map::access decimal-keyed map from environment variable#error
+eval/primitives/map.ion::map::access decimal-keyed map with nonexistent key returns missing#coerce
+eval/primitives/map.ion::map::access decimal-keyed map with nonexistent key returns missing#error
+eval/primitives/map.ion::map::access integer-keyed map with incompatible string key fails#coerce
+eval/primitives/map.ion::map::access integer-keyed map with incompatible string key fails#error
+eval/primitives/map.ion::map::access map by key returns the value#coerce
+eval/primitives/map.ion::map::access map by key returns the value#error
+eval/primitives/map.ion::map::access map by second key returns the value#coerce
+eval/primitives/map.ion::map::access map by second key returns the value#error
+eval/primitives/map.ion::map::access map from environment variable with nonexistent key returns missing#coerce
+eval/primitives/map.ion::map::access map from environment variable with nonexistent key returns missing#error
+eval/primitives/map.ion::map::access map from environment variable#coerce
+eval/primitives/map.ion::map::access map from environment variable#error
+eval/primitives/map.ion::map::access map with boolean key#coerce
+eval/primitives/map.ion::map::access map with boolean key#error
+eval/primitives/map.ion::map::access map with integer key not found returns missing#coerce
+eval/primitives/map.ion::map::access map with integer key not found returns missing#error
+eval/primitives/map.ion::map::access map with integer key returns the value#coerce
+eval/primitives/map.ion::map::access map with integer key returns the value#error
+eval/primitives/map.ion::map::access map with key not found returns missing#coerce
+eval/primitives/map.ion::map::access map with key not found returns missing#error
+eval/primitives/map.ion::map::access map with missing key returns missing#coerce
+eval/primitives/map.ion::map::access map with missing key returns missing#error
+eval/primitives/map.ion::map::access map with null key returns null#coerce
+eval/primitives/map.ion::map::access map with null key returns null#error
+eval/primitives/map.ion::map::construct a map with all MISSING values produces empty map#coerce
+eval/primitives/map.ion::map::construct a map with all MISSING values produces empty map#error
+eval/primitives/map.ion::map::construct a map with boolean keys#coerce
+eval/primitives/map.ion::map::construct a map with boolean keys#error
+eval/primitives/map.ion::map::construct a map with compatible heterogeneous keys coerces to common type#coerce
+eval/primitives/map.ion::map::construct a map with compatible heterogeneous keys coerces to common type#error
+eval/primitives/map.ion::map::construct a map with compatible heterogeneous values coerces to common type#coerce
+eval/primitives/map.ion::map::construct a map with compatible heterogeneous values coerces to common type#error
+eval/primitives/map.ion::map::construct a map with decimal keys#coerce
+eval/primitives/map.ion::map::construct a map with decimal keys#error
+eval/primitives/map.ion::map::construct a map with duplicate key keeps last value in permissive and errors in strict#coerce
 eval/primitives/map.ion::map::construct a map with duplicate key keeps last value in permissive and errors in strict#error
+eval/primitives/map.ion::map::construct a map with explicit missing value drops the entry#coerce
+eval/primitives/map.ion::map::construct a map with explicit missing value drops the entry#error
+eval/primitives/map.ion::map::construct a map with explicit null value preserves the key#coerce
+eval/primitives/map.ion::map::construct a map with explicit null value preserves the key#error
+eval/primitives/map.ion::map::construct a map with integer keys#coerce
+eval/primitives/map.ion::map::construct a map with integer keys#error
+eval/primitives/map.ion::map::construct a map with missing key drops entry in permissive#coerce
+eval/primitives/map.ion::map::construct a map with missing key drops entry in permissive#error
+eval/primitives/map.ion::map::construct a map with null key drops entry in permissive#coerce
+eval/primitives/map.ion::map::construct a map with null key drops entry in permissive#error
+eval/primitives/map.ion::map::construct a map with string keys#coerce
+eval/primitives/map.ion::map::construct a map with string keys#error
+eval/primitives/map.ion::map::construct an empty map#coerce
+eval/primitives/map.ion::map::construct an empty map#error
+eval/primitives/null.ion::null::null comparison{sql:"MISSING IS MISSING",result:true}#coerce
+eval/primitives/null.ion::null::null comparison{sql:"MISSING IS MISSING",result:true}#error
+eval/primitives/null.ion::null::null comparison{sql:"MISSING IS NULL",result:true}#coerce
+eval/primitives/null.ion::null::null comparison{sql:"MISSING IS NULL",result:true}#error
 eval/primitives/null.ion::null::null comparison{sql:"MISSING",result:missing::null}#coerce
 eval/primitives/null.ion::null::null comparison{sql:"MISSING",result:missing::null}#error
+eval/primitives/null.ion::null::null comparison{sql:"NULL IS MISSING",result:false}#coerce
+eval/primitives/null.ion::null::null comparison{sql:"NULL IS MISSING",result:false}#error
+eval/primitives/null.ion::null::null comparison{sql:"NULL IS NULL",result:true}#coerce
+eval/primitives/null.ion::null::null comparison{sql:"NULL IS NULL",result:true}#error
 eval/primitives/null.ion::null::null comparison{sql:"NULL",result:null}#coerce
 eval/primitives/null.ion::null::null comparison{sql:"NULL",result:null}#error
+eval/primitives/path.ion::path-expressions::dotted path expression with quoted field name accesses field AMBIGUOUS_FIELD (uppercase)#coerce
+eval/primitives/path.ion::path-expressions::dotted path expression with quoted field name accesses field AMBIGUOUS_FIELD (uppercase)#error
+eval/primitives/path.ion::path-expressions::dotted path expression with quoted field name accesses field UNAMBIGUOUS_FIELD (uppercase)#coerce
+eval/primitives/path.ion::path-expressions::dotted path expression with quoted field name accesses field UNAMBIGUOUS_FIELD (uppercase)#error
+eval/primitives/path.ion::path-expressions::dotted path expression with quoted field name accesses field ambiguous_field (lowercase)#coerce
+eval/primitives/path.ion::path-expressions::dotted path expression with quoted field name accesses field ambiguous_field (lowercase)#error
+eval/primitives/path.ion::path-expressions::dotted path expression with quoted field name accesses field unambiguous_field (lowercase)#coerce
+eval/primitives/path.ion::path-expressions::dotted path expression with quoted field name accesses field unambiguous_field (lowercase)#error
+eval/primitives/path.ion::path-expressions::dotted path expression with unquoted identifiers accesses field UNAMBIGUOUS_FIELD (uppercase)#coerce
+eval/primitives/path.ion::path-expressions::dotted path expression with unquoted identifiers accesses field UNAMBIGUOUS_FIELD (uppercase)#error
+eval/primitives/path.ion::path-expressions::dotted path expression with unquoted identifiers accesses field unambiguous_field (lowercase)#coerce
+eval/primitives/path.ion::path-expressions::dotted path expression with unquoted identifiers accesses field unambiguous_field (lowercase)#error
+eval/primitives/path.ion::path-expressions::subscript with literal string in lowercase#coerce
+eval/primitives/path.ion::path-expressions::subscript with literal string in lowercase#error
+eval/primitives/path.ion::path-expressions::subscript with literal string in uppercase#coerce
+eval/primitives/path.ion::path-expressions::subscript with literal string in uppercase#error
+eval/primitives/path.ion::path-expressions::subscript with non-existent variable in lowercase#error
+eval/primitives/path.ion::path-expressions::subscript with non-existent variable in uppercase#error
+eval/primitives/path.ion::path-expressions::subscript with variable in lowercase#coerce
+eval/primitives/path.ion::path-expressions::subscript with variable in lowercase#error
+eval/primitives/path.ion::path-expressions::subscript with variable in mixed case#coerce
+eval/primitives/path.ion::path-expressions::subscript with variable in mixed case#error
+eval/primitives/path.ion::path-expressions::subscript with variable in uppercase#coerce
+eval/primitives/path.ion::path-expressions::subscript with variable in uppercase#error
+eval/primitives/path.ion::path::pathDotMissingAttribute#coerce
+eval/primitives/path.ion::path::pathDotMissingAttribute#error
+eval/primitives/path.ion::path::pathDotOnly#coerce
+eval/primitives/path.ion::path::pathDotOnly#error
+eval/primitives/path.ion::path::pathDoubleUnpivotWildCard#coerce
+eval/primitives/path.ion::path::pathDoubleUnpivotWildCard#error
+eval/primitives/path.ion::path::pathDoubleWildCard#coerce
+eval/primitives/path.ion::path::pathDoubleWildCard#error
+eval/primitives/path.ion::path::pathFieldStructLiteral#coerce
+eval/primitives/path.ion::path::pathFieldStructLiteral#error
+eval/primitives/path.ion::path::pathIndexBagLiteral#coerce
+eval/primitives/path.ion::path::pathIndexBagLiteral#error
+eval/primitives/path.ion::path::pathIndexListLiteral#coerce
+eval/primitives/path.ion::path::pathIndexListLiteral#error
+eval/primitives/path.ion::path::pathIndexStructLiteral#coerce
+eval/primitives/path.ion::path::pathIndexStructLiteral#error
+eval/primitives/path.ion::path::pathIndexStructOutOfBoundsHighLiteral#coerce
+eval/primitives/path.ion::path::pathIndexStructOutOfBoundsHighLiteral#error
+eval/primitives/path.ion::path::pathIndexing#coerce
+eval/primitives/path.ion::path::pathIndexing#error
+eval/primitives/path.ion::path::pathMissingDotName#coerce
+eval/primitives/path.ion::path::pathMissingDotName#error
+eval/primitives/path.ion::path::pathNullDotName#coerce
+eval/primitives/path.ion::path::pathNullDotName#error
+eval/primitives/path.ion::path::pathSimpleDotOnly#coerce
+eval/primitives/path.ion::path::pathSimpleDotOnly#error
+eval/primitives/path.ion::path::pathSimpleWildcard#coerce
+eval/primitives/path.ion::path::pathSimpleWildcard#error
+eval/primitives/path.ion::path::pathUnpivotWildCardOverScalar#coerce
+eval/primitives/path.ion::path::pathUnpivotWildCardOverScalar#error
+eval/primitives/path.ion::path::pathUnpivotWildCardOverScalarMultiple#coerce
+eval/primitives/path.ion::path::pathUnpivotWildCardOverScalarMultiple#error
+eval/primitives/path.ion::path::pathUnpivotWildCardOverStructMultiple#coerce
+eval/primitives/path.ion::path::pathUnpivotWildcard#coerce
+eval/primitives/path.ion::path::pathUnpivotWildcard#error
+eval/primitives/path.ion::path::pathUnpivotWildcardFieldsAfter#coerce
+eval/primitives/path.ion::path::pathUnpivotWildcardFieldsAfter#error
+eval/primitives/path.ion::path::pathWildCardOverScalar#coerce
+eval/primitives/path.ion::path::pathWildCardOverScalar#error
+eval/primitives/path.ion::path::pathWildCardOverScalarMultiple#coerce
+eval/primitives/path.ion::path::pathWildCardOverScalarMultiple#error
+eval/primitives/path.ion::path::pathWildCardOverStructMultiple#coerce
+eval/primitives/path.ion::path::pathWildCardOverStructMultiple#error
+eval/primitives/path.ion::path::pathWildcard#coerce
+eval/primitives/path.ion::path::pathWildcard#error
+eval/primitives/path.ion::path::pathWildcardPath#coerce
+eval/primitives/path.ion::path::pathWildcardPath#error
+eval/primitives/path.ion::pathUnpivotMissing::pathUnpivotEmptyStruct1#coerce
+eval/primitives/path.ion::pathUnpivotMissing::pathUnpivotEmptyStruct1#error
+eval/primitives/path.ion::pathUnpivotMissing::pathUnpivotEmptyStruct2#coerce
+eval/primitives/path.ion::pathUnpivotMissing::pathUnpivotEmptyStruct2#error
+eval/primitives/path.ion::pathUnpivotMissing::pathUnpivotEmptyStruct3#coerce
+eval/primitives/path.ion::pathUnpivotMissing::pathUnpivotEmptyStruct3#error
+eval/query/undefined-variable-behavior.ion::undefined_variable_behavior::undefinedUnqualifiedVariableIsMissingExprWithUndefinedVariableBehaviorMissing#coerce
+eval/query/undefined-variable-behavior.ion::undefined_variable_behavior::undefinedUnqualifiedVariableIsMissingExprWithUndefinedVariableBehaviorMissing#error
+eval/query/undefined-variable-behavior.ion::undefined_variable_behavior::undefinedUnqualifiedVariableIsNullExprWithUndefinedVariableBehaviorMissing#coerce
+eval/query/undefined-variable-behavior.ion::undefined_variable_behavior::undefinedUnqualifiedVariableIsNullExprWithUndefinedVariableBehaviorMissing#error
 eval/query/undefined-variable-behavior.ion::undefined_variable_behavior::undefinedUnqualifiedVariableWithUndefinedVariableBehaviorMissing#coerce
 eval/query/undefined-variable-behavior.ion::undefined_variable_behavior::undefinedUnqualifiedVariableWithUndefinedVariableBehaviorMissing#error
+eval/spec-tests.ion::section-4::array navigation with wrongly typed array index#coerce
+eval/spec-tests.ion::section-4::array navigation with wrongly typed array index#error
+eval/spec-tests.ion::section-4::path on string#coerce
+eval/spec-tests.ion::section-4::path on string#error
+eval/spec-tests.ion::section-4::tuple navigation missing attribute array notation#coerce
+eval/spec-tests.ion::section-4::tuple navigation missing attribute array notation#error
+eval/spec-tests.ion::section-4::tuple navigation missing attribute dot notation#coerce
+eval/spec-tests.ion::section-4::tuple navigation missing attribute dot notation#error
+eval/spec-tests.ion::section-8::missing is missing#coerce
+eval/spec-tests.ion::section-8::missing is missing#error
+eval/spec-tests.ion::section-8::null is missing#coerce
+eval/spec-tests.ion::section-8::null is missing#error
