@@ -123,7 +123,8 @@ fn navigate(
       typed(mode, span, () => @ops.field(v, name, delimited~))
     Index(e) => {
       let i = run(e, env, mode)
-      let named = e is Const(String(_), _)
+      // A string literal, also an Ion one, names a field.
+      let named = e is Const(c, _) && unboxed(c) is String(_)
       typed(mode, span, () => @ops.index(v, i, named~))
     }
     AllElements | AllFields => v
@@ -156,7 +157,7 @@ fn run_tuple(
   let out : Array[(String, @value.Value)] = []
   for field in fields {
     let value = run(field.1, env, mode)
-    match run(field.0, env, mode) {
+    match unboxed(run(field.0, env, mode)) {
       String(key) => if !(value is Missing) { out.push((key, value)) }
       Missing => ()
       _ =>
@@ -234,9 +235,11 @@ fn run_map(
   span : @ast.Span,
 ) -> @value.Value raise @plan.EvalError {
   let pairs : Array[(@value.Value, @value.Value)] = []
+  // Keys and values are lowered first, so that an Ion literal counts as the
+  // value it stands for in the inferred types.
   for entry in entries {
-    let key = run(entry.0, env, mode)
-    let value = run(entry.1, env, mode)
+    let key = unboxed(run(entry.0, env, mode))
+    let value = unboxed(run(entry.1, env, mode))
     if key is (Null | Missing) {
       match mode {
         Permissive => continue
@@ -254,7 +257,6 @@ fn run_map(
   let unique : Array[(@value.Value, @value.Value)] = []
   for pair in pairs {
     let key = widen(pair.0, key_type)
-    let key = key.lower() catch { _ => key }
     let entry = (key, widen(pair.1, value_type))
     match unique.search_by(p => @value.eqg(p.0, key)) {
       Some(at) =>

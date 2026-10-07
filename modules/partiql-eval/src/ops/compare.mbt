@@ -82,7 +82,9 @@ pub fn greater_eq(
 /// `=`: NULL if either side is NULL, else MISSING if either is MISSING, else a
 /// Bool; it never fails on mixed types (partiql-tests null.ion).
 pub fn equal(a : @value.Value, b : @value.Value) -> @value.Value {
-  if datetime_equal(a, b) is Some(r) {
+  let x = a.lower() catch { _ => a }
+  let y = b.lower() catch { _ => b }
+  if datetime_equal(x, y) is Some(r) {
     return r
   }
   match @value.sql_equals(a, b) {
