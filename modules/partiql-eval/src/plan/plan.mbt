@@ -41,6 +41,7 @@ pub(all) enum Expr {
   Not(Expr, @ast.Span)
   /// `IS [NOT] TRUE | FALSE | UNKNOWN`; `None` is UNKNOWN.
   BoolTest(Expr, Bool?, negated~ : Bool, @ast.Span)
+  Like(Expr, pattern~ : Expr, escape~ : Expr?, negated~ : Bool, @ast.Span)
   Between(Expr, low~ : Expr, high~ : Expr, negated~ : Bool, @ast.Span)
   In(Expr, Expr, negated~ : Bool, @ast.Span)
   IsType(Expr, @ast.DataType, negated~ : Bool, @ast.Span)

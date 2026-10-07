@@ -118,7 +118,14 @@ pub fn lower(e : @ast.Expr) -> @plan.Expr raise @plan.EvalError {
     Or(l, r) => Or(lower(l), lower(r), span)
     Not(x) => Not(lower(x), span)
     BoolTest(x, truth, negated~) => BoolTest(lower(x), truth, negated~, span)
-    Like(_, ..) => unsupported("LIKE (M4d)", span)
+    Like(x, pattern~, escape~, negated~) =>
+      Like(
+        lower(x),
+        pattern=lower(pattern),
+        escape=escape.map(lower),
+        negated~,
+        span,
+      )
     Between(x, low~, high~, negated~) =>
       Between(lower(x), low=lower(low), high=lower(high), negated~, span)
     In(x, c, negated~) => In(lower(x), lower(c), negated~, span)

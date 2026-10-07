@@ -2170,6 +2170,44 @@ eval/primitives/operators/is-operators.ion::is::123.456 is DECIMAL(6,2)#coerce
 eval/primitives/operators/is-operators.ion::is::123.456 is DECIMAL(6,2)#error
 eval/primitives/operators/is-operators.ion::is::123.456 is DECIMAL(6,4)#coerce
 eval/primitives/operators/is-operators.ion::is::123.456 is DECIMAL(6,4)#error
+eval/primitives/operators/like.ion::null-missing-mistyped-for-like::'some value' LIKE 'some pattern' ESCAPE MISSING#coerce
+eval/primitives/operators/like.ion::null-missing-mistyped-for-like::'some value' LIKE 'some pattern' ESCAPE MISSING#error
+eval/primitives/operators/like.ion::null-missing-mistyped-for-like::'some value' LIKE 'some pattern' ESCAPE NULL#coerce
+eval/primitives/operators/like.ion::null-missing-mistyped-for-like::'some value' LIKE 'some pattern' ESCAPE NULL#error
+eval/primitives/operators/like.ion::null-missing-mistyped-for-like::'some value' LIKE MISSING ESCAPE '/'#coerce
+eval/primitives/operators/like.ion::null-missing-mistyped-for-like::'some value' LIKE MISSING ESCAPE '/'#error
+eval/primitives/operators/like.ion::null-missing-mistyped-for-like::'some value' LIKE MISSING#coerce
+eval/primitives/operators/like.ion::null-missing-mistyped-for-like::'some value' LIKE MISSING#error
+eval/primitives/operators/like.ion::null-missing-mistyped-for-like::'some value' LIKE NULL ESCAPE '/'#coerce
+eval/primitives/operators/like.ion::null-missing-mistyped-for-like::'some value' LIKE NULL ESCAPE '/'#error
+eval/primitives/operators/like.ion::null-missing-mistyped-for-like::'some value' LIKE NULL ESCAPE MISSING#coerce
+eval/primitives/operators/like.ion::null-missing-mistyped-for-like::'some value' LIKE NULL ESCAPE MISSING#error
+eval/primitives/operators/like.ion::null-missing-mistyped-for-like::'some value' LIKE NULL#coerce
+eval/primitives/operators/like.ion::null-missing-mistyped-for-like::'some value' LIKE NULL#error
+eval/primitives/operators/like.ion::null-missing-mistyped-for-like::LIKE bad escape type#coerce
+eval/primitives/operators/like.ion::null-missing-mistyped-for-like::LIKE bad escape type#error
+eval/primitives/operators/like.ion::null-missing-mistyped-for-like::LIKE bad pattern type#coerce
+eval/primitives/operators/like.ion::null-missing-mistyped-for-like::LIKE bad pattern type#error
+eval/primitives/operators/like.ion::null-missing-mistyped-for-like::LIKE bad value type#coerce
+eval/primitives/operators/like.ion::null-missing-mistyped-for-like::LIKE bad value type#error
+eval/primitives/operators/like.ion::null-missing-mistyped-for-like::MISSING LIKE 'some pattern' ESCAPE '/'#coerce
+eval/primitives/operators/like.ion::null-missing-mistyped-for-like::MISSING LIKE 'some pattern' ESCAPE '/'#error
+eval/primitives/operators/like.ion::null-missing-mistyped-for-like::MISSING LIKE 'some pattern'#coerce
+eval/primitives/operators/like.ion::null-missing-mistyped-for-like::MISSING LIKE 'some pattern'#error
+eval/primitives/operators/like.ion::null-missing-mistyped-for-like::MISSING LIKE MISSING#coerce
+eval/primitives/operators/like.ion::null-missing-mistyped-for-like::MISSING LIKE MISSING#error
+eval/primitives/operators/like.ion::null-missing-mistyped-for-like::MISSING LIKE NULL#coerce
+eval/primitives/operators/like.ion::null-missing-mistyped-for-like::MISSING LIKE NULL#error
+eval/primitives/operators/like.ion::null-missing-mistyped-for-like::NULL LIKE 'some pattern' ESCAPE '/'#coerce
+eval/primitives/operators/like.ion::null-missing-mistyped-for-like::NULL LIKE 'some pattern' ESCAPE '/'#error
+eval/primitives/operators/like.ion::null-missing-mistyped-for-like::NULL LIKE 'some pattern' ESCAPE MISSING#coerce
+eval/primitives/operators/like.ion::null-missing-mistyped-for-like::NULL LIKE 'some pattern' ESCAPE MISSING#error
+eval/primitives/operators/like.ion::null-missing-mistyped-for-like::NULL LIKE 'some pattern'#coerce
+eval/primitives/operators/like.ion::null-missing-mistyped-for-like::NULL LIKE 'some pattern'#error
+eval/primitives/operators/like.ion::null-missing-mistyped-for-like::NULL LIKE MISSING#coerce
+eval/primitives/operators/like.ion::null-missing-mistyped-for-like::NULL LIKE MISSING#error
+eval/primitives/operators/like.ion::null-missing-mistyped-for-like::NULL LIKE NULL#coerce
+eval/primitives/operators/like.ion::null-missing-mistyped-for-like::NULL LIKE NULL#error
 eval/primitives/operators/minus.ion::date::DATE '2025-01-14' - TIMESTAMP '2025-01-15 03:00:00+00:00'#coerce
 eval/primitives/operators/minus.ion::date::DATE '2025-01-14' - TIMESTAMP '2025-01-15 03:00:00+00:00'#error
 eval/primitives/operators/minus.ion::date::DATE '2025-01-14' - TIMESTAMP '2025-01-15 12:30:45'#coerce

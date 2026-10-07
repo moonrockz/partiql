@@ -337,6 +337,7 @@ fn span_of(e : @plan.Expr) -> @ast.Span {
     | Or(_, _, span)
     | Not(_, span)
     | BoolTest(_, _, negated=_, span)
+    | Like(_, pattern=_, escape=_, negated=_, span)
     | Between(_, low=_, high=_, negated=_, span)
     | In(_, _, negated=_, span)
     | IsType(_, _, negated=_, span)
@@ -395,6 +396,12 @@ pub fn run(
     }
     BoolTest(x, truth, negated~, _) =>
       Bool(@ops.bool_test(run(x, env, mode), truth, negated~))
+    Like(x, pattern~, escape~, negated~, span) => {
+      let v = run(x, env, mode)
+      let p = run(pattern, env, mode)
+      let e = escape.map(e => run(e, env, mode))
+      negate(typed(mode, span, () => @ops.like(v, p, e)), negated, mode, span)
+    }
     Between(x, low~, high~, negated~, span) => {
       let v = run(x, env, mode)
       let lo = run(low, env, mode)

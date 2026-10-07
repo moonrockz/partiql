@@ -43,6 +43,8 @@ pub fn less(@partiql-value.Value, @partiql-value.Value) -> @partiql-value.Value 
 
 pub fn less_eq(@partiql-value.Value, @partiql-value.Value) -> @partiql-value.Value raise OpFailure
 
+pub fn like(@partiql-value.Value, @partiql-value.Value, @partiql-value.Value?) -> @partiql-value.Value raise OpFailure
+
 pub fn mul(@partiql-value.Value, @partiql-value.Value) -> @partiql-value.Value raise OpFailure
 
 pub fn neg(@partiql-value.Value, negate~ : Bool) -> @partiql-value.Value raise OpFailure
