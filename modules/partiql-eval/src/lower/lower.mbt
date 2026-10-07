@@ -66,6 +66,73 @@ fn unsupported(
 }
 
 ///|
+/// Whether a MAP key or value type has no parameter: a map declares its types
+/// by name only (`MapType`), so a parameter could not be checked.
+fn plain_map_type(t : @ast.DataType) -> Bool {
+  match t {
+    Decimal(None, None)
+    | Numeric(None, None)
+    | Double(None)
+    | Char(None)
+    | Varchar(None)
+    | Time(None, with_tz=false)
+    | Timestamp(None, with_tz=false) => true
+    Decimal(_, _)
+    | Numeric(_, _)
+    | Double(_)
+    | Char(_)
+    | Varchar(_)
+    | Time(_, ..)
+    | Timestamp(_, ..)
+    | Interval(_)
+    | Map(_, _)
+    | Array(_) => false
+    _ => true
+  }
+}
+
+///|
+/// The type of `x IS type`. A parameter that the type test does not check is
+/// `Unsupported` (ignoring it would give a wrong answer); an interval
+/// qualifier that is not valid is a `DataError`.
+fn type_test(
+  t : @ast.DataType,
+  span : @ast.Span,
+) -> @ast.DataType raise @plan.EvalError {
+  match t {
+    Double(Some(_)) =>
+      raise Unsupported(message="IS FLOAT(p) is not supported yet", span~)
+    Array(Some(_)) =>
+      raise Unsupported(
+        message="IS ARRAY with an element type is not supported yet",
+        span~,
+      )
+    Map(k, v) if !plain_map_type(k) || !plain_map_type(v) =>
+      raise Unsupported(
+        message="IS MAP with a type parameter in the key or value type is not supported yet",
+        span~,
+      )
+    Interval(q) => {
+      ignore(interval_fields(q)) catch {
+        _ =>
+          raise DataError(
+            message="an interval qualifier that is not valid",
+            span~,
+          )
+      }
+      if q.fractional_precision is Some(f) && (f < 0 || f > 9) {
+        raise DataError(message="a fractional precision out of range", span~)
+      }
+      if q.start_precision is Some(p) && p < 1 {
+        raise DataError(message="a leading precision out of range", span~)
+      }
+      t
+    }
+    _ => t
+  }
+}
+
+///|
 /// The deepest nesting that lowering accepts. The parser limits parentheses
 /// and prefix operators, but not postfix chains such as `x IS NULL IS NULL`;
 /// this limit keeps every recursion here and in the interpreter off the end
@@ -230,7 +297,8 @@ fn lower_at(e : @ast.Expr, depth : Int) -> @plan.Expr raise @plan.EvalError {
       In(lower_at(x, depth), lower_at(c, depth), negated~, span)
     IsNull(x, negated~) => IsNull(lower_at(x, depth), negated~, span)
     IsMissing(x, negated~) => IsMissing(lower_at(x, depth), negated~, span)
-    IsType(x, t, negated~) => IsType(lower_at(x, depth), t, negated~, span)
+    IsType(x, t, negated~) =>
+      IsType(lower_at(x, depth), type_test(t, span), negated~, span)
     Case(operand~, branches~, default~) =>
       Case(
         operand=operand.map(x => lower_at(x, depth)),
