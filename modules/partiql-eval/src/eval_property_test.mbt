@@ -9,7 +9,8 @@ struct ExprText {
 let expr_atoms : Array[String] = [
   "0", "1", "-1", "2", "7", "9223372036854775807", "'a'", "'b%'", "''", "TRUE", "FALSE",
   "NULL", "MISSING", "1.5", "2e0", "`2.5e0`", "[1, 2]", "<<1>>", "{'a': 1}", "DATE '2020-01-02'",
-  "x",
+  "TIME '01:02:03'", "TIME WITH TIME ZONE '01:02:03+01:00'", "TIMESTAMP '2020-01-02 03:04:05'",
+  "INTERVAL '1' DAY", "INTERVAL '2' YEAR", "INTERVAL '1:30' HOUR TO MINUTE", "x",
 ]
 
 ///|
