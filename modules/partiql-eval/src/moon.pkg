@@ -15,4 +15,7 @@ import {
   "moonrockz/ion/ion",
   "moonrockz/ion/text",
   "moonrockz/expect",
+  "moonbitlang/core/quickcheck",
+  "moonbitlang/core/quickcheck/splitmix",
+  "moonbitlang/core/debug",
 } for "test"
