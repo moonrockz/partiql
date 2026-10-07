@@ -13,6 +13,8 @@ let expr_atoms : Array[String] = [
   "INTERVAL '1' DAY", "INTERVAL '2' YEAR", "INTERVAL '1:30' HOUR TO MINUTE", "x",
   // equal across kinds to the datetimes above: `=` departs from sql_equals
    "TIMESTAMP '2020-01-02 00:00:00'", "TIME '00:02:03'", "`2020-01-02T00:00:00Z`",
+  // exponents at the Int limits
+   "1e-2147483648", "1e2147483647",
 ]
 
 ///|
@@ -160,6 +162,8 @@ test "law: the generator reaches every branch of the modes law" {
 }
 
 ///|
+/// The atoms include exponents at the Int limits, which once aborted the
+/// process; an abort or a stack overflow fails the whole test run.
 test "law: evaluation is deterministic and never aborts" {
   @quickcheck.check(
     (t : ExprText) => outcome(t.text, Permissive) == outcome(t.text, Permissive),
