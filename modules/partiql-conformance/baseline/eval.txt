@@ -2394,6 +2394,8 @@ eval/primitives/operators/nary-operators.ion::nary::equalIntFloatFalse#coerce
 eval/primitives/operators/nary-operators.ion::nary::equalIntFloatFalse#error
 eval/primitives/operators/nary-operators.ion::nary::equalListDifferentLengthsLongFirst#coerce
 eval/primitives/operators/nary-operators.ion::nary::equalListDifferentLengthsLongFirst#error
+eval/primitives/operators/nary-operators.ion::nary::equalListDifferentTypesWithNullMissingEquivalenceTrue#coerce
+eval/primitives/operators/nary-operators.ion::nary::equalListDifferentTypesWithNullMissingEquivalenceTrue#error
 eval/primitives/operators/nary-operators.ion::nary::equalListDifferentTypesWithNullMissingTrue#coerce
 eval/primitives/operators/nary-operators.ion::nary::equalListDifferentTypesWithNullMissingTrue#error
 eval/primitives/operators/nary-operators.ion::nary::equalTuplesDifferentTypesDifferentOrderTrue#coerce

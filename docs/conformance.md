@@ -126,9 +126,9 @@ files, so the codec must accept both.
 
 ## Current status
 
-At commit `2ef0ce2`, after M1 (data model), M1b (MAP and graph), M2
-(parser), M2b (graph MATCH), M3a (printer), M3b (pretty layout), M3d
-(error recovery) and M4a (expression evaluation):
+After M1 (data model), M1b (MAP and graph), M2 (parser), M2b (graph
+MATCH), M3a (printer), M3b (pretty layout), M3d (error recovery) and M4a
+(expression evaluation):
 
 | Check | Passed | Total | N/A |
 |---|---|---|---|
@@ -139,7 +139,7 @@ At commit `2ef0ce2`, after M1 (data model), M1b (MAP and graph), M2
 | `print-roundtrip` | 5310 | 5313 | 3 |
 | `pretty-roundtrip` | 5310 | 5313 | 3 |
 | `recovery` | 5410 | 5410 | 0 |
-| `eval` | 2950 | 9960 | 6976 |
+| `eval` | 2952 | 9960 | 6976 |
 
 The 3 `eval-parse` failures are corpus defects (bead `partiql-zhj.9`):
 
@@ -153,10 +153,10 @@ The 3 `eval-parse` failures are corpus defects (bead `partiql-zhj.9`):
 
 ### The `eval` check
 
-Of 9960 assertions, 2950 pass and 6976 are not applicable: they need queries,
-functions, CAST, graph MATCH or `?`, which later parts of M4 add. 34 fail. To
+Of 9960 assertions, 2952 pass and 6976 are not applicable: they need queries,
+functions, CAST, graph MATCH or `?`, which later parts of M4 add. 32 fail. To
 list them, run `PARTIQL_CONFORMANCE_SHOW=eval mise run test:conformance`. The
-34 ids come from 19 cases. Each case fails in both modes, except three that
+32 ids come from 18 cases. Each case fails in both modes, except three that
 fail in permissive mode only and one that fails in strict mode only. The
 reasons:
 
@@ -193,9 +193,6 @@ reasons:
 - **`a.*.*.*.*` in strict mode (1 id).** The corpus expects a failure. Every
   `.*` step applies to a tuple, so the evaluator succeeds; the corpus
   expectation is taken as an artifact.
-- **Deep list equality (2 ids).** `equalListDifferentTypesWithNullMissingEquivalenceTrue`
-  expects two lists that differ in NULL and MISSING elements to be equal.
-  The equality of the value model gives false.
 
 Every corpus value passes `codec`, including the `$map` (M1b MAP) and
 `$graph` (M1b graph) values.

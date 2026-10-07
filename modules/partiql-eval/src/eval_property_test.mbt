@@ -11,6 +11,8 @@ let expr_atoms : Array[String] = [
   "NULL", "MISSING", "1.5", "2e0", "`2.5e0`", "[1, 2]", "<<1>>", "{'a': 1}", "DATE '2020-01-02'",
   "TIME '01:02:03'", "TIME WITH TIME ZONE '01:02:03+01:00'", "TIMESTAMP '2020-01-02 03:04:05'",
   "INTERVAL '1' DAY", "INTERVAL '2' YEAR", "INTERVAL '1:30' HOUR TO MINUTE", "x",
+  // equal across kinds to the datetimes above: `=` departs from sql_equals
+   "TIMESTAMP '2020-01-02 00:00:00'", "TIME '00:02:03'", "`2020-01-02T00:00:00Z`",
 ]
 
 ///|
@@ -356,13 +358,42 @@ test "law: < agrees with the value order on numbers and strings" {
 }
 
 ///|
-test "law: = agrees with sql_equals when neither side is absent" {
+/// Whether a value holds no datetime and no NULL or MISSING, at any depth:
+/// then `=` has no reason to depart from `sql_equals`.
+fn plain(v : @value.Value) -> Bool {
+  let lowered = try v.lower_deep() catch {
+    _ => return false
+  } noraise {
+    x => x
+  }
+  plain_lowered(lowered)
+}
+
+///|
+fn plain_lowered(v : @value.Value) -> Bool {
+  match v {
+    Null | Missing | Date(_) | Time(_) | Timestamp(_) => false
+    List(items) => items.iter().all(plain_lowered)
+    Bag(b) => b.items().iter().all(plain_lowered)
+    Tuple(t) => t.fields().iter().all(f => plain_lowered(f.1))
+    Map(m) =>
+      m.entries().iter().all(e => plain_lowered(e.0) && plain_lowered(e.1))
+    _ => true
+  }
+}
+
+///|
+/// `=` departs from `sql_equals` of the value model in documented ways only:
+/// datetimes compare by instant (a DATE is a TIMESTAMP at midnight, no
+/// offset is offset 0), NULL wins over MISSING at the top level, and nested
+/// NULL and MISSING are equal. Without those, the two agree.
+test "law: = agrees with sql_equals when neither side holds a datetime or an absent value" {
   @quickcheck.check(
     (p : (ExprText, ExprText)) => {
       let (a, b) = p
       match (outcome(a.text, Permissive), outcome(b.text, Permissive)) {
         (Val(va), Val(vb)) =>
-          if va.is_absent() || vb.is_absent() {
+          if !plain(va) || !plain(vb) {
             true
           } else {
             outcome("(\{a.text}) = (\{b.text})", Permissive) ==
@@ -374,4 +405,78 @@ test "law: = agrees with sql_equals when neither side is absent" {
     },
     count=2000,
   )
+}
+
+///|
+/// Whether `v` is a float NaN, which `=` makes unequal to itself only at the
+/// top level.
+fn is_nan_value(v : @value.Value) -> Bool {
+  try v.lower() catch {
+    _ => false
+  } noraise {
+    Float(f) => f.is_nan()
+    _ => false
+  }
+}
+
+///|
+test "law: = in a collection and IN agree with =" {
+  @quickcheck.check(
+    (p : (ExprText, ExprText)) => {
+      let (a, b) = p
+      match (outcome(a.text, Permissive), outcome(b.text, Permissive)) {
+        (Val(va), Val(vb)) => {
+          if va.is_absent() ||
+            vb.is_absent() ||
+            is_nan_value(va) ||
+            is_nan_value(vb) {
+            return true
+          }
+          let (x, y) = ("(\{a.text})", "(\{b.text})")
+          let eq = outcome("\{x} = \{y}", Permissive)
+          eq is Val(Bool(_)) &&
+          outcome("[\{x}] = [\{y}]", Permissive) == eq &&
+          outcome("<<\{x}>> = <<\{y}>>", Permissive) == eq &&
+          outcome("{'k': \{x}} = {'k': \{y}}", Permissive) == eq &&
+          outcome("\{x} IN [\{y}]", Permissive) == eq
+        }
+        (Other, _) | (_, Other) => false
+        _ => true
+      }
+    },
+    count=2000,
+  )
+}
+
+///|
+/// Datetimes of every kind, with pairs that are equal across kinds.
+let datetime_texts : Array[String] = [
+  "DATE '2020-01-02'", "TIMESTAMP '2020-01-02 00:00:00'", "TIMESTAMP '2020-01-02 03:04:05'",
+  "TIMESTAMP '2020-01-02 01:00:00+01:00'", "TIMESTAMP '2020-01-02 00:00:00+00:00'",
+  "`2020-01-02T00:00:00Z`", "`2020-01-02T03:04:05+00:00`", "TIME '01:02:03'", "TIME '00:02:03'",
+  "TIME WITH TIME ZONE '01:02:03+01:00'", "TIME (2) '01:02:03.00'",
+]
+
+///|
+/// On datetimes `=` agrees with the order: equal when neither is before the
+/// other, unequal when they do not compare. A collection and IN agree with
+/// `=` too.
+test "law: = on datetimes agrees with the order, also in collections and IN" {
+  @expect.expect_all(soft => {
+    for a in datetime_texts {
+      for b in datetime_texts {
+        let eq = ev("\{a} = \{b}")
+        let expected : @value.Value = match
+          (ev("\{a} <= \{b}"), ev("\{a} >= \{b}")) {
+          (Bool(p), Bool(q)) => Bool(p && q)
+          _ => Bool(false)
+        }
+        let label = "\{a} = \{b}"
+        soft.expect(eq, label~).to_equal(expected)
+        soft.expect(ev("[\{a}] = [\{b}]"), label~).to_equal(eq)
+        soft.expect(ev("<<\{a}>> = <<\{b}>>"), label~).to_equal(eq)
+        soft.expect(ev("\{a} IN [\{b}]"), label~).to_equal(eq)
+      }
+    }
+  })
 }
