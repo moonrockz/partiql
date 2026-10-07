@@ -63,6 +63,9 @@ statement of that class (ids end in `[0]`, `[1]`, ...). Test ids have the form
 - The ratchet never drops a baseline id. When a baseline id fails, the ratchet
   fails and keeps the baseline. To drop ids on purpose (for example when a pin
   bump removes tests), set `PARTIQL_CONFORMANCE_ALLOW_DROP=1`.
+- To list the failures of one check with their reasons, set
+  `PARTIQL_CONFORMANCE_SHOW=<check>` (for example `eval`) when you run
+  `mise run test:conformance`.
 - Never edit the baseline by hand. Never remove an id to hide a regression.
 
 ## Updating the pin

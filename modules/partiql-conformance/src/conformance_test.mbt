@@ -190,12 +190,20 @@ test "partiql-tests" {
   let ratchet = @env.get_env_var("PARTIQL_CONFORMANCE_MODE") == Some("ratchet")
   let allow_drop = @env.get_env_var("PARTIQL_CONFORMANCE_ALLOW_DROP") ==
     Some("1")
+  let show = @env.get_env_var("PARTIQL_CONFORMANCE_SHOW")
   let mut regressions = 0
   for
     tally in [
       syntax, eval_parse, codec, ion_roundtrip, print_roundtrip, pretty_roundtrip,
       recovery, eval,
     ] {
+    if show == Some(tally.check) {
+      let ids = Array::from_iter(tally.failed.keys())
+      ids.sort_by((a, b) => a.lexical_compare(b))
+      for id in ids {
+        println("FAIL \{id}: \{tally.failed[id]}")
+      }
+    }
     let comparison = compare(load_baseline(tally.check), tally.passed)
     report_conformance(
       suite=tally.check,
