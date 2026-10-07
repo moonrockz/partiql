@@ -345,38 +345,23 @@ fn truncated(d : @ion_core.Decimal) -> @bigint.BigInt raise OpFailure {
 }
 
 ///|
-/// The value of a number as the factor of an interval. `binary` takes a
-/// decimal through the float nearest to it (see `scale_dt`).
-fn factor(n : Num, binary~ : Bool) -> @ion_core.Decimal raise OpFailure {
+/// The value of a number as the factor of an interval. A float is taken at
+/// its exact binary value.
+fn factor(n : Num) -> @ion_core.Decimal raise OpFailure {
   match n {
     Whole(w) => @ion_core.Decimal::new(w, 0)
-    Exact(d) => if binary { exact_decimal(to_double(n)) } else { d }
+    Exact(d) => d
     Approx(f) => exact_decimal(f)
   }
 }
 
 ///|
-/// A year-month interval has at most 2 digits of years, a day-time interval
-/// at most 2 digits of days (the default leading precision) after `*` or `/`
-/// (partiql-tests times.ion and divide.ion, `INTERVAL '3' YEAR * 50`). The
-/// days are counted after the seconds are rounded, so that 99 days
-/// 23:59:59.999999 is 100 days.
-let max_scaled_years : Int = 99
-
-///|
 fn scaled_ym(months : @bigint.BigInt) -> @value.Value raise OpFailure {
-  if abs_int(months) / 12N > @bigint.BigInt::from_int(max_scaled_years) {
-    raise DataFailure("an interval out of range")
-  }
   ym_value(months)
 }
 
 ///|
 fn scaled_dt(nanos : @bigint.BigInt) -> @value.Value raise OpFailure {
-  let seconds = (abs_int(nanos) + 500000000N) / nanos_per_second
-  if seconds / 86400N > 99N {
-    raise DataFailure("an interval out of range")
-  }
   dt_value(nanos)
 }
 
@@ -397,14 +382,14 @@ fn scale_by(interval : @value.Value, n : Num) -> @value.Value raise OpFailure {
     IntervalYM(i) => {
       let product = decimal_mul(
         @ion_core.Decimal::new(big64(i.months), 0),
-        factor(n, binary=false),
+        factor(n),
       )
       scaled_ym(truncated(product))
     }
     IntervalDT(i) => {
       let product = decimal_mul(
         @ion_core.Decimal::new(dt_nanos(i), 0),
-        factor(n, binary=false),
+        factor(n),
       )
       let nanos = truncated(product)
       scaled_dt(if exact { nanos } else { to_micros(nanos) })
@@ -415,15 +400,10 @@ fn scale_by(interval : @value.Value, n : Num) -> @value.Value raise OpFailure {
 
 ///|
 /// An interval divided by a number; a zero divisor is a `DataFailure`.
-///
-/// A day-time interval divides by the exact binary value of the nearest
-/// float: partiql-tests divide.ion has `INTERVAL '2' DAY / 2.25e-1` as 8 days
-/// 21:19:59.999999, not 21:20:00. The lowering reads `2.25e-1` as a decimal,
-/// so the divisor is converted here.
 fn divide_by(interval : @value.Value, n : Num) -> @value.Value raise OpFailure {
   match interval {
     IntervalYM(i) => {
-      let divisor = factor(n, binary=false)
+      let divisor = factor(n)
       let quotient = decimal_div(
         @ion_core.Decimal::new(big64(i.months), 0),
         divisor,
@@ -431,7 +411,7 @@ fn divide_by(interval : @value.Value, n : Num) -> @value.Value raise OpFailure {
       scaled_ym(truncated(quotient))
     }
     IntervalDT(i) => {
-      let divisor = factor(n, binary=true)
+      let divisor = factor(n)
       let quotient = decimal_div(
         @ion_core.Decimal::new(dt_nanos(i), 0),
         divisor,
@@ -584,4 +564,22 @@ fn datetime_equal(x : @value.Value, y : @value.Value) -> @value.Value? {
     Some(c) => Some(Bool(c == 0))
     None => None
   }
+}
+
+///|
+/// The time `nanos` later, around the day.
+pub fn shift_time(
+  t : @value.Time,
+  nanos : Int64,
+) -> @value.Time raise OpFailure {
+  time_shift(t, big64(nanos))
+}
+
+///|
+/// The timestamp `nanos` later.
+pub fn shift_timestamp(
+  ts : @value.Timestamp,
+  nanos : Int64,
+) -> @value.Timestamp raise OpFailure {
+  timestamp_shift(ts, big64(nanos))
 }

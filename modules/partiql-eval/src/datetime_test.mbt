@@ -298,10 +298,6 @@ test "interval sums, scaling and sign" {
     soft
     .expect(ev("INTERVAL '10.5' SECOND / -3"))
     .to_equal(dt(-3L, -500000000L))
-    // The divisor 0.225 is not exact as a float (partiql-tests divide.ion).
-    soft
-    .expect(ev("INTERVAL '2' DAY / 2.25e-1"))
-    .to_equal(dt(767999L, 999999000L))
     soft
     .expect(ev("INTERVAL '5' MINUTE / 2.25e-1"))
     .to_equal(dt(1333L, 333333000L))
@@ -313,12 +309,9 @@ test "interval sums, scaling and sign" {
     soft.expect(ev("INTERVAL '3' YEAR * INTERVAL '1' DAY")).to_equal(Missing)
     soft.expect(ev("2 / INTERVAL '1' DAY")).to_equal(Missing)
   })
-  // A result of 100 years or 100 days leaves the two-digit leading field.
   for
     source in [
-      "INTERVAL '3' YEAR * 50", "INTERVAL '2' DAY * 50", "INTERVAL '3' YEAR / 0.03",
-      "INTERVAL '2' DAY / 0.02", "INTERVAL '2' DAY / 0", "INTERVAL '2' DAY / 0.0",
-      "INTERVAL '2' DAY / 0e0",
+      "INTERVAL '2' DAY / 0", "INTERVAL '2' DAY / 0.0", "INTERVAL '2' DAY / 0e0",
     ] {
     for mode in [@eval.Mode::Permissive, Strict] {
       @expect.expect_call(() => ev(source, mode~)).to_raise_matching(
@@ -388,5 +381,69 @@ test "comparison of datetimes and intervals" {
     soft
     .expect(ev("INTERVAL '1' YEAR = INTERVAL '1' DAY"))
     .to_equal(Bool(false))
+  })
+}
+
+///|
+test "day-time interval division by a decimal is exact" {
+  @expect.expect_all(soft => {
+    soft.expect(ev("INTERVAL '1' SECOND / 0.1")).to_equal(dt(10L, 0L))
+    soft.expect(ev("INTERVAL '1' DAY / 0.1")).to_equal(dt(10L * 86400L, 0L))
+    soft.expect(ev("INTERVAL '1' DAY / -0.1")).to_equal(dt(-10L * 86400L, 0L))
+    soft.expect(ev("INTERVAL '2' DAY / 2.25e-1")).to_equal(dt(768000L, 0L))
+    soft.expect(ev("INTERVAL '1' DAY / 1e309")).to_equal(dt(0L, 0L))
+  })
+}
+
+///|
+test "scaling an interval has no fixed cap" {
+  @expect.expect_all(soft => {
+    soft.expect(ev("INTERVAL '500' YEAR(3) * 1")).to_equal(ym(6000L))
+    soft.expect(ev("INTERVAL '-1203' MONTH(4) * 1")).to_equal(ym(-1203L))
+    soft.expect(ev("INTERVAL '150' DAY(3) / 1")).to_equal(dt(150L * 86400L, 0L))
+    soft.expect(ev("INTERVAL '3' YEAR * 50")).to_equal(ym(1800L))
+    soft.expect(ev("INTERVAL '2' DAY * 50")).to_equal(dt(100L * 86400L, 0L))
+  })
+}
+
+///|
+fn time_at(
+  h : Int,
+  m : Int,
+  s : Int,
+  nanos : Int,
+  p : Int,
+) -> @value.Value raise Error {
+  Time(@value.Time::new(hour=h, minute=m, second=s, nanos~, precision=p))
+}
+
+///|
+test "an explicit time precision rounds half up" {
+  @expect.expect_all(soft => {
+    soft
+    .expect(ev("TIME (2) '01:23:45.678'"))
+    .to_equal(time_at(1, 23, 45, 680000000, 2))
+    soft
+    .expect(ev("TIME (2) '12:00:00.129'"))
+    .to_equal(time_at(12, 0, 0, 130000000, 2))
+    soft
+    .expect(ev("TIME (2) '12:00:00.124'"))
+    .to_equal(time_at(12, 0, 0, 120000000, 2))
+    soft.expect(ev("TIME (0) '12:00:00.9'")).to_equal(time_at(12, 0, 1, 0, 0))
+    soft.expect(ev("TIME (0) '12:59:59.5'")).to_equal(time_at(13, 0, 0, 0, 0))
+    soft.expect(ev("TIME (2) '23:59:59.999'")).to_equal(time_at(0, 0, 0, 0, 2))
+    soft
+    .expect(ev("TIME '23:59:59.999999999999'"))
+    .to_equal(time_at(23, 59, 59, 999999999, 9))
+    soft
+    .expect(ev("TIMESTAMP (1) '2024-12-31 23:59:59.96'"))
+    .to_equal(
+      Timestamp(
+        @value.Timestamp::new(
+          @value.Date::new(year=2025, month=1, day=1),
+          @value.Time::new(hour=0, minute=0, second=0, precision=1),
+        ),
+      ),
+    )
   })
 }

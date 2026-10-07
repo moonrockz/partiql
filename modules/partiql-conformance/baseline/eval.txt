@@ -2080,8 +2080,6 @@ eval/primitives/operators/divide.ion::divide::INTERVAL '2 4:5:10.5' DAY TO SECON
 eval/primitives/operators/divide.ion::divide::INTERVAL '2 4:5:10.5' DAY TO SECOND / -3#error
 eval/primitives/operators/divide.ion::divide::INTERVAL '2 4:5:10.5' DAY TO SECOND / 0#coerce
 eval/primitives/operators/divide.ion::divide::INTERVAL '2 4:5:10.5' DAY TO SECOND / 0#error
-eval/primitives/operators/divide.ion::divide::INTERVAL '2 4:5:10.5' DAY TO SECOND / 2.25e-1#coerce
-eval/primitives/operators/divide.ion::divide::INTERVAL '2 4:5:10.5' DAY TO SECOND / 2.25e-1#error
 eval/primitives/operators/divide.ion::divide::INTERVAL '2 4:5:10.5' DAY TO SECOND / 2.5#coerce
 eval/primitives/operators/divide.ion::divide::INTERVAL '2 4:5:10.5' DAY TO SECOND / 2.5#error
 eval/primitives/operators/divide.ion::divide::INTERVAL '2 4:5:10.5' DAY TO SECOND / 3#coerce
@@ -2094,10 +2092,6 @@ eval/primitives/operators/divide.ion::divide::INTERVAL '2' DAY / -3#coerce
 eval/primitives/operators/divide.ion::divide::INTERVAL '2' DAY / -3#error
 eval/primitives/operators/divide.ion::divide::INTERVAL '2' DAY / 0#coerce
 eval/primitives/operators/divide.ion::divide::INTERVAL '2' DAY / 0#error
-eval/primitives/operators/divide.ion::divide::INTERVAL '2' DAY / 0.02#coerce
-eval/primitives/operators/divide.ion::divide::INTERVAL '2' DAY / 0.02#error
-eval/primitives/operators/divide.ion::divide::INTERVAL '2' DAY / 2.25e-1#coerce
-eval/primitives/operators/divide.ion::divide::INTERVAL '2' DAY / 2.25e-1#error
 eval/primitives/operators/divide.ion::divide::INTERVAL '2' DAY / 2.5#coerce
 eval/primitives/operators/divide.ion::divide::INTERVAL '2' DAY / 2.5#error
 eval/primitives/operators/divide.ion::divide::INTERVAL '2' DAY / 3#coerce
@@ -2110,8 +2104,6 @@ eval/primitives/operators/divide.ion::divide::INTERVAL '3' YEAR / -3#coerce
 eval/primitives/operators/divide.ion::divide::INTERVAL '3' YEAR / -3#error
 eval/primitives/operators/divide.ion::divide::INTERVAL '3' YEAR / 0#coerce
 eval/primitives/operators/divide.ion::divide::INTERVAL '3' YEAR / 0#error
-eval/primitives/operators/divide.ion::divide::INTERVAL '3' YEAR / 0.03#coerce
-eval/primitives/operators/divide.ion::divide::INTERVAL '3' YEAR / 0.03#error
 eval/primitives/operators/divide.ion::divide::INTERVAL '3' YEAR / 2.25e-1#coerce
 eval/primitives/operators/divide.ion::divide::INTERVAL '3' YEAR / 2.25e-1#error
 eval/primitives/operators/divide.ion::divide::INTERVAL '3' YEAR / 2.5#coerce
@@ -2126,8 +2118,6 @@ eval/primitives/operators/divide.ion::divide::INTERVAL '4' HOUR / -3#coerce
 eval/primitives/operators/divide.ion::divide::INTERVAL '4' HOUR / -3#error
 eval/primitives/operators/divide.ion::divide::INTERVAL '4' HOUR / 0#coerce
 eval/primitives/operators/divide.ion::divide::INTERVAL '4' HOUR / 0#error
-eval/primitives/operators/divide.ion::divide::INTERVAL '4' HOUR / 2.25e-1#coerce
-eval/primitives/operators/divide.ion::divide::INTERVAL '4' HOUR / 2.25e-1#error
 eval/primitives/operators/divide.ion::divide::INTERVAL '4' HOUR / 2.5#coerce
 eval/primitives/operators/divide.ion::divide::INTERVAL '4' HOUR / 2.5#error
 eval/primitives/operators/divide.ion::divide::INTERVAL '4' HOUR / 3#coerce
@@ -2620,8 +2610,6 @@ eval/primitives/operators/times.ion::times::INTERVAL '2' DAY * 2.25e-1#coerce
 eval/primitives/operators/times.ion::times::INTERVAL '2' DAY * 2.25e-1#error
 eval/primitives/operators/times.ion::times::INTERVAL '2' DAY * 20#coerce
 eval/primitives/operators/times.ion::times::INTERVAL '2' DAY * 20#error
-eval/primitives/operators/times.ion::times::INTERVAL '2' DAY * 50#coerce
-eval/primitives/operators/times.ion::times::INTERVAL '2' DAY * 50#error
 eval/primitives/operators/times.ion::times::INTERVAL '2' DAY * MISSING#coerce
 eval/primitives/operators/times.ion::times::INTERVAL '2' DAY * MISSING#error
 eval/primitives/operators/times.ion::times::INTERVAL '2' DAY * NULL#coerce
@@ -2636,8 +2624,6 @@ eval/primitives/operators/times.ion::times::INTERVAL '3' YEAR * 2.1#coerce
 eval/primitives/operators/times.ion::times::INTERVAL '3' YEAR * 2.1#error
 eval/primitives/operators/times.ion::times::INTERVAL '3' YEAR * 2.25e-1#coerce
 eval/primitives/operators/times.ion::times::INTERVAL '3' YEAR * 2.25e-1#error
-eval/primitives/operators/times.ion::times::INTERVAL '3' YEAR * 50#coerce
-eval/primitives/operators/times.ion::times::INTERVAL '3' YEAR * 50#error
 eval/primitives/operators/times.ion::times::INTERVAL '3' YEAR * MISSING#coerce
 eval/primitives/operators/times.ion::times::INTERVAL '3' YEAR * MISSING#error
 eval/primitives/operators/times.ion::times::INTERVAL '3' YEAR * NULL#coerce

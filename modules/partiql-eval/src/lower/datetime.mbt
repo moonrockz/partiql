@@ -138,13 +138,15 @@ pub fn date_literal(
 }
 
 ///|
-/// `HH:MM:SS[.f*][(+|-)HH:MM]`. Fraction digits beyond the precision (and
-/// beyond 9) are cut off.
+/// `HH:MM:SS[.f*][(+|-)HH:MM]`. Fraction digits beyond 9 are cut off. With an
+/// explicit precision the result is cut down to it, with the nanoseconds of
+/// one unit in the last place to add when the next digit rounds up (half up,
+/// partiql-tests extract.ion, `TIME (2) '01:23:45.678'`).
 fn time_part(
   c : Cursor,
   precision : Int?,
   with_tz : Bool,
-) -> @value.Time raise Error {
+) -> (@value.Time, Int) raise Error {
   let hour = c.fixed(2)
   c.expect(':')
   let minute = c.fixed(2)
@@ -183,15 +185,18 @@ fn time_part(
   // A literal without an explicit precision shows at least one fraction digit,
   // as in `second: 45.0` (partiql-tests time.ion, `time no fractional seconds`).
   let digits = precision.unwrap_or(fraction.length().min(9).max(1))
-  let kept = digits.min(9)
-  let nanos = if fraction.length() == 0 || kept <= 0 {
-    0
-  } else {
-    let shown = fraction.view(end_offset=fraction.length().min(kept)).to_owned()
-    let padded = shown + String::make(9 - shown.length(), '0')
-    digits_value(padded).to_int()
+  let shown = fraction.view(end_offset=fraction.length().min(9)).to_owned()
+  let all = digits_value(shown + String::make(9 - shown.length(), '0')).to_int()
+  let mut unit = 1
+  for _ in 0..<(9 - digits.min(9).max(0)) {
+    unit = unit * 10
   }
-  @value.Time::new(hour~, minute~, second~, nanos~, precision=digits, offset~)
+  let nanos = all - all % unit
+  let up = if all % unit * 2 >= unit && unit > 1 { unit } else { 0 }
+  (
+    @value.Time::new(hour~, minute~, second~, nanos~, precision=digits, offset~),
+    up,
+  )
 }
 
 ///|
@@ -203,9 +208,13 @@ pub fn time_literal(
 ) -> @value.Time raise @plan.EvalError {
   try {
     let c = Cursor::new(text)
-    let t = time_part(c, precision, with_tz)
+    let (t, up) = time_part(c, precision, with_tz)
     c.finish()
-    t
+    if up > 0 {
+      @ops.shift_time(t, up.to_int64())
+    } else {
+      t
+    }
   } catch {
     Reason(reason) => raise literal_error("time", text, reason, span)
     e => raise literal_error("time", text, @debug.to_string(e), span)
@@ -226,9 +235,14 @@ pub fn timestamp_literal(
     if !c.eat(' ') {
       c.expect('T')
     }
-    let t = time_part(c, precision, with_tz)
+    let (t, up) = time_part(c, precision, with_tz)
     c.finish()
-    @value.Timestamp::new(d, t)
+    let ts = @value.Timestamp::new(d, t)
+    if up > 0 {
+      @ops.shift_timestamp(ts, up.to_int64())
+    } else {
+      ts
+    }
   } catch {
     Reason(reason) => raise literal_error("timestamp", text, reason, span)
     e => raise literal_error("timestamp", text, @debug.to_string(e), span)
