@@ -74,7 +74,8 @@ pub fn is_type(
     TinyInt => in_range(x, -128L, 127L)
     SmallInt => in_range(x, -32768L, 32767L)
     Int => in_range(x, -2147483648L, 2147483647L)
-    BigInt => x is (Int(_) | BigInt(_))
+    // BIGINT is the Int64 range, as in arithmetic; a `BigInt` value is wider.
+    BigInt => x is Int(_)
     Decimal(p, s) | Numeric(p, s) =>
       match x {
         Decimal(d) => decimal_fits(d, p, s)

@@ -266,3 +266,12 @@ test "IS DECIMAL(p, s) with an exponent at the Int limit" {
     soft.expect(ev("1e-2147483648 IS DECIMAL")).to_equal(Bool(true))
   })
 }
+
+///|
+test "IS BIGINT means the Int64 range" {
+  @expect.expect_all(soft => {
+    soft.expect(ev("`9223372036854775807` IS BIGINT")).to_equal(Bool(true))
+    soft.expect(ev("`9223372036854775808` IS BIGINT")).to_equal(Bool(false))
+    soft.expect(ev("`-9223372036854775809` IS BIGINT")).to_equal(Bool(false))
+  })
+}
