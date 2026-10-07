@@ -28,20 +28,31 @@ fn gen_expr(rs : @splitmix.RandomState, depth : Int) -> String {
   if depth == 0 || pick(rs, 4) == 0 {
     return expr_atoms[pick(rs, expr_atoms.length())]
   }
-  match pick(rs, 8) {
-    0 => "(NOT \{gen_expr(rs, depth - 1)})"
-    1 => "(-\{gen_expr(rs, depth - 1)})"
+  let sub = () => gen_expr(rs, depth - 1)
+  match pick(rs, 13) {
+    0 => "(NOT \{sub()})"
+    // a space and parentheses: `--` would start a comment
+    1 => "(- (\{sub()}))"
+    4 => "(CASE WHEN \{sub()} THEN \{sub()} ELSE \{sub()} END)"
+    5 => "(CASE WHEN \{sub()} THEN \{sub()} END)"
+    6 =>
+      "(CASE \{sub()} WHEN \{sub()} THEN \{sub()} WHEN \{sub()} THEN \{sub()} ELSE \{sub()} END)"
+    7 => "COALESCE(\{sub()}, \{sub()}, \{sub()})"
+    8 => "NULLIF(\{sub()}, \{sub()})"
+    9 =>
+      "(\{sub()} LIKE \{sub()} ESCAPE \{["'\\'", "'#'", "NULL", "MISSING", "'ab'"][pick(rs, 5)]})"
+    10 => "(\{sub()} NOT LIKE \{sub()} ESCAPE '#')"
     2 => {
       let tests = ["IS NULL", "IS MISSING", "IS NOT NULL", "IS NOT MISSING"]
-      "(\{gen_expr(rs, depth - 1)} \{tests[pick(rs, tests.length())]})"
+      "(\{sub()} \{tests[pick(rs, tests.length())]})"
     }
     3 => {
       let neg = if pick(rs, 2) == 0 { "" } else { "NOT " }
-      "(\{gen_expr(rs, depth - 1)} \{neg}BETWEEN \{gen_expr(rs, depth - 1)} AND \{gen_expr(rs, depth - 1)})"
+      "(\{sub()} \{neg}BETWEEN \{sub()} AND \{sub()})"
     }
     _ => {
       let op = expr_binary[pick(rs, expr_binary.length())]
-      "(\{gen_expr(rs, depth - 1)} \{op} \{gen_expr(rs, depth - 1)})"
+      "(\{sub()} \{op} \{sub()})"
     }
   }
 }
@@ -55,33 +66,94 @@ impl @quickcheck.Arbitrary for ExprText with fn arbitrary(_size, rs) {
 impl @quickcheck.Shrink for ExprText
 
 ///|
-/// The result of evaluating: a value, a TypeError (`Err(false)`) or any other
-/// failure (`Err(true)`).
-fn outcome(source : String, mode : @eval.Mode) -> Result[@value.Value, Bool] {
+/// One operator over atoms.
+struct OneOp {
+  text : String
+} derive(Debug)
+
+///|
+impl @quickcheck.Arbitrary for OneOp with fn arbitrary(_size, rs) {
+  { text: gen_expr(rs, 1), }
+}
+
+///|
+impl @quickcheck.Shrink for OneOp
+
+///|
+/// How an evaluation ended. The generator never produces Syntax or Unsupported
+/// text, so those land in `Other` and the laws reject them.
+enum Outcome {
+  Val(@value.Value)
+  Type
+  Data
+  Other
+} derive(Eq, Debug)
+
+///|
+fn outcome(source : String, mode : @eval.Mode) -> Outcome {
   try ev(source, mode~) catch {
-    @eval.EvalError::TypeError(..) => Err(false)
-    _ => Err(true)
+    @eval.EvalError::TypeError(..) => Type
+    @eval.EvalError::DataError(..) => Data
+    _ => Other
   } noraise {
-    v => Ok(v)
+    v => Val(v)
+  }
+}
+
+///|
+/// Whether the modes agree on `source`: strict Ok gives the same value in
+/// permissive; strict TypeError gives a value in permissive (MISSING for
+/// `one_op`, a single operator over atoms), never an error; a DataError fails in both modes.
+fn modes_agree(source : String, one_op : Bool) -> Bool {
+  let strict = outcome(source, Strict)
+  let lax = outcome(source, Permissive)
+  match (strict, lax) {
+    (Other, _) | (_, Other) => false
+    (Val(_), _) => lax == strict
+    (Type, Val(Missing)) => true
+    (Type, Val(_)) => !one_op
+    // permissive continues past the failed operation and can reach a
+    // DataError that strict never evaluated
+    (Type, Data) => !one_op
+    (Type, Type) => false
+    (Data, _) => lax == Data
   }
 }
 
 ///|
 test "law: modes agree" {
-  @quickcheck.check(
-    (t : ExprText) => {
-      let strict = outcome(t.text, Strict)
-      let lax = outcome(t.text, Permissive)
-      match strict {
-        Ok(_) => lax == strict
-        // a strict TypeError: permissive gives MISSING at the failing operation
-        Err(false) => true
-        // a DataError (or anything else) fails in both modes
-        Err(true) => lax == Err(true)
-      }
-    },
-    count=2000,
+  @quickcheck.check((t : ExprText) => modes_agree(t.text, false), count=2000)
+}
+
+///|
+test "law: a single failing operation gives MISSING in permissive" {
+  @quickcheck.check((t : OneOp) => modes_agree(t.text, true), count=1000)
+}
+
+///|
+test "law: the generator reaches every branch of the modes law" {
+  let rs = @splitmix.new(seed=7UL)
+  let mut ok = 0
+  let mut type_error = 0
+  let mut data_error = 0
+  let mut other = 0
+  let total = 2000
+  for _ in 0..<total {
+    match outcome(gen_expr(rs, 3), Strict) {
+      Val(_) => ok += 1
+      Type => type_error += 1
+      Data => data_error += 1
+      Other => other += 1
+    }
+  }
+  println(
+    "modes law branches of \{total}: ok=\{ok} type=\{type_error} data=\{data_error} other=\{other}",
   )
+  @expect.expect_all(soft => {
+    soft.expect(other).to_equal(0)
+    soft.expect(ok * 10 >= total).to_be_true()
+    soft.expect(type_error * 10 >= total).to_be_true()
+  })
 }
 
 ///|
@@ -242,7 +314,8 @@ test "law: a + b - b = a and a * 1 = a" {
       let va = ev(a.text)
       // a DataError (overflow) makes no claim
       let plus = try ev("\{a.text} + \{b.text} - \{b.text}") catch {
-        _ => return true
+        @eval.EvalError::DataError(..) => return true
+        _ => return false
       } noraise {
         v => v
       }
@@ -287,13 +360,14 @@ test "law: = agrees with sql_equals when neither side is absent" {
     (p : (ExprText, ExprText)) => {
       let (a, b) = p
       match (outcome(a.text, Permissive), outcome(b.text, Permissive)) {
-        (Ok(va), Ok(vb)) =>
+        (Val(va), Val(vb)) =>
           if va.is_absent() || vb.is_absent() {
             true
           } else {
             outcome("(\{a.text}) = (\{b.text})", Permissive) ==
-            Ok(@value.sql_equals(va, vb))
+            Val(@value.sql_equals(va, vb))
           }
+        (Other, _) | (_, Other) => false
         _ => true
       }
     },
