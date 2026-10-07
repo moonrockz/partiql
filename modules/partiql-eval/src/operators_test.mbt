@@ -215,3 +215,45 @@ test "a non-boolean under NOT is a type error in strict mode" {
     )
   })
 }
+
+///|
+test "decimal exponents out of range fail without abort or hang" {
+  @expect.expect_all(soft => {
+    for
+      source in [
+        "1e2147483647 + 1e-2147483648", "1e2147483647 * 1e1", "1e-2147483648 * 1e-1",
+        "1e2147483647 / 1e-2147483648", "1e2147483647 % 1e-2147483648", "1e100000000 % 1e-100000000",
+        "1e100000000 + 1e-100000000", "0.1e-2147483648", "1e-2147483648 / 1e2147483647",
+      ] {
+      soft
+      .expect_call(() => ev(source))
+      .to_raise_matching(
+        e => e is @eval.EvalError::DataError(..),
+        description="DataError for \{source}",
+      )
+    }
+  })
+}
+
+///|
+test "BETWEEN and negated predicates keep MISSING" {
+  @expect.expect_all(soft => {
+    soft.expect(ev("MISSING BETWEEN 1 AND 2")).to_equal(Missing)
+    soft.expect(ev("1 BETWEEN MISSING AND 2")).to_equal(Missing)
+    soft.expect(ev("1 BETWEEN 'a' AND 3")).to_equal(Missing)
+    soft.expect(ev("1 NOT BETWEEN 'a' AND 3")).to_equal(Missing)
+    soft.expect(ev("MISSING NOT IN [1]")).to_equal(Missing)
+    soft.expect(ev("1 NOT IN 5")).to_equal(Missing)
+    soft.expect(ev("MISSING IS NOT MAP<STRING, INTEGER>")).to_equal(Missing)
+    soft.expect(ev("NULL IS NOT MAP<STRING, INTEGER>")).to_equal(Null)
+    soft.expect(ev("NOT MISSING")).to_equal(Null)
+    soft.expect(ev("NULL BETWEEN 1 AND 2")).to_equal(Null)
+    soft.expect(ev("5 BETWEEN 'a' AND 3")).to_equal(Missing)
+    soft
+    .expect_call(() => ev("1 BETWEEN 'a' AND 3", mode=Strict))
+    .to_raise_matching(
+      e => e is @eval.EvalError::TypeError(..),
+      description="TypeError",
+    )
+  })
+}

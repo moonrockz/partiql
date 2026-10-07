@@ -57,7 +57,7 @@ pub fn parse_decimal(String) -> @ion.Decimal?
 
 pub fn rem(@partiql-value.Value, @partiql-value.Value) -> @partiql-value.Value raise OpFailure
 
-pub fn round_decimal(@ion.Decimal) -> @ion.Decimal
+pub fn round_decimal(@ion.Decimal) -> @ion.Decimal raise OpFailure
 
 pub fn sub(@partiql-value.Value, @partiql-value.Value) -> @partiql-value.Value raise OpFailure
 

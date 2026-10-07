@@ -273,14 +273,16 @@ fn run_map(
 }
 
 ///|
-/// The result of a predicate under `NOT`: `NOT x`, or `x` itself.
+/// The result of a predicate under `NOT`: a Bool or NULL is negated, MISSING
+/// stays MISSING (a predicate gives MISSING for a MISSING operand, spec M4a §5;
+/// only the logical `NOT` of logical.ion gives NULL for it).
 fn negate(
   v : @value.Value,
   negated : Bool,
   mode : @plan.Mode,
   span : @ast.Span,
 ) -> @value.Value raise @plan.EvalError {
-  if negated {
+  if negated && !(unboxed(v) is Missing) {
     typed(mode, span, () => @ops.not_(v))
   } else {
     v
@@ -399,12 +401,13 @@ pub fn run(
       let hi = run(high, env, mode)
       let above = typed(mode, span, () => @ops.greater_eq(v, lo))
       let below = typed(mode, span, () => @ops.less_eq(v, hi))
-      negate(
-        typed(mode, span, () => @ops.and_(above, below)),
-        negated,
-        mode,
-        span,
-      )
+      // MISSING if any operand or comparison is MISSING (spec M4a §5).
+      let combined = if [v, lo, hi, above, below].any(x => unboxed(x) is Missing) {
+        @value.Value::Missing
+      } else {
+        typed(mode, span, () => @ops.and_(above, below))
+      }
+      negate(combined, negated, mode, span)
     }
     In(x, c, negated~, span) => {
       let v = run(x, env, mode)

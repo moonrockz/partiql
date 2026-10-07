@@ -30,8 +30,20 @@ fn digit_count(n : @bigint.BigInt) -> Int {
 }
 
 ///|
+/// An exponent computed in Int64 as an Int, or a `DataFailure` when it leaves
+/// the Int range.
+fn checked_exponent(e : Int64) -> Int raise OpFailure {
+  if e > 2147483647L || e < -2147483648L {
+    raise DataFailure("decimal exponent out of range")
+  }
+  e.to_int()
+}
+
+///|
 /// Rounds a decimal to 38 significant digits, half to even.
-pub fn round_decimal(d : @ion_core.Decimal) -> @ion_core.Decimal {
+pub fn round_decimal(
+  d : @ion_core.Decimal,
+) -> @ion_core.Decimal raise OpFailure {
   let digits = d.coefficient().to_string()
   let negative = digits.has_prefix("-")
   let magnitude = if negative {
@@ -57,14 +69,14 @@ pub fn round_decimal(d : @ion_core.Decimal) -> @ion_core.Decimal {
     kept % @bigint.BigInt::from_int(2) == @bigint.BigInt::from_int(1)
   }
   let mut rounded = if up { kept + @bigint.BigInt::from_int(1) } else { kept }
-  let mut exponent = d.exponent() + drop
+  let mut exponent = d.exponent().to_int64() + drop.to_int64()
   // A carry out of 38 nines gives 10^38 (39 digits): renormalize.
   if rounded.to_string().length() > max_decimal_digits {
     rounded = rounded / @bigint.BigInt::from_int(10)
-    exponent += 1
+    exponent += 1L
   }
   let signed = if negative { -rounded } else { rounded }
-  @ion_core.Decimal::new(signed, exponent)
+  @ion_core.Decimal::new(signed, checked_exponent(exponent))
 }
 
 ///|
@@ -78,8 +90,8 @@ fn aligned(
   a : @ion_core.Decimal,
   b : @ion_core.Decimal,
 ) -> (@bigint.BigInt, @bigint.BigInt, Int) raise OpFailure {
-  let gap = (a.exponent() - b.exponent()).abs()
-  if gap > max_exponent_gap {
+  let gap = a.exponent().to_int64() - b.exponent().to_int64()
+  if gap.abs() > max_exponent_gap.to_int64() {
     raise DataFailure("decimals with exponents too far apart")
   }
   let e = a.exponent().min(b.exponent())
@@ -112,13 +124,9 @@ fn decimal_sub(
 fn decimal_mul(
   a : @ion_core.Decimal,
   b : @ion_core.Decimal,
-) -> @ion_core.Decimal {
-  round_decimal(
-    @ion_core.Decimal::new(
-      a.coefficient() * b.coefficient(),
-      a.exponent() + b.exponent(),
-    ),
-  )
+) -> @ion_core.Decimal raise OpFailure {
+  let e = checked_exponent(a.exponent().to_int64() + b.exponent().to_int64())
+  round_decimal(@ion_core.Decimal::new(a.coefficient() * b.coefficient(), e))
 }
 
 ///|
@@ -133,13 +141,13 @@ fn decimal_div(
   if b.is_zero() {
     raise DataFailure("division by zero")
   }
-  let preferred = a.exponent() - b.exponent()
+  let preferred = a.exponent().to_int64() - b.exponent().to_int64()
   let negative = is_negative_int(a.coefficient()) !=
     is_negative_int(b.coefficient())
   let na = abs_int(a.coefficient())
   let nb = abs_int(b.coefficient())
   if na.is_zero() {
-    return @ion_core.Decimal::new(na, preferred)
+    return @ion_core.Decimal::new(na, checked_exponent(preferred))
   }
   // Scale the dividend so that the integer quotient has at least 36 digits.
   let shift = (max_decimal_digits + 2 + digit_count(nb) - digit_count(na)).max(
@@ -148,7 +156,7 @@ fn decimal_div(
   let scaled = na * pow10(shift)
   let q = scaled / nb
   let inexact = !(scaled % nb).is_zero()
-  let mut exponent = preferred - shift
+  let mut exponent = preferred - shift.to_int64()
   let mut digits = q
   let drop = digit_count(q) - max_decimal_digits
   if drop > 0 {
@@ -159,18 +167,25 @@ fn decimal_div(
     let odd = (kept % @bigint.BigInt::from_int(2)).compare_int(0) != 0
     let up = c > 0 || (c == 0 && (inexact || odd))
     digits = if up { kept + @bigint.BigInt::from_int(1) } else { kept }
-    exponent += drop
+    exponent += drop.to_int64()
     if digit_count(digits) > max_decimal_digits {
       digits = digits / @bigint.BigInt::from_int(10)
-      exponent += 1
+      exponent += 1L
     }
   }
   let ten = @bigint.BigInt::from_int(10)
   while exponent < preferred && (digits % ten).is_zero() {
     digits = digits / ten
-    exponent += 1
+    exponent += 1L
   }
-  @ion_core.Decimal::new(if negative { -digits } else { digits }, exponent)
+  @ion_core.Decimal::new(
+    if negative {
+      -digits
+    } else {
+      digits
+    },
+    checked_exponent(exponent),
+  )
 }
 
 ///|
@@ -182,9 +197,7 @@ fn decimal_rem(
   if b.is_zero() {
     raise DataFailure("division by zero")
   }
-  let e = a.exponent().min(b.exponent())
-  let ma = a.coefficient() * pow10(a.exponent() - e)
-  let mb = b.coefficient() * pow10(b.exponent() - e)
+  let (ma, mb, e) = aligned(a, b)
   let r = abs_int(ma) % abs_int(mb)
   @ion_core.Decimal::new(if is_negative_int(ma) { -r } else { r }, e)
 }
@@ -216,10 +229,9 @@ pub fn parse_decimal(text : String) -> @ion_core.Decimal? {
   } noraise {
     n => n
   }
-  Some(
-    @ion_core.Decimal::new(
-      mantissa.coefficient(),
-      mantissa.exponent() + exponent,
-    ),
-  )
+  let total = mantissa.exponent().to_int64() + exponent.to_int64()
+  if total > 2147483647L || total < -2147483648L {
+    return None
+  }
+  Some(@ion_core.Decimal::new(mantissa.coefficient(), total.to_int()))
 }

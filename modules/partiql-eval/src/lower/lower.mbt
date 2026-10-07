@@ -14,6 +14,16 @@ fn integer_value(
 }
 
 ///|
+fn rounded(
+  d : @ion_core.Decimal,
+  span : @ast.Span,
+) -> @ion_core.Decimal raise @plan.EvalError {
+  @ops.round_decimal(d) catch {
+    _ => raise DataError(message="decimal literal out of range", span~)
+  }
+}
+
+///|
 fn literal(
   l : @ast.Literal,
   span : @ast.Span,
@@ -27,12 +37,12 @@ fn literal(
       try @ion_core.Decimal::parse(text) catch {
         _ => raise DataError(message="invalid decimal literal \{text}", span~)
       } noraise {
-        d => Decimal(@ops.round_decimal(d))
+        d => Decimal(rounded(d, span))
       }
     // A number with an exponent is a decimal in PartiQL.
     Float(text) =>
       match @ops.parse_decimal(text) {
-        Some(d) => Decimal(@ops.round_decimal(d))
+        Some(d) => Decimal(rounded(d, span))
         None => raise DataError(message="invalid float literal \{text}", span~)
       }
     String(s) => String(s)
