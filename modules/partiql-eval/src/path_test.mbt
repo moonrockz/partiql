@@ -63,15 +63,15 @@ test "strict mode: a failed path step is an error" {
 }
 
 ///|
-test "an undefined variable is an error in both modes" {
+test "an undefined variable is a data error in both modes" {
   @expect.expect_all(soft => {
     for mode in [@eval.Mode::Permissive, Strict] {
       for source in ["nope", "nope IS MISSING", "\"A\""] {
         soft
         .expect_call(() => ev_env(source, "{a: 1}", mode~), label=source)
         .to_raise_matching(
-          e => e is @eval.EvalError::TypeError(..),
-          description="TypeError",
+          e => e is @eval.EvalError::DataError(..),
+          description="DataError",
         )
       }
     }
@@ -160,5 +160,53 @@ test "a decimal literal keeps 38 digits" {
     .to_equal(
       Decimal(@ion.Decimal::parse("1.0000000000000000000000000000000000000")),
     )
+  })
+}
+
+///|
+test "map keys that are equal after widening are duplicates" {
+  let dec = (t : String) => @value.Value::Decimal(@ion.Decimal::parse(t))
+  @expect.expect_all(soft => {
+    for
+      case in [
+        ("MAP {1: 'a', 1.0: 'b'}", "1.0"),
+        ("MAP {1.0: 'a', 1.00: 'b'}", "1.00"),
+      ] {
+      let (src, last) = case
+      soft
+      .expect(ev_env(src, "{}"))
+      .to_equal(
+        Map(
+          @value.MapValue::new(key_type=Decimal, value_type=String, [
+            (dec(last), String("b")),
+          ]),
+        ),
+      )
+      soft
+      .expect_call(() => ev_env(src, "{}", mode=Strict), label=src)
+      .to_raise_matching(
+        e => e is @eval.EvalError::TypeError(..),
+        description="TypeError",
+      )
+    }
+  })
+}
+
+///|
+test "decimal rounding is half to even and renormalizes a carry" {
+  let d = (t : String) => @value.Value::Decimal(@ion.Decimal::parse(t))
+  let nines = "9".repeat(38)
+  @expect.expect_all(soft => {
+    // 39 digits ending in an exact half: the kept digit decides.
+    soft
+    .expect(ev_env("0." + "1".repeat(37) + "25", "{}"))
+    .to_equal(d("0." + "1".repeat(37) + "2"))
+    soft
+    .expect(ev_env("0." + "1".repeat(37) + "35", "{}"))
+    .to_equal(d("0." + "1".repeat(37) + "4"))
+    // A carry out of 38 nines gives 10^38 and is renormalized to 38 digits.
+    soft
+    .expect(ev_env("0." + nines + "9", "{}"))
+    .to_equal(d("1." + "0".repeat(37)))
   })
 }

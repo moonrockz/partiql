@@ -12,7 +12,7 @@ fn lookup(
       return entry.1
     }
   }
-  raise TypeError(message="undefined variable \{name}", span~)
+  raise DataError(message="undefined variable \{name}", span~)
 }
 
 ///|
@@ -240,22 +240,29 @@ fn run_map(
         Strict => return key
       }
     }
-    match pairs.search_by(p => p.0 == key) {
-      Some(at) =>
-        match mode {
-          Permissive => pairs[at] = (key, value)
-          Strict => raise TypeError(message="a duplicate map key", span~)
-        }
-      None => pairs.push((key, value))
-    }
+    pairs.push((key, value))
   }
   let key_type = match common_type(pairs.map(p => p.0)) {
     Dynamic if pairs.is_empty() => @value.MapType::String
     t => t
   }
   let value_type = common_type(pairs.map(p => p.1))
-  let widened = pairs.map(p => (widen(p.0, key_type), widen(p.1, value_type)))
-  try @value.MapValue::new(key_type~, value_type~, widened) catch {
+  // Duplicates are found after widening and lowering, as `MapValue::new` does.
+  let unique : Array[(@value.Value, @value.Value)] = []
+  for pair in pairs {
+    let key = widen(pair.0, key_type)
+    let key = key.lower() catch { _ => key }
+    let entry = (key, widen(pair.1, value_type))
+    match unique.search_by(p => @value.eqg(p.0, key)) {
+      Some(at) =>
+        match mode {
+          Permissive => unique[at] = entry
+          Strict => raise TypeError(message="a duplicate map key", span~)
+        }
+      None => unique.push(entry)
+    }
+  }
+  try @value.MapValue::new(key_type~, value_type~, unique) catch {
     err => raise DataError(message=@debug.to_string(err), span~)
   } noraise {
     m => Map(m)

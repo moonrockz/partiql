@@ -4,7 +4,8 @@ fn integer_value(text : String) -> @value.Value {
 }
 
 ///|
-/// The most digits a PartiQL decimal keeps (spec M4a §5).
+/// The most digits a PartiQL decimal keeps (partiql-tests basic.ion,
+/// `decimalRoundUp` and `decimalRoundDown`).
 let max_decimal_digits : Int = 38
 
 ///|
@@ -26,14 +27,23 @@ fn round_decimal(d : @ion_core.Decimal) -> @ion_core.Decimal {
   )
   let rest = magnitude.view(start_offset=max_decimal_digits).to_owned()
   let half = "5" + "0".repeat(drop - 1)
-  let up = match rest.lexical_compare(half) {
-    -1 => false
-    1 => true
-    _ => kept % @bigint.BigInt::from_int(2) == @bigint.BigInt::from_int(1)
+  let c = rest.lexical_compare(half)
+  let up = if c < 0 {
+    false
+  } else if c > 0 {
+    true
+  } else {
+    kept % @bigint.BigInt::from_int(2) == @bigint.BigInt::from_int(1)
   }
-  let rounded = if up { kept + @bigint.BigInt::from_int(1) } else { kept }
+  let mut rounded = if up { kept + @bigint.BigInt::from_int(1) } else { kept }
+  let mut exponent = d.exponent() + drop
+  // A carry out of 38 nines gives 10^38 (39 digits): renormalize.
+  if rounded.to_string().length() > max_decimal_digits {
+    rounded = rounded / @bigint.BigInt::from_int(10)
+    exponent += 1
+  }
   let signed = if negative { -rounded } else { rounded }
-  @ion_core.Decimal::new(signed, d.exponent() + drop)
+  @ion_core.Decimal::new(signed, exponent)
 }
 
 ///|
