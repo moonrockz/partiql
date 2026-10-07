@@ -1,5 +1,13 @@
 // Operations on values.
 
 import {
+  "moonrockz/partiql-syntax/ast",
   "moonrockz/partiql-value" @value,
+  "moonrockz/ion/ion" @ion_core,
+  "moonbitlang/core/bigint",
+  "moonbitlang/core/string",
 }
+
+import {
+  "moonrockz/expect",
+} for "wbtest"

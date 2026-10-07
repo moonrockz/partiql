@@ -34,4 +34,22 @@ pub(all) enum Expr {
   Path(Expr, Array[Step], @ast.Span)
   IsNull(Expr, negated~ : Bool, @ast.Span)
   IsMissing(Expr, negated~ : Bool, @ast.Span)
+  Unary(@ast.UnaryOp, Expr, @ast.Span)
+  Binary(@ast.BinaryOp, Expr, Expr, @ast.Span)
+  And(Expr, Expr, @ast.Span)
+  Or(Expr, Expr, @ast.Span)
+  Not(Expr, @ast.Span)
+  /// `IS [NOT] TRUE | FALSE | UNKNOWN`; `None` is UNKNOWN.
+  BoolTest(Expr, Bool?, negated~ : Bool, @ast.Span)
+  Between(Expr, low~ : Expr, high~ : Expr, negated~ : Bool, @ast.Span)
+  In(Expr, Expr, negated~ : Bool, @ast.Span)
+  IsType(Expr, @ast.DataType, negated~ : Bool, @ast.Span)
+  Case(
+    operand~ : Expr?,
+    branches~ : Array[(Expr, Expr)],
+    default~ : Expr?,
+    @ast.Span
+  )
+  Coalesce(Array[Expr], @ast.Span)
+  NullIf(Expr, Expr, @ast.Span)
 } derive(Debug)

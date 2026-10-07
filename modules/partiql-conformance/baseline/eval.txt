@@ -1,23 +1,67 @@
+eval/ion/primitives/null.ion::null::null comparison{sql:"`null.blob` = MISSING",result:null}#coerce
+eval/ion/primitives/null.ion::null::null comparison{sql:"`null.blob` = MISSING",result:null}#error
+eval/ion/primitives/null.ion::null::null comparison{sql:"`null.blob` = NULL",result:null}#coerce
+eval/ion/primitives/null.ion::null::null comparison{sql:"`null.blob` = NULL",result:null}#error
 eval/ion/primitives/null.ion::null::null comparison{sql:"`null.blob` IS NULL",result:true}#coerce
 eval/ion/primitives/null.ion::null::null comparison{sql:"`null.blob` IS NULL",result:true}#error
+eval/ion/primitives/null.ion::null::null comparison{sql:"`null.bool` = MISSING",result:null}#coerce
+eval/ion/primitives/null.ion::null::null comparison{sql:"`null.bool` = MISSING",result:null}#error
+eval/ion/primitives/null.ion::null::null comparison{sql:"`null.bool` = NULL",result:null}#coerce
+eval/ion/primitives/null.ion::null::null comparison{sql:"`null.bool` = NULL",result:null}#error
 eval/ion/primitives/null.ion::null::null comparison{sql:"`null.bool` IS NULL",result:true}#coerce
 eval/ion/primitives/null.ion::null::null comparison{sql:"`null.bool` IS NULL",result:true}#error
+eval/ion/primitives/null.ion::null::null comparison{sql:"`null.clob` = MISSING",result:null}#coerce
+eval/ion/primitives/null.ion::null::null comparison{sql:"`null.clob` = MISSING",result:null}#error
+eval/ion/primitives/null.ion::null::null comparison{sql:"`null.clob` = NULL",result:null}#coerce
+eval/ion/primitives/null.ion::null::null comparison{sql:"`null.clob` = NULL",result:null}#error
 eval/ion/primitives/null.ion::null::null comparison{sql:"`null.clob` IS NULL",result:true}#coerce
 eval/ion/primitives/null.ion::null::null comparison{sql:"`null.clob` IS NULL",result:true}#error
+eval/ion/primitives/null.ion::null::null comparison{sql:"`null.decimal` = MISSING",result:null}#coerce
+eval/ion/primitives/null.ion::null::null comparison{sql:"`null.decimal` = MISSING",result:null}#error
+eval/ion/primitives/null.ion::null::null comparison{sql:"`null.decimal` = NULL",result:null}#coerce
+eval/ion/primitives/null.ion::null::null comparison{sql:"`null.decimal` = NULL",result:null}#error
 eval/ion/primitives/null.ion::null::null comparison{sql:"`null.decimal` IS NULL",result:true}#coerce
 eval/ion/primitives/null.ion::null::null comparison{sql:"`null.decimal` IS NULL",result:true}#error
+eval/ion/primitives/null.ion::null::null comparison{sql:"`null.int` = MISSING",result:null}#coerce
+eval/ion/primitives/null.ion::null::null comparison{sql:"`null.int` = MISSING",result:null}#error
+eval/ion/primitives/null.ion::null::null comparison{sql:"`null.int` = NULL",result:null}#coerce
+eval/ion/primitives/null.ion::null::null comparison{sql:"`null.int` = NULL",result:null}#error
 eval/ion/primitives/null.ion::null::null comparison{sql:"`null.int` IS NULL",result:true}#coerce
 eval/ion/primitives/null.ion::null::null comparison{sql:"`null.int` IS NULL",result:true}#error
+eval/ion/primitives/null.ion::null::null comparison{sql:"`null.list` = MISSING",result:null}#coerce
+eval/ion/primitives/null.ion::null::null comparison{sql:"`null.list` = MISSING",result:null}#error
+eval/ion/primitives/null.ion::null::null comparison{sql:"`null.list` = NULL",result:null}#coerce
+eval/ion/primitives/null.ion::null::null comparison{sql:"`null.list` = NULL",result:null}#error
 eval/ion/primitives/null.ion::null::null comparison{sql:"`null.list` IS NULL",result:true}#coerce
 eval/ion/primitives/null.ion::null::null comparison{sql:"`null.list` IS NULL",result:true}#error
+eval/ion/primitives/null.ion::null::null comparison{sql:"`null.null` = MISSING",result:null}#coerce
+eval/ion/primitives/null.ion::null::null comparison{sql:"`null.null` = MISSING",result:null}#error
+eval/ion/primitives/null.ion::null::null comparison{sql:"`null.null` = NULL",result:null}#coerce
+eval/ion/primitives/null.ion::null::null comparison{sql:"`null.null` = NULL",result:null}#error
 eval/ion/primitives/null.ion::null::null comparison{sql:"`null.null` IS NULL",result:true}#coerce
 eval/ion/primitives/null.ion::null::null comparison{sql:"`null.null` IS NULL",result:true}#error
+eval/ion/primitives/null.ion::null::null comparison{sql:"`null.sexp` = MISSING",result:null}#coerce
+eval/ion/primitives/null.ion::null::null comparison{sql:"`null.sexp` = MISSING",result:null}#error
+eval/ion/primitives/null.ion::null::null comparison{sql:"`null.sexp` = NULL",result:null}#coerce
+eval/ion/primitives/null.ion::null::null comparison{sql:"`null.sexp` = NULL",result:null}#error
 eval/ion/primitives/null.ion::null::null comparison{sql:"`null.sexp` IS NULL",result:true}#coerce
 eval/ion/primitives/null.ion::null::null comparison{sql:"`null.sexp` IS NULL",result:true}#error
+eval/ion/primitives/null.ion::null::null comparison{sql:"`null.string` = MISSING",result:null}#coerce
+eval/ion/primitives/null.ion::null::null comparison{sql:"`null.string` = MISSING",result:null}#error
+eval/ion/primitives/null.ion::null::null comparison{sql:"`null.string` = NULL",result:null}#coerce
+eval/ion/primitives/null.ion::null::null comparison{sql:"`null.string` = NULL",result:null}#error
 eval/ion/primitives/null.ion::null::null comparison{sql:"`null.string` IS NULL",result:true}#coerce
 eval/ion/primitives/null.ion::null::null comparison{sql:"`null.string` IS NULL",result:true}#error
+eval/ion/primitives/null.ion::null::null comparison{sql:"`null.struct` = MISSING",result:null}#coerce
+eval/ion/primitives/null.ion::null::null comparison{sql:"`null.struct` = MISSING",result:null}#error
+eval/ion/primitives/null.ion::null::null comparison{sql:"`null.struct` = NULL",result:null}#coerce
+eval/ion/primitives/null.ion::null::null comparison{sql:"`null.struct` = NULL",result:null}#error
 eval/ion/primitives/null.ion::null::null comparison{sql:"`null.struct` IS NULL",result:true}#coerce
 eval/ion/primitives/null.ion::null::null comparison{sql:"`null.struct` IS NULL",result:true}#error
+eval/ion/primitives/null.ion::null::null comparison{sql:"`null.symbol` = MISSING",result:null}#coerce
+eval/ion/primitives/null.ion::null::null comparison{sql:"`null.symbol` = MISSING",result:null}#error
+eval/ion/primitives/null.ion::null::null comparison{sql:"`null.symbol` = NULL",result:null}#coerce
+eval/ion/primitives/null.ion::null::null comparison{sql:"`null.symbol` = NULL",result:null}#error
 eval/ion/primitives/null.ion::null::null comparison{sql:"`null.symbol` IS NULL",result:true}#coerce
 eval/ion/primitives/null.ion::null::null comparison{sql:"`null.symbol` IS NULL",result:true}#error
 eval/ion/primitives/null.ion::null::null pass through{sql:"`null.blob`",result:null.blob}#coerce
@@ -42,6 +86,22 @@ eval/ion/primitives/null.ion::null::null pass through{sql:"`null.struct`",result
 eval/ion/primitives/null.ion::null::null pass through{sql:"`null.struct`",result:null.struct}#error
 eval/ion/primitives/null.ion::null::null pass through{sql:"`null.symbol`",result:null.symbol}#coerce
 eval/ion/primitives/null.ion::null::null pass through{sql:"`null.symbol`",result:null.symbol}#error
+eval/ion/primitives/operators/concat.ion::concat::|| valid cases{lparam:"'a'",rparam:"`'b'`",result:"ab"}#coerce
+eval/ion/primitives/operators/concat.ion::concat::|| valid cases{lparam:"'a'",rparam:"`'b'`",result:"ab"}#error
+eval/ion/primitives/operators/concat.ion::concat::|| valid cases{lparam:"`'a'`",rparam:"'b'",result:"ab"}#coerce
+eval/ion/primitives/operators/concat.ion::concat::|| valid cases{lparam:"`'a'`",rparam:"'b'",result:"ab"}#error
+eval/ion/primitives/operators/concat.ion::concat::|| valid cases{lparam:"`'a'`",rparam:"`'b'`",result:"ab"}#coerce
+eval/ion/primitives/operators/concat.ion::concat::|| valid cases{lparam:"`'a'`",rparam:"`'b'`",result:"ab"}#error
+eval/ion/primitives/operators/nary-operators.ion::nary::equalBagDifferentTypesDifferentOrderTrue#coerce
+eval/ion/primitives/operators/nary-operators.ion::nary::equalBagDifferentTypesDifferentOrderTrue#error
+eval/ion/primitives/operators/nary-operators.ion::nary::equalBagDifferentTypesWithNullMissingDifferentOrderTrue#coerce
+eval/ion/primitives/operators/nary-operators.ion::nary::equalBagDifferentTypesWithNullMissingDifferentOrderTrue#error
+eval/ion/primitives/operators/nary-operators.ion::nary::equalListDifferentLengthsShortFirst#coerce
+eval/ion/primitives/operators/nary-operators.ion::nary::equalListDifferentLengthsShortFirst#error
+eval/ion/primitives/operators/nary-operators.ion::nary::equalListDifferentTypesTrue#coerce
+eval/ion/primitives/operators/nary-operators.ion::nary::equalListDifferentTypesTrue#error
+eval/ion/primitives/operators/nary-operators.ion::nary::listDifferentTypesDifferentOrderFalse#coerce
+eval/ion/primitives/operators/nary-operators.ion::nary::listDifferentTypesDifferentOrderFalse#error
 eval/primitives/basic.ion::basic::bagLiteral#coerce
 eval/primitives/basic.ion::basic::bagLiteral#error
 eval/primitives/basic.ion::basic::decimalRoundDown#coerce
@@ -72,14 +132,392 @@ eval/primitives/basic.ion::basic::rowValueConstructor#coerce
 eval/primitives/basic.ion::basic::rowValueConstructor#error
 eval/primitives/basic.ion::basic::structLiteral#coerce
 eval/primitives/basic.ion::basic::structLiteral#error
+eval/primitives/bool.ion::bool::boolean literals{sql:"NOT false",r:true}#coerce
+eval/primitives/bool.ion::bool::boolean literals{sql:"NOT false",r:true}#error
+eval/primitives/bool.ion::bool::boolean literals{sql:"NOT true",r:false}#coerce
+eval/primitives/bool.ion::bool::boolean literals{sql:"NOT true",r:false}#error
 eval/primitives/bool.ion::bool::boolean literals{sql:"false",r:false}#coerce
 eval/primitives/bool.ion::bool::boolean literals{sql:"false",r:false}#error
 eval/primitives/bool.ion::bool::boolean literals{sql:"true",r:true}#coerce
 eval/primitives/bool.ion::bool::boolean literals{sql:"true",r:true}#error
+eval/primitives/functions/coalesce.ion::coalesce::coalesce valid cases{args:"1",result:(success 1)}#coerce
+eval/primitives/functions/coalesce.ion::coalesce::coalesce valid cases{args:"1",result:(success 1)}#error
+eval/primitives/functions/coalesce.ion::coalesce::coalesce valid cases{args:"1, 2",result:(success 1)}#coerce
+eval/primitives/functions/coalesce.ion::coalesce::coalesce valid cases{args:"1, 2",result:(success 1)}#error
+eval/primitives/functions/coalesce.ion::coalesce::coalesce valid cases{args:"missing, 3",result:(success 3)}#coerce
+eval/primitives/functions/coalesce.ion::coalesce::coalesce valid cases{args:"missing, 3",result:(success 3)}#error
+eval/primitives/functions/coalesce.ion::coalesce::coalesce valid cases{args:"null, 2",result:(success 2)}#coerce
+eval/primitives/functions/coalesce.ion::coalesce::coalesce valid cases{args:"null, 2",result:(success 2)}#error
+eval/primitives/functions/coalesce.ion::coalesce::coalesce valid cases{args:"null, missing, 3",result:(success 3)}#coerce
+eval/primitives/functions/coalesce.ion::coalesce::coalesce valid cases{args:"null, missing, 3",result:(success 3)}#error
+eval/primitives/functions/coalesce.ion::coalesce::coalesce valid cases{args:"null, missing, null, null, missing, 9, 4, 5, 6",result:(success 9)}#coerce
+eval/primitives/functions/coalesce.ion::coalesce::coalesce valid cases{args:"null, missing, null, null, missing, 9, 4, 5, 6",result:(success 9)}#error
+eval/primitives/functions/coalesce.ion::coalesce::coalesce valid cases{args:"null, null, 3",result:(success 3)}#coerce
+eval/primitives/functions/coalesce.ion::coalesce::coalesce valid cases{args:"null, null, 3",result:(success 3)}#error
+eval/primitives/functions/nullif.ion::nullif::nullif valid cases{first:"1",second:"1",result:null}#coerce
+eval/primitives/functions/nullif.ion::nullif::nullif valid cases{first:"1",second:"1",result:null}#error
+eval/primitives/functions/nullif.ion::nullif::nullif valid cases{first:"1",second:"2",result:1}#coerce
+eval/primitives/functions/nullif.ion::nullif::nullif valid cases{first:"1",second:"2",result:1}#error
+eval/primitives/functions/nullif.ion::nullif::nullif valid cases{first:"1",second:"missing",result:1}#coerce
+eval/primitives/functions/nullif.ion::nullif::nullif valid cases{first:"1",second:"missing",result:1}#error
+eval/primitives/functions/nullif.ion::nullif::nullif valid cases{first:"1",second:"null",result:1}#coerce
+eval/primitives/functions/nullif.ion::nullif::nullif valid cases{first:"1",second:"null",result:1}#error
+eval/primitives/functions/nullif.ion::nullif::nullif valid cases{first:"1.0",second:"1",result:null}#coerce
+eval/primitives/functions/nullif.ion::nullif::nullif valid cases{first:"1.0",second:"1",result:null}#error
+eval/primitives/functions/nullif.ion::nullif::nullif valid cases{first:"2",second:"'2'",result:2}#coerce
+eval/primitives/functions/nullif.ion::nullif::nullif valid cases{first:"2",second:"'2'",result:2}#error
+eval/primitives/functions/nullif.ion::nullif::nullif valid cases{first:"[]",second:"[]",result:null}#coerce
+eval/primitives/functions/nullif.ion::nullif::nullif valid cases{first:"[]",second:"[]",result:null}#error
+eval/primitives/functions/nullif.ion::nullif::nullif valid cases{first:"missing",second:"1",result:missing::null}#coerce
+eval/primitives/functions/nullif.ion::nullif::nullif valid cases{first:"missing",second:"1",result:missing::null}#error
+eval/primitives/functions/nullif.ion::nullif::nullif valid cases{first:"missing",second:"missing",result:missing}#coerce
+eval/primitives/functions/nullif.ion::nullif::nullif valid cases{first:"missing",second:"missing",result:missing}#error
+eval/primitives/functions/nullif.ion::nullif::nullif valid cases{first:"null",second:"1",result:null}#coerce
+eval/primitives/functions/nullif.ion::nullif::nullif valid cases{first:"null",second:"1",result:null}#error
+eval/primitives/functions/nullif.ion::nullif::nullif valid cases{first:"null",second:"null",result:null}#coerce
+eval/primitives/functions/nullif.ion::nullif::nullif valid cases{first:"null",second:"null",result:null}#error
+eval/primitives/functions/nullif.ion::nullif::nullif valid cases{first:"{}",second:"[]",result:{}}#coerce
+eval/primitives/functions/nullif.ion::nullif::nullif valid cases{first:"{}",second:"[]",result:{}}#error
+eval/primitives/functions/nullif.ion::nullif::nullif valid cases{first:"{}",second:"{}",result:null}#coerce
+eval/primitives/functions/nullif.ion::nullif::nullif valid cases{first:"{}",second:"{}",result:null}#error
+eval/primitives/int.ion::int::comparison operators{sql:"-0  <   -0",result:false}#coerce
+eval/primitives/int.ion::int::comparison operators{sql:"-0  <   -0",result:false}#error
+eval/primitives/int.ion::int::comparison operators{sql:"-0  <   1",result:true}#coerce
+eval/primitives/int.ion::int::comparison operators{sql:"-0  <   1",result:true}#error
+eval/primitives/int.ion::int::comparison operators{sql:"-0  <=   -0",result:true}#coerce
+eval/primitives/int.ion::int::comparison operators{sql:"-0  <=   -0",result:true}#error
+eval/primitives/int.ion::int::comparison operators{sql:"-0  <=   0",result:true}#coerce
+eval/primitives/int.ion::int::comparison operators{sql:"-0  <=   0",result:true}#error
+eval/primitives/int.ion::int::comparison operators{sql:"-0  <=   1",result:true}#coerce
+eval/primitives/int.ion::int::comparison operators{sql:"-0  <=   1",result:true}#error
+eval/primitives/int.ion::int::comparison operators{sql:"-0  >   -0",result:false}#coerce
+eval/primitives/int.ion::int::comparison operators{sql:"-0  >   -0",result:false}#error
+eval/primitives/int.ion::int::comparison operators{sql:"-0  >   1",result:false}#coerce
+eval/primitives/int.ion::int::comparison operators{sql:"-0  >   1",result:false}#error
+eval/primitives/int.ion::int::comparison operators{sql:"-0  >=   -0",result:true}#coerce
+eval/primitives/int.ion::int::comparison operators{sql:"-0  >=   -0",result:true}#error
+eval/primitives/int.ion::int::comparison operators{sql:"-0  >=   0",result:true}#coerce
+eval/primitives/int.ion::int::comparison operators{sql:"-0  >=   0",result:true}#error
+eval/primitives/int.ion::int::comparison operators{sql:"-0  >=   1",result:false}#coerce
+eval/primitives/int.ion::int::comparison operators{sql:"-0  >=   1",result:false}#error
+eval/primitives/int.ion::int::comparison operators{sql:"0   <=   -0",result:true}#coerce
+eval/primitives/int.ion::int::comparison operators{sql:"0   <=   -0",result:true}#error
+eval/primitives/int.ion::int::comparison operators{sql:"0   >=   -0",result:true}#coerce
+eval/primitives/int.ion::int::comparison operators{sql:"0   >=   -0",result:true}#error
+eval/primitives/int.ion::int::comparison operators{sql:"0 < 0",result:false}#coerce
+eval/primitives/int.ion::int::comparison operators{sql:"0 < 0",result:false}#error
+eval/primitives/int.ion::int::comparison operators{sql:"0 < 1",result:true}#coerce
+eval/primitives/int.ion::int::comparison operators{sql:"0 < 1",result:true}#error
+eval/primitives/int.ion::int::comparison operators{sql:"0 <= 0",result:true}#coerce
+eval/primitives/int.ion::int::comparison operators{sql:"0 <= 0",result:true}#error
+eval/primitives/int.ion::int::comparison operators{sql:"0 <= 1",result:true}#coerce
+eval/primitives/int.ion::int::comparison operators{sql:"0 <= 1",result:true}#error
+eval/primitives/int.ion::int::comparison operators{sql:"0 > 0",result:false}#coerce
+eval/primitives/int.ion::int::comparison operators{sql:"0 > 0",result:false}#error
+eval/primitives/int.ion::int::comparison operators{sql:"0 > 1",result:false}#coerce
+eval/primitives/int.ion::int::comparison operators{sql:"0 > 1",result:false}#error
+eval/primitives/int.ion::int::comparison operators{sql:"0 >= 0",result:true}#coerce
+eval/primitives/int.ion::int::comparison operators{sql:"0 >= 0",result:true}#error
+eval/primitives/int.ion::int::comparison operators{sql:"0 >= 1",result:false}#coerce
+eval/primitives/int.ion::int::comparison operators{sql:"0 >= 1",result:false}#error
+eval/primitives/int.ion::int::comparison operators{sql:"1       < max_int",result:true}#coerce
+eval/primitives/int.ion::int::comparison operators{sql:"1       < max_int",result:true}#error
+eval/primitives/int.ion::int::comparison operators{sql:"1       < min_int",result:false}#coerce
+eval/primitives/int.ion::int::comparison operators{sql:"1       < min_int",result:false}#error
+eval/primitives/int.ion::int::comparison operators{sql:"1       <= max_int",result:true}#coerce
+eval/primitives/int.ion::int::comparison operators{sql:"1       <= max_int",result:true}#error
+eval/primitives/int.ion::int::comparison operators{sql:"1       <= min_int",result:false}#coerce
+eval/primitives/int.ion::int::comparison operators{sql:"1       <= min_int",result:false}#error
+eval/primitives/int.ion::int::comparison operators{sql:"1       > min_int",result:true}#coerce
+eval/primitives/int.ion::int::comparison operators{sql:"1       > min_int",result:true}#error
+eval/primitives/int.ion::int::comparison operators{sql:"1       >= min_int",result:true}#coerce
+eval/primitives/int.ion::int::comparison operators{sql:"1       >= min_int",result:true}#error
+eval/primitives/int.ion::int::comparison operators{sql:"1   <   -0",result:false}#coerce
+eval/primitives/int.ion::int::comparison operators{sql:"1   <   -0",result:false}#error
+eval/primitives/int.ion::int::comparison operators{sql:"1   <=   -0",result:false}#coerce
+eval/primitives/int.ion::int::comparison operators{sql:"1   <=   -0",result:false}#error
+eval/primitives/int.ion::int::comparison operators{sql:"1   >   -0",result:true}#coerce
+eval/primitives/int.ion::int::comparison operators{sql:"1   >   -0",result:true}#error
+eval/primitives/int.ion::int::comparison operators{sql:"1   >=   -0",result:true}#coerce
+eval/primitives/int.ion::int::comparison operators{sql:"1   >=   -0",result:true}#error
+eval/primitives/int.ion::int::comparison operators{sql:"1 < 0",result:false}#coerce
+eval/primitives/int.ion::int::comparison operators{sql:"1 < 0",result:false}#error
+eval/primitives/int.ion::int::comparison operators{sql:"1 < 1",result:false}#coerce
+eval/primitives/int.ion::int::comparison operators{sql:"1 < 1",result:false}#error
+eval/primitives/int.ion::int::comparison operators{sql:"1 <= 0",result:false}#coerce
+eval/primitives/int.ion::int::comparison operators{sql:"1 <= 0",result:false}#error
+eval/primitives/int.ion::int::comparison operators{sql:"1 <= 1",result:true}#coerce
+eval/primitives/int.ion::int::comparison operators{sql:"1 <= 1",result:true}#error
+eval/primitives/int.ion::int::comparison operators{sql:"1 > 0",result:true}#coerce
+eval/primitives/int.ion::int::comparison operators{sql:"1 > 0",result:true}#error
+eval/primitives/int.ion::int::comparison operators{sql:"1 > 1",result:false}#coerce
+eval/primitives/int.ion::int::comparison operators{sql:"1 > 1",result:false}#error
+eval/primitives/int.ion::int::comparison operators{sql:"1 >= 0",result:true}#coerce
+eval/primitives/int.ion::int::comparison operators{sql:"1 >= 0",result:true}#error
+eval/primitives/int.ion::int::comparison operators{sql:"1 >= 1",result:true}#coerce
+eval/primitives/int.ion::int::comparison operators{sql:"1 >= 1",result:true}#error
+eval/primitives/int.ion::int::comparison operators{sql:"max_int < -0",result:false}#coerce
+eval/primitives/int.ion::int::comparison operators{sql:"max_int < -0",result:false}#error
+eval/primitives/int.ion::int::comparison operators{sql:"max_int < 0",result:false}#coerce
+eval/primitives/int.ion::int::comparison operators{sql:"max_int < 0",result:false}#error
+eval/primitives/int.ion::int::comparison operators{sql:"max_int < 1",result:false}#coerce
+eval/primitives/int.ion::int::comparison operators{sql:"max_int < 1",result:false}#error
+eval/primitives/int.ion::int::comparison operators{sql:"max_int <= -0",result:false}#coerce
+eval/primitives/int.ion::int::comparison operators{sql:"max_int <= -0",result:false}#error
+eval/primitives/int.ion::int::comparison operators{sql:"max_int <= 0",result:false}#coerce
+eval/primitives/int.ion::int::comparison operators{sql:"max_int <= 0",result:false}#error
+eval/primitives/int.ion::int::comparison operators{sql:"max_int <= 1",result:false}#coerce
+eval/primitives/int.ion::int::comparison operators{sql:"max_int <= 1",result:false}#error
+eval/primitives/int.ion::int::comparison operators{sql:"min_int < -0",result:true}#coerce
+eval/primitives/int.ion::int::comparison operators{sql:"min_int < -0",result:true}#error
+eval/primitives/int.ion::int::comparison operators{sql:"min_int < 0",result:true}#coerce
+eval/primitives/int.ion::int::comparison operators{sql:"min_int < 0",result:true}#error
+eval/primitives/int.ion::int::comparison operators{sql:"min_int < 1",result:true}#coerce
+eval/primitives/int.ion::int::comparison operators{sql:"min_int < 1",result:true}#error
+eval/primitives/int.ion::int::comparison operators{sql:"min_int <= -0",result:true}#coerce
+eval/primitives/int.ion::int::comparison operators{sql:"min_int <= -0",result:true}#error
+eval/primitives/int.ion::int::comparison operators{sql:"min_int <= 0",result:true}#coerce
+eval/primitives/int.ion::int::comparison operators{sql:"min_int <= 0",result:true}#error
+eval/primitives/int.ion::int::comparison operators{sql:"min_int <= 1",result:true}#coerce
+eval/primitives/int.ion::int::comparison operators{sql:"min_int <= 1",result:true}#error
+eval/primitives/int.ion::int::comparison operators{sql:"min_int > 1",result:false}#coerce
+eval/primitives/int.ion::int::comparison operators{sql:"min_int > 1",result:false}#error
+eval/primitives/int.ion::int::comparison operators{sql:"min_int > min_int",result:false}#coerce
+eval/primitives/int.ion::int::comparison operators{sql:"min_int > min_int",result:false}#error
+eval/primitives/int.ion::int::comparison operators{sql:"min_int >= -0",result:false}#coerce
+eval/primitives/int.ion::int::comparison operators{sql:"min_int >= -0",result:false}#error
+eval/primitives/int.ion::int::comparison operators{sql:"min_int >= 0",result:false}#coerce
+eval/primitives/int.ion::int::comparison operators{sql:"min_int >= 0",result:false}#error
+eval/primitives/int.ion::int::comparison operators{sql:"min_int >= 1",result:false}#coerce
+eval/primitives/int.ion::int::comparison operators{sql:"min_int >= 1",result:false}#error
+eval/primitives/int.ion::int::comparison operators{sql:"min_int >= min_int",result:true}#coerce
+eval/primitives/int.ion::int::comparison operators{sql:"min_int >= min_int",result:true}#error
+eval/primitives/int.ion::int::equal and not equal{sql:"-0 <> -0",result:false}#coerce
+eval/primitives/int.ion::int::equal and not equal{sql:"-0 <> -0",result:false}#error
+eval/primitives/int.ion::int::equal and not equal{sql:"-0 <> 0",result:false}#coerce
+eval/primitives/int.ion::int::equal and not equal{sql:"-0 <> 0",result:false}#error
+eval/primitives/int.ion::int::equal and not equal{sql:"-0 = -0",result:true}#coerce
+eval/primitives/int.ion::int::equal and not equal{sql:"-0 = -0",result:true}#error
+eval/primitives/int.ion::int::equal and not equal{sql:"-0 = 0",result:true}#coerce
+eval/primitives/int.ion::int::equal and not equal{sql:"-0 = 0",result:true}#error
+eval/primitives/int.ion::int::equal and not equal{sql:"-1 = -1",result:true}#coerce
+eval/primitives/int.ion::int::equal and not equal{sql:"-1 = -1",result:true}#error
+eval/primitives/int.ion::int::equal and not equal{sql:"0 <> -0",result:false}#coerce
+eval/primitives/int.ion::int::equal and not equal{sql:"0 <> -0",result:false}#error
+eval/primitives/int.ion::int::equal and not equal{sql:"0 <> 0",result:false}#coerce
+eval/primitives/int.ion::int::equal and not equal{sql:"0 <> 0",result:false}#error
+eval/primitives/int.ion::int::equal and not equal{sql:"0 = -0",result:true}#coerce
+eval/primitives/int.ion::int::equal and not equal{sql:"0 = -0",result:true}#error
+eval/primitives/int.ion::int::equal and not equal{sql:"0 = 0",result:true}#coerce
+eval/primitives/int.ion::int::equal and not equal{sql:"0 = 0",result:true}#error
+eval/primitives/int.ion::int::equal and not equal{sql:"1 <> -0",result:true}#coerce
+eval/primitives/int.ion::int::equal and not equal{sql:"1 <> -0",result:true}#error
+eval/primitives/int.ion::int::equal and not equal{sql:"1 <> 0",result:true}#coerce
+eval/primitives/int.ion::int::equal and not equal{sql:"1 <> 0",result:true}#error
+eval/primitives/int.ion::int::equal and not equal{sql:"1 = -0",result:false}#coerce
+eval/primitives/int.ion::int::equal and not equal{sql:"1 = -0",result:false}#error
+eval/primitives/int.ion::int::equal and not equal{sql:"1 = 0",result:false}#coerce
+eval/primitives/int.ion::int::equal and not equal{sql:"1 = 0",result:false}#error
+eval/primitives/int.ion::int::equal and not equal{sql:"1 = 1",result:true}#coerce
+eval/primitives/int.ion::int::equal and not equal{sql:"1 = 1",result:true}#error
+eval/primitives/int.ion::int::equal and not equal{sql:"max_int <> max_int",result:false}#coerce
+eval/primitives/int.ion::int::equal and not equal{sql:"max_int <> max_int",result:false}#error
+eval/primitives/int.ion::int::equal and not equal{sql:"max_int <> min_int",result:true}#coerce
+eval/primitives/int.ion::int::equal and not equal{sql:"max_int <> min_int",result:true}#error
+eval/primitives/int.ion::int::equal and not equal{sql:"max_int = max_int",result:true}#coerce
+eval/primitives/int.ion::int::equal and not equal{sql:"max_int = max_int",result:true}#error
+eval/primitives/int.ion::int::equal and not equal{sql:"max_int = min_int",result:false}#coerce
+eval/primitives/int.ion::int::equal and not equal{sql:"max_int = min_int",result:false}#error
+eval/primitives/int.ion::int::equal and not equal{sql:"min_int <> max_int",result:true}#coerce
+eval/primitives/int.ion::int::equal and not equal{sql:"min_int <> max_int",result:true}#error
+eval/primitives/int.ion::int::equal and not equal{sql:"min_int <> min_int",result:false}#coerce
+eval/primitives/int.ion::int::equal and not equal{sql:"min_int <> min_int",result:false}#error
+eval/primitives/int.ion::int::equal and not equal{sql:"min_int = max_int",result:false}#coerce
+eval/primitives/int.ion::int::equal and not equal{sql:"min_int = max_int",result:false}#error
+eval/primitives/int.ion::int::equal and not equal{sql:"min_int = min_int",result:true}#coerce
+eval/primitives/int.ion::int::equal and not equal{sql:"min_int = min_int",result:true}#error
+eval/primitives/int.ion::int::equality operator binary relations{x:-1,y:-1,z:-1}#coerce
+eval/primitives/int.ion::int::equality operator binary relations{x:-1,y:-1,z:-1}#error
+eval/primitives/int.ion::int::equality operator binary relations{x:-1,y:-2,z:-3}#coerce
+eval/primitives/int.ion::int::equality operator binary relations{x:-1,y:-2,z:-3}#error
+eval/primitives/int.ion::int::equality operator binary relations{x:-1,y:2,z:3}#coerce
+eval/primitives/int.ion::int::equality operator binary relations{x:-1,y:2,z:3}#error
+eval/primitives/int.ion::int::equality operator binary relations{x:-3,y:-2,z:-1}#coerce
+eval/primitives/int.ion::int::equality operator binary relations{x:-3,y:-2,z:-1}#error
+eval/primitives/int.ion::int::equality operator binary relations{x:-3,y:2,z:1}#coerce
+eval/primitives/int.ion::int::equality operator binary relations{x:-3,y:2,z:1}#error
+eval/primitives/int.ion::int::equality operator binary relations{x:1,y:1,z:1}#coerce
+eval/primitives/int.ion::int::equality operator binary relations{x:1,y:1,z:1}#error
+eval/primitives/int.ion::int::equality operator binary relations{x:1,y:2,z:-3}#coerce
+eval/primitives/int.ion::int::equality operator binary relations{x:1,y:2,z:-3}#error
+eval/primitives/int.ion::int::equality operator binary relations{x:1,y:2,z:3}#coerce
+eval/primitives/int.ion::int::equality operator binary relations{x:1,y:2,z:3}#error
+eval/primitives/int.ion::int::equality operator binary relations{x:3,y:2,z:-1}#coerce
+eval/primitives/int.ion::int::equality operator binary relations{x:3,y:2,z:-1}#error
+eval/primitives/int.ion::int::equality operator binary relations{x:3,y:2,z:1}#coerce
+eval/primitives/int.ion::int::equality operator binary relations{x:3,y:2,z:1}#error
+eval/primitives/int.ion::int::greater than and less than operator binary relations{x:-1,y:-2,z:-3}#coerce
+eval/primitives/int.ion::int::greater than and less than operator binary relations{x:-1,y:-2,z:-3}#error
+eval/primitives/int.ion::int::greater than and less than operator binary relations{x:-1,y:0,z:1}#coerce
+eval/primitives/int.ion::int::greater than and less than operator binary relations{x:-1,y:0,z:1}#error
+eval/primitives/int.ion::int::greater than and less than operator binary relations{x:-2,y:-1,z:0}#coerce
+eval/primitives/int.ion::int::greater than and less than operator binary relations{x:-2,y:-1,z:0}#error
+eval/primitives/int.ion::int::greater than and less than operator binary relations{x:-3,y:-2,z:-1}#coerce
+eval/primitives/int.ion::int::greater than and less than operator binary relations{x:-3,y:-2,z:-1}#error
+eval/primitives/int.ion::int::greater than and less than operator binary relations{x:0,y:-1,z:-2}#coerce
+eval/primitives/int.ion::int::greater than and less than operator binary relations{x:0,y:-1,z:-2}#error
+eval/primitives/int.ion::int::greater than and less than operator binary relations{x:0,y:1,z:2}#coerce
+eval/primitives/int.ion::int::greater than and less than operator binary relations{x:0,y:1,z:2}#error
+eval/primitives/int.ion::int::greater than and less than operator binary relations{x:1,y:0,z:-1}#coerce
+eval/primitives/int.ion::int::greater than and less than operator binary relations{x:1,y:0,z:-1}#error
+eval/primitives/int.ion::int::greater than and less than operator binary relations{x:1,y:2,z:3}#coerce
+eval/primitives/int.ion::int::greater than and less than operator binary relations{x:1,y:2,z:3}#error
+eval/primitives/int.ion::int::greater than and less than operator binary relations{x:2,y:1,z:0}#coerce
+eval/primitives/int.ion::int::greater than and less than operator binary relations{x:2,y:1,z:0}#error
+eval/primitives/int.ion::int::greater than and less than operator binary relations{x:3,y:2,z:1}#coerce
+eval/primitives/int.ion::int::greater than and less than operator binary relations{x:3,y:2,z:1}#error
+eval/primitives/int.ion::int::int arithmetic{sql:"-1 * 1",result:-1}#coerce
+eval/primitives/int.ion::int::int arithmetic{sql:"-1 * 1",result:-1}#error
+eval/primitives/int.ion::int::int arithmetic{sql:"-1 * 2",result:-2}#coerce
+eval/primitives/int.ion::int::int arithmetic{sql:"-1 * 2",result:-2}#error
+eval/primitives/int.ion::int::int arithmetic{sql:"-1 + 1",result:0}#coerce
+eval/primitives/int.ion::int::int arithmetic{sql:"-1 + 1",result:0}#error
+eval/primitives/int.ion::int::int arithmetic{sql:"-1 + 2",result:1}#coerce
+eval/primitives/int.ion::int::int arithmetic{sql:"-1 + 2",result:1}#error
+eval/primitives/int.ion::int::int arithmetic{sql:"-1 - 1",result:-2}#coerce
+eval/primitives/int.ion::int::int arithmetic{sql:"-1 - 1",result:-2}#error
+eval/primitives/int.ion::int::int arithmetic{sql:"-1 / 1",result:-1}#coerce
+eval/primitives/int.ion::int::int arithmetic{sql:"-1 / 1",result:-1}#error
+eval/primitives/int.ion::int::int arithmetic{sql:"-1 / 2",result:0}#coerce
+eval/primitives/int.ion::int::int arithmetic{sql:"-1 / 2",result:0}#error
+eval/primitives/int.ion::int::int arithmetic{sql:"-10 % 1",result:0}#coerce
+eval/primitives/int.ion::int::int arithmetic{sql:"-10 % 1",result:0}#error
+eval/primitives/int.ion::int::int arithmetic{sql:"-10 % 10",result:0}#coerce
+eval/primitives/int.ion::int::int arithmetic{sql:"-10 % 10",result:0}#error
+eval/primitives/int.ion::int::int arithmetic{sql:"-10 % 11",result:-10}#coerce
+eval/primitives/int.ion::int::int arithmetic{sql:"-10 % 11",result:-10}#error
+eval/primitives/int.ion::int::int arithmetic{sql:"-10 % 2",result:0}#coerce
+eval/primitives/int.ion::int::int arithmetic{sql:"-10 % 2",result:0}#error
+eval/primitives/int.ion::int::int arithmetic{sql:"-10 % 3",result:-1}#coerce
+eval/primitives/int.ion::int::int arithmetic{sql:"-10 % 3",result:-1}#error
+eval/primitives/int.ion::int::int arithmetic{sql:"-10 % 4",result:-2}#coerce
+eval/primitives/int.ion::int::int arithmetic{sql:"-10 % 4",result:-2}#error
+eval/primitives/int.ion::int::int arithmetic{sql:"-10 % 6",result:-4}#coerce
+eval/primitives/int.ion::int::int arithmetic{sql:"-10 % 6",result:-4}#error
+eval/primitives/int.ion::int::int arithmetic{sql:"-10 % 7",result:-3}#coerce
+eval/primitives/int.ion::int::int arithmetic{sql:"-10 % 7",result:-3}#error
+eval/primitives/int.ion::int::int arithmetic{sql:"-10 % 8",result:-2}#coerce
+eval/primitives/int.ion::int::int arithmetic{sql:"-10 % 8",result:-2}#error
+eval/primitives/int.ion::int::int arithmetic{sql:"-10 % 9",result:-1}#coerce
+eval/primitives/int.ion::int::int arithmetic{sql:"-10 % 9",result:-1}#error
+eval/primitives/int.ion::int::int arithmetic{sql:"1 * -1",result:-1}#coerce
+eval/primitives/int.ion::int::int arithmetic{sql:"1 * -1",result:-1}#error
+eval/primitives/int.ion::int::int arithmetic{sql:"1 * -2",result:-2}#coerce
+eval/primitives/int.ion::int::int arithmetic{sql:"1 * -2",result:-2}#error
+eval/primitives/int.ion::int::int arithmetic{sql:"1 * 1",result:1}#coerce
+eval/primitives/int.ion::int::int arithmetic{sql:"1 * 1",result:1}#error
+eval/primitives/int.ion::int::int arithmetic{sql:"1 * 2",result:2}#coerce
+eval/primitives/int.ion::int::int arithmetic{sql:"1 * 2",result:2}#error
+eval/primitives/int.ion::int::int arithmetic{sql:"1 + -1",result:0}#coerce
+eval/primitives/int.ion::int::int arithmetic{sql:"1 + -1",result:0}#error
+eval/primitives/int.ion::int::int arithmetic{sql:"1 + -2",result:-1}#coerce
+eval/primitives/int.ion::int::int arithmetic{sql:"1 + -2",result:-1}#error
+eval/primitives/int.ion::int::int arithmetic{sql:"1 + 1",result:2}#coerce
+eval/primitives/int.ion::int::int arithmetic{sql:"1 + 1",result:2}#error
+eval/primitives/int.ion::int::int arithmetic{sql:"1 + 2",result:3}#coerce
+eval/primitives/int.ion::int::int arithmetic{sql:"1 + 2",result:3}#error
+eval/primitives/int.ion::int::int arithmetic{sql:"1 - -1",result:2}#coerce
+eval/primitives/int.ion::int::int arithmetic{sql:"1 - -1",result:2}#error
+eval/primitives/int.ion::int::int arithmetic{sql:"1 - 1",result:0}#coerce
+eval/primitives/int.ion::int::int arithmetic{sql:"1 - 1",result:0}#error
+eval/primitives/int.ion::int::int arithmetic{sql:"1 - 2",result:-1}#coerce
+eval/primitives/int.ion::int::int arithmetic{sql:"1 - 2",result:-1}#error
+eval/primitives/int.ion::int::int arithmetic{sql:"1 / -1",result:-1}#coerce
+eval/primitives/int.ion::int::int arithmetic{sql:"1 / -1",result:-1}#error
+eval/primitives/int.ion::int::int arithmetic{sql:"1 / -2",result:0}#coerce
+eval/primitives/int.ion::int::int arithmetic{sql:"1 / -2",result:0}#error
+eval/primitives/int.ion::int::int arithmetic{sql:"1 / 1",result:1}#coerce
+eval/primitives/int.ion::int::int arithmetic{sql:"1 / 1",result:1}#error
+eval/primitives/int.ion::int::int arithmetic{sql:"1 / 2",result:0}#coerce
+eval/primitives/int.ion::int::int arithmetic{sql:"1 / 2",result:0}#error
+eval/primitives/int.ion::int::int arithmetic{sql:"10 % -1",result:0}#coerce
+eval/primitives/int.ion::int::int arithmetic{sql:"10 % -1",result:0}#error
+eval/primitives/int.ion::int::int arithmetic{sql:"10 % -10",result:0}#coerce
+eval/primitives/int.ion::int::int arithmetic{sql:"10 % -10",result:0}#error
+eval/primitives/int.ion::int::int arithmetic{sql:"10 % -11",result:10}#coerce
+eval/primitives/int.ion::int::int arithmetic{sql:"10 % -11",result:10}#error
+eval/primitives/int.ion::int::int arithmetic{sql:"10 % -2",result:0}#coerce
+eval/primitives/int.ion::int::int arithmetic{sql:"10 % -2",result:0}#error
+eval/primitives/int.ion::int::int arithmetic{sql:"10 % -3",result:1}#coerce
+eval/primitives/int.ion::int::int arithmetic{sql:"10 % -3",result:1}#error
+eval/primitives/int.ion::int::int arithmetic{sql:"10 % -4",result:2}#coerce
+eval/primitives/int.ion::int::int arithmetic{sql:"10 % -4",result:2}#error
+eval/primitives/int.ion::int::int arithmetic{sql:"10 % -6",result:4}#coerce
+eval/primitives/int.ion::int::int arithmetic{sql:"10 % -6",result:4}#error
+eval/primitives/int.ion::int::int arithmetic{sql:"10 % -7",result:3}#coerce
+eval/primitives/int.ion::int::int arithmetic{sql:"10 % -7",result:3}#error
+eval/primitives/int.ion::int::int arithmetic{sql:"10 % -8",result:2}#coerce
+eval/primitives/int.ion::int::int arithmetic{sql:"10 % -8",result:2}#error
+eval/primitives/int.ion::int::int arithmetic{sql:"10 % -9",result:1}#coerce
+eval/primitives/int.ion::int::int arithmetic{sql:"10 % -9",result:1}#error
+eval/primitives/int.ion::int::int arithmetic{sql:"10 % 1",result:0}#coerce
+eval/primitives/int.ion::int::int arithmetic{sql:"10 % 1",result:0}#error
+eval/primitives/int.ion::int::int arithmetic{sql:"10 % 10",result:0}#coerce
+eval/primitives/int.ion::int::int arithmetic{sql:"10 % 10",result:0}#error
+eval/primitives/int.ion::int::int arithmetic{sql:"10 % 11",result:10}#coerce
+eval/primitives/int.ion::int::int arithmetic{sql:"10 % 11",result:10}#error
+eval/primitives/int.ion::int::int arithmetic{sql:"10 % 2",result:0}#coerce
+eval/primitives/int.ion::int::int arithmetic{sql:"10 % 2",result:0}#error
+eval/primitives/int.ion::int::int arithmetic{sql:"10 % 3",result:1}#coerce
+eval/primitives/int.ion::int::int arithmetic{sql:"10 % 3",result:1}#error
+eval/primitives/int.ion::int::int arithmetic{sql:"10 % 4",result:2}#coerce
+eval/primitives/int.ion::int::int arithmetic{sql:"10 % 4",result:2}#error
+eval/primitives/int.ion::int::int arithmetic{sql:"10 % 6",result:4}#coerce
+eval/primitives/int.ion::int::int arithmetic{sql:"10 % 6",result:4}#error
+eval/primitives/int.ion::int::int arithmetic{sql:"10 % 7",result:3}#coerce
+eval/primitives/int.ion::int::int arithmetic{sql:"10 % 7",result:3}#error
+eval/primitives/int.ion::int::int arithmetic{sql:"10 % 8",result:2}#coerce
+eval/primitives/int.ion::int::int arithmetic{sql:"10 % 8",result:2}#error
+eval/primitives/int.ion::int::int arithmetic{sql:"10 % 9",result:1}#coerce
+eval/primitives/int.ion::int::int arithmetic{sql:"10 % 9",result:1}#error
+eval/primitives/int.ion::int::int boundary arithmetic{sql:"(max_int - 1) + 1",result:9223372036854775807}#coerce
+eval/primitives/int.ion::int::int boundary arithmetic{sql:"(max_int - 1) + 1",result:9223372036854775807}#error
+eval/primitives/int.ion::int::int boundary arithmetic{sql:"(min_int + 1) - 1",result:-9223372036854775808}#coerce
+eval/primitives/int.ion::int::int boundary arithmetic{sql:"(min_int + 1) - 1",result:-9223372036854775808}#error
+eval/primitives/int.ion::int::int pass-through{sql:"-1",result:-1}#coerce
+eval/primitives/int.ion::int::int pass-through{sql:"-1",result:-1}#error
+eval/primitives/int.ion::int::int pass-through{sql:"-9223372036854775808",result:-9223372036854775808}#coerce
+eval/primitives/int.ion::int::int pass-through{sql:"-9223372036854775808",result:-9223372036854775808}#error
 eval/primitives/int.ion::int::int pass-through{sql:"1",result:1}#coerce
 eval/primitives/int.ion::int::int pass-through{sql:"1",result:1}#error
 eval/primitives/int.ion::int::int pass-through{sql:"9223372036854775807",result:9223372036854775807}#coerce
 eval/primitives/int.ion::int::int pass-through{sql:"9223372036854775807",result:9223372036854775807}#error
+eval/primitives/int.ion::int::leading zeros{sql:"-00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001",result:-1}#coerce
+eval/primitives/int.ion::int::leading zeros{sql:"-00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001",result:-1}#error
+eval/primitives/int.ion::int::leading zeros{sql:"-0000000000001",result:-1}#coerce
+eval/primitives/int.ion::int::leading zeros{sql:"-0000000000001",result:-1}#error
+eval/primitives/int.ion::int::leading zeros{sql:"-000000000001",result:-1}#coerce
+eval/primitives/int.ion::int::leading zeros{sql:"-000000000001",result:-1}#error
+eval/primitives/int.ion::int::leading zeros{sql:"-00000000001",result:-1}#coerce
+eval/primitives/int.ion::int::leading zeros{sql:"-00000000001",result:-1}#error
+eval/primitives/int.ion::int::leading zeros{sql:"-0000000001",result:-1}#coerce
+eval/primitives/int.ion::int::leading zeros{sql:"-0000000001",result:-1}#error
+eval/primitives/int.ion::int::leading zeros{sql:"-000000001",result:-1}#coerce
+eval/primitives/int.ion::int::leading zeros{sql:"-000000001",result:-1}#error
+eval/primitives/int.ion::int::leading zeros{sql:"-00000001",result:-1}#coerce
+eval/primitives/int.ion::int::leading zeros{sql:"-00000001",result:-1}#error
+eval/primitives/int.ion::int::leading zeros{sql:"-0000001",result:-1}#coerce
+eval/primitives/int.ion::int::leading zeros{sql:"-0000001",result:-1}#error
+eval/primitives/int.ion::int::leading zeros{sql:"-000001",result:-1}#coerce
+eval/primitives/int.ion::int::leading zeros{sql:"-000001",result:-1}#error
+eval/primitives/int.ion::int::leading zeros{sql:"-00001",result:-1}#coerce
+eval/primitives/int.ion::int::leading zeros{sql:"-00001",result:-1}#error
+eval/primitives/int.ion::int::leading zeros{sql:"-0001",result:-1}#coerce
+eval/primitives/int.ion::int::leading zeros{sql:"-0001",result:-1}#error
+eval/primitives/int.ion::int::leading zeros{sql:"-001",result:-1}#coerce
+eval/primitives/int.ion::int::leading zeros{sql:"-001",result:-1}#error
+eval/primitives/int.ion::int::leading zeros{sql:"-01",result:-1}#coerce
+eval/primitives/int.ion::int::leading zeros{sql:"-01",result:-1}#error
 eval/primitives/int.ion::int::leading zeros{sql:"00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001",result:1}#coerce
 eval/primitives/int.ion::int::leading zeros{sql:"00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001",result:1}#error
 eval/primitives/int.ion::int::leading zeros{sql:"000000000000001",result:1}#coerce
@@ -110,6 +548,88 @@ eval/primitives/int.ion::int::leading zeros{sql:"001",result:1}#coerce
 eval/primitives/int.ion::int::leading zeros{sql:"001",result:1}#error
 eval/primitives/int.ion::int::leading zeros{sql:"01",result:1}#coerce
 eval/primitives/int.ion::int::leading zeros{sql:"01",result:1}#error
+eval/primitives/int.ion::int::negative zero equality#coerce
+eval/primitives/int.ion::int::negative zero equality#error
+eval/primitives/logical.ion::logical::andFalseFalse#coerce
+eval/primitives/logical.ion::logical::andFalseFalse#error
+eval/primitives/logical.ion::logical::andFalseMissing#coerce
+eval/primitives/logical.ion::logical::andFalseMissing#error
+eval/primitives/logical.ion::logical::andFalseNull#coerce
+eval/primitives/logical.ion::logical::andFalseNull#error
+eval/primitives/logical.ion::logical::andFalseTrue#coerce
+eval/primitives/logical.ion::logical::andFalseTrue#error
+eval/primitives/logical.ion::logical::andMissingFalse#coerce
+eval/primitives/logical.ion::logical::andMissingFalse#error
+eval/primitives/logical.ion::logical::andMissingMissing#coerce
+eval/primitives/logical.ion::logical::andMissingMissing#error
+eval/primitives/logical.ion::logical::andMissingNull#coerce
+eval/primitives/logical.ion::logical::andMissingNull#error
+eval/primitives/logical.ion::logical::andMissingTrue#coerce
+eval/primitives/logical.ion::logical::andMissingTrue#error
+eval/primitives/logical.ion::logical::andNullFalse#coerce
+eval/primitives/logical.ion::logical::andNullFalse#error
+eval/primitives/logical.ion::logical::andNullMissing#coerce
+eval/primitives/logical.ion::logical::andNullMissing#error
+eval/primitives/logical.ion::logical::andNullNull#coerce
+eval/primitives/logical.ion::logical::andNullNull#error
+eval/primitives/logical.ion::logical::andNullTrue#coerce
+eval/primitives/logical.ion::logical::andNullTrue#error
+eval/primitives/logical.ion::logical::andTrueFalse#coerce
+eval/primitives/logical.ion::logical::andTrueFalse#error
+eval/primitives/logical.ion::logical::andTrueMissing#coerce
+eval/primitives/logical.ion::logical::andTrueMissing#error
+eval/primitives/logical.ion::logical::andTrueNull#coerce
+eval/primitives/logical.ion::logical::andTrueNull#error
+eval/primitives/logical.ion::logical::andTrueTrue#coerce
+eval/primitives/logical.ion::logical::andTrueTrue#error
+eval/primitives/logical.ion::logical::comparisonsConjuctTrue#coerce
+eval/primitives/logical.ion::logical::comparisonsConjuctTrue#error
+eval/primitives/logical.ion::logical::comparisonsDisjunctFalse#coerce
+eval/primitives/logical.ion::logical::comparisonsDisjunctFalse#error
+eval/primitives/logical.ion::logical::notFalse#coerce
+eval/primitives/logical.ion::logical::notFalse#error
+eval/primitives/logical.ion::logical::notMissing#coerce
+eval/primitives/logical.ion::logical::notMissing#error
+eval/primitives/logical.ion::logical::notNull#coerce
+eval/primitives/logical.ion::logical::notNull#error
+eval/primitives/logical.ion::logical::notTrue#coerce
+eval/primitives/logical.ion::logical::notTrue#error
+eval/primitives/logical.ion::logical::orFalseFalse#coerce
+eval/primitives/logical.ion::logical::orFalseFalse#error
+eval/primitives/logical.ion::logical::orFalseMissing#coerce
+eval/primitives/logical.ion::logical::orFalseMissing#error
+eval/primitives/logical.ion::logical::orFalseNull#coerce
+eval/primitives/logical.ion::logical::orFalseNull#error
+eval/primitives/logical.ion::logical::orFalseTrue#coerce
+eval/primitives/logical.ion::logical::orFalseTrue#error
+eval/primitives/logical.ion::logical::orMissingFalse#coerce
+eval/primitives/logical.ion::logical::orMissingFalse#error
+eval/primitives/logical.ion::logical::orMissingMissing#coerce
+eval/primitives/logical.ion::logical::orMissingMissing#error
+eval/primitives/logical.ion::logical::orMissingNull#coerce
+eval/primitives/logical.ion::logical::orMissingNull#error
+eval/primitives/logical.ion::logical::orMissingTrue#coerce
+eval/primitives/logical.ion::logical::orMissingTrue#error
+eval/primitives/logical.ion::logical::orNullFalse#coerce
+eval/primitives/logical.ion::logical::orNullFalse#error
+eval/primitives/logical.ion::logical::orNullMissing#coerce
+eval/primitives/logical.ion::logical::orNullMissing#error
+eval/primitives/logical.ion::logical::orNullNull#coerce
+eval/primitives/logical.ion::logical::orNullNull#error
+eval/primitives/logical.ion::logical::orNullTrue#coerce
+eval/primitives/logical.ion::logical::orNullTrue#error
+eval/primitives/logical.ion::logical::orTrueFalse#coerce
+eval/primitives/logical.ion::logical::orTrueFalse#error
+eval/primitives/logical.ion::logical::orTrueMissing#coerce
+eval/primitives/logical.ion::logical::orTrueMissing#error
+eval/primitives/logical.ion::logical::orTrueNull#coerce
+eval/primitives/logical.ion::logical::orTrueNull#error
+eval/primitives/logical.ion::logical::orTrueTrue#coerce
+eval/primitives/logical.ion::logical::orTrueTrue#error
+eval/primitives/map.ion::map::MISSING IS MAP returns MISSING#coerce
+eval/primitives/map.ion::map::MISSING IS MAP returns MISSING#error
+eval/primitives/map.ion::map::NULL IS MAP returns NULL#coerce
+eval/primitives/map.ion::map::NULL IS MAP returns NULL#error
 eval/primitives/map.ion::map::access bool-keyed map from environment variable#coerce
 eval/primitives/map.ion::map::access bool-keyed map from environment variable#error
 eval/primitives/map.ion::map::access decimal-keyed map from environment variable#coerce
@@ -154,6 +674,8 @@ eval/primitives/map.ion::map::construct a map with explicit missing value drops 
 eval/primitives/map.ion::map::construct a map with explicit missing value drops the entry#error
 eval/primitives/map.ion::map::construct a map with explicit null value preserves the key#coerce
 eval/primitives/map.ion::map::construct a map with explicit null value preserves the key#error
+eval/primitives/map.ion::map::construct a map with expression keys#coerce
+eval/primitives/map.ion::map::construct a map with expression keys#error
 eval/primitives/map.ion::map::construct a map with integer keys#coerce
 eval/primitives/map.ion::map::construct a map with integer keys#error
 eval/primitives/map.ion::map::construct a map with missing key drops entry in permissive#coerce
@@ -164,18 +686,1004 @@ eval/primitives/map.ion::map::construct a map with string keys#coerce
 eval/primitives/map.ion::map::construct a map with string keys#error
 eval/primitives/map.ion::map::construct an empty map#coerce
 eval/primitives/map.ion::map::construct an empty map#error
+eval/primitives/map.ion::map::empty maps are equal#coerce
+eval/primitives/map.ion::map::empty maps are equal#error
+eval/primitives/map.ion::map::equal maps with different insertion order are equal#coerce
+eval/primitives/map.ion::map::equal maps with different insertion order are equal#error
+eval/primitives/map.ion::map::equal maps with same entries are equal#coerce
+eval/primitives/map.ion::map::equal maps with same entries are equal#error
+eval/primitives/map.ion::map::integer IS MAP returns false#coerce
+eval/primitives/map.ion::map::integer IS MAP returns false#error
+eval/primitives/map.ion::map::map IS MAP with integer keys returns true#coerce
+eval/primitives/map.ion::map::map IS MAP with integer keys returns true#error
+eval/primitives/map.ion::map::map IS MAP with matching types returns true#coerce
+eval/primitives/map.ion::map::map IS MAP with matching types returns true#error
+eval/primitives/map.ion::map::map IS MAP with mismatched key type returns false#coerce
+eval/primitives/map.ion::map::map IS MAP with mismatched key type returns false#error
+eval/primitives/map.ion::map::map IS MAP with mismatched value type returns false#coerce
+eval/primitives/map.ion::map::map IS MAP with mismatched value type returns false#error
+eval/primitives/map.ion::map::map equality with integer keys#coerce
+eval/primitives/map.ion::map::map equality with integer keys#error
+eval/primitives/map.ion::map::map not equal operator#coerce
+eval/primitives/map.ion::map::map not equal operator#error
+eval/primitives/map.ion::map::maps with different keys are not equal#coerce
+eval/primitives/map.ion::map::maps with different keys are not equal#error
+eval/primitives/map.ion::map::maps with different sizes are not equal#coerce
+eval/primitives/map.ion::map::maps with different sizes are not equal#error
+eval/primitives/map.ion::map::maps with different values are not equal#coerce
+eval/primitives/map.ion::map::maps with different values are not equal#error
+eval/primitives/map.ion::map::struct IS MAP returns false#coerce
+eval/primitives/map.ion::map::struct IS MAP returns false#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{Arabic Lorem Ipsum Text}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{Arabic Lorem Ipsum Text}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{Arabic Text with Heavy Diacritical Marks}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{Arabic Text with Heavy Diacritical Marks}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{Complete Cyrillic alphabet - uppercase with diacritics, standard uppercase, and lowercase letters}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{Complete Cyrillic alphabet - uppercase with diacritics, standard uppercase, and lowercase letters}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{Hebrew Genesis 1:1 with vowel points}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{Hebrew Genesis 1:1 with vowel points}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{Mathematical Bold Italic pangram}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{Mathematical Bold Italic pangram}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{Mathematical Bold Script Pangram}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{Mathematical Bold Script Pangram}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{Mathematical Double-Struck Pangram}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{Mathematical Double-Struck Pangram}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{Mathematical Monospace Pangram}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{Mathematical Monospace Pangram}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{Mathematical Sans-Serif Bold pangram}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{Mathematical Sans-Serif Bold pangram}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{Mathematical Sans-Serif Italic pangram}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{Mathematical Sans-Serif Italic pangram}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{Thai script characters}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{Thai script characters}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{Zalgo text corruption - 'He who Waits Behind The Wall.' with Lovecraftian horror theme and extreme combining mark abuse}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{Zalgo text corruption - 'He who Waits Behind The Wall.' with Lovecraftian horror theme and extreme combining mark abuse}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{Zalgo text corruption - 'Invoking the feeling of chaos' with extreme combining mark abuse}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{Zalgo text corruption - 'Invoking the feeling of chaos' with extreme combining mark abuse}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{Zalgo text corruption - Latin text with excessive combining diacritical marks creating chaotic visual distortion}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{Zalgo text corruption - Latin text with excessive combining diacritical marks creating chaotic visual distortion}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{algo text corruption - 'The Nezperdian hive-mind of chaos. Zalgo.' with maximum combining mark abuse}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{algo text corruption - 'The Nezperdian hive-mind of chaos. Zalgo.' with maximum combining mark abuse}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{invisible formatting and control characters}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{invisible formatting and control characters}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:" "}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:" "}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:" onfocus=JaVaSCript:alert(123) autofocus"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:" onfocus=JaVaSCript:alert(123) autofocus"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"!@#%^&*()`~"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"!@#%^&*()`~"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:""}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:""}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"$1.00"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"$1.00"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"%"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"%"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"%*.*s"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"%*.*s"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"%d"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"%d"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"%s"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"%s"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"&lt;script&gt;alert(&#39;123&#39;);&lt;/script&gt;"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"&lt;script&gt;alert(&#39;123&#39;);&lt;/script&gt;"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"( \u0361\xb0 \u035c\u0296 \u0361\xb0)"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"( \u0361\xb0 \u035c\u0296 \u0361\xb0)"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"() { 0; }; touch /tmp/blns.shellshock1.fail;"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"() { 0; }; touch /tmp/blns.shellshock1.fail;"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"() { _; } >_[(())] { touch /tmp/blns.shellshock2.fail; }"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"() { _; } >_[(())] { touch /tmp/blns.shellshock2.fail; }"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"(\u256f\xb0\u25a1\xb0\uff09\u256f\ufe35 \u253b\u2501\u253b)"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"(\u256f\xb0\u25a1\xb0\uff09\u256f\ufe35 \u253b\u2501\u253b)"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"(\uff61\u25d5 \u2200 \u25d5\uff61)"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"(\uff61\u25d5 \u2200 \u25d5\uff61)"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"(\uff89\u0ca5\u76ca\u0ca5\uff09\uff89\ufeff \u253b\u2501\u253b"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"(\uff89\u0ca5\u76ca\u0ca5\uff09\uff89\ufeff \u253b\u2501\u253b"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"(null)"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"(null)"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"(touch /tmp/blns.fail)"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"(touch /tmp/blns.fail)"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"+++ATH0"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"+++ATH0"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"+0"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"+0"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"+0.0"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"+0.0"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:","}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:","}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:",\u3002\u30fb:*:\u30fb\u309c\u2019( \u263b \u03c9 \u263b )\u3002\u30fb:*:\u30fb\u309c\u2019"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:",\u3002\u30fb:*:\u30fb\u309c\u2019( \u263b \u03c9 \u263b )\u3002\u30fb:*:\u30fb\u309c\u2019"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"-"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"-"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"-$1.00"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"-$1.00"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"-,"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"-,"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"--"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"--"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"--1"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"--1"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"--><script>alert(123)</script>"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"--><script>alert(123)</script>"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"--help"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"--help"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"--version"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"--version"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"-."}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"-."}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"-0"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"-0"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"-0.0"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"-0.0"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"-1"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"-1"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"-1#IND"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"-1#IND"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"-1.00"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"-1.00"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"-1/2"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"-1/2"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"-1E+02"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"-1E+02"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"-1E02"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"-1E02"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"-1E2"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"-1E2"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"-2147483648/-1"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"-2147483648/-1"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"-9223372036854775808/-1"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"-9223372036854775808/-1"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"-Infinity"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"-Infinity"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"."}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"."}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"../../../../../../../../../../../etc/hosts"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"../../../../../../../../../../../etc/hosts"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"../../../../../../../../../../../etc/passwd%00"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"../../../../../../../../../../../etc/passwd%00"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"/dev/null; touch /tmp/blns.fail ; echo"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"/dev/null; touch /tmp/blns.fail ; echo"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"0"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"0"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"0,,0"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"0,,0"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"0,0,0"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"0,0,0"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"0,0/0,0"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"0,0/0,0"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"0,00"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"0,00"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"0..0"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"0..0"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"0.0.0"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"0.0.0"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"0.0/0"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"0.0/0"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"0.0/0.0"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"0.0/0.0"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"0.00"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"0.00"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"0/0"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"0/0"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"00\u02d9\u0196-"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"00\u02d9\u0196-"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"01000"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"01000"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"08"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"08"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"09"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"09"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"0\ufe0f\u20e3 1\ufe0f\u20e3 2\ufe0f\u20e3 3\ufe0f\u20e3 4\ufe0f\u20e3 5\ufe0f\u20e3 6\ufe0f\u20e3 7\ufe0f\u20e3 8\ufe0f\u20e3 9\ufe0f\u20e3 \U0001f51f"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"0\ufe0f\u20e3 1\ufe0f\u20e3 2\ufe0f\u20e3 3\ufe0f\u20e3 4\ufe0f\u20e3 5\ufe0f\u20e3 6\ufe0f\u20e3 7\ufe0f\u20e3 8\ufe0f\u20e3 9\ufe0f\u20e3 \U0001f51f"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"0x0"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"0x0"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"0xabad1dea"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"0xabad1dea"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"0xffffffff"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"0xffffffff"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"0xffffffffffffffff"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"0xffffffffffffffff"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"1 000 000,00"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"1 000 000,00"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"1 000 000.00"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"1 000 000.00"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"1 000,00"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"1 000,00"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"1 000.00"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"1 000.00"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"1"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"1"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"1#IND"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"1#IND"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"1#INF"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"1#INF"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"1#QNAN"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"1#QNAN"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"1#SNAN"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"1#SNAN"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"1,0/0,0"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"1,0/0,0"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"1,000,000.00"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"1,000,000.00"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"1,000.00"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"1,000.00"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"1.0/0.0"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"1.0/0.0"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"1.00"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"1.00"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"1.000,00"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"1.000,00"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"1.000.000,00"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"1.000.000,00"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"1/0"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"1/0"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"1/2"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"1/2"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"123456789012345678901234567890123456789"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"123456789012345678901234567890123456789"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"1;DROP TABLE users"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"1;DROP TABLE users"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"1E+02"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"1E+02"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"1E02"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"1E02"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"1E2"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"1E2"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"2.2250738585072011e-308"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"2.2250738585072011e-308"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:";alert(123);"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:";alert(123);"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"< / script >< script >alert(123)< / script >"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"< / script >< script >alert(123)< / script >"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<!--[if<img src=x onerror=javascript:alert(1)//]> -->"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<!--[if<img src=x onerror=javascript:alert(1)//]> -->"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<!--[if]><script>javascript:alert(1)</script -->"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<!--[if]><script>javascript:alert(1)</script -->"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"</script><script>alert(123)</script>"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"</script><script>alert(123)</script>"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"</textarea><script>alert(123)</script>"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"</textarea><script>alert(123)</script>"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<<SCRIPT>alert(\"XSS\");//<</SCRIPT>"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<<SCRIPT>alert(\"XSS\");//<</SCRIPT>"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<>?:\"{}|_+"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<>?:\"{}|_+"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?><!DOCTYPE foo [ <!ELEMENT foo ANY ><!ENTITY xxe SYSTEM \"file:///etc/passwd\" >]><foo>&xxe;</foo>"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?><!DOCTYPE foo [ <!ELEMENT foo ANY ><!ENTITY xxe SYSTEM \"file:///etc/passwd\" >]><foo>&xxe;</foo>"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<BODY onload!#%&()*~+-_.,:;?@[/|\\]^`=alert(\"XSS\")>"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<BODY onload!#%&()*~+-_.,:;?@[/|\\]^`=alert(\"XSS\")>"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<IMG SRC=&#0000106&#0000097&#0000118&#0000097&#0000115&#0000099&#0000114&#0000105&#0000112&#0000116&#0000058&#0000097&#0000108&#0000101&#0000114&#0000116&#0000040&#0000039&#0000088&#0000083&#0000083&#0000039&#0000041>"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<IMG SRC=&#0000106&#0000097&#0000118&#0000097&#0000115&#0000099&#0000114&#0000105&#0000112&#0000116&#0000058&#0000097&#0000108&#0000101&#0000114&#0000116&#0000040&#0000039&#0000088&#0000083&#0000083&#0000039&#0000041>"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<IMG SRC=&#106;&#97;&#118;&#97;&#115;&#99;&#114;&#105;&#112;&#116;&#58;&#97;&#108;&#101;&#114;&#116;&#40;&#39;&#88;&#83;&#83;&#39;&#41;>"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<IMG SRC=&#106;&#97;&#118;&#97;&#115;&#99;&#114;&#105;&#112;&#116;&#58;&#97;&#108;&#101;&#114;&#116;&#40;&#39;&#88;&#83;&#83;&#39;&#41;>"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<IMG SRC=&#x6A&#x61&#x76&#x61&#x73&#x63&#x72&#x69&#x70&#x74&#x3A&#x61&#x6C&#x65&#x72&#x74&#x28&#x27&#x58&#x53&#x53&#x27&#x29>"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<IMG SRC=&#x6A&#x61&#x76&#x61&#x73&#x63&#x72&#x69&#x70&#x74&#x3A&#x61&#x6C&#x65&#x72&#x74&#x28&#x27&#x58&#x53&#x53&#x27&#x29>"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<IMG SRC=javascript:alert(String.fromCharCode(88,83,83))>"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<IMG SRC=javascript:alert(String.fromCharCode(88,83,83))>"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<IMG \"\"\"><SCRIPT>alert(\"XSS\")</SCRIPT>\">"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<IMG \"\"\"><SCRIPT>alert(\"XSS\")</SCRIPT>\">"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<SCRIPT SRC=//ha.ckers.org/.j>"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<SCRIPT SRC=//ha.ckers.org/.j>"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<SCRIPT SRC=http://ha.ckers.org/xss.js?< B >"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<SCRIPT SRC=http://ha.ckers.org/xss.js?< B >"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<SCRIPT/SRC=\"http://ha.ckers.org/xss.js\"></SCRIPT>"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<SCRIPT/SRC=\"http://ha.ckers.org/xss.js\"></SCRIPT>"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<SCRIPT/XSS SRC=\"http://ha.ckers.org/xss.js\"></SCRIPT>"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<SCRIPT/XSS SRC=\"http://ha.ckers.org/xss.js\"></SCRIPT>"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<a href=\"\\x00javascript:javascript:alert(1)\" id=\"fuzzelement1\">test</a>"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<a href=\"\\x00javascript:javascript:alert(1)\" id=\"fuzzelement1\">test</a>"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<a href=\"\\x01javascript:javascript:alert(1)\" id=\"fuzzelement1\">test</a>"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<a href=\"\\x01javascript:javascript:alert(1)\" id=\"fuzzelement1\">test</a>"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<a href=\"\\x02javascript:javascript:alert(1)\" id=\"fuzzelement1\">test</a>"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<a href=\"\\x02javascript:javascript:alert(1)\" id=\"fuzzelement1\">test</a>"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<a href=\"\\x03javascript:javascript:alert(1)\" id=\"fuzzelement1\">test</a>"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<a href=\"\\x03javascript:javascript:alert(1)\" id=\"fuzzelement1\">test</a>"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<a href=\"\\x04javascript:javascript:alert(1)\" id=\"fuzzelement1\">test</a>"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<a href=\"\\x04javascript:javascript:alert(1)\" id=\"fuzzelement1\">test</a>"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<a href=\"\\x05javascript:javascript:alert(1)\" id=\"fuzzelement1\">test</a>"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<a href=\"\\x05javascript:javascript:alert(1)\" id=\"fuzzelement1\">test</a>"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<a href=\"\\x06javascript:javascript:alert(1)\" id=\"fuzzelement1\">test</a>"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<a href=\"\\x06javascript:javascript:alert(1)\" id=\"fuzzelement1\">test</a>"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<a href=\"\\x07javascript:javascript:alert(1)\" id=\"fuzzelement1\">test</a>"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<a href=\"\\x07javascript:javascript:alert(1)\" id=\"fuzzelement1\">test</a>"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<a href=\"\\x08javascript:javascript:alert(1)\" id=\"fuzzelement1\">test</a>"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<a href=\"\\x08javascript:javascript:alert(1)\" id=\"fuzzelement1\">test</a>"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<a href=\"\\x09javascript:javascript:alert(1)\" id=\"fuzzelement1\">test</a>"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<a href=\"\\x09javascript:javascript:alert(1)\" id=\"fuzzelement1\">test</a>"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<a href=\"\\x0Ajavascript:javascript:alert(1)\" id=\"fuzzelement1\">test</a>"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<a href=\"\\x0Ajavascript:javascript:alert(1)\" id=\"fuzzelement1\">test</a>"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<a href=\"\\x0Bjavascript:javascript:alert(1)\" id=\"fuzzelement1\">test</a>"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<a href=\"\\x0Bjavascript:javascript:alert(1)\" id=\"fuzzelement1\">test</a>"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<a href=\"\\x0Cjavascript:javascript:alert(1)\" id=\"fuzzelement1\">test</a>"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<a href=\"\\x0Cjavascript:javascript:alert(1)\" id=\"fuzzelement1\">test</a>"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<a href=\"\\x0Djavascript:javascript:alert(1)\" id=\"fuzzelement1\">test</a>"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<a href=\"\\x0Djavascript:javascript:alert(1)\" id=\"fuzzelement1\">test</a>"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<a href=\"\\x0Ejavascript:javascript:alert(1)\" id=\"fuzzelement1\">test</a>"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<a href=\"\\x0Ejavascript:javascript:alert(1)\" id=\"fuzzelement1\">test</a>"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<a href=\"\\x0Fjavascript:javascript:alert(1)\" id=\"fuzzelement1\">test</a>"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<a href=\"\\x0Fjavascript:javascript:alert(1)\" id=\"fuzzelement1\">test</a>"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<a href=\"\\x10javascript:javascript:alert(1)\" id=\"fuzzelement1\">test</a>"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<a href=\"\\x10javascript:javascript:alert(1)\" id=\"fuzzelement1\">test</a>"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<a href=\"\\x11javascript:javascript:alert(1)\" id=\"fuzzelement1\">test</a>"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<a href=\"\\x11javascript:javascript:alert(1)\" id=\"fuzzelement1\">test</a>"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<a href=\"\\x12javascript:javascript:alert(1)\" id=\"fuzzelement1\">test</a>"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<a href=\"\\x12javascript:javascript:alert(1)\" id=\"fuzzelement1\">test</a>"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<a href=\"\\x13javascript:javascript:alert(1)\" id=\"fuzzelement1\">test</a>"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<a href=\"\\x13javascript:javascript:alert(1)\" id=\"fuzzelement1\">test</a>"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<a href=\"\\x14javascript:javascript:alert(1)\" id=\"fuzzelement1\">test</a>"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<a href=\"\\x14javascript:javascript:alert(1)\" id=\"fuzzelement1\">test</a>"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<a href=\"\\x15javascript:javascript:alert(1)\" id=\"fuzzelement1\">test</a>"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<a href=\"\\x15javascript:javascript:alert(1)\" id=\"fuzzelement1\">test</a>"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<a href=\"\\x16javascript:javascript:alert(1)\" id=\"fuzzelement1\">test</a>"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<a href=\"\\x16javascript:javascript:alert(1)\" id=\"fuzzelement1\">test</a>"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<a href=\"\\x17javascript:javascript:alert(1)\" id=\"fuzzelement1\">test</a>"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<a href=\"\\x17javascript:javascript:alert(1)\" id=\"fuzzelement1\">test</a>"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<a href=\"\\x18javascript:javascript:alert(1)\" id=\"fuzzelement1\">test</a>"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<a href=\"\\x18javascript:javascript:alert(1)\" id=\"fuzzelement1\">test</a>"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<a href=\"\\x19javascript:javascript:alert(1)\" id=\"fuzzelement1\">test</a>"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<a href=\"\\x19javascript:javascript:alert(1)\" id=\"fuzzelement1\">test</a>"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<a href=\"\\x1Ajavascript:javascript:alert(1)\" id=\"fuzzelement1\">test</a>"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<a href=\"\\x1Ajavascript:javascript:alert(1)\" id=\"fuzzelement1\">test</a>"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<a href=\"\\x1Bjavascript:javascript:alert(1)\" id=\"fuzzelement1\">test</a>"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<a href=\"\\x1Bjavascript:javascript:alert(1)\" id=\"fuzzelement1\">test</a>"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<a href=\"\\x1Cjavascript:javascript:alert(1)\" id=\"fuzzelement1\">test</a>"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<a href=\"\\x1Cjavascript:javascript:alert(1)\" id=\"fuzzelement1\">test</a>"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<a href=\"\\x1Djavascript:javascript:alert(1)\" id=\"fuzzelement1\">test</a>"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<a href=\"\\x1Djavascript:javascript:alert(1)\" id=\"fuzzelement1\">test</a>"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<a href=\"\\x1Ejavascript:javascript:alert(1)\" id=\"fuzzelement1\">test</a>"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<a href=\"\\x1Ejavascript:javascript:alert(1)\" id=\"fuzzelement1\">test</a>"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<a href=\"\\x1Fjavascript:javascript:alert(1)\" id=\"fuzzelement1\">test</a>"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<a href=\"\\x1Fjavascript:javascript:alert(1)\" id=\"fuzzelement1\">test</a>"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<a href=\"\\x20javascript:javascript:alert(1)\" id=\"fuzzelement1\">test</a>"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<a href=\"\\x20javascript:javascript:alert(1)\" id=\"fuzzelement1\">test</a>"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<a href=\"\\xC2\\xA0javascript:javascript:alert(1)\" id=\"fuzzelement1\">test</a>"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<a href=\"\\xC2\\xA0javascript:javascript:alert(1)\" id=\"fuzzelement1\">test</a>"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<a href=\"\\xE1\\x9A\\x80javascript:javascript:alert(1)\" id=\"fuzzelement1\">test</a>"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<a href=\"\\xE1\\x9A\\x80javascript:javascript:alert(1)\" id=\"fuzzelement1\">test</a>"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<a href=\"\\xE1\\xA0\\x8Ejavascript:javascript:alert(1)\" id=\"fuzzelement1\">test</a>"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<a href=\"\\xE1\\xA0\\x8Ejavascript:javascript:alert(1)\" id=\"fuzzelement1\">test</a>"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<a href=\"\\xE2\\x80\\x80javascript:javascript:alert(1)\" id=\"fuzzelement1\">test</a>"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<a href=\"\\xE2\\x80\\x80javascript:javascript:alert(1)\" id=\"fuzzelement1\">test</a>"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<a href=\"\\xE2\\x80\\x81javascript:javascript:alert(1)\" id=\"fuzzelement1\">test</a>"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<a href=\"\\xE2\\x80\\x81javascript:javascript:alert(1)\" id=\"fuzzelement1\">test</a>"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<a href=\"\\xE2\\x80\\x82javascript:javascript:alert(1)\" id=\"fuzzelement1\">test</a>"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<a href=\"\\xE2\\x80\\x82javascript:javascript:alert(1)\" id=\"fuzzelement1\">test</a>"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<a href=\"\\xE2\\x80\\x83javascript:javascript:alert(1)\" id=\"fuzzelement1\">test</a>"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<a href=\"\\xE2\\x80\\x83javascript:javascript:alert(1)\" id=\"fuzzelement1\">test</a>"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<a href=\"\\xE2\\x80\\x84javascript:javascript:alert(1)\" id=\"fuzzelement1\">test</a>"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<a href=\"\\xE2\\x80\\x84javascript:javascript:alert(1)\" id=\"fuzzelement1\">test</a>"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<a href=\"\\xE2\\x80\\x85javascript:javascript:alert(1)\" id=\"fuzzelement1\">test</a>"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<a href=\"\\xE2\\x80\\x85javascript:javascript:alert(1)\" id=\"fuzzelement1\">test</a>"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<a href=\"\\xE2\\x80\\x86javascript:javascript:alert(1)\" id=\"fuzzelement1\">test</a>"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<a href=\"\\xE2\\x80\\x86javascript:javascript:alert(1)\" id=\"fuzzelement1\">test</a>"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<a href=\"\\xE2\\x80\\x87javascript:javascript:alert(1)\" id=\"fuzzelement1\">test</a>"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<a href=\"\\xE2\\x80\\x87javascript:javascript:alert(1)\" id=\"fuzzelement1\">test</a>"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<a href=\"\\xE2\\x80\\x88javascript:javascript:alert(1)\" id=\"fuzzelement1\">test</a>"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<a href=\"\\xE2\\x80\\x88javascript:javascript:alert(1)\" id=\"fuzzelement1\">test</a>"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<a href=\"\\xE2\\x80\\x89javascript:javascript:alert(1)\" id=\"fuzzelement1\">test</a>"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<a href=\"\\xE2\\x80\\x89javascript:javascript:alert(1)\" id=\"fuzzelement1\">test</a>"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<a href=\"\\xE2\\x80\\x8Ajavascript:javascript:alert(1)\" id=\"fuzzelement1\">test</a>"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<a href=\"\\xE2\\x80\\x8Ajavascript:javascript:alert(1)\" id=\"fuzzelement1\">test</a>"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<a href=\"\\xE2\\x80\\xA8javascript:javascript:alert(1)\" id=\"fuzzelement1\">test</a>"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<a href=\"\\xE2\\x80\\xA8javascript:javascript:alert(1)\" id=\"fuzzelement1\">test</a>"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<a href=\"\\xE2\\x80\\xA9javascript:javascript:alert(1)\" id=\"fuzzelement1\">test</a>"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<a href=\"\\xE2\\x80\\xA9javascript:javascript:alert(1)\" id=\"fuzzelement1\">test</a>"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<a href=\"\\xE2\\x80\\xAFjavascript:javascript:alert(1)\" id=\"fuzzelement1\">test</a>"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<a href=\"\\xE2\\x80\\xAFjavascript:javascript:alert(1)\" id=\"fuzzelement1\">test</a>"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<a href=\"\\xE2\\x81\\x9Fjavascript:javascript:alert(1)\" id=\"fuzzelement1\">test</a>"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<a href=\"\\xE2\\x81\\x9Fjavascript:javascript:alert(1)\" id=\"fuzzelement1\">test</a>"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<a href=\"\\xE3\\x80\\x80javascript:javascript:alert(1)\" id=\"fuzzelement1\">test</a>"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<a href=\"\\xE3\\x80\\x80javascript:javascript:alert(1)\" id=\"fuzzelement1\">test</a>"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<a href=\"javascript\\x00:javascript:alert(1)\" id=\"fuzzelement1\">test</a>"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<a href=\"javascript\\x00:javascript:alert(1)\" id=\"fuzzelement1\">test</a>"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<a href=\"javascript\\x09:javascript:alert(1)\" id=\"fuzzelement1\">test</a>"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<a href=\"javascript\\x09:javascript:alert(1)\" id=\"fuzzelement1\">test</a>"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<a href=\"javascript\\x0A:javascript:alert(1)\" id=\"fuzzelement1\">test</a>"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<a href=\"javascript\\x0A:javascript:alert(1)\" id=\"fuzzelement1\">test</a>"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<a href=\"javascript\\x0D:javascript:alert(1)\" id=\"fuzzelement1\">test</a>"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<a href=\"javascript\\x0D:javascript:alert(1)\" id=\"fuzzelement1\">test</a>"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<a href=\"javascript\\x3A:javascript:alert(1)\" id=\"fuzzelement1\">test</a>"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<a href=\"javascript\\x3A:javascript:alert(1)\" id=\"fuzzelement1\">test</a>"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<a href=http://foo.bar/#x=`y></a><img alt=\"`><img src=x:x onerror=javascript:alert(1)></a>\">"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<a href=http://foo.bar/#x=`y></a><img alt=\"`><img src=x:x onerror=javascript:alert(1)></a>\">"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<a href=java&#1&#2&#3&#4&#5&#6&#7&#8&#11&#12script:javascript:alert(1)>XXX</a>"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<a href=java&#1&#2&#3&#4&#5&#6&#7&#8&#11&#12script:javascript:alert(1)>XXX</a>"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<foo val=\u201cbar\u201d />"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<foo val=\u201cbar\u201d />"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<foo val=\u201dbar\u201c />"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<foo val=\u201dbar\u201c />"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<i onwheel=alert(1)> Scroll over me </i>"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<i onwheel=alert(1)> Scroll over me </i>"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<iframe src=http://ha.ckers.org/scriptlet.html <"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<iframe src=http://ha.ckers.org/scriptlet.html <"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<img \\x00src=x onerror=\"javascript:alert(1)\">"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<img \\x00src=x onerror=\"javascript:alert(1)\">"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<img \\x11src=x onerror=\"javascript:alert(1)\">"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<img \\x11src=x onerror=\"javascript:alert(1)\">"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<img \\x12src=x onerror=\"javascript:alert(1)\">"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<img \\x12src=x onerror=\"javascript:alert(1)\">"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<img \\x34src=x onerror=\"javascript:alert(1)\">"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<img \\x34src=x onerror=\"javascript:alert(1)\">"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<img \\x39src=x onerror=\"javascript:alert(1)\">"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<img \\x39src=x onerror=\"javascript:alert(1)\">"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<img \\x47src=x onerror=\"javascript:alert(1)\">"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<img \\x47src=x onerror=\"javascript:alert(1)\">"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<img src=\"x` `<script>javascript:alert(1)</script>\"` `>"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<img src=\"x` `<script>javascript:alert(1)</script>\"` `>"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<img src=x onerror=\\x00\"javascript:alert(1)\">"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<img src=x onerror=\\x00\"javascript:alert(1)\">"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<img src=x onerror=\\x09\"javascript:alert(1)\">"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<img src=x onerror=\\x09\"javascript:alert(1)\">"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<img src=x onerror=\\x10\"javascript:alert(1)\">"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<img src=x onerror=\\x10\"javascript:alert(1)\">"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<img src=x onerror=\\x11\"javascript:alert(1)\">"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<img src=x onerror=\\x11\"javascript:alert(1)\">"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<img src=x onerror=\\x12\"javascript:alert(1)\">"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<img src=x onerror=\\x12\"javascript:alert(1)\">"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<img src=x onerror=\\x32\"javascript:alert(1)\">"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<img src=x onerror=\\x32\"javascript:alert(1)\">"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<img src=x onerror=alert(123) />"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<img src=x onerror=alert(123) />"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<img src=x\\x09onerror=\"javascript:alert(1)\">"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<img src=x\\x09onerror=\"javascript:alert(1)\">"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<img src=x\\x10onerror=\"javascript:alert(1)\">"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<img src=x\\x10onerror=\"javascript:alert(1)\">"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<img src=x\\x11onerror=\"javascript:alert(1)\">"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<img src=x\\x11onerror=\"javascript:alert(1)\">"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<img src=x\\x12onerror=\"javascript:alert(1)\">"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<img src=x\\x12onerror=\"javascript:alert(1)\">"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<img src=x\\x13onerror=\"javascript:alert(1)\">"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<img src=x\\x13onerror=\"javascript:alert(1)\">"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<img src\\x00=x onerror=\"javascript:alert(1)\">"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<img src\\x00=x onerror=\"javascript:alert(1)\">"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<img src\\x09=x onerror=\"javascript:alert(1)\">"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<img src\\x09=x onerror=\"javascript:alert(1)\">"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<img src\\x10=x onerror=\"javascript:alert(1)\">"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<img src\\x10=x onerror=\"javascript:alert(1)\">"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<img src\\x11=x onerror=\"javascript:alert(1)\">"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<img src\\x11=x onerror=\"javascript:alert(1)\">"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<img src\\x12=x onerror=\"javascript:alert(1)\">"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<img src\\x12=x onerror=\"javascript:alert(1)\">"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<img src\\x13=x onerror=\"javascript:alert(1)\">"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<img src\\x13=x onerror=\"javascript:alert(1)\">"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<img src\\x32=x onerror=\"javascript:alert(1)\">"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<img src\\x32=x onerror=\"javascript:alert(1)\">"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<img src\\x47=x onerror=\"javascript:alert(1)\">"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<img src\\x47=x onerror=\"javascript:alert(1)\">"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<img[a][b][c]src[d]=x[e]onerror=[f]\"alert(1)\">"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<img[a][b][c]src[d]=x[e]onerror=[f]\"alert(1)\">"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<img\\x10src=x onerror=\"javascript:alert(1)\">"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<img\\x10src=x onerror=\"javascript:alert(1)\">"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<img\\x11src=x onerror=\"javascript:alert(1)\">"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<img\\x11src=x onerror=\"javascript:alert(1)\">"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<img\\x13src=x onerror=\"javascript:alert(1)\">"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<img\\x13src=x onerror=\"javascript:alert(1)\">"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<img\\x32src=x onerror=\"javascript:alert(1)\">"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<img\\x32src=x onerror=\"javascript:alert(1)\">"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<img\\x47src=x onerror=\"javascript:alert(1)\">"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<img\\x47src=x onerror=\"javascript:alert(1)\">"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<plaintext>"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<plaintext>"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<sc<script>ript>alert(123)</sc</script>ript>"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<sc<script>ript>alert(123)</sc</script>ript>"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<script src=\"/\\%(jscript)s\"></script>"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<script src=\"/\\%(jscript)s\"></script>"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<script src=\"\\\\%(jscript)s\"></script>"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<script src=\"\\\\%(jscript)s\"></script>"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<script>alert(123)</script>"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<script>alert(123)</script>"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<script\\x09type=\"text/javascript\">javascript:alert(1);</script>"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<script\\x09type=\"text/javascript\">javascript:alert(1);</script>"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<script\\x0Atype=\"text/javascript\">javascript:alert(1);</script>"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<script\\x0Atype=\"text/javascript\">javascript:alert(1);</script>"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<script\\x0Ctype=\"text/javascript\">javascript:alert(1);</script>"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<script\\x0Ctype=\"text/javascript\">javascript:alert(1);</script>"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<script\\x0Dtype=\"text/javascript\">javascript:alert(1);</script>"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<script\\x0Dtype=\"text/javascript\">javascript:alert(1);</script>"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<script\\x20type=\"text/javascript\">javascript:alert(1);</script>"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<script\\x20type=\"text/javascript\">javascript:alert(1);</script>"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<script\\x2Ftype=\"text/javascript\">javascript:alert(1);</script>"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<script\\x2Ftype=\"text/javascript\">javascript:alert(1);</script>"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<script\\x3Etype=\"text/javascript\">javascript:alert(1);</script>"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<script\\x3Etype=\"text/javascript\">javascript:alert(1);</script>"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<svg><script>123<1>alert(123)</script>"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<svg><script>123<1>alert(123)</script>"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<title onpropertychange=javascript:alert(1)></title><title title=>"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<title onpropertychange=javascript:alert(1)></title><title title=>"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<u oncopy=alert()> Copy me</u>"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"<u oncopy=alert()> Copy me</u>"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"><script>alert(123);</script x="}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"><script>alert(123);</script x="}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"><script>alert(123)</script>"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"><script>alert(123)</script>"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"@{[system \"touch /tmp/blns.fail\"]}"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"@{[system \"touch /tmp/blns.fail\"]}"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"A:"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"A:"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"ABC<div style=\"x:\\x00expression(javascript:alert(1)\">DEF"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"ABC<div style=\"x:\\x00expression(javascript:alert(1)\">DEF"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"ABC<div style=\"x:\\x09expression(javascript:alert(1)\">DEF"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"ABC<div style=\"x:\\x09expression(javascript:alert(1)\">DEF"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"ABC<div style=\"x:\\x0Aexpression(javascript:alert(1)\">DEF"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"ABC<div style=\"x:\\x0Aexpression(javascript:alert(1)\">DEF"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"ABC<div style=\"x:\\x0Bexpression(javascript:alert(1)\">DEF"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"ABC<div style=\"x:\\x0Bexpression(javascript:alert(1)\">DEF"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"ABC<div style=\"x:\\x0Cexpression(javascript:alert(1)\">DEF"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"ABC<div style=\"x:\\x0Cexpression(javascript:alert(1)\">DEF"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"ABC<div style=\"x:\\x0Dexpression(javascript:alert(1)\">DEF"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"ABC<div style=\"x:\\x0Dexpression(javascript:alert(1)\">DEF"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"ABC<div style=\"x:\\x20expression(javascript:alert(1)\">DEF"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"ABC<div style=\"x:\\x20expression(javascript:alert(1)\">DEF"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"ABC<div style=\"x:\\xC2\\xA0expression(javascript:alert(1)\">DEF"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"ABC<div style=\"x:\\xC2\\xA0expression(javascript:alert(1)\">DEF"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"ABC<div style=\"x:\\xE2\\x80\\x80expression(javascript:alert(1)\">DEF"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"ABC<div style=\"x:\\xE2\\x80\\x80expression(javascript:alert(1)\">DEF"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"ABC<div style=\"x:\\xE2\\x80\\x81expression(javascript:alert(1)\">DEF"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"ABC<div style=\"x:\\xE2\\x80\\x81expression(javascript:alert(1)\">DEF"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"ABC<div style=\"x:\\xE2\\x80\\x82expression(javascript:alert(1)\">DEF"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"ABC<div style=\"x:\\xE2\\x80\\x82expression(javascript:alert(1)\">DEF"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"ABC<div style=\"x:\\xE2\\x80\\x83expression(javascript:alert(1)\">DEF"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"ABC<div style=\"x:\\xE2\\x80\\x83expression(javascript:alert(1)\">DEF"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"ABC<div style=\"x:\\xE2\\x80\\x84expression(javascript:alert(1)\">DEF"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"ABC<div style=\"x:\\xE2\\x80\\x84expression(javascript:alert(1)\">DEF"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"ABC<div style=\"x:\\xE2\\x80\\x85expression(javascript:alert(1)\">DEF"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"ABC<div style=\"x:\\xE2\\x80\\x85expression(javascript:alert(1)\">DEF"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"ABC<div style=\"x:\\xE2\\x80\\x86expression(javascript:alert(1)\">DEF"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"ABC<div style=\"x:\\xE2\\x80\\x86expression(javascript:alert(1)\">DEF"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"ABC<div style=\"x:\\xE2\\x80\\x87expression(javascript:alert(1)\">DEF"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"ABC<div style=\"x:\\xE2\\x80\\x87expression(javascript:alert(1)\">DEF"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"ABC<div style=\"x:\\xE2\\x80\\x88expression(javascript:alert(1)\">DEF"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"ABC<div style=\"x:\\xE2\\x80\\x88expression(javascript:alert(1)\">DEF"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"ABC<div style=\"x:\\xE2\\x80\\x89expression(javascript:alert(1)\">DEF"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"ABC<div style=\"x:\\xE2\\x80\\x89expression(javascript:alert(1)\">DEF"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"ABC<div style=\"x:\\xE2\\x80\\x8Aexpression(javascript:alert(1)\">DEF"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"ABC<div style=\"x:\\xE2\\x80\\x8Aexpression(javascript:alert(1)\">DEF"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"ABC<div style=\"x:\\xE2\\x80\\x8Bexpression(javascript:alert(1)\">DEF"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"ABC<div style=\"x:\\xE2\\x80\\x8Bexpression(javascript:alert(1)\">DEF"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"ABC<div style=\"x:\\xE3\\x80\\x80expression(javascript:alert(1)\">DEF"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"ABC<div style=\"x:\\xE3\\x80\\x80expression(javascript:alert(1)\">DEF"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"ABC<div style=\"x:\\xEF\\xBB\\xBFexpression(javascript:alert(1)\">DEF"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"ABC<div style=\"x:\\xEF\\xBB\\xBFexpression(javascript:alert(1)\">DEF"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"ABC<div style=\"x:exp\\x00ression(javascript:alert(1)\">DEF"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"ABC<div style=\"x:exp\\x00ression(javascript:alert(1)\">DEF"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"ABC<div style=\"x:exp\\x5Cression(javascript:alert(1)\">DEF"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"ABC<div style=\"x:exp\\x5Cression(javascript:alert(1)\">DEF"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"ABC<div style=\"x:expression\\x00(javascript:alert(1)\">DEF"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"ABC<div style=\"x:expression\\x00(javascript:alert(1)\">DEF"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"ABC<div style=\"x:expression\\x5C(javascript:alert(1)\">DEF"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"ABC<div style=\"x:expression\\x5C(javascript:alert(1)\">DEF"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"ABC<div style=\"x\\x3Aexpression(javascript:alert(1)\">DEF"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"ABC<div style=\"x\\x3Aexpression(javascript:alert(1)\">DEF"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"AUX"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"AUX"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"Arsenal canal"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"Arsenal canal"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"But now...\x1b[20Cfor my greatest trick...\x1b[8m"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"But now...\x1b[20Cfor my greatest trick...\x1b[8m"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"CLOCK"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"CLOCK"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"COM1"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"COM1"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"COM2"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"COM2"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"COM3"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"COM3"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"COM4"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"COM4"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"CON"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"CON"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"Craig Cockburn, Software Specialist"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"Craig Cockburn, Software Specialist"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"DCC SEND STARTKEYLOGGER 0 0 0"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"DCC SEND STARTKEYLOGGER 0 0 0"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"Dick Van Dyke"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"Dick Van Dyke"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"Dr. Herman I. Libshitz"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"Dr. Herman I. Libshitz"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"FALSE"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"FALSE"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"False"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"False"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"File:///"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"File:///"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"HOME"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"HOME"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"Horniman Museum"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"Horniman Museum"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"INF"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"INF"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"Infinity"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"Infinity"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"JavaSCript:alert(123)"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"JavaSCript:alert(123)"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"Jimmy Clitheroe"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"Jimmy Clitheroe"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"Kernel.exec(\"ls -al /\")"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"Kernel.exec(\"ls -al /\")"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"Kernel.exit(1)"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"Kernel.exit(1)"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"LPT1"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"LPT1"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"LPT2"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"LPT2"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"LPT3"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"LPT3"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"Lightwater Country Park"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"Lightwater Country Park"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"Linda Callahan"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"Linda Callahan"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"NIL"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"NIL"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"NUL"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"NUL"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"NULL"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"NULL"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"NaN"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"NaN"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"None"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"None"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"PRN"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"PRN"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"Penistone Community Church"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"Penistone Community Church"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"Power\u0644\u064f\u0644\u064f\u0635\u0651\u0628\u064f\u0644\u064f\u0644\u0635\u0651\u0628\u064f\u0631\u0631\u064b \u0963 \u0963h \u0963 \u0963\u5197"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"Power\u0644\u064f\u0644\u064f\u0635\u0651\u0628\u064f\u0644\u064f\u0644\u0635\u0651\u0628\u064f\u0631\u0631\u064b \u0963 \u0963h \u0963 \u0963\u5197"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"RomansInSussex.co.uk"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"RomansInSussex.co.uk"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"Roses are \x1b[0;31mred\x1b[0m, violets are \x1b[0;34mblue. Hope you enjoy terminal hue"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"Roses are \x1b[0;31mred\x1b[0m, violets are \x1b[0;34mblue. Hope you enjoy terminal hue"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"Scunthorpe General Hospital"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"Scunthorpe General Hospital"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"Super Bowl XXX"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"Super Bowl XXX"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"System(\"ls -al /\")"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"System(\"ls -al /\")"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"TRUE"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"TRUE"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"The quic\b\b\b\b\b\bk brown fo\a\a\a\a\a\a\a\a\a\a\ax... [Beeeep]"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"The quic\b\b\b\b\b\bk brown fo\a\a\a\a\a\a\a\a\a\a\ax... [Beeeep]"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"True"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"True"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"Tyson Gay"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"Tyson Gay"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"USER"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"USER"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"ZZ:"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"ZZ:"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"Z\u032e\u031e\u0320\u0359\u0354\u0345\u1e00\u0317\u031e\u0348\u033b\u0317\u1e36\u0359\u034e\u032f\u0339\u031e\u0353G\u033bO\u032d\u0317\u032e"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"Z\u032e\u031e\u0320\u0359\u0354\u0345\u1e00\u0317\u031e\u0348\u033b\u0317\u1e36\u0359\u034e\u032f\u0339\u031e\u0353G\u033bO\u032d\u0317\u032e"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"\" autofocus onkeyup=\"javascript:alert(123)"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"\" autofocus onkeyup=\"javascript:alert(123)"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"\" onfocus=JaVaSCript:alert(123) autofocus"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"\" onfocus=JaVaSCript:alert(123) autofocus"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"\""}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"\""}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"\";alert(123);t=\""}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"\";alert(123);t=\""}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"\"><script>alert(123);</script x=\""}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"\"><script>alert(123);</script x=\""}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"\"><script>alert(123)</script>"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"\"><script>alert(123)</script>"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"\"\""}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"\"\""}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"\U0001f1fa\U0001f1f8\U0001f1f7\U0001f1fa\U0001f1f8 \U0001f1e6\U0001f1eb\U0001f1e6\U0001f1f2\U0001f1f8"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"\U0001f1fa\U0001f1f8\U0001f1f7\U0001f1fa\U0001f1f8 \U0001f1e6\U0001f1eb\U0001f1e6\U0001f1f2\U0001f1f8"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"\U0001f1fa\U0001f1f8\U0001f1f7\U0001f1fa\U0001f1f8\U0001f1e6"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"\U0001f1fa\U0001f1f8\U0001f1f7\U0001f1fa\U0001f1f8\U0001f1e6"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"\U0001f1fa\U0001f1f8\U0001f1f7\U0001f1fa\U0001f1f8\U0001f1e6\U0001f1eb\U0001f1e6\U0001f1f2"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"\U0001f1fa\U0001f1f8\U0001f1f7\U0001f1fa\U0001f1f8\U0001f1e6\U0001f1eb\U0001f1e6\U0001f1f2"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"\U0001f435 \U0001f648 \U0001f649 \U0001f64a"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"\U0001f435 \U0001f648 \U0001f649 \U0001f64a"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"\U0001f469\U0001f3fd"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"\U0001f469\U0001f3fd"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"\U0001f47e \U0001f647 \U0001f481 \U0001f645 \U0001f646 \U0001f64b \U0001f64e \U0001f64d"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"\U0001f47e \U0001f647 \U0001f481 \U0001f645 \U0001f646 \U0001f64b \U0001f64e \U0001f64d"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"\U0001f60d"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"\U0001f60d"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"\U0001f6be \U0001f192 \U0001f193 \U0001f195 \U0001f196 \U0001f197 \U0001f199 \U0001f3e7"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"\U0001f6be \U0001f192 \U0001f193 \U0001f195 \U0001f196 \U0001f197 \U0001f199 \U0001f3e7"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"\U0002070e\U00020731\U00020779\U00020c53\U00020c78\U00020c96\U00020ccf"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"\U0002070e\U00020731\U00020779\U00020c53\U00020c78\U00020c96\U00020ccf"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"\\"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"\\"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"\\\\"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"\\\\"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"\t\v\f \x85 \u1680\u2002\u2003\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200a\u200b\u2028\u2029\u202f\u205f\u3000"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"\t\v\f \x85 \u1680\u2002\u2003\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200a\u200b\u2028\u2029\u202f\u205f\u3000"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"\u0152\u201e\xb4\u2030\u02c7\xc1\xa8\u02c6\xd8\u220f\u201d\u2019"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"\u0152\u201e\xb4\u2030\u02c7\xc1\xa8\u02c6\xd8\u220f\u201d\u2019"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"\u0153\u2211\xb4\xae\u2020\xa5\xa8\u02c6\xf8\u03c0\u201c\u2018"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"\u0153\u2211\xb4\xae\u2020\xa5\xa8\u02c6\xf8\u03c0\u201c\u2018"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"\u023a"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"\u023a"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"\u023e"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"\u023e"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"\u03a9\u2248\xe7\u221a\u222b\u02dc\xb5\u2264\u2265\xf7"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"\u03a9\u2248\xe7\u221a\u222b\u02dc\xb5\u2264\u2265\xf7"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"\u05d4\u05b8\u05d9\u05b0\u05ea\u05b8\u05d4test\u0627\u0644\u0635\u0641\u062d\u0627\u062a \u0627\u0644\u062a\u0651\u062d\u0648\u0644"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"\u05d4\u05b8\u05d9\u05b0\u05ea\u05b8\u05d4test\u0627\u0644\u0635\u0641\u062d\u0627\u062a \u0627\u0644\u062a\u0651\u062d\u0648\u0644"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"\u0660\u0661\u0662\u0663\u0664\u0665\u0666\u0667\u0668\u0669"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"\u0660\u0661\u0662\u0663\u0664\u0665\u0666\u0667\u0668\u0669"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"\u0661\u0662\u0663"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"\u0661\u0662\u0663"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"\u1680"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"\u1680"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"\u180e"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"\u180e"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"\u200b"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"\u200b"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"\u2029test\u2029"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"\u2029test\u2029"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"\u202a\u202atest\u202a"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"\u202a\u202atest\u202a"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"\u202btest\u202b"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"\u202btest\u202b"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"\u2066test\u2067"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"\u2066test\u2067"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"\u2070\u2074\u2075"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"\u2070\u2074\u2075"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"\u2070\u2074\u2075\u2080\u2081\u2082"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"\u2070\u2074\u2075\u2080\u2081\u2082"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"\u2080\u2081\u2082"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"\u2080\u2081\u2082"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"\u215b\u215c\u215d\u215e"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"\u215b\u215c\u215d\u215e"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"\u2421"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"\u2421"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"\u2422"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"\u2422"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"\u2423"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"\u2423"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"\u24af\u24a3\u24a0 \u24ac\u24b0\u24a4\u249e\u24a6 \u249d\u24ad\u24aa\u24b2\u24a9 \u24a1\u24aa\u24b3 \u24a5\u24b0\u24a8\u24ab\u24ae \u24aa\u24b1\u24a0\u24ad \u24af\u24a3\u24a0 \u24a7\u249c\u24b5\u24b4 \u249f\u24aa\u24a2"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"\u24af\u24a3\u24a0 \u24ac\u24b0\u24a4\u249e\u24a6 \u249d\u24ad\u24aa\u24b2\u24a9 \u24a1\u24aa\u24b3 \u24a5\u24b0\u24a8\u24ab\u24ae \u24aa\u24b1\u24a0\u24ad \u24af\u24a3\u24a0 \u24a7\u249c\u24b5\u24b4 \u249f\u24aa\u24a2"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"\u252c\u2500\u252c\u30ce( \xba _ \xba\u30ce)"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"\u252c\u2500\u252c\u30ce( \xba _ \xba\u30ce)"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"\u270b\U0001f3ff \U0001f4aa\U0001f3ff \U0001f450\U0001f3ff \U0001f64c\U0001f3ff \U0001f44f\U0001f3ff \U0001f64f\U0001f3ff"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"\u270b\U0001f3ff \U0001f4aa\U0001f3ff \U0001f450\U0001f3ff \U0001f64c\U0001f3ff \U0001f44f\U0001f3ff \U0001f64f\U0001f3ff"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"\u2764\ufe0f \U0001f494 \U0001f48c \U0001f495 \U0001f49e \U0001f493 \U0001f497 \U0001f496 \U0001f498 \U0001f49d \U0001f49f \U0001f49c \U0001f49b \U0001f49a \U0001f499"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"\u2764\ufe0f \U0001f494 \U0001f48c \U0001f495 \U0001f49e \U0001f493 \U0001f497 \U0001f496 \U0001f498 \U0001f49d \U0001f49f \U0001f49c \U0001f49b \U0001f49a \U0001f499"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"\u3000"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"\u3000"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"\u30d1\u30fc\u30c6\u30a3\u30fc\u3078\u884c\u304b\u306a\u3044\u304b"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"\u30d1\u30fc\u30c6\u30a3\u30fc\u3078\u884c\u304b\u306a\u3044\u304b"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"\u30fb(\uffe3\u2200\uffe3)\u30fb:*:"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"\u30fb(\uffe3\u2200\uffe3)\u30fb:*:"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"\u30fd\u0f3c\u0e88\u0644\u035c\u0e88\u0f3d\uff89 \u30fd\u0f3c\u0e88\u0644\u035c\u0e88\u0f3d\uff89 "}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"\u30fd\u0f3c\u0e88\u0644\u035c\u0e88\u0f3d\uff89 \u30fd\u0f3c\u0e88\u0644\u035c\u0e88\u0f3d\uff89 "}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"\u548c\u88fd\u6f22\u8a9e"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"\u548c\u88fd\u6f22\u8a9e"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"\u7530\u4e2d\u3055\u3093\u306b\u3042\u3052\u3066\u4e0b\u3055\u3044"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"\u7530\u4e2d\u3055\u3093\u306b\u3042\u3052\u3066\u4e0b\u3055\u3044"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"\u793e\u6703\u79d1\u5b78\u9662\u8a9e\u5b78\u7814\u7a76\u6240"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"\u793e\u6703\u79d1\u5b78\u9662\u8a9e\u5b78\u7814\u7a76\u6240"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"\u90e8\u843d\u683c"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"\u90e8\u843d\u683c"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"\uc0ac\ud68c\uacfc\ud559\uc6d0 \uc5b4\ud559\uc5f0\uad6c\uc18c"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"\uc0ac\ud68c\uacfc\ud559\uc6d0 \uc5b4\ud559\uc5f0\uad6c\uc18c"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"\uc6b8\ub780\ubc14\ud1a0\ub974"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"\uc6b8\ub780\ubc14\ud1a0\ub974"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"\ucc26\ucc28\ub97c \ud0c0\uace0 \uc628 \ud3b2\uc2dc\ub9e8\uacfc \uc45b\ub2e4\ub9ac \ub620\ubc29\uac01\ud558"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"\ucc26\ucc28\ub97c \ud0c0\uace0 \uc628 \ud3b2\uc2dc\ub9e8\uacfc \uc45b\ub2e4\ub9ac \ub620\ubc29\uac01\ud558"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"\ufdfa"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"\ufdfa"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"\ufdfd"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"\ufdfd"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"\ufeff"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"\ufeff"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"\uff11\uff12\uff13"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"\uff11\uff12\uff13"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"\uff1cscript\uff1ealert(123)\uff1c/script\uff1e"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"\uff1cscript\uff1ealert(123)\uff1c/script\uff1e"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"\uff34\uff48\uff45 \uff51\uff55\uff49\uff43\uff4b \uff42\uff52\uff4f\uff57\uff4e \uff46\uff4f\uff58 \uff4a\uff55\uff4d\uff50\uff53 \uff4f\uff56\uff45\uff52 \uff54\uff48\uff45 \uff4c\uff41\uff5a\uff59 \uff44\uff4f\uff47"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"\uff34\uff48\uff45 \uff51\uff55\uff49\uff43\uff4b \uff42\uff52\uff4f\uff57\uff4e \uff46\uff4f\uff58 \uff4a\uff55\uff4d\uff50\uff53 \uff4f\uff56\uff45\uff52 \uff54\uff48\uff45 \uff4c\uff41\uff5a\uff59 \uff44\uff4f\uff47"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"\uff40\uff68(\xb4\u2200\uff40\u2229"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"\uff40\uff68(\xb4\u2200\uff40\u2229"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"\uff9f\uff65\u273f\u30fe\u2572(\uff61\u25d5\u203f\u25d5\uff61)\u2571\u273f\uff65\uff9f"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"\uff9f\uff65\u273f\u30fe\u2572(\uff61\u25d5\u203f\u25d5\uff61)\u2571\u273f\uff65\uff9f"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"\ufffe"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"\ufffe"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"\x01\x02\x03\x04\x05\x06\a\b\x0e\x0f\x10\x11\x12\x13\x14\x15\x16\x17\x18\x19\x1a\x1b\x1c\x1d\x1e\x1f\x7f"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"\x01\x02\x03\x04\x05\x06\a\b\x0e\x0f\x10\x11\x12\x13\x14\x15\x16\x17\x18\x19\x1a\x1b\x1c\x1d\x1e\x1f\x7f"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"\x80\x81\x82\x83\x84\x86\x87\x88\x89\x8a\x8b\x8c\x8d\x8e\x8f\x90\x91\x92\x93\x94\x95\x96\x97\x98\x99\x9a\x9b\x9c\x9d\x9e\x9f"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"\x80\x81\x82\x83\x84\x86\x87\x88\x89\x8a\x8b\x8c\x8d\x8e\x8f\x90\x91\x92\x93\x94\x95\x96\x97\x98\x99\x9a\x9b\x9c\x9d\x9e\x9f"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"\xa1\u2122\xa3\xa2\u221e\xa7\xb6\u2022\xaa\xba\u2013\u2260"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"\xa1\u2122\xa3\xa2\u221e\xa7\xb6\u2022\xaa\xba\u2013\u2260"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"\xb8\u02db\xc7\u25ca\u0131\u02dc\xc2\xaf\u02d8\xbf"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"\xb8\u02db\xc7\u25ca\u0131\u02dc\xc2\xaf\u02d8\xbf"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"\xc5\xcd\xce\xcf\u02dd\xd3\xd4\uf8ff\xd2\xda\xc6\u2603"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"\xc5\xcd\xce\xcf\u02dd\xd3\xd4\uf8ff\xd2\xda\xc6\u2603"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"\xe5\xdf\u2202\u0192\xa9\u02d9\u2206\u02da\xac\u2026\xe6"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"\xe5\xdf\u2202\u0192\xa9\u02d9\u2206\u02da\xac\u2026\xe6"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"_"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"_"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"__\uff9b(,_,*)"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"__\uff9b(,_,*)"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"`\u2044\u20ac\u2039\u203a\ufb01\ufb02\u2021\xb0\xb7\u201a\u2014\xb1"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"`\u2044\u20ac\u2039\u203a\ufb01\ufb02\u2021\xb0\xb7\u201a\u2014\xb1"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"`ls -al /`"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"`ls -al /`"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"`touch /tmp/blns.fail`"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"`touch /tmp/blns.fail`"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"basement"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"basement"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"classic"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"classic"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"evaluate"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"evaluate"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"expression"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"expression"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"false"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"false"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"hasOwnProperty"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"hasOwnProperty"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"http://a/%%30%30"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"http://a/%%30%30"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"http://www.cum.qc.ca/"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"http://www.cum.qc.ca/"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"magna cum laude"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"magna cum laude"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"medieval erection of parapets"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"medieval erection of parapets"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"mocha"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"mocha"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"nil"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"nil"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"null"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"null"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"shitake mushrooms"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"shitake mushrooms"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"src=JaVaSCript:prompt(132)"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"src=JaVaSCript:prompt(132)"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"test\u2060test\u202b"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"test\u2060test\u202b"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"true"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"true"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"undef"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"undef"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"undefined"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"undefined"}#error
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"{0}"}#coerce
+eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{str:"{0}"}#error
+eval/primitives/null.ion::null::null comparison{sql:"MISSING = NULL",result:null}#coerce
+eval/primitives/null.ion::null::null comparison{sql:"MISSING = NULL",result:null}#error
 eval/primitives/null.ion::null::null comparison{sql:"MISSING IS MISSING",result:true}#coerce
 eval/primitives/null.ion::null::null comparison{sql:"MISSING IS MISSING",result:true}#error
 eval/primitives/null.ion::null::null comparison{sql:"MISSING IS NULL",result:true}#coerce
 eval/primitives/null.ion::null::null comparison{sql:"MISSING IS NULL",result:true}#error
 eval/primitives/null.ion::null::null comparison{sql:"MISSING",result:missing::null}#coerce
 eval/primitives/null.ion::null::null comparison{sql:"MISSING",result:missing::null}#error
+eval/primitives/null.ion::null::null comparison{sql:"NULL = MISSING",result:null}#coerce
+eval/primitives/null.ion::null::null comparison{sql:"NULL = MISSING",result:null}#error
+eval/primitives/null.ion::null::null comparison{sql:"NULL = NULL",result:null}#coerce
+eval/primitives/null.ion::null::null comparison{sql:"NULL = NULL",result:null}#error
 eval/primitives/null.ion::null::null comparison{sql:"NULL IS MISSING",result:false}#coerce
 eval/primitives/null.ion::null::null comparison{sql:"NULL IS MISSING",result:false}#error
 eval/primitives/null.ion::null::null comparison{sql:"NULL IS NULL",result:true}#coerce
 eval/primitives/null.ion::null::null comparison{sql:"NULL IS NULL",result:true}#error
 eval/primitives/null.ion::null::null comparison{sql:"NULL",result:null}#coerce
 eval/primitives/null.ion::null::null comparison{sql:"NULL",result:null}#error
+eval/primitives/operators/between-operator.ion::between::between mixed types decimal decimal int false#coerce
+eval/primitives/operators/between-operator.ion::between::between mixed types decimal decimal int false#error
+eval/primitives/operators/between-operator.ion::between::between mixed types decimal int decimal false#coerce
+eval/primitives/operators/between-operator.ion::between::between mixed types decimal int decimal false#error
+eval/primitives/operators/between-operator.ion::between::between mixed types decimal int int false#coerce
+eval/primitives/operators/between-operator.ion::between::between mixed types decimal int int false#error
+eval/primitives/operators/between-operator.ion::between::between mixed types int decimal decimal false#coerce
+eval/primitives/operators/between-operator.ion::between::between mixed types int decimal decimal false#error
+eval/primitives/operators/between-operator.ion::between::between mixed types int decimal decimal#coerce
+eval/primitives/operators/between-operator.ion::between::between mixed types int decimal decimal#error
+eval/primitives/operators/between-operator.ion::between::between mixed types int decimal int#coerce
+eval/primitives/operators/between-operator.ion::between::between mixed types int decimal int#error
+eval/primitives/operators/between-operator.ion::between::between mixed types int int decimal false#coerce
+eval/primitives/operators/between-operator.ion::between::between mixed types int int decimal false#error
+eval/primitives/operators/between-operator.ion::between::between mixed types int int decimal#coerce
+eval/primitives/operators/between-operator.ion::between::between mixed types int int decimal#error
+eval/primitives/operators/between-operator.ion::between::between same decimal types#coerce
+eval/primitives/operators/between-operator.ion::between::between same decimal types#error
+eval/primitives/operators/between-operator.ion::between::between same integer types#coerce
+eval/primitives/operators/between-operator.ion::between::between same integer types#error
+eval/primitives/operators/concat.ion::concat::|| valid cases{lparam:"'a'",rparam:"'b'",result:"ab"}#coerce
+eval/primitives/operators/concat.ion::concat::|| valid cases{lparam:"'a'",rparam:"'b'",result:"ab"}#error
+eval/primitives/operators/concat.ion::concat::|| valid cases{lparam:"'a'",rparam:"missing",result:missing::null}#coerce
+eval/primitives/operators/concat.ion::concat::|| valid cases{lparam:"'a'",rparam:"missing",result:missing::null}#error
+eval/primitives/operators/concat.ion::concat::|| valid cases{lparam:"'a'",rparam:"null",result:null}#coerce
+eval/primitives/operators/concat.ion::concat::|| valid cases{lparam:"'a'",rparam:"null",result:null}#error
+eval/primitives/operators/concat.ion::concat::|| valid cases{lparam:"missing",rparam:"'b'",result:missing::null}#coerce
+eval/primitives/operators/concat.ion::concat::|| valid cases{lparam:"missing",rparam:"'b'",result:missing::null}#error
+eval/primitives/operators/concat.ion::concat::|| valid cases{lparam:"missing",rparam:"missing",result:missing::null}#coerce
+eval/primitives/operators/concat.ion::concat::|| valid cases{lparam:"missing",rparam:"missing",result:missing::null}#error
+eval/primitives/operators/concat.ion::concat::|| valid cases{lparam:"missing",rparam:"null",result:missing::null}#coerce
+eval/primitives/operators/concat.ion::concat::|| valid cases{lparam:"missing",rparam:"null",result:missing::null}#error
+eval/primitives/operators/concat.ion::concat::|| valid cases{lparam:"null",rparam:"'b'",result:null}#coerce
+eval/primitives/operators/concat.ion::concat::|| valid cases{lparam:"null",rparam:"'b'",result:null}#error
+eval/primitives/operators/concat.ion::concat::|| valid cases{lparam:"null",rparam:"missing",result:missing::null}#coerce
+eval/primitives/operators/concat.ion::concat::|| valid cases{lparam:"null",rparam:"missing",result:missing::null}#error
+eval/primitives/operators/concat.ion::concat::|| valid cases{lparam:"null",rparam:"null",result:null}#coerce
+eval/primitives/operators/concat.ion::concat::|| valid cases{lparam:"null",rparam:"null",result:null}#error
+eval/primitives/operators/is-operators.ion::is::0.00 is DECIMAL(4,3)#coerce
+eval/primitives/operators/is-operators.ion::is::0.00 is DECIMAL(4,3)#error
+eval/primitives/operators/is-operators.ion::is::0.001 is DECIMAL(3,3)#coerce
+eval/primitives/operators/is-operators.ion::is::0.001 is DECIMAL(3,3)#error
+eval/primitives/operators/is-operators.ion::is::0123.456 is DECIMAL(6,3)#coerce
+eval/primitives/operators/is-operators.ion::is::0123.456 is DECIMAL(6,3)#error
+eval/primitives/operators/is-operators.ion::is::1.0000 is DECIMAL(5,3)#coerce
+eval/primitives/operators/is-operators.ion::is::1.0000 is DECIMAL(5,3)#error
+eval/primitives/operators/is-operators.ion::is::123.456 is DECIMAL(2,2)#coerce
+eval/primitives/operators/is-operators.ion::is::123.456 is DECIMAL(2,2)#error
+eval/primitives/operators/is-operators.ion::is::123.456 is DECIMAL(5,3)#coerce
+eval/primitives/operators/is-operators.ion::is::123.456 is DECIMAL(5,3)#error
+eval/primitives/operators/is-operators.ion::is::123.456 is DECIMAL(6,2)#coerce
+eval/primitives/operators/is-operators.ion::is::123.456 is DECIMAL(6,2)#error
+eval/primitives/operators/is-operators.ion::is::123.456 is DECIMAL(6,4)#coerce
+eval/primitives/operators/is-operators.ion::is::123.456 is DECIMAL(6,4)#error
+eval/primitives/operators/nary-operators.ion::nary::addIntFloat#coerce
+eval/primitives/operators/nary-operators.ion::nary::addIntFloat#error
+eval/primitives/operators/nary-operators.ion::nary::bigDecimals#coerce
+eval/primitives/operators/nary-operators.ion::nary::bigDecimals#error
+eval/primitives/operators/nary-operators.ion::nary::binaryAddWith2Terms#coerce
+eval/primitives/operators/nary-operators.ion::nary::binaryAddWith2Terms#error
+eval/primitives/operators/nary-operators.ion::nary::binaryAddWith3Terms#coerce
+eval/primitives/operators/nary-operators.ion::nary::binaryAddWith3Terms#error
+eval/primitives/operators/nary-operators.ion::nary::divDecimalInt#coerce
+eval/primitives/operators/nary-operators.ion::nary::divDecimalInt#error
+eval/primitives/operators/nary-operators.ion::nary::equalIntFloat#coerce
+eval/primitives/operators/nary-operators.ion::nary::equalIntFloat#error
+eval/primitives/operators/nary-operators.ion::nary::equalIntFloatFalse#coerce
+eval/primitives/operators/nary-operators.ion::nary::equalIntFloatFalse#error
+eval/primitives/operators/nary-operators.ion::nary::equalListDifferentLengthsLongFirst#coerce
+eval/primitives/operators/nary-operators.ion::nary::equalListDifferentLengthsLongFirst#error
+eval/primitives/operators/nary-operators.ion::nary::equalListDifferentTypesWithNullMissingTrue#coerce
+eval/primitives/operators/nary-operators.ion::nary::equalListDifferentTypesWithNullMissingTrue#error
+eval/primitives/operators/nary-operators.ion::nary::equalTuplesDifferentTypesDifferentOrderTrue#coerce
+eval/primitives/operators/nary-operators.ion::nary::equalTuplesDifferentTypesDifferentOrderTrue#error
+eval/primitives/operators/nary-operators.ion::nary::equalTuplesDifferentTypesDifferentOrderWithNullMissingEquivalenceFalse#coerce
+eval/primitives/operators/nary-operators.ion::nary::equalTuplesDifferentTypesDifferentOrderWithNullMissingEquivalenceFalse#error
+eval/primitives/operators/nary-operators.ion::nary::equalTuplesDifferentTypesDifferentOrderWithNullMissingTrue#coerce
+eval/primitives/operators/nary-operators.ion::nary::equalTuplesDifferentTypesDifferentOrderWithNullMissingTrue#error
+eval/primitives/operators/nary-operators.ion::nary::equalTuplesDifferentTypesTrue#coerce
+eval/primitives/operators/nary-operators.ion::nary::equalTuplesDifferentTypesTrue#error
+eval/primitives/operators/nary-operators.ion::nary::lessEqIntFloat#coerce
+eval/primitives/operators/nary-operators.ion::nary::lessEqIntFloat#error
+eval/primitives/operators/nary-operators.ion::nary::lessEqIntFloatFalse#coerce
+eval/primitives/operators/nary-operators.ion::nary::lessEqIntFloatFalse#error
+eval/primitives/operators/nary-operators.ion::nary::lessIntFloat#coerce
+eval/primitives/operators/nary-operators.ion::nary::lessIntFloat#error
+eval/primitives/operators/nary-operators.ion::nary::lessIntFloatFalse#coerce
+eval/primitives/operators/nary-operators.ion::nary::lessIntFloatFalse#error
+eval/primitives/operators/nary-operators.ion::nary::modIntInt#coerce
+eval/primitives/operators/nary-operators.ion::nary::modIntInt#error
+eval/primitives/operators/nary-operators.ion::nary::moreEqIntFloat#coerce
+eval/primitives/operators/nary-operators.ion::nary::moreEqIntFloat#error
+eval/primitives/operators/nary-operators.ion::nary::moreEqIntFloatFalse#coerce
+eval/primitives/operators/nary-operators.ion::nary::moreEqIntFloatFalse#error
+eval/primitives/operators/nary-operators.ion::nary::moreIntFloat#coerce
+eval/primitives/operators/nary-operators.ion::nary::moreIntFloat#error
+eval/primitives/operators/nary-operators.ion::nary::moreIntFloatFalse#coerce
+eval/primitives/operators/nary-operators.ion::nary::moreIntFloatFalse#error
+eval/primitives/operators/nary-operators.ion::nary::mulFloatIntInt#coerce
+eval/primitives/operators/nary-operators.ion::nary::mulFloatIntInt#error
+eval/primitives/operators/nary-operators.ion::nary::notEqualIntFloat#coerce
+eval/primitives/operators/nary-operators.ion::nary::notEqualIntFloat#error
+eval/primitives/operators/nary-operators.ion::nary::notEqualIntFloatFalse#coerce
+eval/primitives/operators/nary-operators.ion::nary::notEqualIntFloatFalse#error
+eval/primitives/operators/nary-operators.ion::nary::notEqualIntInt#coerce
+eval/primitives/operators/nary-operators.ion::nary::notEqualIntInt#error
+eval/primitives/operators/nary-operators.ion::nary::repeatingDecimal#coerce
+eval/primitives/operators/nary-operators.ion::nary::repeatingDecimal#error
+eval/primitives/operators/nary-operators.ion::nary::repeatingDecimalHigherPrecision#coerce
+eval/primitives/operators/nary-operators.ion::nary::repeatingDecimalHigherPrecision#error
+eval/primitives/operators/nary-operators.ion::nary::subIntFloatDecimal#coerce
+eval/primitives/operators/nary-operators.ion::nary::subIntFloatDecimal#error
+eval/primitives/operators/nary-operators.ion::nary::subtractionOutOfAllowedPrecision#coerce
+eval/primitives/operators/nary-operators.ion::nary::subtractionOutOfAllowedPrecision#error
+eval/primitives/operators/nary-operators.ion::nary::symbolCaseEquality#coerce
+eval/primitives/operators/nary-operators.ion::nary::symbolCaseEquality#error
+eval/primitives/operators/nary-operators.ion::nary::symbolEquality#coerce
+eval/primitives/operators/nary-operators.ion::nary::symbolEquality#error
+eval/primitives/operators/nary-operators.ion::nary::unaryMinus#coerce
+eval/primitives/operators/nary-operators.ion::nary::unaryMinus#error
+eval/primitives/operators/nary-operators.ion::nary::unaryPlus#coerce
+eval/primitives/operators/nary-operators.ion::nary::unaryPlus#error
 eval/primitives/path.ion::path-expressions::dotted path expression with quoted field name accesses field AMBIGUOUS_FIELD (uppercase)#coerce
 eval/primitives/path.ion::path-expressions::dotted path expression with quoted field name accesses field AMBIGUOUS_FIELD (uppercase)#error
 eval/primitives/path.ion::path-expressions::dotted path expression with quoted field name accesses field UNAMBIGUOUS_FIELD (uppercase)#coerce
@@ -218,6 +1726,8 @@ eval/primitives/path.ion::path::pathIndexStructLiteral#coerce
 eval/primitives/path.ion::path::pathIndexStructLiteral#error
 eval/primitives/path.ion::path::pathIndexStructOutOfBoundsHighLiteral#coerce
 eval/primitives/path.ion::path::pathIndexStructOutOfBoundsHighLiteral#error
+eval/primitives/path.ion::path::pathIndexStructOutOfBoundsLowLiteral#coerce
+eval/primitives/path.ion::path::pathIndexStructOutOfBoundsLowLiteral#error
 eval/primitives/path.ion::path::pathIndexing#coerce
 eval/primitives/path.ion::path::pathIndexing#error
 eval/primitives/path.ion::path::pathMissingDotName#coerce
@@ -253,6 +1763,50 @@ eval/primitives/path.ion::pathUnpivotMissing::pathUnpivotEmptyStruct2#coerce
 eval/primitives/path.ion::pathUnpivotMissing::pathUnpivotEmptyStruct2#error
 eval/primitives/path.ion::pathUnpivotMissing::pathUnpivotEmptyStruct3#coerce
 eval/primitives/path.ion::pathUnpivotMissing::pathUnpivotEmptyStruct3#error
+eval/primitives/string.ion::string::concatenation with non-nulls{Cyrillic Alphabet Concatenation Test - Split at Position 33}#coerce
+eval/primitives/string.ion::string::concatenation with non-nulls{Cyrillic Alphabet Concatenation Test - Split at Position 33}#error
+eval/primitives/string.ion::string::concatenation with non-nulls{Mathematical Bold pangram concatenation test - joining 'quick brown fox ' with 'jumps over' using Unicode Mathematical Bold characters}#coerce
+eval/primitives/string.ion::string::concatenation with non-nulls{Mathematical Bold pangram concatenation test - joining 'quick brown fox ' with 'jumps over' using Unicode Mathematical Bold characters}#error
+eval/primitives/string.ion::string::concatenation with non-nulls{left:"",right:"",result:""}#coerce
+eval/primitives/string.ion::string::concatenation with non-nulls{left:"",right:"",result:""}#error
+eval/primitives/string.ion::string::concatenation with non-nulls{left:"",right:"right",result:"right"}#coerce
+eval/primitives/string.ion::string::concatenation with non-nulls{left:"",right:"right",result:"right"}#error
+eval/primitives/string.ion::string::concatenation with non-nulls{left:"( \u0361\xb0 \u035c\u0296 \u0361\xb0)\u252c\u2500\u252c\u30ce",right:"( \xba _ \xba\u30ce)",result:"( \u0361\xb0 \u035c\u0296 \u0361\xb0)\u252c\u2500\u252c\u30ce( \xba _ \xba\u30ce)"}#coerce
+eval/primitives/string.ion::string::concatenation with non-nulls{left:"( \u0361\xb0 \u035c\u0296 \u0361\xb0)\u252c\u2500\u252c\u30ce",right:"( \xba _ \xba\u30ce)",result:"( \u0361\xb0 \u035c\u0296 \u0361\xb0)\u252c\u2500\u252c\u30ce( \xba _ \xba\u30ce)"}#error
+eval/primitives/string.ion::string::concatenation with non-nulls{left:"\U0001f4a9\U0001f4a9",right:"\U0001f4a9\U0001f4a9",result:"\U0001f4a9\U0001f4a9\U0001f4a9\U0001f4a9"}#coerce
+eval/primitives/string.ion::string::concatenation with non-nulls{left:"\U0001f4a9\U0001f4a9",right:"\U0001f4a9\U0001f4a9",result:"\U0001f4a9\U0001f4a9\U0001f4a9\U0001f4a9"}#error
+eval/primitives/string.ion::string::concatenation with non-nulls{left:"\U0001f60d",right:"\U0001f60d",result:"\U0001f60d\U0001f60d"}#coerce
+eval/primitives/string.ion::string::concatenation with non-nulls{left:"\U0001f60d",right:"\U0001f60d",result:"\U0001f60d\U0001f60d"}#error
+eval/primitives/string.ion::string::concatenation with non-nulls{left:"\u8a71\u5bb6\u8eab\u5727\u8cbb\u8c37",right:"\u6599\u6751\u80fd\u8a08\u7a0e\u91d1",result:"\u8a71\u5bb6\u8eab\u5727\u8cbb\u8c37\u6599\u6751\u80fd\u8a08\u7a0e\u91d1"}#coerce
+eval/primitives/string.ion::string::concatenation with non-nulls{left:"\u8a71\u5bb6\u8eab\u5727\u8cbb\u8c37",right:"\u6599\u6751\u80fd\u8a08\u7a0e\u91d1",result:"\u8a71\u5bb6\u8eab\u5727\u8cbb\u8c37\u6599\u6751\u80fd\u8a08\u7a0e\u91d1"}#error
+eval/primitives/string.ion::string::concatenation with non-nulls{left:"a",right:"b",result:"ab"}#coerce
+eval/primitives/string.ion::string::concatenation with non-nulls{left:"a",right:"b",result:"ab"}#error
+eval/primitives/string.ion::string::concatenation with non-nulls{left:"hello",right:"world",result:"helloworld"}#coerce
+eval/primitives/string.ion::string::concatenation with non-nulls{left:"hello",right:"world",result:"helloworld"}#error
+eval/primitives/string.ion::string::concatenation with non-nulls{left:"left",right:"",result:"left"}#coerce
+eval/primitives/string.ion::string::concatenation with non-nulls{left:"left",right:"",result:"left"}#error
+eval/primitives/string.ion::string::concatenation with non-nulls{left:"o",right:"\u0300",result:"o\u0300"}#coerce
+eval/primitives/string.ion::string::concatenation with non-nulls{left:"o",right:"\u0300",result:"o\u0300"}#error
+eval/primitives/string.ion::string::concatenation with null values{left:"''",right:"MISSING"}#coerce
+eval/primitives/string.ion::string::concatenation with null values{left:"''",right:"MISSING"}#error
+eval/primitives/string.ion::string::concatenation with null values{left:"''",right:"NULL"}#coerce
+eval/primitives/string.ion::string::concatenation with null values{left:"''",right:"NULL"}#error
+eval/primitives/string.ion::string::concatenation with null values{left:"'a'",right:"MISSING"}#coerce
+eval/primitives/string.ion::string::concatenation with null values{left:"'a'",right:"MISSING"}#error
+eval/primitives/string.ion::string::concatenation with null values{left:"'a'",right:"NULL"}#coerce
+eval/primitives/string.ion::string::concatenation with null values{left:"'a'",right:"NULL"}#error
+eval/primitives/string.ion::string::concatenation with null values{left:"MISSING",right:"''"}#coerce
+eval/primitives/string.ion::string::concatenation with null values{left:"MISSING",right:"''"}#error
+eval/primitives/string.ion::string::concatenation with null values{left:"MISSING",right:"'b'"}#coerce
+eval/primitives/string.ion::string::concatenation with null values{left:"MISSING",right:"'b'"}#error
+eval/primitives/string.ion::string::concatenation with null values{left:"MISSING",right:"MISSING"}#coerce
+eval/primitives/string.ion::string::concatenation with null values{left:"MISSING",right:"MISSING"}#error
+eval/primitives/string.ion::string::concatenation with null values{left:"NULL",right:"''"}#coerce
+eval/primitives/string.ion::string::concatenation with null values{left:"NULL",right:"''"}#error
+eval/primitives/string.ion::string::concatenation with null values{left:"NULL",right:"'b'"}#coerce
+eval/primitives/string.ion::string::concatenation with null values{left:"NULL",right:"'b'"}#error
+eval/primitives/string.ion::string::concatenation with null values{left:"NULL",right:"NULL"}#coerce
+eval/primitives/string.ion::string::concatenation with null values{left:"NULL",right:"NULL"}#error
 eval/query/undefined-variable-behavior.ion::undefined_variable_behavior::undefinedUnqualifiedVariableIsMissingExprWithUndefinedVariableBehaviorMissing#coerce
 eval/query/undefined-variable-behavior.ion::undefined_variable_behavior::undefinedUnqualifiedVariableIsMissingExprWithUndefinedVariableBehaviorMissing#error
 eval/query/undefined-variable-behavior.ion::undefined_variable_behavior::undefinedUnqualifiedVariableIsNullExprWithUndefinedVariableBehaviorMissing#coerce
@@ -261,13 +1815,76 @@ eval/query/undefined-variable-behavior.ion::undefined_variable_behavior::undefin
 eval/query/undefined-variable-behavior.ion::undefined_variable_behavior::undefinedUnqualifiedVariableWithUndefinedVariableBehaviorMissing#error
 eval/spec-tests.ion::section-4::array navigation with wrongly typed array index#coerce
 eval/spec-tests.ion::section-4::array navigation with wrongly typed array index#error
+eval/spec-tests.ion::section-4::array navigation#coerce
+eval/spec-tests.ion::section-4::array navigation#error
 eval/spec-tests.ion::section-4::path on string#coerce
 eval/spec-tests.ion::section-4::path on string#error
 eval/spec-tests.ion::section-4::tuple navigation missing attribute array notation#coerce
 eval/spec-tests.ion::section-4::tuple navigation missing attribute array notation#error
 eval/spec-tests.ion::section-4::tuple navigation missing attribute dot notation#coerce
 eval/spec-tests.ion::section-4::tuple navigation missing attribute dot notation#error
+eval/spec-tests.ion::section-4::tuple navigation with array notation without explicit CAST to string#coerce
+eval/spec-tests.ion::section-4::tuple navigation with array notation without explicit CAST to string#error
+eval/spec-tests.ion::section-7::data type mismatch in comparison expression#coerce
+eval/spec-tests.ion::section-7::data type mismatch in comparison expression#error
+eval/spec-tests.ion::section-7::data type mismatch in logical expression#error
+eval/spec-tests.ion::section-7::equality always returns boolean#coerce
+eval/spec-tests.ion::section-7::equality always returns boolean#error
+eval/spec-tests.ion::section-7::equality of arrays of different lengths#coerce
+eval/spec-tests.ion::section-7::equality of arrays of different lengths#error
+eval/spec-tests.ion::section-7::equality of different element bags#coerce
+eval/spec-tests.ion::section-7::equality of different element bags#error
+eval/spec-tests.ion::section-7::equality of different tuples with null attribute#coerce
+eval/spec-tests.ion::section-7::equality of different tuples with null attribute#error
+eval/spec-tests.ion::section-7::equality of different tuples#coerce
+eval/spec-tests.ion::section-7::equality of different tuples#error
+eval/spec-tests.ion::section-7::equality of equal tuples#coerce
+eval/spec-tests.ion::section-7::equality of equal tuples#error
+eval/spec-tests.ion::section-7::equality of missing in array#coerce
+eval/spec-tests.ion::section-7::equality of missing in array#error
+eval/spec-tests.ion::section-7::equality of mixed equal container types#coerce
+eval/spec-tests.ion::section-7::equality of mixed equal container types#error
+eval/spec-tests.ion::section-7::equality of mixed non equal container types with null#coerce
+eval/spec-tests.ion::section-7::equality of mixed non equal container types with null#error
+eval/spec-tests.ion::section-7::equality of mixed non equal container types#coerce
+eval/spec-tests.ion::section-7::equality of mixed non equal container types#error
+eval/spec-tests.ion::section-7::equality of null in array#coerce
+eval/spec-tests.ion::section-7::equality of null in array#error
+eval/spec-tests.ion::section-7::equality of same element bags#coerce
+eval/spec-tests.ion::section-7::equality of same element bags#error
+eval/spec-tests.ion::section-7::equality of scalar missing#coerce
+eval/spec-tests.ion::section-7::equality of scalar missing#error
+eval/spec-tests.ion::section-7::equality of scalar null#coerce
+eval/spec-tests.ion::section-7::equality of scalar null#error
+eval/spec-tests.ion::section-7::missing value in arithmetic expression#coerce
+eval/spec-tests.ion::section-7::missing value in arithmetic expression#error
+eval/spec-tests.ion::section-8::missing and true#coerce
+eval/spec-tests.ion::section-8::missing and true#error
 eval/spec-tests.ion::section-8::missing is missing#coerce
 eval/spec-tests.ion::section-8::missing is missing#error
+eval/spec-tests.ion::section-8::null and true#coerce
+eval/spec-tests.ion::section-8::null and true#error
 eval/spec-tests.ion::section-8::null is missing#coerce
 eval/spec-tests.ion::section-8::null is missing#error
+extended/eval/primitives/int.ion::division_by_zero_error::divide by zero{sql:"1 % 0"}#coerce
+extended/eval/primitives/int.ion::division_by_zero_error::divide by zero{sql:"1 % 0"}#error
+extended/eval/primitives/int.ion::division_by_zero_error::divide by zero{sql:"1 / 0"}#coerce
+extended/eval/primitives/int.ion::division_by_zero_error::divide by zero{sql:"1 / 0"}#error
+extended/eval/primitives/int.ion::int_overflow_error::int overflow and underflow conditions{sql:"-9223372036854775809"}#coerce
+extended/eval/primitives/int.ion::int_overflow_error::int overflow and underflow conditions{sql:"-9223372036854775809"}#error
+extended/eval/primitives/int.ion::int_overflow_error::int overflow and underflow conditions{sql:"9223372036854775808"}#coerce
+extended/eval/primitives/int.ion::int_overflow_error::int overflow and underflow conditions{sql:"9223372036854775808"}#error
+extended/eval/primitives/int.ion::int_overflow_error::int overflow and underflow conditions{sql:"max_int + 1"}#coerce
+extended/eval/primitives/int.ion::int_overflow_error::int overflow and underflow conditions{sql:"max_int + 1"}#error
+extended/eval/primitives/int.ion::int_overflow_error::int overflow and underflow conditions{sql:"max_int - -1"}#coerce
+extended/eval/primitives/int.ion::int_overflow_error::int overflow and underflow conditions{sql:"max_int - -1"}#error
+extended/eval/primitives/int.ion::int_overflow_error::int overflow and underflow conditions{sql:"min_int + -1"}#coerce
+extended/eval/primitives/int.ion::int_overflow_error::int overflow and underflow conditions{sql:"min_int + -1"}#error
+extended/eval/primitives/int.ion::int_overflow_error::int overflow and underflow conditions{sql:"min_int - 1"}#coerce
+extended/eval/primitives/int.ion::int_overflow_error::int overflow and underflow conditions{sql:"min_int - 1"}#error
+extended/eval/primitives/int.ion::int_overflow_error::int overflow and underflow conditions{sql:"min_int / - 1"}#coerce
+extended/eval/primitives/int.ion::int_overflow_error::int overflow and underflow conditions{sql:"min_int / - 1"}#error
+extended/eval/primitives/int.ion::int_overflow_error::int overflow and underflow conditions{sql:"one_tenth_of_max_int * 11"}#coerce
+extended/eval/primitives/int.ion::int_overflow_error::int overflow and underflow conditions{sql:"one_tenth_of_max_int * 11"}#error
+extended/eval/primitives/int.ion::int_overflow_error::int overflow and underflow conditions{sql:"one_tenth_of_min_int * -11"}#coerce
+extended/eval/primitives/int.ion::int_overflow_error::int overflow and underflow conditions{sql:"one_tenth_of_min_int * -11"}#error

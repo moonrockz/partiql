@@ -3,21 +3,68 @@ package "moonrockz/partiql-eval/ops"
 
 import {
   "moonbitlang/core/debug",
+  "moonrockz/ion/ion",
+  "moonrockz/partiql-syntax/ast",
   "moonrockz/partiql-value",
 }
 
 // Values
-pub fn all_elements(@partiql-value.Value) -> Array[@partiql-value.Value] raise TypeFailure
+pub fn add(@partiql-value.Value, @partiql-value.Value) -> @partiql-value.Value raise OpFailure
 
-pub fn all_fields(@partiql-value.Value) -> Array[@partiql-value.Value] raise TypeFailure
+pub fn all_elements(@partiql-value.Value) -> Array[@partiql-value.Value] raise OpFailure
 
-pub fn field(@partiql-value.Value, String, delimited~ : Bool) -> @partiql-value.Value raise TypeFailure
+pub fn all_fields(@partiql-value.Value) -> Array[@partiql-value.Value] raise OpFailure
 
-pub fn index(@partiql-value.Value, @partiql-value.Value, named~ : Bool) -> @partiql-value.Value raise TypeFailure
+pub fn and_(@partiql-value.Value, @partiql-value.Value) -> @partiql-value.Value raise OpFailure
+
+pub fn binary(@ast.BinaryOp, @partiql-value.Value, @partiql-value.Value) -> @partiql-value.Value raise OpFailure
+
+pub fn bool_test(@partiql-value.Value, Bool?, negated~ : Bool) -> Bool
+
+pub fn concat(@partiql-value.Value, @partiql-value.Value) -> @partiql-value.Value raise OpFailure
+
+pub fn div(@partiql-value.Value, @partiql-value.Value) -> @partiql-value.Value raise OpFailure
+
+pub fn equal(@partiql-value.Value, @partiql-value.Value) -> @partiql-value.Value
+
+pub fn field(@partiql-value.Value, String, delimited~ : Bool) -> @partiql-value.Value raise OpFailure
+
+pub fn greater(@partiql-value.Value, @partiql-value.Value) -> @partiql-value.Value raise OpFailure
+
+pub fn greater_eq(@partiql-value.Value, @partiql-value.Value) -> @partiql-value.Value raise OpFailure
+
+pub fn in_(@partiql-value.Value, @partiql-value.Value) -> @partiql-value.Value raise OpFailure
+
+pub fn index(@partiql-value.Value, @partiql-value.Value, named~ : Bool) -> @partiql-value.Value raise OpFailure
+
+pub fn is_type(@partiql-value.Value, @ast.DataType) -> @partiql-value.Value raise OpFailure
+
+pub fn less(@partiql-value.Value, @partiql-value.Value) -> @partiql-value.Value raise OpFailure
+
+pub fn less_eq(@partiql-value.Value, @partiql-value.Value) -> @partiql-value.Value raise OpFailure
+
+pub fn mul(@partiql-value.Value, @partiql-value.Value) -> @partiql-value.Value raise OpFailure
+
+pub fn neg(@partiql-value.Value, negate~ : Bool) -> @partiql-value.Value raise OpFailure
+
+pub fn not_(@partiql-value.Value) -> @partiql-value.Value raise OpFailure
+
+pub fn not_equal(@partiql-value.Value, @partiql-value.Value) -> @partiql-value.Value
+
+pub fn or_(@partiql-value.Value, @partiql-value.Value) -> @partiql-value.Value raise OpFailure
+
+pub fn parse_decimal(String) -> @ion.Decimal?
+
+pub fn rem(@partiql-value.Value, @partiql-value.Value) -> @partiql-value.Value raise OpFailure
+
+pub fn round_decimal(@ion.Decimal) -> @ion.Decimal
+
+pub fn sub(@partiql-value.Value, @partiql-value.Value) -> @partiql-value.Value raise OpFailure
 
 // Errors
-pub(all) suberror TypeFailure {
+pub(all) suberror OpFailure {
   TypeFailure(String)
+  DataFailure(String)
 } derive(Eq, @debug.Debug)
 
 // Types and methods

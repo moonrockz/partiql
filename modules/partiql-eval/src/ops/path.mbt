@@ -1,12 +1,15 @@
 ///|
-/// An operation was applied to a value of the wrong type. The interpreter adds
-/// the span and applies the mode rule (spec M4a §4).
-pub(all) suberror TypeFailure {
+/// Why an operation on values failed. The interpreter adds the span and
+/// applies the mode rule (spec M4a §4): a `TypeFailure` is MISSING in
+/// permissive mode and a type error in strict mode; a `DataFailure` (a bad
+/// value of the right type, such as a division by zero) is an error in both.
+pub(all) suberror OpFailure {
   TypeFailure(String)
+  DataFailure(String)
 } derive(Debug, Eq)
 
 ///|
-fn boxed(v : @value.Value) -> @value.Value raise TypeFailure {
+fn boxed(v : @value.Value) -> @value.Value raise OpFailure {
   v.lower() catch {
     _ => raise TypeFailure("a symbol without text")
   }
@@ -19,7 +22,7 @@ pub fn field(
   v : @value.Value,
   name : String,
   delimited~ : Bool,
-) -> @value.Value raise TypeFailure {
+) -> @value.Value raise OpFailure {
   match boxed(v) {
     Null => Missing
     Tuple(t) => {
@@ -45,7 +48,7 @@ pub fn index(
   v : @value.Value,
   i : @value.Value,
   named~ : Bool,
-) -> @value.Value raise TypeFailure {
+) -> @value.Value raise OpFailure {
   match (boxed(v), boxed(i)) {
     (Null, _) => Missing
     (List(items), Int(n)) =>
@@ -71,7 +74,7 @@ pub fn index(
 
 ///|
 /// `[*]`: the items of a list or bag.
-pub fn all_elements(v : @value.Value) -> Array[@value.Value] raise TypeFailure {
+pub fn all_elements(v : @value.Value) -> Array[@value.Value] raise OpFailure {
   match boxed(v) {
     List(items) => items
     Bag(b) => Array::from_iter(b.items().iter())
@@ -81,7 +84,7 @@ pub fn all_elements(v : @value.Value) -> Array[@value.Value] raise TypeFailure {
 
 ///|
 /// `.*`: the values of a tuple.
-pub fn all_fields(v : @value.Value) -> Array[@value.Value] raise TypeFailure {
+pub fn all_fields(v : @value.Value) -> Array[@value.Value] raise OpFailure {
   match boxed(v) {
     Tuple(t) => t.fields().iter().map(f => f.1).collect()
     _ => raise TypeFailure(".* of a value that is not a tuple")

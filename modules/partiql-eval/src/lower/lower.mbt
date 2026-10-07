@@ -1,49 +1,16 @@
 ///|
-fn integer_value(text : String) -> @value.Value {
-  @value.Value::integer(@bigint.BigInt::from_string(text))
-}
-
-///|
-/// The most digits a PartiQL decimal keeps (partiql-tests basic.ion,
-/// `decimalRoundUp` and `decimalRoundDown`).
-let max_decimal_digits : Int = 38
-
-///|
-/// Rounds a decimal to 38 significant digits, half to even.
-fn round_decimal(d : @ion_core.Decimal) -> @ion_core.Decimal {
-  let digits = d.coefficient().to_string()
-  let negative = digits.has_prefix("-")
-  let magnitude = if negative {
-    digits.view(start_offset=1).to_owned()
-  } else {
-    digits
+/// An integer literal. One outside Int64 is a `DataError`, in both modes
+/// (partiql-tests extended int.ion, `int_overflow_error`).
+fn integer_value(
+  text : String,
+  span : @ast.Span,
+) -> @value.Value raise @plan.EvalError {
+  let n = @bigint.BigInt::from_string(text)
+  if n.compare_int64(9223372036854775807L) > 0 ||
+    n.compare_int64(-9223372036854775808L) < 0 {
+    raise DataError(message="integer literal \{text} is out of range", span~)
   }
-  let drop = magnitude.length() - max_decimal_digits
-  if drop <= 0 {
-    return d
-  }
-  let kept = @bigint.BigInt::from_string(
-    magnitude.view(end_offset=max_decimal_digits).to_owned(),
-  )
-  let rest = magnitude.view(start_offset=max_decimal_digits).to_owned()
-  let half = "5" + "0".repeat(drop - 1)
-  let c = rest.lexical_compare(half)
-  let up = if c < 0 {
-    false
-  } else if c > 0 {
-    true
-  } else {
-    kept % @bigint.BigInt::from_int(2) == @bigint.BigInt::from_int(1)
-  }
-  let mut rounded = if up { kept + @bigint.BigInt::from_int(1) } else { kept }
-  let mut exponent = d.exponent() + drop
-  // A carry out of 38 nines gives 10^38 (39 digits): renormalize.
-  if rounded.to_string().length() > max_decimal_digits {
-    rounded = rounded / @bigint.BigInt::from_int(10)
-    exponent += 1
-  }
-  let signed = if negative { -rounded } else { rounded }
-  @ion_core.Decimal::new(signed, exponent)
+  Int(n.to_int64())
 }
 
 ///|
@@ -55,18 +22,18 @@ fn literal(
     Null => Null
     Missing => Missing
     Bool(b) => Bool(b)
-    Int(text) => integer_value(text)
+    Int(text) => integer_value(text, span)
     Decimal(text) =>
       try @ion_core.Decimal::parse(text) catch {
         _ => raise DataError(message="invalid decimal literal \{text}", span~)
       } noraise {
-        d => Decimal(round_decimal(d))
+        d => Decimal(@ops.round_decimal(d))
       }
+    // A number with an exponent is a decimal in PartiQL.
     Float(text) =>
-      try @string.parse_double(text) catch {
-        _ => raise DataError(message="invalid float literal \{text}", span~)
-      } noraise {
-        d => Float(d)
+      match @ops.parse_decimal(text) {
+        Some(d) => Decimal(@ops.round_decimal(d))
+        None => raise DataError(message="invalid float literal \{text}", span~)
       }
     String(s) => String(s)
     Ion(_, v) => @partiql_ion.from_ion_data(v)
@@ -127,15 +94,31 @@ pub fn lower(e : @ast.Expr) -> @plan.Expr raise @plan.EvalError {
     Parameter => unsupported("a parameter (later)", span)
     Error => raise DataError(message="a broken expression", span~)
     Path(base, steps) => Path(lower(base), steps.map(lower_step), span)
-    Unary(_, _) | Binary(_, _, _) => unsupported("an operator", span)
-    And(_, _) | Or(_, _) | Not(_) | BoolTest(_, _, ..) =>
-      unsupported("a logical operator", span)
-    Like(_, ..) | Between(_, ..) | In(_, _, ..) =>
-      unsupported("a predicate", span)
+    // `-9223372036854775808` is a literal: its magnitude is out of range.
+    Unary(Neg, { kind: Lit(Int(text)), .. }) =>
+      Const(integer_value("-" + text, span), span)
+    Unary(op, x) => Unary(op, lower(x), span)
+    Binary(op, l, r) => Binary(op, lower(l), lower(r), span)
+    And(l, r) => And(lower(l), lower(r), span)
+    Or(l, r) => Or(lower(l), lower(r), span)
+    Not(x) => Not(lower(x), span)
+    BoolTest(x, truth, negated~) => BoolTest(lower(x), truth, negated~, span)
+    Like(_, ..) => unsupported("LIKE (M4d)", span)
+    Between(x, low~, high~, negated~) =>
+      Between(lower(x), low=lower(low), high=lower(high), negated~, span)
+    In(x, c, negated~) => In(lower(x), lower(c), negated~, span)
     IsNull(x, negated~) => IsNull(lower(x), negated~, span)
     IsMissing(x, negated~) => IsMissing(lower(x), negated~, span)
-    IsType(_, _, ..) => unsupported("an IS type test", span)
-    Case(..) | Coalesce(_) | NullIf(_, _) => unsupported("a conditional", span)
+    IsType(x, t, negated~) => IsType(lower(x), t, negated~, span)
+    Case(operand~, branches~, default~) =>
+      Case(
+        operand=operand.map(lower),
+        branches=branches.map(b => (lower(b.0), lower(b.1))),
+        default=default.map(lower),
+        span,
+      )
+    Coalesce(items) => Coalesce(lower_all(items), span)
+    NullIf(a, b) => NullIf(lower(a), lower(b), span)
     Overlaps(_, _)
     | Cast(_, _)
     | Extract(_, _)

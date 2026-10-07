@@ -17,11 +17,12 @@ fn lookup(
 
 ///|
 /// Runs an operation. A type failure is MISSING in permissive mode and a
-/// `TypeError` in strict mode (spec M4a §4).
+/// `TypeError` in strict mode; a data failure is a `DataError` in both modes
+/// (spec M4a §4).
 fn typed(
   mode : @plan.Mode,
   span : @ast.Span,
-  op : () -> @value.Value raise @ops.TypeFailure,
+  op : () -> @value.Value raise @ops.OpFailure,
 ) -> @value.Value raise @plan.EvalError {
   op() catch {
     TypeFailure(message) =>
@@ -29,6 +30,7 @@ fn typed(
         Permissive => Missing
         Strict => raise TypeError(message~, span~)
       }
+    DataFailure(message) => raise DataError(message~, span~)
   }
 }
 
@@ -53,6 +55,7 @@ fn expand(
         Permissive => if v is Missing { [] } else { [v] }
         Strict => raise TypeError(message~, span~)
       }
+    DataFailure(message) => raise DataError(message~, span~)
   } noraise {
     items => items
   }
@@ -270,6 +273,51 @@ fn run_map(
 }
 
 ///|
+/// The result of a predicate under `NOT`: `NOT x`, or `x` itself.
+fn negate(
+  v : @value.Value,
+  negated : Bool,
+  mode : @plan.Mode,
+  span : @ast.Span,
+) -> @value.Value raise @plan.EvalError {
+  if negated {
+    typed(mode, span, () => @ops.not_(v))
+  } else {
+    v
+  }
+}
+
+///|
+/// `CASE`: the first branch whose condition is TRUE (searched), or whose
+/// `WHEN` value equals the operand (simple); else the default; else NULL.
+fn run_case(
+  operand : @plan.Expr?,
+  branches : Array[(@plan.Expr, @plan.Expr)],
+  default : @plan.Expr?,
+  env : Array[(String, @value.Value)],
+  mode : @plan.Mode,
+) -> @value.Value raise @plan.EvalError {
+  let subject = match operand {
+    Some(e) => Some(run(e, env, mode))
+    None => None
+  }
+  for branch in branches {
+    let condition = run(branch.0, env, mode)
+    let chosen = match subject {
+      Some(v) => @ops.equal(v, condition)
+      None => condition
+    }
+    if unboxed(chosen) is Bool(true) {
+      return run(branch.1, env, mode)
+    }
+  }
+  match default {
+    Some(e) => run(e, env, mode)
+    None => Null
+  }
+}
+
+///|
 fn span_of(e : @plan.Expr) -> @ast.Span {
   match e {
     Const(_, span)
@@ -280,7 +328,19 @@ fn span_of(e : @plan.Expr) -> @ast.Span {
     | MapOf(_, span)
     | Path(_, _, span)
     | IsNull(_, negated=_, span)
-    | IsMissing(_, negated=_, span) => span
+    | IsMissing(_, negated=_, span)
+    | Unary(_, _, span)
+    | Binary(_, _, _, span)
+    | And(_, _, span)
+    | Or(_, _, span)
+    | Not(_, span)
+    | BoolTest(_, _, negated=_, span)
+    | Between(_, low=_, high=_, negated=_, span)
+    | In(_, _, negated=_, span)
+    | IsType(_, _, negated=_, span)
+    | Case(operand=_, branches=_, default=_, span)
+    | Coalesce(_, span)
+    | NullIf(_, _, span) => span
   }
 }
 
@@ -308,5 +368,72 @@ pub fn run(
       Bool((v is Missing) != negated)
     }
     MapOf(entries, span) => run_map(entries, env, mode, span)
+    Unary(op, x, span) => {
+      let v = run(x, env, mode)
+      typed(mode, span, () => @ops.neg(v, negate=op is Neg))
+    }
+    Binary(op, l, r, span) => {
+      let a = run(l, env, mode)
+      let b = run(r, env, mode)
+      typed(mode, span, () => @ops.binary(op, a, b))
+    }
+    And(l, r, span) => {
+      let a = run(l, env, mode)
+      let b = run(r, env, mode)
+      typed(mode, span, () => @ops.and_(a, b))
+    }
+    Or(l, r, span) => {
+      let a = run(l, env, mode)
+      let b = run(r, env, mode)
+      typed(mode, span, () => @ops.or_(a, b))
+    }
+    Not(x, span) => {
+      let v = run(x, env, mode)
+      typed(mode, span, () => @ops.not_(v))
+    }
+    BoolTest(x, truth, negated~, _) =>
+      Bool(@ops.bool_test(run(x, env, mode), truth, negated~))
+    Between(x, low~, high~, negated~, span) => {
+      let v = run(x, env, mode)
+      let lo = run(low, env, mode)
+      let hi = run(high, env, mode)
+      let above = typed(mode, span, () => @ops.greater_eq(v, lo))
+      let below = typed(mode, span, () => @ops.less_eq(v, hi))
+      negate(
+        typed(mode, span, () => @ops.and_(above, below)),
+        negated,
+        mode,
+        span,
+      )
+    }
+    In(x, c, negated~, span) => {
+      let v = run(x, env, mode)
+      let items = run(c, env, mode)
+      negate(typed(mode, span, () => @ops.in_(v, items)), negated, mode, span)
+    }
+    IsType(x, t, negated~, span) => {
+      let v = run(x, env, mode)
+      negate(typed(mode, span, () => @ops.is_type(v, t)), negated, mode, span)
+    }
+    Case(operand~, branches~, default~, _) =>
+      run_case(operand, branches, default, env, mode)
+    Coalesce(items, _) => {
+      for item in items {
+        let v = run(item, env, mode)
+        if !(unboxed(v) is (Null | Missing)) {
+          return v
+        }
+      }
+      Null
+    }
+    NullIf(a, b, _) => {
+      let x = run(a, env, mode)
+      let y = run(b, env, mode)
+      if @ops.equal(x, y) is Bool(true) {
+        Null
+      } else {
+        x
+      }
+    }
   }
 }
