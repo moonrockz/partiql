@@ -3,6 +3,7 @@
 import {
   "moonrockz/partiql-value/ion" @partiql_ion,
   "moonrockz/partiql-syntax" @syntax,
+  "moonrockz/partiql-eval" @eval,
   "moonrockz/ion/ion",
   "moonrockz/ion/text",
   "moonbitlang/core/debug",

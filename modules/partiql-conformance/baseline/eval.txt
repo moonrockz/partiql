@@ -1,0 +1,93 @@
+eval/ion/primitives/null.ion::null::null pass through{sql:"`null.blob`",result:null.blob}#coerce
+eval/ion/primitives/null.ion::null::null pass through{sql:"`null.blob`",result:null.blob}#error
+eval/ion/primitives/null.ion::null::null pass through{sql:"`null.bool`",result:null.bool}#coerce
+eval/ion/primitives/null.ion::null::null pass through{sql:"`null.bool`",result:null.bool}#error
+eval/ion/primitives/null.ion::null::null pass through{sql:"`null.clob`",result:null.clob}#coerce
+eval/ion/primitives/null.ion::null::null pass through{sql:"`null.clob`",result:null.clob}#error
+eval/ion/primitives/null.ion::null::null pass through{sql:"`null.decimal`",result:null.decimal}#coerce
+eval/ion/primitives/null.ion::null::null pass through{sql:"`null.decimal`",result:null.decimal}#error
+eval/ion/primitives/null.ion::null::null pass through{sql:"`null.int`",result:null.int}#coerce
+eval/ion/primitives/null.ion::null::null pass through{sql:"`null.int`",result:null.int}#error
+eval/ion/primitives/null.ion::null::null pass through{sql:"`null.list`",result:null.list}#coerce
+eval/ion/primitives/null.ion::null::null pass through{sql:"`null.list`",result:null.list}#error
+eval/ion/primitives/null.ion::null::null pass through{sql:"`null.null`",result:null}#coerce
+eval/ion/primitives/null.ion::null::null pass through{sql:"`null.null`",result:null}#error
+eval/ion/primitives/null.ion::null::null pass through{sql:"`null.sexp`",result:null.sexp}#coerce
+eval/ion/primitives/null.ion::null::null pass through{sql:"`null.sexp`",result:null.sexp}#error
+eval/ion/primitives/null.ion::null::null pass through{sql:"`null.string`",result:null.string}#coerce
+eval/ion/primitives/null.ion::null::null pass through{sql:"`null.string`",result:null.string}#error
+eval/ion/primitives/null.ion::null::null pass through{sql:"`null.struct`",result:null.struct}#coerce
+eval/ion/primitives/null.ion::null::null pass through{sql:"`null.struct`",result:null.struct}#error
+eval/ion/primitives/null.ion::null::null pass through{sql:"`null.symbol`",result:null.symbol}#coerce
+eval/ion/primitives/null.ion::null::null pass through{sql:"`null.symbol`",result:null.symbol}#error
+eval/primitives/basic.ion::basic::bagLiteral#coerce
+eval/primitives/basic.ion::basic::bagLiteral#error
+eval/primitives/basic.ion::basic::emptyBagLiteral#coerce
+eval/primitives/basic.ion::basic::emptyBagLiteral#error
+eval/primitives/basic.ion::basic::emptyListLiteral#coerce
+eval/primitives/basic.ion::basic::emptyListLiteral#error
+eval/primitives/basic.ion::basic::emptyStructLiteral#coerce
+eval/primitives/basic.ion::basic::emptyStructLiteral#error
+eval/primitives/basic.ion::basic::grouping#coerce
+eval/primitives/basic.ion::basic::grouping#error
+eval/primitives/basic.ion::basic::identifier#coerce
+eval/primitives/basic.ion::basic::identifier#error
+eval/primitives/basic.ion::basic::identifierCaseMismatch#coerce
+eval/primitives/basic.ion::basic::identifierCaseMismatch#error
+eval/primitives/basic.ion::basic::lexicalScope#coerce
+eval/primitives/basic.ion::basic::lexicalScope#error
+eval/primitives/basic.ion::basic::listLiteral#coerce
+eval/primitives/basic.ion::basic::listLiteral#error
+eval/primitives/basic.ion::basic::literal#coerce
+eval/primitives/basic.ion::basic::literal#error
+eval/primitives/basic.ion::basic::quotedIdentifier#coerce
+eval/primitives/basic.ion::basic::quotedIdentifier#error
+eval/primitives/basic.ion::basic::rowValueConstructor#coerce
+eval/primitives/basic.ion::basic::rowValueConstructor#error
+eval/primitives/basic.ion::basic::structLiteral#coerce
+eval/primitives/basic.ion::basic::structLiteral#error
+eval/primitives/bool.ion::bool::boolean literals{sql:"false",r:false}#coerce
+eval/primitives/bool.ion::bool::boolean literals{sql:"false",r:false}#error
+eval/primitives/bool.ion::bool::boolean literals{sql:"true",r:true}#coerce
+eval/primitives/bool.ion::bool::boolean literals{sql:"true",r:true}#error
+eval/primitives/int.ion::int::int pass-through{sql:"1",result:1}#coerce
+eval/primitives/int.ion::int::int pass-through{sql:"1",result:1}#error
+eval/primitives/int.ion::int::int pass-through{sql:"9223372036854775807",result:9223372036854775807}#coerce
+eval/primitives/int.ion::int::int pass-through{sql:"9223372036854775807",result:9223372036854775807}#error
+eval/primitives/int.ion::int::leading zeros{sql:"00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001",result:1}#coerce
+eval/primitives/int.ion::int::leading zeros{sql:"00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001",result:1}#error
+eval/primitives/int.ion::int::leading zeros{sql:"000000000000001",result:1}#coerce
+eval/primitives/int.ion::int::leading zeros{sql:"000000000000001",result:1}#error
+eval/primitives/int.ion::int::leading zeros{sql:"00000000000001",result:1}#coerce
+eval/primitives/int.ion::int::leading zeros{sql:"00000000000001",result:1}#error
+eval/primitives/int.ion::int::leading zeros{sql:"0000000000001",result:1}#coerce
+eval/primitives/int.ion::int::leading zeros{sql:"0000000000001",result:1}#error
+eval/primitives/int.ion::int::leading zeros{sql:"000000000001",result:1}#coerce
+eval/primitives/int.ion::int::leading zeros{sql:"000000000001",result:1}#error
+eval/primitives/int.ion::int::leading zeros{sql:"00000000001",result:1}#coerce
+eval/primitives/int.ion::int::leading zeros{sql:"00000000001",result:1}#error
+eval/primitives/int.ion::int::leading zeros{sql:"0000000001",result:1}#coerce
+eval/primitives/int.ion::int::leading zeros{sql:"0000000001",result:1}#error
+eval/primitives/int.ion::int::leading zeros{sql:"000000001",result:1}#coerce
+eval/primitives/int.ion::int::leading zeros{sql:"000000001",result:1}#error
+eval/primitives/int.ion::int::leading zeros{sql:"00000001",result:1}#coerce
+eval/primitives/int.ion::int::leading zeros{sql:"00000001",result:1}#error
+eval/primitives/int.ion::int::leading zeros{sql:"0000001",result:1}#coerce
+eval/primitives/int.ion::int::leading zeros{sql:"0000001",result:1}#error
+eval/primitives/int.ion::int::leading zeros{sql:"000001",result:1}#coerce
+eval/primitives/int.ion::int::leading zeros{sql:"000001",result:1}#error
+eval/primitives/int.ion::int::leading zeros{sql:"00001",result:1}#coerce
+eval/primitives/int.ion::int::leading zeros{sql:"00001",result:1}#error
+eval/primitives/int.ion::int::leading zeros{sql:"0001",result:1}#coerce
+eval/primitives/int.ion::int::leading zeros{sql:"0001",result:1}#error
+eval/primitives/int.ion::int::leading zeros{sql:"001",result:1}#coerce
+eval/primitives/int.ion::int::leading zeros{sql:"001",result:1}#error
+eval/primitives/int.ion::int::leading zeros{sql:"01",result:1}#coerce
+eval/primitives/int.ion::int::leading zeros{sql:"01",result:1}#error
+eval/primitives/map.ion::map::construct a map with duplicate key keeps last value in permissive and errors in strict#error
+eval/primitives/null.ion::null::null comparison{sql:"MISSING",result:missing::null}#coerce
+eval/primitives/null.ion::null::null comparison{sql:"MISSING",result:missing::null}#error
+eval/primitives/null.ion::null::null comparison{sql:"NULL",result:null}#coerce
+eval/primitives/null.ion::null::null comparison{sql:"NULL",result:null}#error
+eval/query/undefined-variable-behavior.ion::undefined_variable_behavior::undefinedUnqualifiedVariableWithUndefinedVariableBehaviorMissing#coerce
+eval/query/undefined-variable-behavior.ion::undefined_variable_behavior::undefinedUnqualifiedVariableWithUndefinedVariableBehaviorMissing#error

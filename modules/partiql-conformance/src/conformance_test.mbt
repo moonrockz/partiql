@@ -50,6 +50,7 @@ fn run_case(
   print_roundtrip : Tally,
   pretty_roundtrip : Tally,
   recovery : Tally,
+  eval : Tally,
 ) -> Unit {
   let statements = suite.statements_of(case) catch {
     error => {
@@ -94,6 +95,40 @@ fn run_case(
       record_value("\{case.id}#output[\{i}]", output, codec, ion_roundtrip)
     }
   }
+  record_eval(case, statements, eval)
+}
+
+///|
+/// Evaluates each statement under each mode of each evaluation assertion.
+/// Equivalence-class statements are not applicable in M4a.
+fn record_eval(
+  case : TestCase,
+  statements : Array[String],
+  eval : Tally,
+) -> Unit {
+  let many = statements.length() > 1
+  for i, statement in statements {
+    let id = if many { "\{case.id}[\{i}]" } else { case.id }
+    for assertion in case.assertions {
+      let (modes, expected) = match assertion {
+        EvaluationSuccess(output~, modes~) => (modes, Some(Value(output)))
+        EvaluationFail(modes~) => (modes, Some(Failure))
+        _ => ([], None)
+      }
+      for mode in modes {
+        let name = match mode {
+          Coerce => "coerce"
+          Error => "error"
+        }
+        let outcome = match (case.statement, expected) {
+          (Text(_), Some(expected)) =>
+            check_eval(statement, case.env, mode, expected)
+          _ => NotApplicable
+        }
+        eval.record("\{id}#\{name}", outcome)
+      }
+    }
+  }
 }
 
 ///|
@@ -131,6 +166,7 @@ test "partiql-tests" {
   let print_roundtrip = Tally::new("print-roundtrip")
   let pretty_roundtrip = Tally::new("pretty-roundtrip")
   let recovery = Tally::new("recovery")
+  let eval = Tally::new("eval")
   for root in data_roots {
     if !@fs.path_exists(root) {
       continue
@@ -146,7 +182,7 @@ test "partiql-tests" {
       for case in suite.cases {
         run_case(
           suite, case, syntax, eval_parse, codec, ion_roundtrip, print_roundtrip,
-          pretty_roundtrip, recovery,
+          pretty_roundtrip, recovery, eval,
         )
       }
     }
@@ -158,7 +194,7 @@ test "partiql-tests" {
   for
     tally in [
       syntax, eval_parse, codec, ion_roundtrip, print_roundtrip, pretty_roundtrip,
-      recovery,
+      recovery, eval,
     ] {
     let comparison = compare(load_baseline(tally.check), tally.passed)
     report_conformance(
@@ -204,6 +240,7 @@ test "a case with several evaluation assertions is checked once per statement" {
   let print_roundtrip = Tally::new("print-roundtrip")
   let pretty_roundtrip = Tally::new("pretty-roundtrip")
   let recovery = Tally::new("recovery")
+  let eval = Tally::new("eval")
   run_case(
     suite,
     suite.cases[0],
@@ -214,6 +251,7 @@ test "a case with several evaluation assertions is checked once per statement" {
     print_roundtrip,
     pretty_roundtrip,
     recovery,
+    eval,
   )
   @expect.expect(eval_parse.records).to_equal(1)
   @expect.expect(syntax.records).to_equal(0)
