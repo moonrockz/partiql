@@ -47,8 +47,9 @@ interprets the plan. It does not interpret the syntax tree directly.
 
 ## Consequences
 
-- Each stage has its own tests. The operator laws test `ops` without a
-  parser.
+- Each stage has its own tests. The operator laws evaluate PartiQL text
+  with `evaluate_text`, so they test the parser, the lowering, the
+  interpreter and `ops` together.
 - Adding a surface form means changing `lower` only. Adding an operator
   means changing `plan`, `interp` and `ops`.
 - Static analysis can later read the plan without running it.

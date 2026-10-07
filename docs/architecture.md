@@ -118,12 +118,18 @@ graph TD
     expressions only; M4b adds relational operators (ADR 0006).
   - `lower`: syntax tree to plan. It desugars the surface forms, converts
     literals (numbers, datetimes, intervals, Ion) to values, and raises
-    `Unsupported` with a span for a form that is not evaluated yet.
+    `Unsupported` with a span for a form that is not evaluated yet, or for
+    a type parameter that `IS` does not check. Chains of binary operators,
+    AND and OR are lowered in a loop; any other nesting deeper than 200
+    levels (an Ion literal included) is a `DataError`, so no query text
+    overflows the stack.
   - `ops`: the semantics of each operator as pure functions on values:
     numeric and decimal arithmetic, comparison, three-valued logic, LIKE,
-    datetime and interval arithmetic, type tests and path steps.
+    datetime and interval arithmetic, type tests and path steps. `=`
+    compares the elements of collections with its own datetime rule, and
+    IN uses `=`.
   - `interp`: walks the plan with a `Mode` and the bindings, and applies
-    `ops`.
+    `ops`. Operator chains run in a loop.
 - `partiql`
   - root: the executable.
   - `cli`: `run(args, io?) -> Outcome`, with the commands `parse`, `check`,
