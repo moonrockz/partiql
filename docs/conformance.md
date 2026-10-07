@@ -63,6 +63,11 @@ per assertion and mode: `<id>#coerce` or `<id>#error`.
   as later parts of M4 add queries, functions and CAST.
 - `eval-equiv` cases are not applicable until M4b.
 
+Two cases (`eval/primitives/map.ion`, lines 850 and 1194) expect a DATE
+written as a plain Ion timestamp. Both are not applicable in M4a, because they
+need `map_keys` and UNPIVOT. When they run, the comparison must treat a DATE
+and a midnight UTC TIMESTAMP as equal.
+
 A test case whose `statement` names an `equiv_class` is checked once per
 statement of that class (ids end in `[0]`, `[1]`, ...). Test ids have the form
 `<file>::<namespace>::...::<name>`. A repeated id gets the suffix `#2`, `#3`,
@@ -181,8 +186,10 @@ reasons:
 - **DECIMAL(p,s) IS-type (4 ids).** `1.000 IS DECIMAL(3,3)` and
   `123.456 IS DECIMAL(7,3)` expect results that do not agree with the rules for precision and scale
   that the other cases of the corpus follow.
-- **Map key cast (2 ids).** "access map with cross-type cast integer to
-  decimal key" needs CAST of a map key (M4d).
+- **Map key match across numeric types (2 ids).** "access map with
+  cross-type cast integer to decimal key" is `MAP { 1.0: 'one', 2.0: 'two' }[1]`
+  and expects `'one'`. The lookup needs an integer to find the decimal key
+  `1.0`. The evaluator does not match map keys across numeric types yet.
 - **`a.*.*.*.*` in strict mode (1 id).** The corpus expects a failure. Every
   `.*` step applies to a tuple, so the evaluator succeeds; the corpus
   expectation is taken as an artifact.
