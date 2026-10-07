@@ -62,6 +62,7 @@ pub fn lower(e : @ast.Expr) -> @plan.Expr raise @plan.EvalError {
   match e.kind {
     Lit(l) => Const(literal(l, span), span)
     VarRef(id, qualified=_) => Global(id.text, delimited=id.delimited, span)
+    // Spec M4a §5: a sexp and a row are lists.
     List(items) | Sexp(items) | Row(items) => ListOf(lower_all(items), span)
     Bag(items) => BagOf(lower_all(items), span)
     Struct(fields) => TupleOf(lower_pairs(fields), span)

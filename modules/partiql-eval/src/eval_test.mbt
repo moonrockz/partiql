@@ -75,3 +75,12 @@ test "bindings and struct keys" {
     )
   })
 }
+
+///|
+test "sexp and row literals are lists" {
+  @expect.expect_all(soft => {
+    soft.expect(ev("SEXP(1, 2)")).to_equal(List([Int(1), Int(2)]))
+    soft.expect(ev("(1, 2)")).to_equal(List([Int(1), Int(2)]))
+    soft.expect(ev("ROW(1, 2)")).to_equal(List([Int(1), Int(2)]))
+  })
+}
