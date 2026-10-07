@@ -104,7 +104,26 @@ fn arithmetic(
 }
 
 ///|
+/// The datetime and interval rules, for two operands that are neither NULL
+/// nor MISSING; `None` leaves the pair to the number rules.
+fn datetime_first(
+  a : @value.Value,
+  b : @value.Value,
+  rule : (@value.Value, @value.Value) -> @value.Value? raise OpFailure,
+) -> @value.Value? raise OpFailure {
+  let x = boxed(a)
+  let y = boxed(b)
+  if x is (Missing | Null) || y is (Missing | Null) {
+    return None
+  }
+  rule(x, y)
+}
+
+///|
 pub fn add(a : @value.Value, b : @value.Value) -> @value.Value raise OpFailure {
+  if datetime_first(a, b, datetime_add) is Some(v) {
+    return v
+  }
   arithmetic(a, b, whole=(m, n) => whole_value(m + n), exact=decimal_add, approx=(
     p,
     q,
@@ -113,6 +132,9 @@ pub fn add(a : @value.Value, b : @value.Value) -> @value.Value raise OpFailure {
 
 ///|
 pub fn sub(a : @value.Value, b : @value.Value) -> @value.Value raise OpFailure {
+  if datetime_first(a, b, datetime_sub) is Some(v) {
+    return v
+  }
   arithmetic(a, b, whole=(m, n) => whole_value(m - n), exact=decimal_sub, approx=(
     p,
     q,
@@ -121,6 +143,9 @@ pub fn sub(a : @value.Value, b : @value.Value) -> @value.Value raise OpFailure {
 
 ///|
 pub fn mul(a : @value.Value, b : @value.Value) -> @value.Value raise OpFailure {
+  if datetime_first(a, b, datetime_mul) is Some(v) {
+    return v
+  }
   arithmetic(
     a,
     b,
@@ -134,6 +159,9 @@ pub fn mul(a : @value.Value, b : @value.Value) -> @value.Value raise OpFailure {
 /// Integer division truncates toward zero; a zero divisor of an integer or
 /// decimal is a `DataFailure`, a float divides as IEEE does.
 pub fn div(a : @value.Value, b : @value.Value) -> @value.Value raise OpFailure {
+  if datetime_first(a, b, datetime_div) is Some(v) {
+    return v
+  }
   arithmetic(
     a,
     b,
@@ -173,6 +201,15 @@ pub fn neg(v : @value.Value, negate~ : Bool) -> @value.Value raise OpFailure {
   let x = boxed(v)
   match x {
     Null | Missing => x
+    IntervalYM(_) | IntervalDT(_) =>
+      if negate {
+        match interval_neg(x) {
+          Some(v) => v
+          None => x
+        }
+      } else {
+        x
+      }
     _ =>
       match number(x) {
         None => raise TypeFailure("a sign on a value that is not a number")

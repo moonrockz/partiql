@@ -47,8 +47,13 @@ fn literal(
       }
     String(s) => String(s)
     Ion(_, v) => @partiql_ion.from_ion_data(v)
-    Date(_) | Time(_, ..) | Timestamp(_, ..) | Interval(_, ..) =>
-      raise Unsupported(message="datetime literals (M4a task 5)", span~)
+    Date(text) => Date(date_literal(text, span~))
+    Time(text, precision~, with_tz~) =>
+      Time(time_literal(text, precision, with_tz, span~))
+    Timestamp(text, precision~, with_tz~) =>
+      Timestamp(timestamp_literal(text, precision, with_tz, span~))
+    Interval(text, negative~, qualifier~) =>
+      interval_literal(text, negative~, qualifier~, span~)
   }
 }
 

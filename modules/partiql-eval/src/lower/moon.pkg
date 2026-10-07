@@ -8,4 +8,6 @@ import {
   "moonrockz/partiql-value/ion" @partiql_ion,
   "moonrockz/ion/ion" @ion_core,
   "moonbitlang/core/bigint",
+  "moonbitlang/core/string",
+  "moonbitlang/core/debug",
 }

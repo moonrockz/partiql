@@ -550,6 +550,114 @@ eval/primitives/int.ion::int::leading zeros{sql:"01",result:1}#coerce
 eval/primitives/int.ion::int::leading zeros{sql:"01",result:1}#error
 eval/primitives/int.ion::int::negative zero equality#coerce
 eval/primitives/int.ion::int::negative zero equality#error
+eval/primitives/interval.ion::interval::interval day - out of range#coerce
+eval/primitives/interval.ion::interval::interval day - out of range#error
+eval/primitives/interval.ion::interval::interval day hour mixed#coerce
+eval/primitives/interval.ion::interval::interval day hour mixed#error
+eval/primitives/interval.ion::interval::interval day minute mixed#coerce
+eval/primitives/interval.ion::interval::interval day minute mixed#error
+eval/primitives/interval.ion::interval::interval day negative#coerce
+eval/primitives/interval.ion::interval::interval day negative#error
+eval/primitives/interval.ion::interval::interval day positive#coerce
+eval/primitives/interval.ion::interval::interval day positive#error
+eval/primitives/interval.ion::interval::interval day second mixed#coerce
+eval/primitives/interval.ion::interval::interval day second mixed#error
+eval/primitives/interval.ion::interval::interval day second with decimal#coerce
+eval/primitives/interval.ion::interval::interval day second with decimal#error
+eval/primitives/interval.ion::interval::interval day to hour with precision#coerce
+eval/primitives/interval.ion::interval::interval day to hour with precision#error
+eval/primitives/interval.ion::interval::interval day to minute negative with precision#coerce
+eval/primitives/interval.ion::interval::interval day to minute negative with precision#error
+eval/primitives/interval.ion::interval::interval day to second with precision#coerce
+eval/primitives/interval.ion::interval::interval day to second with precision#error
+eval/primitives/interval.ion::interval::interval day-hour - out of range#coerce
+eval/primitives/interval.ion::interval::interval day-hour - out of range#error
+eval/primitives/interval.ion::interval::interval day-minute - out of range#coerce
+eval/primitives/interval.ion::interval::interval day-minute - out of range#error
+eval/primitives/interval.ion::interval::interval day-second - out of range#coerce
+eval/primitives/interval.ion::interval::interval day-second - out of range#error
+eval/primitives/interval.ion::interval::interval hour minute mixed#coerce
+eval/primitives/interval.ion::interval::interval hour minute mixed#error
+eval/primitives/interval.ion::interval::interval hour negative#coerce
+eval/primitives/interval.ion::interval::interval hour negative#error
+eval/primitives/interval.ion::interval::interval hour positive#coerce
+eval/primitives/interval.ion::interval::interval hour positive#error
+eval/primitives/interval.ion::interval::interval hour second mixed#coerce
+eval/primitives/interval.ion::interval::interval hour second mixed#error
+eval/primitives/interval.ion::interval::interval hour second with decimal negative#coerce
+eval/primitives/interval.ion::interval::interval hour second with decimal negative#error
+eval/primitives/interval.ion::interval::interval hour to second negative with precision - flow over#coerce
+eval/primitives/interval.ion::interval::interval hour to second negative with precision - flow over#error
+eval/primitives/interval.ion::interval::interval hour to second negative with precision - truncate mixed flow over#coerce
+eval/primitives/interval.ion::interval::interval hour to second negative with precision - truncate mixed flow over#error
+eval/primitives/interval.ion::interval::interval hour with precision - flow over#coerce
+eval/primitives/interval.ion::interval::interval hour with precision - flow over#error
+eval/primitives/interval.ion::interval::interval hour-minute - out of range#coerce
+eval/primitives/interval.ion::interval::interval hour-minute - out of range#error
+eval/primitives/interval.ion::interval::interval minute - out of range#coerce
+eval/primitives/interval.ion::interval::interval minute - out of range#error
+eval/primitives/interval.ion::interval::interval minute negative#coerce
+eval/primitives/interval.ion::interval::interval minute negative#error
+eval/primitives/interval.ion::interval::interval minute positive#coerce
+eval/primitives/interval.ion::interval::interval minute positive#error
+eval/primitives/interval.ion::interval::interval minute second mixed#coerce
+eval/primitives/interval.ion::interval::interval minute second mixed#error
+eval/primitives/interval.ion::interval::interval minute second with decimal#coerce
+eval/primitives/interval.ion::interval::interval minute second with decimal#error
+eval/primitives/interval.ion::interval::interval minute to second negative with precision - flow over#coerce
+eval/primitives/interval.ion::interval::interval minute to second negative with precision - flow over#error
+eval/primitives/interval.ion::interval::interval month - out of range#coerce
+eval/primitives/interval.ion::interval::interval month - out of range#error
+eval/primitives/interval.ion::interval::interval month negative with precision - flow over#coerce
+eval/primitives/interval.ion::interval::interval month negative with precision - flow over#error
+eval/primitives/interval.ion::interval::interval month negative#coerce
+eval/primitives/interval.ion::interval::interval month negative#error
+eval/primitives/interval.ion::interval::interval month positive#coerce
+eval/primitives/interval.ion::interval::interval month positive#error
+eval/primitives/interval.ion::interval::interval month with precision - flow over#coerce
+eval/primitives/interval.ion::interval::interval month with precision - flow over#error
+eval/primitives/interval.ion::interval::interval nano - out of range#coerce
+eval/primitives/interval.ion::interval::interval nano - out of range#error
+eval/primitives/interval.ion::interval::interval nano negative#coerce
+eval/primitives/interval.ion::interval::interval nano negative#error
+eval/primitives/interval.ion::interval::interval nano positive#coerce
+eval/primitives/interval.ion::interval::interval nano positive#error
+eval/primitives/interval.ion::interval::interval nano#coerce
+eval/primitives/interval.ion::interval::interval nano#error
+eval/primitives/interval.ion::interval::interval second - out of range#coerce
+eval/primitives/interval.ion::interval::interval second - out of range#error
+eval/primitives/interval.ion::interval::interval second decimal microseconds#coerce
+eval/primitives/interval.ion::interval::interval second decimal microseconds#error
+eval/primitives/interval.ion::interval::interval second decimal nanoseconds - truncate#coerce
+eval/primitives/interval.ion::interval::interval second decimal nanoseconds - truncate#error
+eval/primitives/interval.ion::interval::interval second fractional precision - truncate mixed flow over#coerce
+eval/primitives/interval.ion::interval::interval second fractional precision - truncate mixed flow over#error
+eval/primitives/interval.ion::interval::interval second fractional precision - truncate#coerce
+eval/primitives/interval.ion::interval::interval second fractional precision - truncate#error
+eval/primitives/interval.ion::interval::interval second negative decimal#coerce
+eval/primitives/interval.ion::interval::interval second negative decimal#error
+eval/primitives/interval.ion::interval::interval second negative#coerce
+eval/primitives/interval.ion::interval::interval second negative#error
+eval/primitives/interval.ion::interval::interval second positive#coerce
+eval/primitives/interval.ion::interval::interval second positive#error
+eval/primitives/interval.ion::interval::interval second(3,6) with precision and fractional precision - flow over#coerce
+eval/primitives/interval.ion::interval::interval second(3,6) with precision and fractional precision - flow over#error
+eval/primitives/interval.ion::interval::interval second(6,6) with precision and fractional precision - flow over#coerce
+eval/primitives/interval.ion::interval::interval second(6,6) with precision and fractional precision - flow over#error
+eval/primitives/interval.ion::interval::interval year month mixed negative#coerce
+eval/primitives/interval.ion::interval::interval year month mixed negative#error
+eval/primitives/interval.ion::interval::interval year month mixed positive#coerce
+eval/primitives/interval.ion::interval::interval year month mixed positive#error
+eval/primitives/interval.ion::interval::interval year negative#coerce
+eval/primitives/interval.ion::interval::interval year negative#error
+eval/primitives/interval.ion::interval::interval year positive#coerce
+eval/primitives/interval.ion::interval::interval year positive#error
+eval/primitives/interval.ion::interval::interval year to month with precision#coerce
+eval/primitives/interval.ion::interval::interval year to month with precision#error
+eval/primitives/interval.ion::interval::interval year#coerce
+eval/primitives/interval.ion::interval::interval year#error
+eval/primitives/interval.ion::interval::interval year-month - out of range#coerce
+eval/primitives/interval.ion::interval::interval year-month - out of range#error
 eval/primitives/logical.ion::logical::andFalseFalse#coerce
 eval/primitives/logical.ion::logical::andFalseFalse#error
 eval/primitives/logical.ion::logical::andFalseMissing#coerce
@@ -648,6 +756,8 @@ eval/primitives/map.ion::map::access map from environment variable#coerce
 eval/primitives/map.ion::map::access map from environment variable#error
 eval/primitives/map.ion::map::access map with boolean key#coerce
 eval/primitives/map.ion::map::access map with boolean key#error
+eval/primitives/map.ion::map::access map with date key#coerce
+eval/primitives/map.ion::map::access map with date key#error
 eval/primitives/map.ion::map::access map with integer key not found returns missing#coerce
 eval/primitives/map.ion::map::access map with integer key not found returns missing#error
 eval/primitives/map.ion::map::access map with integer key returns the value#coerce
@@ -658,6 +768,10 @@ eval/primitives/map.ion::map::access map with missing key returns missing#coerce
 eval/primitives/map.ion::map::access map with missing key returns missing#error
 eval/primitives/map.ion::map::access map with null key returns null#coerce
 eval/primitives/map.ion::map::access map with null key returns null#error
+eval/primitives/map.ion::map::access map with time key#coerce
+eval/primitives/map.ion::map::access map with time key#error
+eval/primitives/map.ion::map::access map with timestamp key#coerce
+eval/primitives/map.ion::map::access map with timestamp key#error
 eval/primitives/map.ion::map::construct a map with all MISSING values produces empty map#coerce
 eval/primitives/map.ion::map::construct a map with all MISSING values produces empty map#error
 eval/primitives/map.ion::map::construct a map with boolean keys#coerce
@@ -666,6 +780,8 @@ eval/primitives/map.ion::map::construct a map with compatible heterogeneous keys
 eval/primitives/map.ion::map::construct a map with compatible heterogeneous keys coerces to common type#error
 eval/primitives/map.ion::map::construct a map with compatible heterogeneous values coerces to common type#coerce
 eval/primitives/map.ion::map::construct a map with compatible heterogeneous values coerces to common type#error
+eval/primitives/map.ion::map::construct a map with date keys#coerce
+eval/primitives/map.ion::map::construct a map with date keys#error
 eval/primitives/map.ion::map::construct a map with decimal keys#coerce
 eval/primitives/map.ion::map::construct a map with decimal keys#error
 eval/primitives/map.ion::map::construct a map with duplicate key keeps last value in permissive and errors in strict#coerce
@@ -1562,6 +1678,20 @@ eval/primitives/null.ion::null::null comparison{sql:"NULL IS NULL",result:true}#
 eval/primitives/null.ion::null::null comparison{sql:"NULL IS NULL",result:true}#error
 eval/primitives/null.ion::null::null comparison{sql:"NULL",result:null}#coerce
 eval/primitives/null.ion::null::null comparison{sql:"NULL",result:null}#error
+eval/primitives/operators/between-operator.ion::between::between date date date false#coerce
+eval/primitives/operators/between-operator.ion::between::between date date date false#error
+eval/primitives/operators/between-operator.ion::between::between date date date true#coerce
+eval/primitives/operators/between-operator.ion::between::between date date date true#error
+eval/primitives/operators/between-operator.ion::between::between date date timestamp true#coerce
+eval/primitives/operators/between-operator.ion::between::between date date timestamp true#error
+eval/primitives/operators/between-operator.ion::between::between date timestamp timestamp false#coerce
+eval/primitives/operators/between-operator.ion::between::between date timestamp timestamp false#error
+eval/primitives/operators/between-operator.ion::between::between date timestamp timestamp true#coerce
+eval/primitives/operators/between-operator.ion::between::between date timestamp timestamp true#error
+eval/primitives/operators/between-operator.ion::between::between date timestampz timestampz false#coerce
+eval/primitives/operators/between-operator.ion::between::between date timestampz timestampz false#error
+eval/primitives/operators/between-operator.ion::between::between date timestampz timestampz true#coerce
+eval/primitives/operators/between-operator.ion::between::between date timestampz timestampz true#error
 eval/primitives/operators/between-operator.ion::between::between mixed types decimal decimal int false#coerce
 eval/primitives/operators/between-operator.ion::between::between mixed types decimal decimal int false#error
 eval/primitives/operators/between-operator.ion::between::between mixed types decimal int decimal false#coerce
@@ -1582,6 +1712,324 @@ eval/primitives/operators/between-operator.ion::between::between same decimal ty
 eval/primitives/operators/between-operator.ion::between::between same decimal types#error
 eval/primitives/operators/between-operator.ion::between::between same integer types#coerce
 eval/primitives/operators/between-operator.ion::between::between same integer types#error
+eval/primitives/operators/between-operator.ion::between::between time time time boundary#coerce
+eval/primitives/operators/between-operator.ion::between::between time time time boundary#error
+eval/primitives/operators/between-operator.ion::between::between time time time false#coerce
+eval/primitives/operators/between-operator.ion::between::between time time time false#error
+eval/primitives/operators/between-operator.ion::between::between time time time true#coerce
+eval/primitives/operators/between-operator.ion::between::between time time time true#error
+eval/primitives/operators/between-operator.ion::between::between time timez timez false#coerce
+eval/primitives/operators/between-operator.ion::between::between time timez timez false#error
+eval/primitives/operators/between-operator.ion::between::between time timez timez true#coerce
+eval/primitives/operators/between-operator.ion::between::between time timez timez true#error
+eval/primitives/operators/between-operator.ion::between::between timestamp date date false#coerce
+eval/primitives/operators/between-operator.ion::between::between timestamp date date false#error
+eval/primitives/operators/between-operator.ion::between::between timestamp date date true#coerce
+eval/primitives/operators/between-operator.ion::between::between timestamp date date true#error
+eval/primitives/operators/between-operator.ion::between::between timestamp date timestamp true#coerce
+eval/primitives/operators/between-operator.ion::between::between timestamp date timestamp true#error
+eval/primitives/operators/between-operator.ion::between::between timestamp timestamp date true#coerce
+eval/primitives/operators/between-operator.ion::between::between timestamp timestamp date true#error
+eval/primitives/operators/between-operator.ion::between::between timestamp timestamp timestamp false#coerce
+eval/primitives/operators/between-operator.ion::between::between timestamp timestamp timestamp false#error
+eval/primitives/operators/between-operator.ion::between::between timestamp timestamp timestamp true#coerce
+eval/primitives/operators/between-operator.ion::between::between timestamp timestamp timestamp true#error
+eval/primitives/operators/between-operator.ion::between::between timestampz date date false#coerce
+eval/primitives/operators/between-operator.ion::between::between timestampz date date false#error
+eval/primitives/operators/between-operator.ion::between::between timestampz date date true#coerce
+eval/primitives/operators/between-operator.ion::between::between timestampz date date true#error
+eval/primitives/operators/comparison.ion::date_vs_date::date_eq_different#coerce
+eval/primitives/operators/comparison.ion::date_vs_date::date_eq_different#error
+eval/primitives/operators/comparison.ion::date_vs_date::date_eq_same#coerce
+eval/primitives/operators/comparison.ion::date_vs_date::date_eq_same#error
+eval/primitives/operators/comparison.ion::date_vs_date::date_gt_false#coerce
+eval/primitives/operators/comparison.ion::date_vs_date::date_gt_false#error
+eval/primitives/operators/comparison.ion::date_vs_date::date_gt_true#coerce
+eval/primitives/operators/comparison.ion::date_vs_date::date_gt_true#error
+eval/primitives/operators/comparison.ion::date_vs_date::date_gte_false#coerce
+eval/primitives/operators/comparison.ion::date_vs_date::date_gte_false#error
+eval/primitives/operators/comparison.ion::date_vs_date::date_gte_true_equal#coerce
+eval/primitives/operators/comparison.ion::date_vs_date::date_gte_true_equal#error
+eval/primitives/operators/comparison.ion::date_vs_date::date_gte_true_greater#coerce
+eval/primitives/operators/comparison.ion::date_vs_date::date_gte_true_greater#error
+eval/primitives/operators/comparison.ion::date_vs_date::date_lt_false#coerce
+eval/primitives/operators/comparison.ion::date_vs_date::date_lt_false#error
+eval/primitives/operators/comparison.ion::date_vs_date::date_lt_true#coerce
+eval/primitives/operators/comparison.ion::date_vs_date::date_lt_true#error
+eval/primitives/operators/comparison.ion::date_vs_date::date_lte_false#coerce
+eval/primitives/operators/comparison.ion::date_vs_date::date_lte_false#error
+eval/primitives/operators/comparison.ion::date_vs_date::date_lte_true_equal#coerce
+eval/primitives/operators/comparison.ion::date_vs_date::date_lte_true_equal#error
+eval/primitives/operators/comparison.ion::date_vs_date::date_lte_true_less#coerce
+eval/primitives/operators/comparison.ion::date_vs_date::date_lte_true_less#error
+eval/primitives/operators/comparison.ion::date_vs_date::date_neq_different#coerce
+eval/primitives/operators/comparison.ion::date_vs_date::date_neq_different#error
+eval/primitives/operators/comparison.ion::date_vs_date::date_neq_different_alt#coerce
+eval/primitives/operators/comparison.ion::date_vs_date::date_neq_different_alt#error
+eval/primitives/operators/comparison.ion::date_vs_date::date_neq_same#coerce
+eval/primitives/operators/comparison.ion::date_vs_date::date_neq_same#error
+eval/primitives/operators/comparison.ion::date_vs_date::date_neq_same_alt#coerce
+eval/primitives/operators/comparison.ion::date_vs_date::date_neq_same_alt#error
+eval/primitives/operators/comparison.ion::date_vs_timestamp::date_vs_timestamp_eq_false#coerce
+eval/primitives/operators/comparison.ion::date_vs_timestamp::date_vs_timestamp_eq_false#error
+eval/primitives/operators/comparison.ion::date_vs_timestamp::date_vs_timestamp_eq_true#coerce
+eval/primitives/operators/comparison.ion::date_vs_timestamp::date_vs_timestamp_eq_true#error
+eval/primitives/operators/comparison.ion::date_vs_timestamp::date_vs_timestamp_gt_false#coerce
+eval/primitives/operators/comparison.ion::date_vs_timestamp::date_vs_timestamp_gt_false#error
+eval/primitives/operators/comparison.ion::date_vs_timestamp::date_vs_timestamp_gt_true#coerce
+eval/primitives/operators/comparison.ion::date_vs_timestamp::date_vs_timestamp_gt_true#error
+eval/primitives/operators/comparison.ion::date_vs_timestamp::date_vs_timestamp_gte_false#coerce
+eval/primitives/operators/comparison.ion::date_vs_timestamp::date_vs_timestamp_gte_false#error
+eval/primitives/operators/comparison.ion::date_vs_timestamp::date_vs_timestamp_gte_true_equal#coerce
+eval/primitives/operators/comparison.ion::date_vs_timestamp::date_vs_timestamp_gte_true_equal#error
+eval/primitives/operators/comparison.ion::date_vs_timestamp::date_vs_timestamp_lt_false#coerce
+eval/primitives/operators/comparison.ion::date_vs_timestamp::date_vs_timestamp_lt_false#error
+eval/primitives/operators/comparison.ion::date_vs_timestamp::date_vs_timestamp_lt_true#coerce
+eval/primitives/operators/comparison.ion::date_vs_timestamp::date_vs_timestamp_lt_true#error
+eval/primitives/operators/comparison.ion::date_vs_timestamp::date_vs_timestamp_lte_true_equal#coerce
+eval/primitives/operators/comparison.ion::date_vs_timestamp::date_vs_timestamp_lte_true_equal#error
+eval/primitives/operators/comparison.ion::date_vs_timestamp::date_vs_timestamp_lte_true_less#coerce
+eval/primitives/operators/comparison.ion::date_vs_timestamp::date_vs_timestamp_lte_true_less#error
+eval/primitives/operators/comparison.ion::date_vs_timestamp::date_vs_timestamp_neq_false#coerce
+eval/primitives/operators/comparison.ion::date_vs_timestamp::date_vs_timestamp_neq_false#error
+eval/primitives/operators/comparison.ion::date_vs_timestamp::date_vs_timestamp_neq_true#coerce
+eval/primitives/operators/comparison.ion::date_vs_timestamp::date_vs_timestamp_neq_true#error
+eval/primitives/operators/comparison.ion::date_vs_timestamp::date_vs_timestamp_neq_true_alt#coerce
+eval/primitives/operators/comparison.ion::date_vs_timestamp::date_vs_timestamp_neq_true_alt#error
+eval/primitives/operators/comparison.ion::date_vs_timestampz::date_vs_timestampz_eq_false#coerce
+eval/primitives/operators/comparison.ion::date_vs_timestampz::date_vs_timestampz_eq_false#error
+eval/primitives/operators/comparison.ion::date_vs_timestampz::date_vs_timestampz_eq_true#coerce
+eval/primitives/operators/comparison.ion::date_vs_timestampz::date_vs_timestampz_eq_true#error
+eval/primitives/operators/comparison.ion::date_vs_timestampz::date_vs_timestampz_gt_false#coerce
+eval/primitives/operators/comparison.ion::date_vs_timestampz::date_vs_timestampz_gt_false#error
+eval/primitives/operators/comparison.ion::date_vs_timestampz::date_vs_timestampz_gt_true#coerce
+eval/primitives/operators/comparison.ion::date_vs_timestampz::date_vs_timestampz_gt_true#error
+eval/primitives/operators/comparison.ion::date_vs_timestampz::date_vs_timestampz_gte_false#coerce
+eval/primitives/operators/comparison.ion::date_vs_timestampz::date_vs_timestampz_gte_false#error
+eval/primitives/operators/comparison.ion::date_vs_timestampz::date_vs_timestampz_gte_true_equal#coerce
+eval/primitives/operators/comparison.ion::date_vs_timestampz::date_vs_timestampz_gte_true_equal#error
+eval/primitives/operators/comparison.ion::date_vs_timestampz::date_vs_timestampz_lt_false#coerce
+eval/primitives/operators/comparison.ion::date_vs_timestampz::date_vs_timestampz_lt_false#error
+eval/primitives/operators/comparison.ion::date_vs_timestampz::date_vs_timestampz_lt_true#coerce
+eval/primitives/operators/comparison.ion::date_vs_timestampz::date_vs_timestampz_lt_true#error
+eval/primitives/operators/comparison.ion::date_vs_timestampz::date_vs_timestampz_lte_true_equal#coerce
+eval/primitives/operators/comparison.ion::date_vs_timestampz::date_vs_timestampz_lte_true_equal#error
+eval/primitives/operators/comparison.ion::date_vs_timestampz::date_vs_timestampz_lte_true_less#coerce
+eval/primitives/operators/comparison.ion::date_vs_timestampz::date_vs_timestampz_lte_true_less#error
+eval/primitives/operators/comparison.ion::date_vs_timestampz::date_vs_timestampz_neq_false#coerce
+eval/primitives/operators/comparison.ion::date_vs_timestampz::date_vs_timestampz_neq_false#error
+eval/primitives/operators/comparison.ion::date_vs_timestampz::date_vs_timestampz_neq_true#coerce
+eval/primitives/operators/comparison.ion::date_vs_timestampz::date_vs_timestampz_neq_true#error
+eval/primitives/operators/comparison.ion::date_vs_timestampz::date_vs_timestampz_neq_true_alt#coerce
+eval/primitives/operators/comparison.ion::date_vs_timestampz::date_vs_timestampz_neq_true_alt#error
+eval/primitives/operators/comparison.ion::time_vs_time::time_eq_different#coerce
+eval/primitives/operators/comparison.ion::time_vs_time::time_eq_different#error
+eval/primitives/operators/comparison.ion::time_vs_time::time_eq_same#coerce
+eval/primitives/operators/comparison.ion::time_vs_time::time_eq_same#error
+eval/primitives/operators/comparison.ion::time_vs_time::time_gt_false#coerce
+eval/primitives/operators/comparison.ion::time_vs_time::time_gt_false#error
+eval/primitives/operators/comparison.ion::time_vs_time::time_gt_true#coerce
+eval/primitives/operators/comparison.ion::time_vs_time::time_gt_true#error
+eval/primitives/operators/comparison.ion::time_vs_time::time_gte_false#coerce
+eval/primitives/operators/comparison.ion::time_vs_time::time_gte_false#error
+eval/primitives/operators/comparison.ion::time_vs_time::time_gte_true_equal#coerce
+eval/primitives/operators/comparison.ion::time_vs_time::time_gte_true_equal#error
+eval/primitives/operators/comparison.ion::time_vs_time::time_gte_true_greater#coerce
+eval/primitives/operators/comparison.ion::time_vs_time::time_gte_true_greater#error
+eval/primitives/operators/comparison.ion::time_vs_time::time_lt_false#coerce
+eval/primitives/operators/comparison.ion::time_vs_time::time_lt_false#error
+eval/primitives/operators/comparison.ion::time_vs_time::time_lt_true#coerce
+eval/primitives/operators/comparison.ion::time_vs_time::time_lt_true#error
+eval/primitives/operators/comparison.ion::time_vs_time::time_lte_false#coerce
+eval/primitives/operators/comparison.ion::time_vs_time::time_lte_false#error
+eval/primitives/operators/comparison.ion::time_vs_time::time_lte_true_equal#coerce
+eval/primitives/operators/comparison.ion::time_vs_time::time_lte_true_equal#error
+eval/primitives/operators/comparison.ion::time_vs_time::time_lte_true_less#coerce
+eval/primitives/operators/comparison.ion::time_vs_time::time_lte_true_less#error
+eval/primitives/operators/comparison.ion::time_vs_time::time_neq_different#coerce
+eval/primitives/operators/comparison.ion::time_vs_time::time_neq_different#error
+eval/primitives/operators/comparison.ion::time_vs_time::time_neq_different_alt#coerce
+eval/primitives/operators/comparison.ion::time_vs_time::time_neq_different_alt#error
+eval/primitives/operators/comparison.ion::time_vs_time::time_neq_same#coerce
+eval/primitives/operators/comparison.ion::time_vs_time::time_neq_same#error
+eval/primitives/operators/comparison.ion::time_vs_time::time_neq_same_alt#coerce
+eval/primitives/operators/comparison.ion::time_vs_time::time_neq_same_alt#error
+eval/primitives/operators/comparison.ion::time_vs_time::time_precision_comparison#coerce
+eval/primitives/operators/comparison.ion::time_vs_time::time_precision_comparison#error
+eval/primitives/operators/comparison.ion::time_vs_timetz::time_vs_timetz_eq_false#coerce
+eval/primitives/operators/comparison.ion::time_vs_timetz::time_vs_timetz_eq_false#error
+eval/primitives/operators/comparison.ion::time_vs_timetz::time_vs_timetz_gt#coerce
+eval/primitives/operators/comparison.ion::time_vs_timetz::time_vs_timetz_gt#error
+eval/primitives/operators/comparison.ion::time_vs_timetz::time_vs_timetz_gte_false#coerce
+eval/primitives/operators/comparison.ion::time_vs_timetz::time_vs_timetz_gte_false#error
+eval/primitives/operators/comparison.ion::time_vs_timetz::time_vs_timetz_gte_true#coerce
+eval/primitives/operators/comparison.ion::time_vs_timetz::time_vs_timetz_gte_true#error
+eval/primitives/operators/comparison.ion::time_vs_timetz::time_vs_timetz_lt#coerce
+eval/primitives/operators/comparison.ion::time_vs_timetz::time_vs_timetz_lt#error
+eval/primitives/operators/comparison.ion::time_vs_timetz::time_vs_timetz_lte_false#coerce
+eval/primitives/operators/comparison.ion::time_vs_timetz::time_vs_timetz_lte_false#error
+eval/primitives/operators/comparison.ion::time_vs_timetz::time_vs_timetz_lte_true#coerce
+eval/primitives/operators/comparison.ion::time_vs_timetz::time_vs_timetz_lte_true#error
+eval/primitives/operators/comparison.ion::time_vs_timetz::time_vs_timetz_neq_true#coerce
+eval/primitives/operators/comparison.ion::time_vs_timetz::time_vs_timetz_neq_true#error
+eval/primitives/operators/comparison.ion::time_vs_timetz::time_vs_timetz_neq_true_alt#coerce
+eval/primitives/operators/comparison.ion::time_vs_timetz::time_vs_timetz_neq_true_alt#error
+eval/primitives/operators/comparison.ion::time_vs_timetz::time_vs_timetz_nonzero_offset_eq_false#coerce
+eval/primitives/operators/comparison.ion::time_vs_timetz::time_vs_timetz_nonzero_offset_eq_false#error
+eval/primitives/operators/comparison.ion::time_vs_timetz::time_vs_timetz_nonzero_offset_gt#coerce
+eval/primitives/operators/comparison.ion::time_vs_timetz::time_vs_timetz_nonzero_offset_gt#error
+eval/primitives/operators/comparison.ion::time_vs_timetz::time_vs_timetz_nonzero_offset_lt#coerce
+eval/primitives/operators/comparison.ion::time_vs_timetz::time_vs_timetz_nonzero_offset_lt#error
+eval/primitives/operators/comparison.ion::time_vs_timetz::time_vs_timetz_nonzero_offset_neq_true#coerce
+eval/primitives/operators/comparison.ion::time_vs_timetz::time_vs_timetz_nonzero_offset_neq_true#error
+eval/primitives/operators/comparison.ion::time_vs_timetz::time_vs_timetz_nonzero_offset_neq_true_alt#coerce
+eval/primitives/operators/comparison.ion::time_vs_timetz::time_vs_timetz_nonzero_offset_neq_true_alt#error
+eval/primitives/operators/comparison.ion::time_vs_timetz::time_vs_timetz_utc_eq_true#coerce
+eval/primitives/operators/comparison.ion::time_vs_timetz::time_vs_timetz_utc_eq_true#error
+eval/primitives/operators/comparison.ion::time_vs_timetz::time_vs_timetz_utc_gt#coerce
+eval/primitives/operators/comparison.ion::time_vs_timetz::time_vs_timetz_utc_gt#error
+eval/primitives/operators/comparison.ion::time_vs_timetz::time_vs_timetz_utc_gte_true_equal#coerce
+eval/primitives/operators/comparison.ion::time_vs_timetz::time_vs_timetz_utc_gte_true_equal#error
+eval/primitives/operators/comparison.ion::time_vs_timetz::time_vs_timetz_utc_lt#coerce
+eval/primitives/operators/comparison.ion::time_vs_timetz::time_vs_timetz_utc_lt#error
+eval/primitives/operators/comparison.ion::time_vs_timetz::time_vs_timetz_utc_lt_false#coerce
+eval/primitives/operators/comparison.ion::time_vs_timetz::time_vs_timetz_utc_lt_false#error
+eval/primitives/operators/comparison.ion::time_vs_timetz::time_vs_timetz_utc_lte_true_equal#coerce
+eval/primitives/operators/comparison.ion::time_vs_timetz::time_vs_timetz_utc_lte_true_equal#error
+eval/primitives/operators/comparison.ion::time_vs_timetz::time_vs_timetz_utc_neq_false#coerce
+eval/primitives/operators/comparison.ion::time_vs_timetz::time_vs_timetz_utc_neq_false#error
+eval/primitives/operators/comparison.ion::time_vs_timetz::time_vs_timetz_utc_neq_false_alt#coerce
+eval/primitives/operators/comparison.ion::time_vs_timetz::time_vs_timetz_utc_neq_false_alt#error
+eval/primitives/operators/comparison.ion::timestamp_vs_timestamp::timestamp_eq_different#coerce
+eval/primitives/operators/comparison.ion::timestamp_vs_timestamp::timestamp_eq_different#error
+eval/primitives/operators/comparison.ion::timestamp_vs_timestamp::timestamp_eq_same#coerce
+eval/primitives/operators/comparison.ion::timestamp_vs_timestamp::timestamp_eq_same#error
+eval/primitives/operators/comparison.ion::timestamp_vs_timestamp::timestamp_gt_false#coerce
+eval/primitives/operators/comparison.ion::timestamp_vs_timestamp::timestamp_gt_false#error
+eval/primitives/operators/comparison.ion::timestamp_vs_timestamp::timestamp_gt_true#coerce
+eval/primitives/operators/comparison.ion::timestamp_vs_timestamp::timestamp_gt_true#error
+eval/primitives/operators/comparison.ion::timestamp_vs_timestamp::timestamp_gte_false#coerce
+eval/primitives/operators/comparison.ion::timestamp_vs_timestamp::timestamp_gte_false#error
+eval/primitives/operators/comparison.ion::timestamp_vs_timestamp::timestamp_gte_true_equal#coerce
+eval/primitives/operators/comparison.ion::timestamp_vs_timestamp::timestamp_gte_true_equal#error
+eval/primitives/operators/comparison.ion::timestamp_vs_timestamp::timestamp_gte_true_greater#coerce
+eval/primitives/operators/comparison.ion::timestamp_vs_timestamp::timestamp_gte_true_greater#error
+eval/primitives/operators/comparison.ion::timestamp_vs_timestamp::timestamp_lt_false#coerce
+eval/primitives/operators/comparison.ion::timestamp_vs_timestamp::timestamp_lt_false#error
+eval/primitives/operators/comparison.ion::timestamp_vs_timestamp::timestamp_lt_true#coerce
+eval/primitives/operators/comparison.ion::timestamp_vs_timestamp::timestamp_lt_true#error
+eval/primitives/operators/comparison.ion::timestamp_vs_timestamp::timestamp_lte_false#coerce
+eval/primitives/operators/comparison.ion::timestamp_vs_timestamp::timestamp_lte_false#error
+eval/primitives/operators/comparison.ion::timestamp_vs_timestamp::timestamp_lte_true_equal#coerce
+eval/primitives/operators/comparison.ion::timestamp_vs_timestamp::timestamp_lte_true_equal#error
+eval/primitives/operators/comparison.ion::timestamp_vs_timestamp::timestamp_lte_true_less#coerce
+eval/primitives/operators/comparison.ion::timestamp_vs_timestamp::timestamp_lte_true_less#error
+eval/primitives/operators/comparison.ion::timestamp_vs_timestamp::timestamp_neq_different#coerce
+eval/primitives/operators/comparison.ion::timestamp_vs_timestamp::timestamp_neq_different#error
+eval/primitives/operators/comparison.ion::timestamp_vs_timestamp::timestamp_neq_different_alt#coerce
+eval/primitives/operators/comparison.ion::timestamp_vs_timestamp::timestamp_neq_different_alt#error
+eval/primitives/operators/comparison.ion::timestamp_vs_timestamp::timestamp_neq_same#coerce
+eval/primitives/operators/comparison.ion::timestamp_vs_timestamp::timestamp_neq_same#error
+eval/primitives/operators/comparison.ion::timestamp_vs_timestamp::timestamp_neq_same_alt#coerce
+eval/primitives/operators/comparison.ion::timestamp_vs_timestamp::timestamp_neq_same_alt#error
+eval/primitives/operators/comparison.ion::timestamp_vs_timestampz::timestamp_vs_timestampz_eq_false#coerce
+eval/primitives/operators/comparison.ion::timestamp_vs_timestampz::timestamp_vs_timestampz_eq_false#error
+eval/primitives/operators/comparison.ion::timestamp_vs_timestampz::timestamp_vs_timestampz_eq_true#coerce
+eval/primitives/operators/comparison.ion::timestamp_vs_timestampz::timestamp_vs_timestampz_eq_true#error
+eval/primitives/operators/comparison.ion::timestamp_vs_timestampz::timestamp_vs_timestampz_gt_false#coerce
+eval/primitives/operators/comparison.ion::timestamp_vs_timestampz::timestamp_vs_timestampz_gt_false#error
+eval/primitives/operators/comparison.ion::timestamp_vs_timestampz::timestamp_vs_timestampz_gt_true#coerce
+eval/primitives/operators/comparison.ion::timestamp_vs_timestampz::timestamp_vs_timestampz_gt_true#error
+eval/primitives/operators/comparison.ion::timestamp_vs_timestampz::timestamp_vs_timestampz_gte_false#coerce
+eval/primitives/operators/comparison.ion::timestamp_vs_timestampz::timestamp_vs_timestampz_gte_false#error
+eval/primitives/operators/comparison.ion::timestamp_vs_timestampz::timestamp_vs_timestampz_gte_true_equal#coerce
+eval/primitives/operators/comparison.ion::timestamp_vs_timestampz::timestamp_vs_timestampz_gte_true_equal#error
+eval/primitives/operators/comparison.ion::timestamp_vs_timestampz::timestamp_vs_timestampz_gte_true_greater#coerce
+eval/primitives/operators/comparison.ion::timestamp_vs_timestampz::timestamp_vs_timestampz_gte_true_greater#error
+eval/primitives/operators/comparison.ion::timestamp_vs_timestampz::timestamp_vs_timestampz_lt_false#coerce
+eval/primitives/operators/comparison.ion::timestamp_vs_timestampz::timestamp_vs_timestampz_lt_false#error
+eval/primitives/operators/comparison.ion::timestamp_vs_timestampz::timestamp_vs_timestampz_lt_true#coerce
+eval/primitives/operators/comparison.ion::timestamp_vs_timestampz::timestamp_vs_timestampz_lt_true#error
+eval/primitives/operators/comparison.ion::timestamp_vs_timestampz::timestamp_vs_timestampz_lte_false#coerce
+eval/primitives/operators/comparison.ion::timestamp_vs_timestampz::timestamp_vs_timestampz_lte_false#error
+eval/primitives/operators/comparison.ion::timestamp_vs_timestampz::timestamp_vs_timestampz_lte_true_equal#coerce
+eval/primitives/operators/comparison.ion::timestamp_vs_timestampz::timestamp_vs_timestampz_lte_true_equal#error
+eval/primitives/operators/comparison.ion::timestamp_vs_timestampz::timestamp_vs_timestampz_lte_true_less#coerce
+eval/primitives/operators/comparison.ion::timestamp_vs_timestampz::timestamp_vs_timestampz_lte_true_less#error
+eval/primitives/operators/comparison.ion::timestamp_vs_timestampz::timestamp_vs_timestampz_neq_false#coerce
+eval/primitives/operators/comparison.ion::timestamp_vs_timestampz::timestamp_vs_timestampz_neq_false#error
+eval/primitives/operators/comparison.ion::timestamp_vs_timestampz::timestamp_vs_timestampz_neq_true#coerce
+eval/primitives/operators/comparison.ion::timestamp_vs_timestampz::timestamp_vs_timestampz_neq_true#error
+eval/primitives/operators/comparison.ion::timestamp_vs_timestampz::timestamp_vs_timestampz_neq_true_alt#coerce
+eval/primitives/operators/comparison.ion::timestamp_vs_timestampz::timestamp_vs_timestampz_neq_true_alt#error
+eval/primitives/operators/comparison.ion::timestampz_vs_timestampz::timestampz_different_zones_same_utc#coerce
+eval/primitives/operators/comparison.ion::timestampz_vs_timestampz::timestampz_different_zones_same_utc#error
+eval/primitives/operators/comparison.ion::timestampz_vs_timestampz::timestampz_eq_different#coerce
+eval/primitives/operators/comparison.ion::timestampz_vs_timestampz::timestampz_eq_different#error
+eval/primitives/operators/comparison.ion::timestampz_vs_timestampz::timestampz_eq_same#coerce
+eval/primitives/operators/comparison.ion::timestampz_vs_timestampz::timestampz_eq_same#error
+eval/primitives/operators/comparison.ion::timestampz_vs_timestampz::timestampz_eq_utc_equivalent#coerce
+eval/primitives/operators/comparison.ion::timestampz_vs_timestampz::timestampz_eq_utc_equivalent#error
+eval/primitives/operators/comparison.ion::timestampz_vs_timestampz::timestampz_gt_true#coerce
+eval/primitives/operators/comparison.ion::timestampz_vs_timestampz::timestampz_gt_true#error
+eval/primitives/operators/comparison.ion::timestampz_vs_timestampz::timestampz_gte_false#coerce
+eval/primitives/operators/comparison.ion::timestampz_vs_timestampz::timestampz_gte_false#error
+eval/primitives/operators/comparison.ion::timestampz_vs_timestampz::timestampz_gte_true_equal#coerce
+eval/primitives/operators/comparison.ion::timestampz_vs_timestampz::timestampz_gte_true_equal#error
+eval/primitives/operators/comparison.ion::timestampz_vs_timestampz::timestampz_gte_true_greater#coerce
+eval/primitives/operators/comparison.ion::timestampz_vs_timestampz::timestampz_gte_true_greater#error
+eval/primitives/operators/comparison.ion::timestampz_vs_timestampz::timestampz_lt_true#coerce
+eval/primitives/operators/comparison.ion::timestampz_vs_timestampz::timestampz_lt_true#error
+eval/primitives/operators/comparison.ion::timestampz_vs_timestampz::timestampz_lte_false#coerce
+eval/primitives/operators/comparison.ion::timestampz_vs_timestampz::timestampz_lte_false#error
+eval/primitives/operators/comparison.ion::timestampz_vs_timestampz::timestampz_lte_true_equal#coerce
+eval/primitives/operators/comparison.ion::timestampz_vs_timestampz::timestampz_lte_true_equal#error
+eval/primitives/operators/comparison.ion::timestampz_vs_timestampz::timestampz_lte_true_less#coerce
+eval/primitives/operators/comparison.ion::timestampz_vs_timestampz::timestampz_lte_true_less#error
+eval/primitives/operators/comparison.ion::timestampz_vs_timestampz::timestampz_same_localtime_different_zones_eq_false#coerce
+eval/primitives/operators/comparison.ion::timestampz_vs_timestampz::timestampz_same_localtime_different_zones_eq_false#error
+eval/primitives/operators/comparison.ion::timestampz_vs_timestampz::timestampz_same_localtime_different_zones_gt#coerce
+eval/primitives/operators/comparison.ion::timestampz_vs_timestampz::timestampz_same_localtime_different_zones_gt#error
+eval/primitives/operators/comparison.ion::timestampz_vs_timestampz::timestampz_same_localtime_different_zones_lt#coerce
+eval/primitives/operators/comparison.ion::timestampz_vs_timestampz::timestampz_same_localtime_different_zones_lt#error
+eval/primitives/operators/comparison.ion::timestampz_vs_timestampz::timestampz_same_localtime_different_zones_neq_true#coerce
+eval/primitives/operators/comparison.ion::timestampz_vs_timestampz::timestampz_same_localtime_different_zones_neq_true#error
+eval/primitives/operators/comparison.ion::timestampz_vs_timestampz::timestampz_same_localtime_different_zones_neq_true_alt#coerce
+eval/primitives/operators/comparison.ion::timestampz_vs_timestampz::timestampz_same_localtime_different_zones_neq_true_alt#error
+eval/primitives/operators/comparison.ion::timetz_vs_timetz::timetz_different_zones_same_utc#coerce
+eval/primitives/operators/comparison.ion::timetz_vs_timetz::timetz_different_zones_same_utc#error
+eval/primitives/operators/comparison.ion::timetz_vs_timetz::timetz_eq_different#coerce
+eval/primitives/operators/comparison.ion::timetz_vs_timetz::timetz_eq_different#error
+eval/primitives/operators/comparison.ion::timetz_vs_timetz::timetz_eq_same#coerce
+eval/primitives/operators/comparison.ion::timetz_vs_timetz::timetz_eq_same#error
+eval/primitives/operators/comparison.ion::timetz_vs_timetz::timetz_eq_utc_equivalent#coerce
+eval/primitives/operators/comparison.ion::timetz_vs_timetz::timetz_eq_utc_equivalent#error
+eval/primitives/operators/comparison.ion::timetz_vs_timetz::timetz_gt_true#coerce
+eval/primitives/operators/comparison.ion::timetz_vs_timetz::timetz_gt_true#error
+eval/primitives/operators/comparison.ion::timetz_vs_timetz::timetz_gte_false#coerce
+eval/primitives/operators/comparison.ion::timetz_vs_timetz::timetz_gte_false#error
+eval/primitives/operators/comparison.ion::timetz_vs_timetz::timetz_gte_true_equal#coerce
+eval/primitives/operators/comparison.ion::timetz_vs_timetz::timetz_gte_true_equal#error
+eval/primitives/operators/comparison.ion::timetz_vs_timetz::timetz_gte_true_greater#coerce
+eval/primitives/operators/comparison.ion::timetz_vs_timetz::timetz_gte_true_greater#error
+eval/primitives/operators/comparison.ion::timetz_vs_timetz::timetz_lt_false#coerce
+eval/primitives/operators/comparison.ion::timetz_vs_timetz::timetz_lt_false#error
+eval/primitives/operators/comparison.ion::timetz_vs_timetz::timetz_lte_false#coerce
+eval/primitives/operators/comparison.ion::timetz_vs_timetz::timetz_lte_false#error
+eval/primitives/operators/comparison.ion::timetz_vs_timetz::timetz_lte_true_equal#coerce
+eval/primitives/operators/comparison.ion::timetz_vs_timetz::timetz_lte_true_equal#error
+eval/primitives/operators/comparison.ion::timetz_vs_timetz::timetz_lte_true_less#coerce
+eval/primitives/operators/comparison.ion::timetz_vs_timetz::timetz_lte_true_less#error
+eval/primitives/operators/comparison.ion::timetz_vs_timetz::timetz_same_localtime_different_zones_eq_false#coerce
+eval/primitives/operators/comparison.ion::timetz_vs_timetz::timetz_same_localtime_different_zones_eq_false#error
+eval/primitives/operators/comparison.ion::timetz_vs_timetz::timetz_same_localtime_different_zones_gt#coerce
+eval/primitives/operators/comparison.ion::timetz_vs_timetz::timetz_same_localtime_different_zones_gt#error
+eval/primitives/operators/comparison.ion::timetz_vs_timetz::timetz_same_localtime_different_zones_lt#coerce
+eval/primitives/operators/comparison.ion::timetz_vs_timetz::timetz_same_localtime_different_zones_lt#error
+eval/primitives/operators/comparison.ion::timetz_vs_timetz::timetz_same_localtime_different_zones_neq_true#coerce
+eval/primitives/operators/comparison.ion::timetz_vs_timetz::timetz_same_localtime_different_zones_neq_true#error
+eval/primitives/operators/comparison.ion::timetz_vs_timetz::timetz_same_localtime_different_zones_neq_true_alt#coerce
+eval/primitives/operators/comparison.ion::timetz_vs_timetz::timetz_same_localtime_different_zones_neq_true_alt#error
 eval/primitives/operators/concat.ion::concat::|| valid cases{lparam:"'a'",rparam:"'b'",result:"ab"}#coerce
 eval/primitives/operators/concat.ion::concat::|| valid cases{lparam:"'a'",rparam:"'b'",result:"ab"}#error
 eval/primitives/operators/concat.ion::concat::|| valid cases{lparam:"'a'",rparam:"missing",result:missing::null}#coerce
@@ -1600,6 +2048,122 @@ eval/primitives/operators/concat.ion::concat::|| valid cases{lparam:"null",rpara
 eval/primitives/operators/concat.ion::concat::|| valid cases{lparam:"null",rparam:"missing",result:missing::null}#error
 eval/primitives/operators/concat.ion::concat::|| valid cases{lparam:"null",rparam:"null",result:null}#coerce
 eval/primitives/operators/concat.ion::concat::|| valid cases{lparam:"null",rparam:"null",result:null}#error
+eval/primitives/operators/divide.ion::divide::INTERVAL '1-5' YEAR TO MONTH / -3#coerce
+eval/primitives/operators/divide.ion::divide::INTERVAL '1-5' YEAR TO MONTH / -3#error
+eval/primitives/operators/divide.ion::divide::INTERVAL '1-5' YEAR TO MONTH / 0#coerce
+eval/primitives/operators/divide.ion::divide::INTERVAL '1-5' YEAR TO MONTH / 0#error
+eval/primitives/operators/divide.ion::divide::INTERVAL '1-5' YEAR TO MONTH / 2.25e-1#coerce
+eval/primitives/operators/divide.ion::divide::INTERVAL '1-5' YEAR TO MONTH / 2.25e-1#error
+eval/primitives/operators/divide.ion::divide::INTERVAL '1-5' YEAR TO MONTH / 2.5#coerce
+eval/primitives/operators/divide.ion::divide::INTERVAL '1-5' YEAR TO MONTH / 2.5#error
+eval/primitives/operators/divide.ion::divide::INTERVAL '1-5' YEAR TO MONTH / 3#coerce
+eval/primitives/operators/divide.ion::divide::INTERVAL '1-5' YEAR TO MONTH / 3#error
+eval/primitives/operators/divide.ion::divide::INTERVAL '1-5' YEAR TO MONTH / MISSING#coerce
+eval/primitives/operators/divide.ion::divide::INTERVAL '1-5' YEAR TO MONTH / MISSING#error
+eval/primitives/operators/divide.ion::divide::INTERVAL '1-5' YEAR TO MONTH / NULL#coerce
+eval/primitives/operators/divide.ion::divide::INTERVAL '1-5' YEAR TO MONTH / NULL#error
+eval/primitives/operators/divide.ion::divide::INTERVAL '10.5' SECOND / -3#coerce
+eval/primitives/operators/divide.ion::divide::INTERVAL '10.5' SECOND / -3#error
+eval/primitives/operators/divide.ion::divide::INTERVAL '10.5' SECOND / 0#coerce
+eval/primitives/operators/divide.ion::divide::INTERVAL '10.5' SECOND / 0#error
+eval/primitives/operators/divide.ion::divide::INTERVAL '10.5' SECOND / 2.25e-1#coerce
+eval/primitives/operators/divide.ion::divide::INTERVAL '10.5' SECOND / 2.25e-1#error
+eval/primitives/operators/divide.ion::divide::INTERVAL '10.5' SECOND / 2.5#coerce
+eval/primitives/operators/divide.ion::divide::INTERVAL '10.5' SECOND / 2.5#error
+eval/primitives/operators/divide.ion::divide::INTERVAL '10.5' SECOND / 3#coerce
+eval/primitives/operators/divide.ion::divide::INTERVAL '10.5' SECOND / 3#error
+eval/primitives/operators/divide.ion::divide::INTERVAL '10.5' SECOND / MISSING#coerce
+eval/primitives/operators/divide.ion::divide::INTERVAL '10.5' SECOND / MISSING#error
+eval/primitives/operators/divide.ion::divide::INTERVAL '10.5' SECOND / NULL#coerce
+eval/primitives/operators/divide.ion::divide::INTERVAL '10.5' SECOND / NULL#error
+eval/primitives/operators/divide.ion::divide::INTERVAL '2 4:5:10.5' DAY TO SECOND / -3#coerce
+eval/primitives/operators/divide.ion::divide::INTERVAL '2 4:5:10.5' DAY TO SECOND / -3#error
+eval/primitives/operators/divide.ion::divide::INTERVAL '2 4:5:10.5' DAY TO SECOND / 0#coerce
+eval/primitives/operators/divide.ion::divide::INTERVAL '2 4:5:10.5' DAY TO SECOND / 0#error
+eval/primitives/operators/divide.ion::divide::INTERVAL '2 4:5:10.5' DAY TO SECOND / 2.25e-1#coerce
+eval/primitives/operators/divide.ion::divide::INTERVAL '2 4:5:10.5' DAY TO SECOND / 2.25e-1#error
+eval/primitives/operators/divide.ion::divide::INTERVAL '2 4:5:10.5' DAY TO SECOND / 2.5#coerce
+eval/primitives/operators/divide.ion::divide::INTERVAL '2 4:5:10.5' DAY TO SECOND / 2.5#error
+eval/primitives/operators/divide.ion::divide::INTERVAL '2 4:5:10.5' DAY TO SECOND / 3#coerce
+eval/primitives/operators/divide.ion::divide::INTERVAL '2 4:5:10.5' DAY TO SECOND / 3#error
+eval/primitives/operators/divide.ion::divide::INTERVAL '2 4:5:10.5' DAY TO SECOND / MISSING#coerce
+eval/primitives/operators/divide.ion::divide::INTERVAL '2 4:5:10.5' DAY TO SECOND / MISSING#error
+eval/primitives/operators/divide.ion::divide::INTERVAL '2 4:5:10.5' DAY TO SECOND / NULL#coerce
+eval/primitives/operators/divide.ion::divide::INTERVAL '2 4:5:10.5' DAY TO SECOND / NULL#error
+eval/primitives/operators/divide.ion::divide::INTERVAL '2' DAY / -3#coerce
+eval/primitives/operators/divide.ion::divide::INTERVAL '2' DAY / -3#error
+eval/primitives/operators/divide.ion::divide::INTERVAL '2' DAY / 0#coerce
+eval/primitives/operators/divide.ion::divide::INTERVAL '2' DAY / 0#error
+eval/primitives/operators/divide.ion::divide::INTERVAL '2' DAY / 0.02#coerce
+eval/primitives/operators/divide.ion::divide::INTERVAL '2' DAY / 0.02#error
+eval/primitives/operators/divide.ion::divide::INTERVAL '2' DAY / 2.25e-1#coerce
+eval/primitives/operators/divide.ion::divide::INTERVAL '2' DAY / 2.25e-1#error
+eval/primitives/operators/divide.ion::divide::INTERVAL '2' DAY / 2.5#coerce
+eval/primitives/operators/divide.ion::divide::INTERVAL '2' DAY / 2.5#error
+eval/primitives/operators/divide.ion::divide::INTERVAL '2' DAY / 3#coerce
+eval/primitives/operators/divide.ion::divide::INTERVAL '2' DAY / 3#error
+eval/primitives/operators/divide.ion::divide::INTERVAL '2' DAY / MISSING#coerce
+eval/primitives/operators/divide.ion::divide::INTERVAL '2' DAY / MISSING#error
+eval/primitives/operators/divide.ion::divide::INTERVAL '2' DAY / NULL#coerce
+eval/primitives/operators/divide.ion::divide::INTERVAL '2' DAY / NULL#error
+eval/primitives/operators/divide.ion::divide::INTERVAL '3' YEAR / -3#coerce
+eval/primitives/operators/divide.ion::divide::INTERVAL '3' YEAR / -3#error
+eval/primitives/operators/divide.ion::divide::INTERVAL '3' YEAR / 0#coerce
+eval/primitives/operators/divide.ion::divide::INTERVAL '3' YEAR / 0#error
+eval/primitives/operators/divide.ion::divide::INTERVAL '3' YEAR / 0.03#coerce
+eval/primitives/operators/divide.ion::divide::INTERVAL '3' YEAR / 0.03#error
+eval/primitives/operators/divide.ion::divide::INTERVAL '3' YEAR / 2.25e-1#coerce
+eval/primitives/operators/divide.ion::divide::INTERVAL '3' YEAR / 2.25e-1#error
+eval/primitives/operators/divide.ion::divide::INTERVAL '3' YEAR / 2.5#coerce
+eval/primitives/operators/divide.ion::divide::INTERVAL '3' YEAR / 2.5#error
+eval/primitives/operators/divide.ion::divide::INTERVAL '3' YEAR / 3#coerce
+eval/primitives/operators/divide.ion::divide::INTERVAL '3' YEAR / 3#error
+eval/primitives/operators/divide.ion::divide::INTERVAL '3' YEAR / MISSING#coerce
+eval/primitives/operators/divide.ion::divide::INTERVAL '3' YEAR / MISSING#error
+eval/primitives/operators/divide.ion::divide::INTERVAL '3' YEAR / NULL#coerce
+eval/primitives/operators/divide.ion::divide::INTERVAL '3' YEAR / NULL#error
+eval/primitives/operators/divide.ion::divide::INTERVAL '4' HOUR / -3#coerce
+eval/primitives/operators/divide.ion::divide::INTERVAL '4' HOUR / -3#error
+eval/primitives/operators/divide.ion::divide::INTERVAL '4' HOUR / 0#coerce
+eval/primitives/operators/divide.ion::divide::INTERVAL '4' HOUR / 0#error
+eval/primitives/operators/divide.ion::divide::INTERVAL '4' HOUR / 2.25e-1#coerce
+eval/primitives/operators/divide.ion::divide::INTERVAL '4' HOUR / 2.25e-1#error
+eval/primitives/operators/divide.ion::divide::INTERVAL '4' HOUR / 2.5#coerce
+eval/primitives/operators/divide.ion::divide::INTERVAL '4' HOUR / 2.5#error
+eval/primitives/operators/divide.ion::divide::INTERVAL '4' HOUR / 3#coerce
+eval/primitives/operators/divide.ion::divide::INTERVAL '4' HOUR / 3#error
+eval/primitives/operators/divide.ion::divide::INTERVAL '4' HOUR / MISSING#coerce
+eval/primitives/operators/divide.ion::divide::INTERVAL '4' HOUR / MISSING#error
+eval/primitives/operators/divide.ion::divide::INTERVAL '4' HOUR / NULL#coerce
+eval/primitives/operators/divide.ion::divide::INTERVAL '4' HOUR / NULL#error
+eval/primitives/operators/divide.ion::divide::INTERVAL '5' MINUTE / -3#coerce
+eval/primitives/operators/divide.ion::divide::INTERVAL '5' MINUTE / -3#error
+eval/primitives/operators/divide.ion::divide::INTERVAL '5' MINUTE / 0#coerce
+eval/primitives/operators/divide.ion::divide::INTERVAL '5' MINUTE / 0#error
+eval/primitives/operators/divide.ion::divide::INTERVAL '5' MINUTE / 2.25e-1#coerce
+eval/primitives/operators/divide.ion::divide::INTERVAL '5' MINUTE / 2.25e-1#error
+eval/primitives/operators/divide.ion::divide::INTERVAL '5' MINUTE / 2.5#coerce
+eval/primitives/operators/divide.ion::divide::INTERVAL '5' MINUTE / 2.5#error
+eval/primitives/operators/divide.ion::divide::INTERVAL '5' MINUTE / 3#coerce
+eval/primitives/operators/divide.ion::divide::INTERVAL '5' MINUTE / 3#error
+eval/primitives/operators/divide.ion::divide::INTERVAL '5' MINUTE / MISSING#coerce
+eval/primitives/operators/divide.ion::divide::INTERVAL '5' MINUTE / MISSING#error
+eval/primitives/operators/divide.ion::divide::INTERVAL '5' MINUTE / NULL#coerce
+eval/primitives/operators/divide.ion::divide::INTERVAL '5' MINUTE / NULL#error
+eval/primitives/operators/divide.ion::divide::INTERVAL '7' MONTH / -3#coerce
+eval/primitives/operators/divide.ion::divide::INTERVAL '7' MONTH / -3#error
+eval/primitives/operators/divide.ion::divide::INTERVAL '7' MONTH / 0#coerce
+eval/primitives/operators/divide.ion::divide::INTERVAL '7' MONTH / 0#error
+eval/primitives/operators/divide.ion::divide::INTERVAL '7' MONTH / 2.25e-1#coerce
+eval/primitives/operators/divide.ion::divide::INTERVAL '7' MONTH / 2.25e-1#error
+eval/primitives/operators/divide.ion::divide::INTERVAL '7' MONTH / 2.5#coerce
+eval/primitives/operators/divide.ion::divide::INTERVAL '7' MONTH / 2.5#error
+eval/primitives/operators/divide.ion::divide::INTERVAL '7' MONTH / 3#coerce
+eval/primitives/operators/divide.ion::divide::INTERVAL '7' MONTH / 3#error
+eval/primitives/operators/divide.ion::divide::INTERVAL '7' MONTH / MISSING#coerce
+eval/primitives/operators/divide.ion::divide::INTERVAL '7' MONTH / MISSING#error
+eval/primitives/operators/divide.ion::divide::INTERVAL '7' MONTH / NULL#coerce
+eval/primitives/operators/divide.ion::divide::INTERVAL '7' MONTH / NULL#error
 eval/primitives/operators/is-operators.ion::is::0.00 is DECIMAL(4,3)#coerce
 eval/primitives/operators/is-operators.ion::is::0.00 is DECIMAL(4,3)#error
 eval/primitives/operators/is-operators.ion::is::0.001 is DECIMAL(3,3)#coerce
@@ -1616,6 +2180,176 @@ eval/primitives/operators/is-operators.ion::is::123.456 is DECIMAL(6,2)#coerce
 eval/primitives/operators/is-operators.ion::is::123.456 is DECIMAL(6,2)#error
 eval/primitives/operators/is-operators.ion::is::123.456 is DECIMAL(6,4)#coerce
 eval/primitives/operators/is-operators.ion::is::123.456 is DECIMAL(6,4)#error
+eval/primitives/operators/minus.ion::date::DATE '2025-01-14' - TIMESTAMP '2025-01-15 03:00:00+00:00'#coerce
+eval/primitives/operators/minus.ion::date::DATE '2025-01-14' - TIMESTAMP '2025-01-15 03:00:00+00:00'#error
+eval/primitives/operators/minus.ion::date::DATE '2025-01-14' - TIMESTAMP '2025-01-15 12:30:45'#coerce
+eval/primitives/operators/minus.ion::date::DATE '2025-01-14' - TIMESTAMP '2025-01-15 12:30:45'#error
+eval/primitives/operators/minus.ion::date::DATE '2025-01-15' - DATE '2025-01-15'#coerce
+eval/primitives/operators/minus.ion::date::DATE '2025-01-15' - DATE '2025-01-15'#error
+eval/primitives/operators/minus.ion::date::DATE '2025-01-15' - DATE '2025-01-20'#coerce
+eval/primitives/operators/minus.ion::date::DATE '2025-01-15' - DATE '2025-01-20'#error
+eval/primitives/operators/minus.ion::date::DATE '2025-01-15' - TIMESTAMP '2025-01-14 12:30:45'#coerce
+eval/primitives/operators/minus.ion::date::DATE '2025-01-15' - TIMESTAMP '2025-01-14 12:30:45'#error
+eval/primitives/operators/minus.ion::date::DATE '2025-01-15' - TIMESTAMP '2025-01-14 21:00:00+00:00'#coerce
+eval/primitives/operators/minus.ion::date::DATE '2025-01-15' - TIMESTAMP '2025-01-14 21:00:00+00:00'#error
+eval/primitives/operators/minus.ion::date::DATE '2025-01-15' - TIMESTAMP '2025-01-15 00:00:00'#coerce
+eval/primitives/operators/minus.ion::date::DATE '2025-01-15' - TIMESTAMP '2025-01-15 00:00:00'#error
+eval/primitives/operators/minus.ion::date::DATE '2025-01-15' - TIMESTAMP '2025-01-15 00:00:00+00:00'#coerce
+eval/primitives/operators/minus.ion::date::DATE '2025-01-15' - TIMESTAMP '2025-01-15 00:00:00+00:00'#error
+eval/primitives/operators/minus.ion::date::DATE '2025-01-20' - DATE '2025-01-15'#coerce
+eval/primitives/operators/minus.ion::date::DATE '2025-01-20' - DATE '2025-01-15'#error
+eval/primitives/operators/minus.ion::minus::DATE '2025-01-01' - INTERVAL '1' DAY#coerce
+eval/primitives/operators/minus.ion::minus::DATE '2025-01-01' - INTERVAL '1' DAY#error
+eval/primitives/operators/minus.ion::minus::DATE '2025-01-01' - INTERVAL '1' MONTH#coerce
+eval/primitives/operators/minus.ion::minus::DATE '2025-01-01' - INTERVAL '1' MONTH#error
+eval/primitives/operators/minus.ion::minus::DATE '2025-01-01' - INTERVAL '1' YEAR#coerce
+eval/primitives/operators/minus.ion::minus::DATE '2025-01-01' - INTERVAL '1' YEAR#error
+eval/primitives/operators/minus.ion::minus::DATE '2025-01-01' - INTERVAL '1-1' YEAR TO MONTH#coerce
+eval/primitives/operators/minus.ion::minus::DATE '2025-01-01' - INTERVAL '1-1' YEAR TO MONTH#error
+eval/primitives/operators/minus.ion::minus::INTERVAL '1 1' DAY TO HOUR - INTERVAL '1 1' DAY TO HOUR#coerce
+eval/primitives/operators/minus.ion::minus::INTERVAL '1 1' DAY TO HOUR - INTERVAL '1 1' DAY TO HOUR#error
+eval/primitives/operators/minus.ion::minus::INTERVAL '1 1:1:1.1' DAY TO SECOND - INTERVAL '1 1:1:1.1' DAY TO SECOND#coerce
+eval/primitives/operators/minus.ion::minus::INTERVAL '1 1:1:1.1' DAY TO SECOND - INTERVAL '1 1:1:1.1' DAY TO SECOND#error
+eval/primitives/operators/minus.ion::minus::INTERVAL '1' DAY - INTERVAL '1' DAY#coerce
+eval/primitives/operators/minus.ion::minus::INTERVAL '1' DAY - INTERVAL '1' DAY#error
+eval/primitives/operators/minus.ion::minus::INTERVAL '1' DAY - INTERVAL '1' HOUR#coerce
+eval/primitives/operators/minus.ion::minus::INTERVAL '1' DAY - INTERVAL '1' HOUR#error
+eval/primitives/operators/minus.ion::minus::INTERVAL '1' DAY - INTERVAL '1.1' SECOND#coerce
+eval/primitives/operators/minus.ion::minus::INTERVAL '1' DAY - INTERVAL '1.1' SECOND#error
+eval/primitives/operators/minus.ion::minus::INTERVAL '1' HOUR - INTERVAL '1' HOUR#coerce
+eval/primitives/operators/minus.ion::minus::INTERVAL '1' HOUR - INTERVAL '1' HOUR#error
+eval/primitives/operators/minus.ion::minus::INTERVAL '1' MONTH - INTERVAL '1' MONTH#coerce
+eval/primitives/operators/minus.ion::minus::INTERVAL '1' MONTH - INTERVAL '1' MONTH#error
+eval/primitives/operators/minus.ion::minus::INTERVAL '1' MONTH - INTERVAL '1-1' YEAR TO MONTH#coerce
+eval/primitives/operators/minus.ion::minus::INTERVAL '1' MONTH - INTERVAL '1-1' YEAR TO MONTH#error
+eval/primitives/operators/minus.ion::minus::INTERVAL '1' YEAR - INTERVAL '1' MONTH#coerce
+eval/primitives/operators/minus.ion::minus::INTERVAL '1' YEAR - INTERVAL '1' MONTH#error
+eval/primitives/operators/minus.ion::minus::INTERVAL '1' YEAR - INTERVAL '1' YEAR#coerce
+eval/primitives/operators/minus.ion::minus::INTERVAL '1' YEAR - INTERVAL '1' YEAR#error
+eval/primitives/operators/minus.ion::minus::INTERVAL '1' YEAR - INTERVAL '1-1' YEAR TO MONTH#coerce
+eval/primitives/operators/minus.ion::minus::INTERVAL '1' YEAR - INTERVAL '1-1' YEAR TO MONTH#error
+eval/primitives/operators/minus.ion::minus::INTERVAL '1-1' YEAR TO MONTH - INTERVAL '1-1' YEAR TO MONTH#coerce
+eval/primitives/operators/minus.ion::minus::INTERVAL '1-1' YEAR TO MONTH - INTERVAL '1-1' YEAR TO MONTH#error
+eval/primitives/operators/minus.ion::minus::INTERVAL '1.1' SECOND - INTERVAL '1.1' SECOND#coerce
+eval/primitives/operators/minus.ion::minus::INTERVAL '1.1' SECOND - INTERVAL '1.1' SECOND#error
+eval/primitives/operators/minus.ion::minus::TIME '01:01:01.1' - INTERVAL '1' DAY#coerce
+eval/primitives/operators/minus.ion::minus::TIME '01:01:01.1' - INTERVAL '1' DAY#error
+eval/primitives/operators/minus.ion::minus::TIME '01:01:01.1' - INTERVAL '1' HOUR#coerce
+eval/primitives/operators/minus.ion::minus::TIME '01:01:01.1' - INTERVAL '1' HOUR#error
+eval/primitives/operators/minus.ion::minus::TIME '01:01:01.1' - INTERVAL '1' MINUTE#coerce
+eval/primitives/operators/minus.ion::minus::TIME '01:01:01.1' - INTERVAL '1' MINUTE#error
+eval/primitives/operators/minus.ion::minus::TIME '01:01:01.1' - INTERVAL '1' MONTH#coerce
+eval/primitives/operators/minus.ion::minus::TIME '01:01:01.1' - INTERVAL '1' MONTH#error
+eval/primitives/operators/minus.ion::minus::TIME '01:01:01.1' - INTERVAL '1' YEAR#coerce
+eval/primitives/operators/minus.ion::minus::TIME '01:01:01.1' - INTERVAL '1' YEAR#error
+eval/primitives/operators/minus.ion::minus::TIME '01:01:01.1' - INTERVAL '1-1' YEAR TO MONTH#coerce
+eval/primitives/operators/minus.ion::minus::TIME '01:01:01.1' - INTERVAL '1-1' YEAR TO MONTH#error
+eval/primitives/operators/minus.ion::minus::TIME '01:01:01.1' - INTERVAL '1.1' SECOND#coerce
+eval/primitives/operators/minus.ion::minus::TIME '01:01:01.1' - INTERVAL '1.1' SECOND#error
+eval/primitives/operators/minus.ion::minus::TIME '01:01:01.1' - INTERVAL '25:25:14.2' HOUR TO SECOND#coerce
+eval/primitives/operators/minus.ion::minus::TIME '01:01:01.1' - INTERVAL '25:25:14.2' HOUR TO SECOND#error
+eval/primitives/operators/minus.ion::minus::TIME WITHOUT TIME ZONE '01:01:01.1' - INTERVAL '0.1' SECOND#coerce
+eval/primitives/operators/minus.ion::minus::TIME WITHOUT TIME ZONE '01:01:01.1' - INTERVAL '0.1' SECOND#error
+eval/primitives/operators/minus.ion::minus::TIME WITHOUT TIME ZONE '01:01:01.1' - INTERVAL '1' HOUR#coerce
+eval/primitives/operators/minus.ion::minus::TIME WITHOUT TIME ZONE '01:01:01.1' - INTERVAL '1' HOUR#error
+eval/primitives/operators/minus.ion::minus::TIME WITHOUT TIME ZONE '01:01:01.1' - INTERVAL '1' MINUTE#coerce
+eval/primitives/operators/minus.ion::minus::TIME WITHOUT TIME ZONE '01:01:01.1' - INTERVAL '1' MINUTE#error
+eval/primitives/operators/minus.ion::minus::TIMESTAMP '2025-01-01 01:01:01.1' - INTERVAL '1' DAY#coerce
+eval/primitives/operators/minus.ion::minus::TIMESTAMP '2025-01-01 01:01:01.1' - INTERVAL '1' DAY#error
+eval/primitives/operators/minus.ion::minus::TIMESTAMP '2025-01-01 01:01:01.1' - INTERVAL '1' HOUR#coerce
+eval/primitives/operators/minus.ion::minus::TIMESTAMP '2025-01-01 01:01:01.1' - INTERVAL '1' HOUR#error
+eval/primitives/operators/minus.ion::minus::TIMESTAMP '2025-01-01 01:01:01.1' - INTERVAL '1' MONTH#coerce
+eval/primitives/operators/minus.ion::minus::TIMESTAMP '2025-01-01 01:01:01.1' - INTERVAL '1' MONTH#error
+eval/primitives/operators/minus.ion::minus::TIMESTAMP '2025-01-01 01:01:01.1' - INTERVAL '1' YEAR#coerce
+eval/primitives/operators/minus.ion::minus::TIMESTAMP '2025-01-01 01:01:01.1' - INTERVAL '1' YEAR#error
+eval/primitives/operators/minus.ion::minus::TIMESTAMP '2025-01-01 01:01:01.1' - INTERVAL '1.1' SECOND#coerce
+eval/primitives/operators/minus.ion::minus::TIMESTAMP '2025-01-01 01:01:01.1' - INTERVAL '1.1' SECOND#error
+eval/primitives/operators/minus.ion::minus::TIMESTAMP '2025-01-01 01:01:01.1' - INTERVAL '25:25:14.2' HOUR TO SECOND#coerce
+eval/primitives/operators/minus.ion::minus::TIMESTAMP '2025-01-01 01:01:01.1' - INTERVAL '25:25:14.2' HOUR TO SECOND#error
+eval/primitives/operators/minus.ion::minus::TIMESTAMP WITHOUT TIME ZONE '2025-01-01 01:01:01.1' - INTERVAL '1' DAY#coerce
+eval/primitives/operators/minus.ion::minus::TIMESTAMP WITHOUT TIME ZONE '2025-01-01 01:01:01.1' - INTERVAL '1' DAY#error
+eval/primitives/operators/minus.ion::minus::TIMESTAMP WITHOUT TIME ZONE '2025-01-01 01:01:01.1' - INTERVAL '1' YEAR#coerce
+eval/primitives/operators/minus.ion::minus::TIMESTAMP WITHOUT TIME ZONE '2025-01-01 01:01:01.1' - INTERVAL '1' YEAR#error
+eval/primitives/operators/minus.ion::minus::TIMESTAMP WITHOUT TIME ZONE '2025-01-01 01:01:01.1' - INTERVAL '2' MONTH#coerce
+eval/primitives/operators/minus.ion::minus::TIMESTAMP WITHOUT TIME ZONE '2025-01-01 01:01:01.1' - INTERVAL '2' MONTH#error
+eval/primitives/operators/minus.ion::time::TIME '08:15:45+02:00' - TIME '08:15:45'#coerce
+eval/primitives/operators/minus.ion::time::TIME '08:15:45+02:00' - TIME '08:15:45'#error
+eval/primitives/operators/minus.ion::time::TIME '10:00:00+01:00' - TIME '09:00:00+00:00'#coerce
+eval/primitives/operators/minus.ion::time::TIME '10:00:00+01:00' - TIME '09:00:00+00:00'#error
+eval/primitives/operators/minus.ion::time::TIME '10:30:00' - TIME '10:30:00'#coerce
+eval/primitives/operators/minus.ion::time::TIME '10:30:00' - TIME '10:30:00'#error
+eval/primitives/operators/minus.ion::time::TIME '10:30:00' - TIME '10:30:00+00:00'#coerce
+eval/primitives/operators/minus.ion::time::TIME '10:30:00' - TIME '10:30:00+00:00'#error
+eval/primitives/operators/minus.ion::time::TIME '10:30:00' - TIME '14:45:30'#coerce
+eval/primitives/operators/minus.ion::time::TIME '10:30:00' - TIME '14:45:30'#error
+eval/primitives/operators/minus.ion::time::TIME '10:30:00' - TIME '14:45:30+00:00'#coerce
+eval/primitives/operators/minus.ion::time::TIME '10:30:00' - TIME '14:45:30+00:00'#error
+eval/primitives/operators/minus.ion::time::TIME '10:30:00+00:00' - TIME '10:30:00'#coerce
+eval/primitives/operators/minus.ion::time::TIME '10:30:00+00:00' - TIME '10:30:00'#error
+eval/primitives/operators/minus.ion::time::TIME '10:30:00+00:00' - TIME '14:45:30'#coerce
+eval/primitives/operators/minus.ion::time::TIME '10:30:00+00:00' - TIME '14:45:30'#error
+eval/primitives/operators/minus.ion::time::TIME '10:30:00+00:00' - TIME '14:45:30+00:00'#coerce
+eval/primitives/operators/minus.ion::time::TIME '10:30:00+00:00' - TIME '14:45:30+00:00'#error
+eval/primitives/operators/minus.ion::time::TIME '10:30:00+05:00' - TIME '10:30:00+05:00'#coerce
+eval/primitives/operators/minus.ion::time::TIME '10:30:00+05:00' - TIME '10:30:00+05:00'#error
+eval/primitives/operators/minus.ion::time::TIME '10:30:00+05:00' - TIME '10:30:00-03:00'#coerce
+eval/primitives/operators/minus.ion::time::TIME '10:30:00+05:00' - TIME '10:30:00-03:00'#error
+eval/primitives/operators/minus.ion::time::TIME '12:45:30' - TIME '09:45:30-03:00'#coerce
+eval/primitives/operators/minus.ion::time::TIME '12:45:30' - TIME '09:45:30-03:00'#error
+eval/primitives/operators/minus.ion::time::TIME '14:30:15+02:00' - TIME '17:30:15+05:00'#coerce
+eval/primitives/operators/minus.ion::time::TIME '14:30:15+02:00' - TIME '17:30:15+05:00'#error
+eval/primitives/operators/minus.ion::time::TIME '14:45:30' - TIME '10:30:00'#coerce
+eval/primitives/operators/minus.ion::time::TIME '14:45:30' - TIME '10:30:00'#error
+eval/primitives/operators/minus.ion::time::TIME '14:45:30' - TIME '10:30:00+00:00'#coerce
+eval/primitives/operators/minus.ion::time::TIME '14:45:30' - TIME '10:30:00+00:00'#error
+eval/primitives/operators/minus.ion::time::TIME '14:45:30+00:00' - TIME '10:30:00'#coerce
+eval/primitives/operators/minus.ion::time::TIME '14:45:30+00:00' - TIME '10:30:00'#error
+eval/primitives/operators/minus.ion::time::TIME '14:45:30+00:00' - TIME '10:30:00+00:00'#coerce
+eval/primitives/operators/minus.ion::time::TIME '14:45:30+00:00' - TIME '10:30:00+00:00'#error
+eval/primitives/operators/minus.ion::time::TIME '15:45:30-03:00' - TIME '15:45:30-03:00'#coerce
+eval/primitives/operators/minus.ion::time::TIME '15:45:30-03:00' - TIME '15:45:30-03:00'#error
+eval/primitives/operators/minus.ion::timestamp::TIMESTAMP '2025-01-14 12:30:45' - DATE '2025-01-15'#coerce
+eval/primitives/operators/minus.ion::timestamp::TIMESTAMP '2025-01-14 12:30:45' - DATE '2025-01-15'#error
+eval/primitives/operators/minus.ion::timestamp::TIMESTAMP '2025-01-15 00:00:00' - DATE '2025-01-15'#coerce
+eval/primitives/operators/minus.ion::timestamp::TIMESTAMP '2025-01-15 00:00:00' - DATE '2025-01-15'#error
+eval/primitives/operators/minus.ion::timestamp::TIMESTAMP '2025-01-15 10:30:00' - TIMESTAMP '2025-01-15 15:45:30'#coerce
+eval/primitives/operators/minus.ion::timestamp::TIMESTAMP '2025-01-15 10:30:00' - TIMESTAMP '2025-01-15 15:45:30'#error
+eval/primitives/operators/minus.ion::timestamp::TIMESTAMP '2025-01-15 10:30:00' - TIMESTAMP '2025-01-15 15:45:30+00:00'#coerce
+eval/primitives/operators/minus.ion::timestamp::TIMESTAMP '2025-01-15 10:30:00' - TIMESTAMP '2025-01-15 15:45:30+00:00'#error
+eval/primitives/operators/minus.ion::timestamp::TIMESTAMP '2025-01-15 12:30:45' - DATE '2025-01-14'#coerce
+eval/primitives/operators/minus.ion::timestamp::TIMESTAMP '2025-01-15 12:30:45' - DATE '2025-01-14'#error
+eval/primitives/operators/minus.ion::timestamp::TIMESTAMP '2025-01-15 12:30:45' - TIMESTAMP '2025-01-15 12:30:45'#coerce
+eval/primitives/operators/minus.ion::timestamp::TIMESTAMP '2025-01-15 12:30:45' - TIMESTAMP '2025-01-15 12:30:45'#error
+eval/primitives/operators/minus.ion::timestamp::TIMESTAMP '2025-01-15 12:30:45' - TIMESTAMP '2025-01-15 12:30:45+00:00'#coerce
+eval/primitives/operators/minus.ion::timestamp::TIMESTAMP '2025-01-15 12:30:45' - TIMESTAMP '2025-01-15 12:30:45+00:00'#error
+eval/primitives/operators/minus.ion::timestamp::TIMESTAMP '2025-01-15 15:45:30' - TIMESTAMP '2025-01-15 10:30:00'#coerce
+eval/primitives/operators/minus.ion::timestamp::TIMESTAMP '2025-01-15 15:45:30' - TIMESTAMP '2025-01-15 10:30:00'#error
+eval/primitives/operators/minus.ion::timestamp::TIMESTAMP '2025-01-15 15:45:30' - TIMESTAMP '2025-01-15 10:30:00+00:00'#coerce
+eval/primitives/operators/minus.ion::timestamp::TIMESTAMP '2025-01-15 15:45:30' - TIMESTAMP '2025-01-15 10:30:00+00:00'#error
+eval/primitives/operators/minus.ion::timestampz::TIMESTAMP '2025-01-14 08:15:30+00:00' - DATE '2025-01-15'#coerce
+eval/primitives/operators/minus.ion::timestampz::TIMESTAMP '2025-01-14 08:15:30+00:00' - DATE '2025-01-15'#error
+eval/primitives/operators/minus.ion::timestampz::TIMESTAMP '2025-01-15 00:00:00+00:00' - DATE '2025-01-15'#coerce
+eval/primitives/operators/minus.ion::timestampz::TIMESTAMP '2025-01-15 00:00:00+00:00' - DATE '2025-01-15'#error
+eval/primitives/operators/minus.ion::timestampz::TIMESTAMP '2025-01-15 10:00:00+01:00' - TIMESTAMP '2025-01-15 09:00:00+00:00'#coerce
+eval/primitives/operators/minus.ion::timestampz::TIMESTAMP '2025-01-15 10:00:00+01:00' - TIMESTAMP '2025-01-15 09:00:00+00:00'#error
+eval/primitives/operators/minus.ion::timestampz::TIMESTAMP '2025-01-15 10:30:00+00:00' - TIMESTAMP '2025-01-15 15:45:30'#coerce
+eval/primitives/operators/minus.ion::timestampz::TIMESTAMP '2025-01-15 10:30:00+00:00' - TIMESTAMP '2025-01-15 15:45:30'#error
+eval/primitives/operators/minus.ion::timestampz::TIMESTAMP '2025-01-15 10:30:00+00:00' - TIMESTAMP '2025-01-15 15:45:30+00:00'#coerce
+eval/primitives/operators/minus.ion::timestampz::TIMESTAMP '2025-01-15 10:30:00+00:00' - TIMESTAMP '2025-01-15 15:45:30+00:00'#error
+eval/primitives/operators/minus.ion::timestampz::TIMESTAMP '2025-01-15 10:30:00+05:00' - TIMESTAMP '2025-01-15 10:30:00-03:00'#coerce
+eval/primitives/operators/minus.ion::timestampz::TIMESTAMP '2025-01-15 10:30:00+05:00' - TIMESTAMP '2025-01-15 10:30:00-03:00'#error
+eval/primitives/operators/minus.ion::timestampz::TIMESTAMP '2025-01-15 12:30:45+00:00' - TIMESTAMP '2025-01-15 12:30:45'#coerce
+eval/primitives/operators/minus.ion::timestampz::TIMESTAMP '2025-01-15 12:30:45+00:00' - TIMESTAMP '2025-01-15 12:30:45'#error
+eval/primitives/operators/minus.ion::timestampz::TIMESTAMP '2025-01-15 12:30:45+05:00' - TIMESTAMP '2025-01-15 12:30:45+05:00'#coerce
+eval/primitives/operators/minus.ion::timestampz::TIMESTAMP '2025-01-15 12:30:45+05:00' - TIMESTAMP '2025-01-15 12:30:45+05:00'#error
+eval/primitives/operators/minus.ion::timestampz::TIMESTAMP '2025-01-15 14:30:15+02:00' - TIMESTAMP '2025-01-15 17:30:15+05:00'#coerce
+eval/primitives/operators/minus.ion::timestampz::TIMESTAMP '2025-01-15 14:30:15+02:00' - TIMESTAMP '2025-01-15 17:30:15+05:00'#error
+eval/primitives/operators/minus.ion::timestampz::TIMESTAMP '2025-01-15 15:30:45+00:00' - DATE '2025-01-14'#coerce
+eval/primitives/operators/minus.ion::timestampz::TIMESTAMP '2025-01-15 15:30:45+00:00' - DATE '2025-01-14'#error
+eval/primitives/operators/minus.ion::timestampz::TIMESTAMP '2025-01-15 15:45:30+00:00' - TIMESTAMP '2025-01-15 10:30:00'#coerce
+eval/primitives/operators/minus.ion::timestampz::TIMESTAMP '2025-01-15 15:45:30+00:00' - TIMESTAMP '2025-01-15 10:30:00'#error
+eval/primitives/operators/minus.ion::timestampz::TIMESTAMP '2025-01-15 15:45:30+00:00' - TIMESTAMP '2025-01-15 10:30:00+00:00'#coerce
+eval/primitives/operators/minus.ion::timestampz::TIMESTAMP '2025-01-15 15:45:30+00:00' - TIMESTAMP '2025-01-15 10:30:00+00:00'#error
 eval/primitives/operators/nary-operators.ion::nary::addIntFloat#coerce
 eval/primitives/operators/nary-operators.ion::nary::addIntFloat#error
 eval/primitives/operators/nary-operators.ion::nary::bigDecimals#coerce
@@ -1684,6 +2418,246 @@ eval/primitives/operators/nary-operators.ion::nary::unaryMinus#coerce
 eval/primitives/operators/nary-operators.ion::nary::unaryMinus#error
 eval/primitives/operators/nary-operators.ion::nary::unaryPlus#coerce
 eval/primitives/operators/nary-operators.ion::nary::unaryPlus#error
+eval/primitives/operators/plus.ion::plus::DATE '2025-01-01' + INTERVAL '1' DAY#coerce
+eval/primitives/operators/plus.ion::plus::DATE '2025-01-01' + INTERVAL '1' DAY#error
+eval/primitives/operators/plus.ion::plus::DATE '2025-01-01' + INTERVAL '1' MONTH#coerce
+eval/primitives/operators/plus.ion::plus::DATE '2025-01-01' + INTERVAL '1' MONTH#error
+eval/primitives/operators/plus.ion::plus::DATE '2025-01-01' + INTERVAL '1' YEAR#coerce
+eval/primitives/operators/plus.ion::plus::DATE '2025-01-01' + INTERVAL '1' YEAR#error
+eval/primitives/operators/plus.ion::plus::DATE '2025-01-01' + INTERVAL '1-1' YEAR TO MONTH#coerce
+eval/primitives/operators/plus.ion::plus::DATE '2025-01-01' + INTERVAL '1-1' YEAR TO MONTH#error
+eval/primitives/operators/plus.ion::plus::INTERVAL '1 1' DAY TO HOUR + INTERVAL '1 1' DAY TO HOUR#coerce
+eval/primitives/operators/plus.ion::plus::INTERVAL '1 1' DAY TO HOUR + INTERVAL '1 1' DAY TO HOUR#error
+eval/primitives/operators/plus.ion::plus::INTERVAL '1 1:1:1.1' DAY TO SECOND + INTERVAL '1 1:1:1.1' DAY TO SECOND#coerce
+eval/primitives/operators/plus.ion::plus::INTERVAL '1 1:1:1.1' DAY TO SECOND + INTERVAL '1 1:1:1.1' DAY TO SECOND#error
+eval/primitives/operators/plus.ion::plus::INTERVAL '1' DAY + DATE '2025-01-01'#coerce
+eval/primitives/operators/plus.ion::plus::INTERVAL '1' DAY + DATE '2025-01-01'#error
+eval/primitives/operators/plus.ion::plus::INTERVAL '1' DAY + INTERVAL '1' DAY#coerce
+eval/primitives/operators/plus.ion::plus::INTERVAL '1' DAY + INTERVAL '1' DAY#error
+eval/primitives/operators/plus.ion::plus::INTERVAL '1' DAY + INTERVAL '1' HOUR#coerce
+eval/primitives/operators/plus.ion::plus::INTERVAL '1' DAY + INTERVAL '1' HOUR#error
+eval/primitives/operators/plus.ion::plus::INTERVAL '1' DAY + INTERVAL '1.1' SECOND#coerce
+eval/primitives/operators/plus.ion::plus::INTERVAL '1' DAY + INTERVAL '1.1' SECOND#error
+eval/primitives/operators/plus.ion::plus::INTERVAL '1' DAY + TIME '01:01:01.1'#coerce
+eval/primitives/operators/plus.ion::plus::INTERVAL '1' DAY + TIME '01:01:01.1'#error
+eval/primitives/operators/plus.ion::plus::INTERVAL '1' DAY + TIMESTAMP '2025-01-01 01:01:01.1'#coerce
+eval/primitives/operators/plus.ion::plus::INTERVAL '1' DAY + TIMESTAMP '2025-01-01 01:01:01.1'#error
+eval/primitives/operators/plus.ion::plus::INTERVAL '1' HOUR + INTERVAL '1' DAY#coerce
+eval/primitives/operators/plus.ion::plus::INTERVAL '1' HOUR + INTERVAL '1' DAY#error
+eval/primitives/operators/plus.ion::plus::INTERVAL '1' HOUR + INTERVAL '1' HOUR#coerce
+eval/primitives/operators/plus.ion::plus::INTERVAL '1' HOUR + INTERVAL '1' HOUR#error
+eval/primitives/operators/plus.ion::plus::INTERVAL '1' HOUR + TIME '01:01:01.1'#coerce
+eval/primitives/operators/plus.ion::plus::INTERVAL '1' HOUR + TIME '01:01:01.1'#error
+eval/primitives/operators/plus.ion::plus::INTERVAL '1' HOUR + TIME WITH TIME ZONE '01:01:01.1+05:00'#coerce
+eval/primitives/operators/plus.ion::plus::INTERVAL '1' HOUR + TIME WITH TIME ZONE '01:01:01.1+05:00'#error
+eval/primitives/operators/plus.ion::plus::INTERVAL '1' HOUR + TIMESTAMP '2025-01-01 01:01:01.1'#coerce
+eval/primitives/operators/plus.ion::plus::INTERVAL '1' HOUR + TIMESTAMP '2025-01-01 01:01:01.1'#error
+eval/primitives/operators/plus.ion::plus::INTERVAL '1' MINUTE + TIME '01:01:01.1'#coerce
+eval/primitives/operators/plus.ion::plus::INTERVAL '1' MINUTE + TIME '01:01:01.1'#error
+eval/primitives/operators/plus.ion::plus::INTERVAL '1' MINUTE + TIME WITHOUT TIME ZONE '01:01:01.1'#coerce
+eval/primitives/operators/plus.ion::plus::INTERVAL '1' MINUTE + TIME WITHOUT TIME ZONE '01:01:01.1'#error
+eval/primitives/operators/plus.ion::plus::INTERVAL '1' MONTH + DATE '2025-01-01'#coerce
+eval/primitives/operators/plus.ion::plus::INTERVAL '1' MONTH + DATE '2025-01-01'#error
+eval/primitives/operators/plus.ion::plus::INTERVAL '1' MONTH + INTERVAL '1' MONTH#coerce
+eval/primitives/operators/plus.ion::plus::INTERVAL '1' MONTH + INTERVAL '1' MONTH#error
+eval/primitives/operators/plus.ion::plus::INTERVAL '1' MONTH + INTERVAL '1' YEAR#coerce
+eval/primitives/operators/plus.ion::plus::INTERVAL '1' MONTH + INTERVAL '1' YEAR#error
+eval/primitives/operators/plus.ion::plus::INTERVAL '1' MONTH + INTERVAL '1-1' YEAR TO MONTH#coerce
+eval/primitives/operators/plus.ion::plus::INTERVAL '1' MONTH + INTERVAL '1-1' YEAR TO MONTH#error
+eval/primitives/operators/plus.ion::plus::INTERVAL '1' MONTH + TIME '01:01:01.1'#coerce
+eval/primitives/operators/plus.ion::plus::INTERVAL '1' MONTH + TIME '01:01:01.1'#error
+eval/primitives/operators/plus.ion::plus::INTERVAL '1' MONTH + TIMESTAMP '2025-01-01 01:01:01.1'#coerce
+eval/primitives/operators/plus.ion::plus::INTERVAL '1' MONTH + TIMESTAMP '2025-01-01 01:01:01.1'#error
+eval/primitives/operators/plus.ion::plus::INTERVAL '1' YEAR + DATE '2025-01-01'#coerce
+eval/primitives/operators/plus.ion::plus::INTERVAL '1' YEAR + DATE '2025-01-01'#error
+eval/primitives/operators/plus.ion::plus::INTERVAL '1' YEAR + INTERVAL '1' MONTH#coerce
+eval/primitives/operators/plus.ion::plus::INTERVAL '1' YEAR + INTERVAL '1' MONTH#error
+eval/primitives/operators/plus.ion::plus::INTERVAL '1' YEAR + INTERVAL '1' YEAR#coerce
+eval/primitives/operators/plus.ion::plus::INTERVAL '1' YEAR + INTERVAL '1' YEAR#error
+eval/primitives/operators/plus.ion::plus::INTERVAL '1' YEAR + INTERVAL '1-1' YEAR TO MONTH#coerce
+eval/primitives/operators/plus.ion::plus::INTERVAL '1' YEAR + INTERVAL '1-1' YEAR TO MONTH#error
+eval/primitives/operators/plus.ion::plus::INTERVAL '1' YEAR + TIME '01:01:01.1'#coerce
+eval/primitives/operators/plus.ion::plus::INTERVAL '1' YEAR + TIME '01:01:01.1'#error
+eval/primitives/operators/plus.ion::plus::INTERVAL '1' YEAR + TIMESTAMP '2025-01-01 01:01:01.1'#coerce
+eval/primitives/operators/plus.ion::plus::INTERVAL '1' YEAR + TIMESTAMP '2025-01-01 01:01:01.1'#error
+eval/primitives/operators/plus.ion::plus::INTERVAL '1' YEAR + TIMESTAMP WITH TIME ZONE '2025-01-01 01:01:01.1+05:00'#coerce
+eval/primitives/operators/plus.ion::plus::INTERVAL '1' YEAR + TIMESTAMP WITH TIME ZONE '2025-01-01 01:01:01.1+05:00'#error
+eval/primitives/operators/plus.ion::plus::INTERVAL '1-1' YEAR TO MONTH + DATE '2025-01-01'#coerce
+eval/primitives/operators/plus.ion::plus::INTERVAL '1-1' YEAR TO MONTH + DATE '2025-01-01'#error
+eval/primitives/operators/plus.ion::plus::INTERVAL '1-1' YEAR TO MONTH + INTERVAL '1' MONTH#coerce
+eval/primitives/operators/plus.ion::plus::INTERVAL '1-1' YEAR TO MONTH + INTERVAL '1' MONTH#error
+eval/primitives/operators/plus.ion::plus::INTERVAL '1-1' YEAR TO MONTH + INTERVAL '1' YEAR#coerce
+eval/primitives/operators/plus.ion::plus::INTERVAL '1-1' YEAR TO MONTH + INTERVAL '1' YEAR#error
+eval/primitives/operators/plus.ion::plus::INTERVAL '1-1' YEAR TO MONTH + INTERVAL '1-1' YEAR TO MONTH#coerce
+eval/primitives/operators/plus.ion::plus::INTERVAL '1-1' YEAR TO MONTH + INTERVAL '1-1' YEAR TO MONTH#error
+eval/primitives/operators/plus.ion::plus::INTERVAL '1-1' YEAR TO MONTH + TIME '01:01:01.1'#coerce
+eval/primitives/operators/plus.ion::plus::INTERVAL '1-1' YEAR TO MONTH + TIME '01:01:01.1'#error
+eval/primitives/operators/plus.ion::plus::INTERVAL '1.1' SECOND + INTERVAL '1' DAY#coerce
+eval/primitives/operators/plus.ion::plus::INTERVAL '1.1' SECOND + INTERVAL '1' DAY#error
+eval/primitives/operators/plus.ion::plus::INTERVAL '1.1' SECOND + INTERVAL '1.1' SECOND#coerce
+eval/primitives/operators/plus.ion::plus::INTERVAL '1.1' SECOND + INTERVAL '1.1' SECOND#error
+eval/primitives/operators/plus.ion::plus::INTERVAL '1.1' SECOND + TIME '01:01:01.1'#coerce
+eval/primitives/operators/plus.ion::plus::INTERVAL '1.1' SECOND + TIME '01:01:01.1'#error
+eval/primitives/operators/plus.ion::plus::INTERVAL '1.1' SECOND + TIMESTAMP '2025-01-01 01:01:01.1'#coerce
+eval/primitives/operators/plus.ion::plus::INTERVAL '1.1' SECOND + TIMESTAMP '2025-01-01 01:01:01.1'#error
+eval/primitives/operators/plus.ion::plus::INTERVAL '2' HOUR + TIMESTAMP WITH TIME ZONE '2025-01-01 01:01:01.1+02:30'#coerce
+eval/primitives/operators/plus.ion::plus::INTERVAL '2' HOUR + TIMESTAMP WITH TIME ZONE '2025-01-01 01:01:01.1+02:30'#error
+eval/primitives/operators/plus.ion::plus::INTERVAL '2' MONTH + TIMESTAMP WITHOUT TIME ZONE '2025-01-01 01:01:01.1'#coerce
+eval/primitives/operators/plus.ion::plus::INTERVAL '2' MONTH + TIMESTAMP WITHOUT TIME ZONE '2025-01-01 01:01:01.1'#error
+eval/primitives/operators/plus.ion::plus::INTERVAL '2.5' SECOND + TIME WITH TIME ZONE '01:01:01.1+00:00'#coerce
+eval/primitives/operators/plus.ion::plus::INTERVAL '2.5' SECOND + TIME WITH TIME ZONE '01:01:01.1+00:00'#error
+eval/primitives/operators/plus.ion::plus::INTERVAL '3' MONTH + TIMESTAMP WITH TIME ZONE '2025-01-01 01:01:01.1-08:00'#coerce
+eval/primitives/operators/plus.ion::plus::INTERVAL '3' MONTH + TIMESTAMP WITH TIME ZONE '2025-01-01 01:01:01.1-08:00'#error
+eval/primitives/operators/plus.ion::plus::INTERVAL '3.7' SECOND + TIMESTAMP WITH TIME ZONE '2025-01-01 01:01:01.1+00:00'#coerce
+eval/primitives/operators/plus.ion::plus::INTERVAL '3.7' SECOND + TIMESTAMP WITH TIME ZONE '2025-01-01 01:01:01.1+00:00'#error
+eval/primitives/operators/plus.ion::plus::INTERVAL '30' MINUTE + TIME WITH TIME ZONE '01:01:01.1-08:00'#coerce
+eval/primitives/operators/plus.ion::plus::INTERVAL '30' MINUTE + TIME WITH TIME ZONE '01:01:01.1-08:00'#error
+eval/primitives/operators/plus.ion::plus::INTERVAL '45' MINUTE + TIMESTAMP WITH TIME ZONE '2025-01-01 01:01:01.1-05:30'#coerce
+eval/primitives/operators/plus.ion::plus::INTERVAL '45' MINUTE + TIMESTAMP WITH TIME ZONE '2025-01-01 01:01:01.1-05:30'#error
+eval/primitives/operators/plus.ion::plus::INTERVAL '7' DAY + TIMESTAMP WITH TIME ZONE '2025-01-01 01:01:01.1+00:00'#coerce
+eval/primitives/operators/plus.ion::plus::INTERVAL '7' DAY + TIMESTAMP WITH TIME ZONE '2025-01-01 01:01:01.1+00:00'#error
+eval/primitives/operators/plus.ion::plus::TIME '01:01:01.1' + INTERVAL '1' DAY#coerce
+eval/primitives/operators/plus.ion::plus::TIME '01:01:01.1' + INTERVAL '1' DAY#error
+eval/primitives/operators/plus.ion::plus::TIME '01:01:01.1' + INTERVAL '1' HOUR#coerce
+eval/primitives/operators/plus.ion::plus::TIME '01:01:01.1' + INTERVAL '1' HOUR#error
+eval/primitives/operators/plus.ion::plus::TIME '01:01:01.1' + INTERVAL '1' MINUTE#coerce
+eval/primitives/operators/plus.ion::plus::TIME '01:01:01.1' + INTERVAL '1' MINUTE#error
+eval/primitives/operators/plus.ion::plus::TIME '01:01:01.1' + INTERVAL '1' MONTH#coerce
+eval/primitives/operators/plus.ion::plus::TIME '01:01:01.1' + INTERVAL '1' MONTH#error
+eval/primitives/operators/plus.ion::plus::TIME '01:01:01.1' + INTERVAL '1' YEAR#coerce
+eval/primitives/operators/plus.ion::plus::TIME '01:01:01.1' + INTERVAL '1' YEAR#error
+eval/primitives/operators/plus.ion::plus::TIME '01:01:01.1' + INTERVAL '1-1' YEAR TO MONTH#coerce
+eval/primitives/operators/plus.ion::plus::TIME '01:01:01.1' + INTERVAL '1-1' YEAR TO MONTH#error
+eval/primitives/operators/plus.ion::plus::TIME '01:01:01.1' + INTERVAL '1.1' SECOND#coerce
+eval/primitives/operators/plus.ion::plus::TIME '01:01:01.1' + INTERVAL '1.1' SECOND#error
+eval/primitives/operators/plus.ion::plus::TIME WITH TIME ZONE '01:01:01.1+00:00' + INTERVAL '2.5' SECOND#coerce
+eval/primitives/operators/plus.ion::plus::TIME WITH TIME ZONE '01:01:01.1+00:00' + INTERVAL '2.5' SECOND#error
+eval/primitives/operators/plus.ion::plus::TIME WITH TIME ZONE '01:01:01.1+05:00' + INTERVAL '1' HOUR#coerce
+eval/primitives/operators/plus.ion::plus::TIME WITH TIME ZONE '01:01:01.1+05:00' + INTERVAL '1' HOUR#error
+eval/primitives/operators/plus.ion::plus::TIME WITH TIME ZONE '01:01:01.1-08:00' + INTERVAL '30' MINUTE#coerce
+eval/primitives/operators/plus.ion::plus::TIME WITH TIME ZONE '01:01:01.1-08:00' + INTERVAL '30' MINUTE#error
+eval/primitives/operators/plus.ion::plus::TIME WITHOUT TIME ZONE '01:01:01.1' + INTERVAL '1' HOUR#coerce
+eval/primitives/operators/plus.ion::plus::TIME WITHOUT TIME ZONE '01:01:01.1' + INTERVAL '1' HOUR#error
+eval/primitives/operators/plus.ion::plus::TIME WITHOUT TIME ZONE '01:01:01.1' + INTERVAL '1.5' SECOND#coerce
+eval/primitives/operators/plus.ion::plus::TIME WITHOUT TIME ZONE '01:01:01.1' + INTERVAL '1.5' SECOND#error
+eval/primitives/operators/plus.ion::plus::TIMESTAMP '2025-01-01 01:01:01.1' + INTERVAL '1' DAY#coerce
+eval/primitives/operators/plus.ion::plus::TIMESTAMP '2025-01-01 01:01:01.1' + INTERVAL '1' DAY#error
+eval/primitives/operators/plus.ion::plus::TIMESTAMP '2025-01-01 01:01:01.1' + INTERVAL '1' HOUR#coerce
+eval/primitives/operators/plus.ion::plus::TIMESTAMP '2025-01-01 01:01:01.1' + INTERVAL '1' HOUR#error
+eval/primitives/operators/plus.ion::plus::TIMESTAMP '2025-01-01 01:01:01.1' + INTERVAL '1' MONTH#coerce
+eval/primitives/operators/plus.ion::plus::TIMESTAMP '2025-01-01 01:01:01.1' + INTERVAL '1' MONTH#error
+eval/primitives/operators/plus.ion::plus::TIMESTAMP '2025-01-01 01:01:01.1' + INTERVAL '1' YEAR#coerce
+eval/primitives/operators/plus.ion::plus::TIMESTAMP '2025-01-01 01:01:01.1' + INTERVAL '1' YEAR#error
+eval/primitives/operators/plus.ion::plus::TIMESTAMP '2025-01-01 01:01:01.1' + INTERVAL '1.1' SECOND#coerce
+eval/primitives/operators/plus.ion::plus::TIMESTAMP '2025-01-01 01:01:01.1' + INTERVAL '1.1' SECOND#error
+eval/primitives/operators/plus.ion::plus::TIMESTAMP WITH TIME ZONE '2025-01-01 01:01:01.1+00:00' + INTERVAL '3.7' SECOND#coerce
+eval/primitives/operators/plus.ion::plus::TIMESTAMP WITH TIME ZONE '2025-01-01 01:01:01.1+00:00' + INTERVAL '3.7' SECOND#error
+eval/primitives/operators/plus.ion::plus::TIMESTAMP WITH TIME ZONE '2025-01-01 01:01:01.1+00:00' + INTERVAL '7' DAY#coerce
+eval/primitives/operators/plus.ion::plus::TIMESTAMP WITH TIME ZONE '2025-01-01 01:01:01.1+00:00' + INTERVAL '7' DAY#error
+eval/primitives/operators/plus.ion::plus::TIMESTAMP WITH TIME ZONE '2025-01-01 01:01:01.1+02:30' + INTERVAL '2' HOUR#coerce
+eval/primitives/operators/plus.ion::plus::TIMESTAMP WITH TIME ZONE '2025-01-01 01:01:01.1+02:30' + INTERVAL '2' HOUR#error
+eval/primitives/operators/plus.ion::plus::TIMESTAMP WITH TIME ZONE '2025-01-01 01:01:01.1+05:00' + INTERVAL '1' YEAR#coerce
+eval/primitives/operators/plus.ion::plus::TIMESTAMP WITH TIME ZONE '2025-01-01 01:01:01.1+05:00' + INTERVAL '1' YEAR#error
+eval/primitives/operators/plus.ion::plus::TIMESTAMP WITH TIME ZONE '2025-01-01 01:01:01.1-05:30' + INTERVAL '45' MINUTE#coerce
+eval/primitives/operators/plus.ion::plus::TIMESTAMP WITH TIME ZONE '2025-01-01 01:01:01.1-05:30' + INTERVAL '45' MINUTE#error
+eval/primitives/operators/plus.ion::plus::TIMESTAMP WITH TIME ZONE '2025-01-01 01:01:01.1-08:00' + INTERVAL '3' MONTH#coerce
+eval/primitives/operators/plus.ion::plus::TIMESTAMP WITH TIME ZONE '2025-01-01 01:01:01.1-08:00' + INTERVAL '3' MONTH#error
+eval/primitives/operators/plus.ion::plus::TIMESTAMP WITHOUT TIME ZONE '2025-01-01 01:01:01.1' + INTERVAL '1' DAY#coerce
+eval/primitives/operators/plus.ion::plus::TIMESTAMP WITHOUT TIME ZONE '2025-01-01 01:01:01.1' + INTERVAL '1' DAY#error
+eval/primitives/operators/plus.ion::plus::TIMESTAMP WITHOUT TIME ZONE '2025-01-01 01:01:01.1' + INTERVAL '1' YEAR#coerce
+eval/primitives/operators/plus.ion::plus::TIMESTAMP WITHOUT TIME ZONE '2025-01-01 01:01:01.1' + INTERVAL '1' YEAR#error
+eval/primitives/operators/times.ion::times::-2 * INTERVAL '3' YEAR#coerce
+eval/primitives/operators/times.ion::times::-2 * INTERVAL '3' YEAR#error
+eval/primitives/operators/times.ion::times::-2 * INTERVAL '7' MONTH#coerce
+eval/primitives/operators/times.ion::times::-2 * INTERVAL '7' MONTH#error
+eval/primitives/operators/times.ion::times::-20 * INTERVAL '2' DAY#coerce
+eval/primitives/operators/times.ion::times::-20 * INTERVAL '2' DAY#error
+eval/primitives/operators/times.ion::times::0 * INTERVAL '2' DAY#coerce
+eval/primitives/operators/times.ion::times::0 * INTERVAL '2' DAY#error
+eval/primitives/operators/times.ion::times::0 * INTERVAL '3' YEAR#coerce
+eval/primitives/operators/times.ion::times::0 * INTERVAL '3' YEAR#error
+eval/primitives/operators/times.ion::times::2 * INTERVAL '1-5' YEAR TO MONTH#coerce
+eval/primitives/operators/times.ion::times::2 * INTERVAL '1-5' YEAR TO MONTH#error
+eval/primitives/operators/times.ion::times::2 * INTERVAL '3' YEAR#coerce
+eval/primitives/operators/times.ion::times::2 * INTERVAL '3' YEAR#error
+eval/primitives/operators/times.ion::times::2 * INTERVAL '7' MONTH#coerce
+eval/primitives/operators/times.ion::times::2 * INTERVAL '7' MONTH#error
+eval/primitives/operators/times.ion::times::2.1 * INTERVAL '10.5' SECOND#coerce
+eval/primitives/operators/times.ion::times::2.1 * INTERVAL '10.5' SECOND#error
+eval/primitives/operators/times.ion::times::2.1 * INTERVAL '2' DAY#coerce
+eval/primitives/operators/times.ion::times::2.1 * INTERVAL '2' DAY#error
+eval/primitives/operators/times.ion::times::2.1 * INTERVAL '3' YEAR#coerce
+eval/primitives/operators/times.ion::times::2.1 * INTERVAL '3' YEAR#error
+eval/primitives/operators/times.ion::times::2.25e-1 * INTERVAL '2' DAY#coerce
+eval/primitives/operators/times.ion::times::2.25e-1 * INTERVAL '2' DAY#error
+eval/primitives/operators/times.ion::times::2.25e-1 * INTERVAL '3' YEAR#coerce
+eval/primitives/operators/times.ion::times::2.25e-1 * INTERVAL '3' YEAR#error
+eval/primitives/operators/times.ion::times::20 * INTERVAL '10.5' SECOND#coerce
+eval/primitives/operators/times.ion::times::20 * INTERVAL '10.5' SECOND#error
+eval/primitives/operators/times.ion::times::20 * INTERVAL '2 4:5:10.5' DAY TO SECOND#coerce
+eval/primitives/operators/times.ion::times::20 * INTERVAL '2 4:5:10.5' DAY TO SECOND#error
+eval/primitives/operators/times.ion::times::20 * INTERVAL '2' DAY#coerce
+eval/primitives/operators/times.ion::times::20 * INTERVAL '2' DAY#error
+eval/primitives/operators/times.ion::times::20 * INTERVAL '4' HOUR#coerce
+eval/primitives/operators/times.ion::times::20 * INTERVAL '4' HOUR#error
+eval/primitives/operators/times.ion::times::20 * INTERVAL '5' MINUTE#coerce
+eval/primitives/operators/times.ion::times::20 * INTERVAL '5' MINUTE#error
+eval/primitives/operators/times.ion::times::INTERVAL '1-5' YEAR TO MONTH * 2#coerce
+eval/primitives/operators/times.ion::times::INTERVAL '1-5' YEAR TO MONTH * 2#error
+eval/primitives/operators/times.ion::times::INTERVAL '10.5' SECOND * 2.1#coerce
+eval/primitives/operators/times.ion::times::INTERVAL '10.5' SECOND * 2.1#error
+eval/primitives/operators/times.ion::times::INTERVAL '10.5' SECOND * 20#coerce
+eval/primitives/operators/times.ion::times::INTERVAL '10.5' SECOND * 20#error
+eval/primitives/operators/times.ion::times::INTERVAL '2 4:5:10.5' DAY TO SECOND * 20#coerce
+eval/primitives/operators/times.ion::times::INTERVAL '2 4:5:10.5' DAY TO SECOND * 20#error
+eval/primitives/operators/times.ion::times::INTERVAL '2' DAY * -20#coerce
+eval/primitives/operators/times.ion::times::INTERVAL '2' DAY * -20#error
+eval/primitives/operators/times.ion::times::INTERVAL '2' DAY * 0#coerce
+eval/primitives/operators/times.ion::times::INTERVAL '2' DAY * 0#error
+eval/primitives/operators/times.ion::times::INTERVAL '2' DAY * 2.1#coerce
+eval/primitives/operators/times.ion::times::INTERVAL '2' DAY * 2.1#error
+eval/primitives/operators/times.ion::times::INTERVAL '2' DAY * 2.25e-1#coerce
+eval/primitives/operators/times.ion::times::INTERVAL '2' DAY * 2.25e-1#error
+eval/primitives/operators/times.ion::times::INTERVAL '2' DAY * 20#coerce
+eval/primitives/operators/times.ion::times::INTERVAL '2' DAY * 20#error
+eval/primitives/operators/times.ion::times::INTERVAL '2' DAY * 50#coerce
+eval/primitives/operators/times.ion::times::INTERVAL '2' DAY * 50#error
+eval/primitives/operators/times.ion::times::INTERVAL '2' DAY * MISSING#coerce
+eval/primitives/operators/times.ion::times::INTERVAL '2' DAY * MISSING#error
+eval/primitives/operators/times.ion::times::INTERVAL '2' DAY * NULL#coerce
+eval/primitives/operators/times.ion::times::INTERVAL '2' DAY * NULL#error
+eval/primitives/operators/times.ion::times::INTERVAL '3' YEAR * -2#coerce
+eval/primitives/operators/times.ion::times::INTERVAL '3' YEAR * -2#error
+eval/primitives/operators/times.ion::times::INTERVAL '3' YEAR * 0#coerce
+eval/primitives/operators/times.ion::times::INTERVAL '3' YEAR * 0#error
+eval/primitives/operators/times.ion::times::INTERVAL '3' YEAR * 2#coerce
+eval/primitives/operators/times.ion::times::INTERVAL '3' YEAR * 2#error
+eval/primitives/operators/times.ion::times::INTERVAL '3' YEAR * 2.1#coerce
+eval/primitives/operators/times.ion::times::INTERVAL '3' YEAR * 2.1#error
+eval/primitives/operators/times.ion::times::INTERVAL '3' YEAR * 2.25e-1#coerce
+eval/primitives/operators/times.ion::times::INTERVAL '3' YEAR * 2.25e-1#error
+eval/primitives/operators/times.ion::times::INTERVAL '3' YEAR * 50#coerce
+eval/primitives/operators/times.ion::times::INTERVAL '3' YEAR * 50#error
+eval/primitives/operators/times.ion::times::INTERVAL '3' YEAR * MISSING#coerce
+eval/primitives/operators/times.ion::times::INTERVAL '3' YEAR * MISSING#error
+eval/primitives/operators/times.ion::times::INTERVAL '3' YEAR * NULL#coerce
+eval/primitives/operators/times.ion::times::INTERVAL '3' YEAR * NULL#error
+eval/primitives/operators/times.ion::times::INTERVAL '4' HOUR * 20#coerce
+eval/primitives/operators/times.ion::times::INTERVAL '4' HOUR * 20#error
+eval/primitives/operators/times.ion::times::INTERVAL '5' MINUTE * 20#coerce
+eval/primitives/operators/times.ion::times::INTERVAL '5' MINUTE * 20#error
+eval/primitives/operators/times.ion::times::INTERVAL '7' MONTH * -2#coerce
+eval/primitives/operators/times.ion::times::INTERVAL '7' MONTH * -2#error
+eval/primitives/operators/times.ion::times::INTERVAL '7' MONTH * 2#coerce
+eval/primitives/operators/times.ion::times::INTERVAL '7' MONTH * 2#error
+eval/primitives/operators/times.ion::times::MISSING * INTERVAL '2' DAY#coerce
+eval/primitives/operators/times.ion::times::MISSING * INTERVAL '2' DAY#error
+eval/primitives/operators/times.ion::times::MISSING * INTERVAL '3' YEAR#coerce
+eval/primitives/operators/times.ion::times::MISSING * INTERVAL '3' YEAR#error
+eval/primitives/operators/times.ion::times::NULL * INTERVAL '2' DAY#coerce
+eval/primitives/operators/times.ion::times::NULL * INTERVAL '2' DAY#error
+eval/primitives/operators/times.ion::times::NULL * INTERVAL '3' YEAR#coerce
+eval/primitives/operators/times.ion::times::NULL * INTERVAL '3' YEAR#error
 eval/primitives/path.ion::path-expressions::dotted path expression with quoted field name accesses field AMBIGUOUS_FIELD (uppercase)#coerce
 eval/primitives/path.ion::path-expressions::dotted path expression with quoted field name accesses field AMBIGUOUS_FIELD (uppercase)#error
 eval/primitives/path.ion::path-expressions::dotted path expression with quoted field name accesses field UNAMBIGUOUS_FIELD (uppercase)#coerce
@@ -1807,6 +2781,58 @@ eval/primitives/string.ion::string::concatenation with null values{left:"NULL",r
 eval/primitives/string.ion::string::concatenation with null values{left:"NULL",right:"'b'"}#error
 eval/primitives/string.ion::string::concatenation with null values{left:"NULL",right:"NULL"}#coerce
 eval/primitives/string.ion::string::concatenation with null values{left:"NULL",right:"NULL"}#error
+eval/primitives/time.ion::time::explicit time end of day#coerce
+eval/primitives/time.ion::time::explicit time end of day#error
+eval/primitives/time.ion::time::explicit time midnight#coerce
+eval/primitives/time.ion::time::explicit time midnight#error
+eval/primitives/time.ion::time::explicit time no fractional seconds#coerce
+eval/primitives/time.ion::time::explicit time no fractional seconds#error
+eval/primitives/time.ion::time::explicit time simple#coerce
+eval/primitives/time.ion::time::explicit time simple#error
+eval/primitives/time.ion::time::time end of day#coerce
+eval/primitives/time.ion::time::time end of day#error
+eval/primitives/time.ion::time::time midnight#coerce
+eval/primitives/time.ion::time::time midnight#error
+eval/primitives/time.ion::time::time no fractional seconds#coerce
+eval/primitives/time.ion::time::time no fractional seconds#error
+eval/primitives/time.ion::time::time simple#coerce
+eval/primitives/time.ion::time::time simple#error
+eval/primitives/time.ion::time::time truncate#coerce
+eval/primitives/time.ion::time::time truncate#error
+eval/primitives/time.ion::time::time with offset#coerce
+eval/primitives/time.ion::time::time with offset#error
+eval/primitives/time.ion::timez::timez UTC#coerce
+eval/primitives/time.ion::timez::timez UTC#error
+eval/primitives/time.ion::timez::timez negative offset#coerce
+eval/primitives/time.ion::timez::timez negative offset#error
+eval/primitives/time.ion::timez::timez positive offset#coerce
+eval/primitives/time.ion::timez::timez positive offset#error
+eval/primitives/time.ion::timez::timez without offset - failure#coerce
+eval/primitives/time.ion::timez::timez without offset - failure#error
+eval/primitives/timestamp.ion::timestamp::explicit timestamp end of day#coerce
+eval/primitives/timestamp.ion::timestamp::explicit timestamp end of day#error
+eval/primitives/timestamp.ion::timestamp::explicit timestamp midnight#coerce
+eval/primitives/timestamp.ion::timestamp::explicit timestamp midnight#error
+eval/primitives/timestamp.ion::timestamp::explicit timestamp no fractional seconds#coerce
+eval/primitives/timestamp.ion::timestamp::explicit timestamp no fractional seconds#error
+eval/primitives/timestamp.ion::timestamp::explicit timestamp simple#coerce
+eval/primitives/timestamp.ion::timestamp::explicit timestamp simple#error
+eval/primitives/timestamp.ion::timestamp::timestamp end of day#coerce
+eval/primitives/timestamp.ion::timestamp::timestamp end of day#error
+eval/primitives/timestamp.ion::timestamp::timestamp midnight#coerce
+eval/primitives/timestamp.ion::timestamp::timestamp midnight#error
+eval/primitives/timestamp.ion::timestamp::timestamp no fractional seconds#coerce
+eval/primitives/timestamp.ion::timestamp::timestamp no fractional seconds#error
+eval/primitives/timestamp.ion::timestamp::timestamp with offset#coerce
+eval/primitives/timestamp.ion::timestamp::timestamp with offset#error
+eval/primitives/timestamp.ion::timestampz::timestampz UTC#coerce
+eval/primitives/timestamp.ion::timestampz::timestampz UTC#error
+eval/primitives/timestamp.ion::timestampz::timestampz negative offset#coerce
+eval/primitives/timestamp.ion::timestampz::timestampz negative offset#error
+eval/primitives/timestamp.ion::timestampz::timestampz positive offset#coerce
+eval/primitives/timestamp.ion::timestampz::timestampz positive offset#error
+eval/primitives/timestamp.ion::timestampz::timestampz without offset - failure#coerce
+eval/primitives/timestamp.ion::timestampz::timestampz without offset - failure#error
 eval/query/undefined-variable-behavior.ion::undefined_variable_behavior::undefinedUnqualifiedVariableIsMissingExprWithUndefinedVariableBehaviorMissing#coerce
 eval/query/undefined-variable-behavior.ion::undefined_variable_behavior::undefinedUnqualifiedVariableIsMissingExprWithUndefinedVariableBehaviorMissing#error
 eval/query/undefined-variable-behavior.ion::undefined_variable_behavior::undefinedUnqualifiedVariableIsNullExprWithUndefinedVariableBehaviorMissing#coerce
@@ -1888,3 +2914,13 @@ extended/eval/primitives/int.ion::int_overflow_error::int overflow and underflow
 extended/eval/primitives/int.ion::int_overflow_error::int overflow and underflow conditions{sql:"one_tenth_of_max_int * 11"}#error
 extended/eval/primitives/int.ion::int_overflow_error::int overflow and underflow conditions{sql:"one_tenth_of_min_int * -11"}#coerce
 extended/eval/primitives/int.ion::int_overflow_error::int overflow and underflow conditions{sql:"one_tenth_of_min_int * -11"}#error
+extended/eval/primitives/time.ion::time::explicit time truncate#coerce
+extended/eval/primitives/time.ion::time::explicit time truncate#error
+extended/eval/primitives/time.ion::timez::timez truncate#coerce
+extended/eval/primitives/time.ion::timez::timez truncate#error
+extended/eval/primitives/timestamp.ion::timestamp::explicit timestamp truncate#coerce
+extended/eval/primitives/timestamp.ion::timestamp::explicit timestamp truncate#error
+extended/eval/primitives/timestamp.ion::timestamp::timestamp truncate#coerce
+extended/eval/primitives/timestamp.ion::timestamp::timestamp truncate#error
+extended/eval/primitives/timestamp.ion::timestampz::timestampz truncate#coerce
+extended/eval/primitives/timestamp.ion::timestampz::timestampz truncate#error

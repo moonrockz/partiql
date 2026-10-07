@@ -4,10 +4,19 @@ package "moonrockz/partiql-eval/lower"
 import {
   "moonrockz/partiql-eval/plan",
   "moonrockz/partiql-syntax/ast",
+  "moonrockz/partiql-value",
 }
 
 // Values
+pub fn date_literal(String, span~ : @ast.Span) -> @partiql-value.Date raise @plan.EvalError
+
+pub fn interval_literal(String, negative~ : Bool, qualifier~ : @ast.IntervalQualifier, span~ : @ast.Span) -> @partiql-value.Value raise @plan.EvalError
+
 pub fn lower(@ast.Expr) -> @plan.Expr raise @plan.EvalError
+
+pub fn time_literal(String, Int?, Bool, span~ : @ast.Span) -> @partiql-value.Time raise @plan.EvalError
+
+pub fn timestamp_literal(String, Int?, Bool, span~ : @ast.Span) -> @partiql-value.Timestamp raise @plan.EvalError
 
 // Errors
 

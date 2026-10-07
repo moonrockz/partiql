@@ -7,7 +7,11 @@ fn orderable(x : @value.Value, y : @value.Value) -> Bool {
     | (String(_), String(_))
     | (Date(_), Date(_))
     | (Time(_), Time(_))
-    | (Timestamp(_), Timestamp(_)) => true
+    | (Timestamp(_), Timestamp(_))
+    | (Date(_), Timestamp(_))
+    | (Timestamp(_), Date(_))
+    | (IntervalYM(_), IntervalYM(_))
+    | (IntervalDT(_), IntervalDT(_)) => true
     _ => number(x) is Some(_) && number(y) is Some(_)
   }
 }
@@ -39,7 +43,10 @@ fn ordered(
   if is_nan(x) || is_nan(y) {
     return Bool(false)
   }
-  Bool(holds(@value.compare(x, y, nulls=NullsFirst)))
+  match datetime_order(x, y) {
+    Some(c) => Bool(holds(c))
+    None => Bool(holds(@value.compare(x, y, nulls=NullsFirst)))
+  }
 }
 
 ///|
@@ -75,6 +82,9 @@ pub fn greater_eq(
 /// `=`: NULL if either side is NULL, else MISSING if either is MISSING, else a
 /// Bool; it never fails on mixed types (partiql-tests null.ion).
 pub fn equal(a : @value.Value, b : @value.Value) -> @value.Value {
+  if datetime_equal(a, b) is Some(r) {
+    return r
+  }
   match @value.sql_equals(a, b) {
     Missing if is_null(a) || is_null(b) => Null
     other => other
