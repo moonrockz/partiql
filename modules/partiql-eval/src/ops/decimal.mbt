@@ -4,8 +4,6 @@
 let max_decimal_digits : Int = 38
 
 ///|
-
-///|
 fn pow10(n : Int) -> @bigint.BigInt {
   @bigint.BigInt::from_int(10).pow(@bigint.BigInt::from_int(n))
 }
@@ -149,7 +147,7 @@ fn decimal_div(
   if na.is_zero() {
     return @ion_core.Decimal::new(na, checked_exponent(preferred))
   }
-  // Scale the dividend so that the integer quotient has at least 36 digits.
+  // Scale the dividend so that the integer quotient has at least 40 digits.
   let shift = (max_decimal_digits + 2 + digit_count(nb) - digit_count(na)).max(
     0,
   )
