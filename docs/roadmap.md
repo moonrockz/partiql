@@ -98,8 +98,8 @@ Its parts, in this order:
   It evaluates literals, collections, paths, operators, LIKE, BETWEEN, IN,
   IS, CASE, COALESCE, NULLIF, and datetime and interval arithmetic.
   `evaluate` and `evaluate_text` take global `Bindings` and a `Mode`. The
-  `eval` conformance check passes 2950 assertions; 6976 are not applicable
-  because they need queries, functions, CAST, graph MATCH or `?`; 34 fail
+  `eval` conformance check passes 2952 assertions; 6976 are not applicable
+  because they need queries, functions, CAST, graph MATCH or `?`; 32 fail
   (see `conformance.md`).
 - **M4b: queries.** Relational operators in the plan: FROM (scans,
   unnesting, joins, AT, BY), LET, WHERE, the SELECT forms, ORDER BY,
