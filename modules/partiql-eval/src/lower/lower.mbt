@@ -66,81 +66,180 @@ fn unsupported(
 }
 
 ///|
+/// The deepest nesting that lowering accepts. The parser limits parentheses
+/// and prefix operators, but not postfix chains such as `x IS NULL IS NULL`;
+/// this limit keeps every recursion here and in the interpreter off the end
+/// of the stack. Left-associative operator chains do not count: they are
+/// lowered and run in a loop.
+let max_depth : Int = 200
+
+///|
 fn lower_all(
   items : Array[@ast.Expr],
+  depth : Int,
 ) -> Array[@plan.Expr] raise @plan.EvalError {
-  items.map(lower)
+  items.map(item => lower_at(item, depth))
 }
 
 ///|
 fn lower_pairs(
   pairs : Array[(@ast.Expr, @ast.Expr)],
+  depth : Int,
 ) -> Array[(@plan.Expr, @plan.Expr)] raise @plan.EvalError {
-  pairs.map(pair => (lower(pair.0), lower(pair.1)))
+  pairs.map(pair => (lower_at(pair.0, depth), lower_at(pair.1, depth)))
 }
 
 ///|
-fn lower_step(s : @ast.PathStep) -> @plan.Step raise @plan.EvalError {
+fn lower_step(
+  s : @ast.PathStep,
+  depth : Int,
+) -> @plan.Step raise @plan.EvalError {
   match s {
     Field(id) => Field(id.text, delimited=id.delimited)
     FieldString(name, ..) => Field(name, delimited=true)
-    Index(e) => Index(lower(e))
+    Index(e) => Index(lower_at(e, depth))
     AllElements(_) => AllElements
     AllFields(_) => AllFields
   }
 }
 
 ///|
-/// Lowers an expression. Recursion is safe: the parser rejects input nested
-/// deeper than its limit.
+/// One link of a left-associative chain: the operator, its right operand and
+/// the span of the whole link.
+priv enum Link {
+  BinaryLink(@ast.BinaryOp, @ast.Expr, @ast.Span)
+  AndLink(@ast.Expr, @ast.Span)
+  OrLink(@ast.Expr, @ast.Span)
+}
+
+///|
+/// A chain of binary operators, AND and OR, lowered in a loop down its left
+/// spine: `1 + 1 + ... + 1` is as deep as it is long.
+fn lower_chain(e : @ast.Expr, depth : Int) -> @plan.Expr raise @plan.EvalError {
+  let links : Array[Link] = []
+  let mut leaf = e
+  while true {
+    match leaf.kind {
+      Binary(op, l, r) => {
+        links.push(BinaryLink(op, r, leaf.span))
+        leaf = l
+      }
+      And(l, r) => {
+        links.push(AndLink(r, leaf.span))
+        leaf = l
+      }
+      Or(l, r) => {
+        links.push(OrLink(r, leaf.span))
+        leaf = l
+      }
+      _ => break
+    }
+  }
+  let mut result = lower_at(leaf, depth)
+  for link in links.rev_iter() {
+    result = match link {
+      BinaryLink(op, r, span) => Binary(op, result, lower_at(r, depth), span)
+      AndLink(r, span) => And(result, lower_at(r, depth), span)
+      OrLink(r, span) => Or(result, lower_at(r, depth), span)
+    }
+  }
+  result
+}
+
+///|
+/// The nesting depth of an Ion value (a scalar is 1), counted in a loop: the
+/// parser does not limit the depth of an Ion literal.
+fn ion_depth(v : @ion_core.IonValue) -> Int {
+  let mut deepest = 0
+  let pending = [(v, 1)]
+  while pending.pop() is Some((x, d)) {
+    deepest = deepest.max(d)
+    match x.kind() {
+      List(items) | Sexp(items) =>
+        for item in items {
+          pending.push((item, d + 1))
+        }
+      Struct(fields) =>
+        for field in fields {
+          pending.push((field.value(), d + 1))
+        }
+      _ => ()
+    }
+  }
+  deepest
+}
+
+///|
+/// Lowers an expression.
 pub fn lower(e : @ast.Expr) -> @plan.Expr raise @plan.EvalError {
+  lower_at(e, 0)
+}
+
+///|
+/// Lowers an expression `depth` levels down; deeper than `max_depth` is a
+/// `DataError`.
+fn lower_at(e : @ast.Expr, depth : Int) -> @plan.Expr raise @plan.EvalError {
   let span = e.span
+  if depth >= max_depth {
+    raise DataError(message="expression is too deep", span~)
+  }
+  let depth = depth + 1
   match e.kind {
+    Lit(Ion(_, v)) if depth + ion_depth(v) > max_depth =>
+      raise DataError(message="expression is too deep", span~)
     Lit(l) => Const(literal(l, span), span)
     VarRef(id, qualified=_) => Global(id.text, delimited=id.delimited, span)
     // Spec M4a §5: a sexp and a row are lists.
-    List(items) | Sexp(items) | Row(items) => ListOf(lower_all(items), span)
-    Bag(items) => BagOf(lower_all(items), span)
-    Struct(fields) => TupleOf(lower_pairs(fields), span)
-    Map(entries) => MapOf(lower_pairs(entries), span)
+    List(items) | Sexp(items) | Row(items) =>
+      ListOf(lower_all(items, depth), span)
+    Bag(items) => BagOf(lower_all(items, depth), span)
+    Struct(fields) => TupleOf(lower_pairs(fields, depth), span)
+    Map(entries) => MapOf(lower_pairs(entries, depth), span)
     Query(_) => unsupported("a subquery (M4b)", span)
     Values(_) => unsupported("VALUES (M4b)", span)
     GraphMatch(_) => unsupported("graph MATCH (later)", span)
     Parameter => unsupported("a parameter (later)", span)
     Error => raise DataError(message="a broken expression", span~)
-    Path(base, steps) => Path(lower(base), steps.map(lower_step), span)
+    Path(base, steps) =>
+      Path(lower_at(base, depth), steps.map(s => lower_step(s, depth)), span)
     // `-9223372036854775808` is a literal: its magnitude is out of range.
     Unary(Neg, { kind: Lit(Int(text)), .. }) =>
       Const(integer_value("-" + text, span), span)
-    Unary(op, x) => Unary(op, lower(x), span)
-    Binary(op, l, r) => Binary(op, lower(l), lower(r), span)
-    And(l, r) => And(lower(l), lower(r), span)
-    Or(l, r) => Or(lower(l), lower(r), span)
-    Not(x) => Not(lower(x), span)
-    BoolTest(x, truth, negated~) => BoolTest(lower(x), truth, negated~, span)
+    Unary(op, x) => Unary(op, lower_at(x, depth), span)
+    Binary(_, _, _) | And(_, _) | Or(_, _) => lower_chain(e, depth)
+    Not(x) => Not(lower_at(x, depth), span)
+    BoolTest(x, truth, negated~) =>
+      BoolTest(lower_at(x, depth), truth, negated~, span)
     Like(x, pattern~, escape~, negated~) =>
       Like(
-        lower(x),
-        pattern=lower(pattern),
-        escape=escape.map(lower),
+        lower_at(x, depth),
+        pattern=lower_at(pattern, depth),
+        escape=escape.map(x => lower_at(x, depth)),
         negated~,
         span,
       )
     Between(x, low~, high~, negated~) =>
-      Between(lower(x), low=lower(low), high=lower(high), negated~, span)
-    In(x, c, negated~) => In(lower(x), lower(c), negated~, span)
-    IsNull(x, negated~) => IsNull(lower(x), negated~, span)
-    IsMissing(x, negated~) => IsMissing(lower(x), negated~, span)
-    IsType(x, t, negated~) => IsType(lower(x), t, negated~, span)
-    Case(operand~, branches~, default~) =>
-      Case(
-        operand=operand.map(lower),
-        branches=branches.map(b => (lower(b.0), lower(b.1))),
-        default=default.map(lower),
+      Between(
+        lower_at(x, depth),
+        low=lower_at(low, depth),
+        high=lower_at(high, depth),
+        negated~,
         span,
       )
-    Coalesce(items) => Coalesce(lower_all(items), span)
-    NullIf(a, b) => NullIf(lower(a), lower(b), span)
+    In(x, c, negated~) =>
+      In(lower_at(x, depth), lower_at(c, depth), negated~, span)
+    IsNull(x, negated~) => IsNull(lower_at(x, depth), negated~, span)
+    IsMissing(x, negated~) => IsMissing(lower_at(x, depth), negated~, span)
+    IsType(x, t, negated~) => IsType(lower_at(x, depth), t, negated~, span)
+    Case(operand~, branches~, default~) =>
+      Case(
+        operand=operand.map(x => lower_at(x, depth)),
+        branches=branches.map(b => (lower_at(b.0, depth), lower_at(b.1, depth))),
+        default=default.map(x => lower_at(x, depth)),
+        span,
+      )
+    Coalesce(items) => Coalesce(lower_all(items, depth), span)
+    NullIf(a, b) => NullIf(lower_at(a, depth), lower_at(b, depth), span)
     Overlaps(_, _)
     | Cast(_, _)
     | Extract(_, _)

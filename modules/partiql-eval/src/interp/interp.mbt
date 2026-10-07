@@ -348,7 +348,66 @@ fn span_of(e : @plan.Expr) -> @ast.Span {
 }
 
 ///|
-/// Runs a plan against the global bindings `env`.
+/// One link of a left-associative chain: the operator, its right operand and
+/// the span of the whole link.
+priv enum Link {
+  BinaryLink(@ast.BinaryOp, @plan.Expr, @ast.Span)
+  AndLink(@plan.Expr, @ast.Span)
+  OrLink(@plan.Expr, @ast.Span)
+}
+
+///|
+/// A chain of binary operators, AND and OR, run in a loop down its left
+/// spine, so that a long chain does not use the stack. Each link runs its
+/// left side, then its right side, then the operator.
+fn run_chain(
+  e : @plan.Expr,
+  env : Array[(String, @value.Value)],
+  mode : @plan.Mode,
+) -> @value.Value raise @plan.EvalError {
+  let links : Array[Link] = []
+  let mut leaf = e
+  while true {
+    match leaf {
+      Binary(op, l, r, span) => {
+        links.push(BinaryLink(op, r, span))
+        leaf = l
+      }
+      And(l, r, span) => {
+        links.push(AndLink(r, span))
+        leaf = l
+      }
+      Or(l, r, span) => {
+        links.push(OrLink(r, span))
+        leaf = l
+      }
+      _ => break
+    }
+  }
+  let mut result = run(leaf, env, mode)
+  for link in links.rev_iter() {
+    let a = result
+    result = match link {
+      BinaryLink(op, r, span) => {
+        let b = run(r, env, mode)
+        typed(mode, span, () => @ops.binary(op, a, b))
+      }
+      AndLink(r, span) => {
+        let b = run(r, env, mode)
+        typed(mode, span, () => @ops.and_(a, b))
+      }
+      OrLink(r, span) => {
+        let b = run(r, env, mode)
+        typed(mode, span, () => @ops.or_(a, b))
+      }
+    }
+  }
+  result
+}
+
+///|
+/// Runs a plan against the global bindings `env`. Recursion follows the
+/// plan's depth, which lowering bounds; operator chains run in a loop.
 pub fn run(
   e : @plan.Expr,
   env : Array[(String, @value.Value)],
@@ -375,21 +434,7 @@ pub fn run(
       let v = run(x, env, mode)
       typed(mode, span, () => @ops.neg(v, negate=op is Neg))
     }
-    Binary(op, l, r, span) => {
-      let a = run(l, env, mode)
-      let b = run(r, env, mode)
-      typed(mode, span, () => @ops.binary(op, a, b))
-    }
-    And(l, r, span) => {
-      let a = run(l, env, mode)
-      let b = run(r, env, mode)
-      typed(mode, span, () => @ops.and_(a, b))
-    }
-    Or(l, r, span) => {
-      let a = run(l, env, mode)
-      let b = run(r, env, mode)
-      typed(mode, span, () => @ops.or_(a, b))
-    }
+    Binary(_, _, _, _) | And(_, _, _) | Or(_, _, _) => run_chain(e, env, mode)
     Not(x, span) => {
       let v = run(x, env, mode)
       typed(mode, span, () => @ops.not_(v))
