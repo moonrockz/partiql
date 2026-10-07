@@ -3,4 +3,5 @@ members = [
   "./modules/partiql-syntax",
   "./modules/partiql",
   "./modules/partiql-conformance",
+  "./modules/partiql-eval",
 ]

@@ -1,0 +1,37 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "moonrockz/partiql-eval/plan"
+
+import {
+  "moonbitlang/core/debug",
+  "moonrockz/partiql-syntax/ast",
+  "moonrockz/partiql-value",
+}
+
+// Values
+
+// Errors
+pub(all) suberror EvalError {
+  TypeError(message~ : String, span~ : @ast.Span)
+  DataError(message~ : String, span~ : @ast.Span)
+  Unsupported(message~ : String, span~ : @ast.Span)
+  Syntax(@ast.ParseError)
+} derive(Eq, @debug.Debug)
+
+// Types and methods
+pub(all) enum Expr {
+  Const(@partiql-value.Value, @ast.Span)
+  Global(String, delimited~ : Bool, @ast.Span)
+  ListOf(Array[Expr], @ast.Span)
+  BagOf(Array[Expr], @ast.Span)
+  TupleOf(Array[(Expr, Expr)], @ast.Span)
+  MapOf(Array[(Expr, Expr)], @ast.Span)
+} derive(@debug.Debug)
+
+pub(all) enum Mode {
+  Permissive
+  Strict
+} derive(Eq, @debug.Debug)
+
+// Type aliases
+
+// Traits

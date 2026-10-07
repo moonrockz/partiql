@@ -4,7 +4,7 @@ set -euo pipefail
 
 VERSION=$(mise run release:version 2>/dev/null | tail -1)
 
-for mod in modules/partiql-value modules/partiql-syntax modules/partiql modules/partiql-conformance; do
+for mod in modules/partiql-value modules/partiql-syntax modules/partiql-eval modules/partiql modules/partiql-conformance; do
   sed -E \
     -e "s/^version[[:space:]]*=[[:space:]]*\"[^\"]*\"/version = \"$VERSION\"/" \
     -e "s#\"(moonrockz/partiql[a-z-]*)@[^\"]+\"#\"\\1@$VERSION\"#g" \

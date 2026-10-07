@@ -2,9 +2,8 @@
 #MISE description="Publish the modules to mooncakes.io in dependency order"
 set -euo pipefail
 
-# partiql-conformance is never published. Insert partiql-eval before
-# partiql when it exists.
-MODULES=(partiql-value partiql-syntax partiql)
+# partiql-conformance is never published.
+MODULES=(partiql-value partiql-syntax partiql-eval partiql)
 
 if [ ! -f ~/.moon/credentials.json ]; then
   echo "Error: run 'mise run release:credentials' first (needs MOONCAKES_USER_TOKEN)." >&2

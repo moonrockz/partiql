@@ -23,7 +23,7 @@ fixed from the start (see [ADR 0001](adr/0001-workspace-monorepo.md)).
 |---|---|---|---|---|
 | `moonrockz/partiql-value` | root (`Value`), `ion` (codec), `arbitrary` (generators) | `moonrockz/ion` | wasm, wasm-gc, js, native | yes |
 | `moonrockz/partiql-syntax` | root (`parse`), `ast`, `lexer`, `parser` | `moonrockz/ion` | wasm, wasm-gc, js, native | yes |
-| `moonrockz/partiql-eval` | reserved: plan, catalog, functions, evaluator | value, syntax | all four | later |
+| `moonrockz/partiql-eval` | root (`evaluate`), `plan`, `lower`, `ops`, `interp` | value, syntax, `moonrockz/ion` | wasm, wasm-gc, js, native | yes |
 | `moonrockz/partiql` | root (executable), `cli` | `moonbitlang/x` (later: value, syntax, eval) | native, wasm | yes |
 | `moonrockz/partiql-conformance` | root (test-only) | value, syntax, `moonrockz/ion`, `moonbitlang/x` | native, js | no |
 
@@ -41,6 +41,8 @@ graph TD
   conformance[moonrockz/partiql-conformance] --> value
   conformance --> syntax
   conformance --> ion
+  eval[moonrockz/partiql-eval] --> value
+  eval --> syntax
 ```
 
 ## Package plan
@@ -121,5 +123,5 @@ graph TD
 - Library code may use the base class library (`moonbitlang/core`,
   `moonbitlang/x`, `moonbitlang/async`) and `moonrockz/ion`. A
   target-restricted dependency needs `supported_targets` and a reason.
-- When `partiql-eval` is created, insert it before `partiql` in the publish
-  order (`mise-tasks/release/publish`).
+- The publish order (`mise-tasks/release/publish`) is `partiql-value`,
+  `partiql-syntax`, `partiql-eval`, `partiql`.

@@ -1,0 +1,18 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "moonrockz/partiql-eval/lower"
+
+import {
+  "moonrockz/partiql-eval/plan",
+  "moonrockz/partiql-syntax/ast",
+}
+
+// Values
+pub fn lower(@ast.Expr) -> @plan.Expr raise @plan.EvalError
+
+// Errors
+
+// Types and methods
+
+// Type aliases
+
+// Traits

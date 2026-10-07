@@ -1,0 +1,18 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "moonrockz/partiql-eval/interp"
+
+import {
+  "moonrockz/partiql-eval/plan",
+  "moonrockz/partiql-value",
+}
+
+// Values
+pub fn run(@plan.Expr, Array[(String, @partiql-value.Value)], @plan.Mode) -> @partiql-value.Value raise @plan.EvalError
+
+// Errors
+
+// Types and methods
+
+// Type aliases
+
+// Traits

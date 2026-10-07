@@ -7,7 +7,7 @@ EXPECTED="${usage_version:-${1:-}}"
 EXPECTED="${EXPECTED#v}"
 STATUS=0
 
-for mod in modules/partiql-value modules/partiql-syntax modules/partiql modules/partiql-conformance; do
+for mod in modules/partiql-value modules/partiql-syntax modules/partiql-eval modules/partiql modules/partiql-conformance; do
   ACTUAL=$(sed -nE 's/^version[[:space:]]*=[[:space:]]*"([^"]*)".*/\1/p' "$mod/moon.mod" | head -1)
   if [ "$ACTUAL" != "$EXPECTED" ]; then
     echo "::error::$mod/moon.mod has version '$ACTUAL', expected '$EXPECTED'" >&2
