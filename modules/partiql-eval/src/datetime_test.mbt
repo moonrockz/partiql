@@ -447,3 +447,12 @@ test "an explicit time precision rounds half up" {
     )
   })
 }
+
+///|
+test "scaling an interval by an exponent at the Int limit never aborts" {
+  @expect.expect_all(soft => {
+    soft.expect(ev("INTERVAL '1' DAY * 1e-2147483648")).to_equal(dt(0L, 0L))
+    soft.expect(ev("INTERVAL '1' YEAR * 1e-2147483648")).to_equal(ym(0L))
+    soft.expect(ev("1e-2147483648 * INTERVAL '1' DAY")).to_equal(dt(0L, 0L))
+  })
+}

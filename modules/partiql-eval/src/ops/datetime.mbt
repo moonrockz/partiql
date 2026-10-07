@@ -331,16 +331,17 @@ fn exact_decimal(f : Double) -> @ion_core.Decimal raise OpFailure {
 ///|
 /// The integer part of a decimal, toward zero.
 fn truncated(d : @ion_core.Decimal) -> @bigint.BigInt raise OpFailure {
-  let e = d.exponent()
-  if e >= 0 {
-    if e > 60 {
+  // Int64: `-e` must not overflow for the Int minimum.
+  let e = d.exponent().to_int64()
+  if e >= 0L {
+    if e > 60L {
       raise DataFailure("an interval out of range")
     }
-    d.coefficient() * pow10(e)
-  } else if -e > digit_count(d.coefficient()) {
+    d.coefficient() * pow10(e.to_int())
+  } else if -e > digit_count(d.coefficient()).to_int64() {
     0N
   } else {
-    d.coefficient() / pow10(-e)
+    d.coefficient() / pow10((-e).to_int())
   }
 }
 

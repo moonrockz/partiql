@@ -7,15 +7,16 @@ fn in_range(v : @value.Value, low : Int64, high : Int64) -> Bool {
 }
 
 ///|
-/// The digits left of the point of a decimal, and its scale.
-fn decimal_shape(d : @ion_core.Decimal) -> (Int, Int) {
+/// The digits left of the point of a decimal, and its scale. Int64: `-e`
+/// must not overflow for the Int minimum.
+fn decimal_shape(d : @ion_core.Decimal) -> (Int64, Int64) {
   let digits = if d.coefficient().is_zero() {
-    0
+    0L
   } else {
-    digit_count(d.coefficient())
+    digit_count(d.coefficient()).to_int64()
   }
-  let scale = (-d.exponent()).max(0)
-  ((digits - scale).max(0), scale)
+  let scale = (-d.exponent().to_int64()).max(0L)
+  ((digits - scale).max(0L), scale)
 }
 
 ///|
@@ -25,9 +26,9 @@ fn decimal_fits(d : @ion_core.Decimal, precision : Int?, scale : Int?) -> Bool {
   match precision {
     None => true
     Some(p) => {
-      let s = scale.unwrap_or(0)
+      let s = scale.unwrap_or(0).to_int64()
       let (whole, fraction) = decimal_shape(d)
-      fraction <= s && whole <= p - s
+      fraction <= s && whole <= p.to_int64() - s
     }
   }
 }

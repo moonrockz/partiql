@@ -257,3 +257,12 @@ test "BETWEEN and negated predicates keep MISSING" {
     )
   })
 }
+
+///|
+test "IS DECIMAL(p, s) with an exponent at the Int limit" {
+  @expect.expect_all(soft => {
+    soft.expect(ev("1e-2147483648 IS DECIMAL(1,0)")).to_equal(Bool(false))
+    soft.expect(ev("1e-2147483648 IS DECIMAL(38,38)")).to_equal(Bool(false))
+    soft.expect(ev("1e-2147483648 IS DECIMAL")).to_equal(Bool(true))
+  })
+}
