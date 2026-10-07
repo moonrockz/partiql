@@ -10,8 +10,8 @@ measures that compliance.
 
 ## Status
 
-Milestone M0 (repository setup) is complete. The parser and the data model
-are the next work. See [docs/roadmap.md](docs/roadmap.md) for the plan and
+The data model, the parser, the printer and the evaluator for expressions
+are done. Queries are the next work. See [docs/roadmap.md](docs/roadmap.md) for the plan and
 [docs/conformance.md](docs/conformance.md) for the current conformance
 results.
 
@@ -24,6 +24,7 @@ use the same version.
 |---|---|
 | [`moonrockz/partiql-value`](https://mooncakes.io/docs/moonrockz/partiql-value) | The PartiQL data model and its PartiQL-encoded Ion codec |
 | [`moonrockz/partiql-syntax`](https://mooncakes.io/docs/moonrockz/partiql-syntax) | The PartiQL parser |
+| [`moonrockz/partiql-eval`](https://mooncakes.io/docs/moonrockz/partiql-eval) | The PartiQL evaluator (expressions so far) |
 | [`moonrockz/partiql`](https://mooncakes.io/docs/moonrockz/partiql) | The `partiql` command-line tool |
 | `moonrockz/partiql-conformance` | The conformance harness (not published) |
 

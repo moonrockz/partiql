@@ -37,6 +37,7 @@ CI turns these lines into a job summary (`.github/scripts/conformance_summary.py
 | `print-roundtrip` | each `SyntaxSuccess` and evaluation statement | parsing the printed statement gives the same tree (spans aside), and printing it again gives the same text; a statement that does not parse is N/A |
 | `pretty-roundtrip` | each `SyntaxSuccess` and evaluation statement | the same as `print-roundtrip`, with the pretty layout at width 40 |
 | `recovery` | each `SyntaxSuccess`, `SyntaxFail` and evaluation statement | if the strict `parse_script` succeeds, `parse_script_recovering` gives the same tree and no errors; if it raises, the recovered errors include its error |
+| `eval` | each assertion of an `EvaluationSuccess` or `EvaluationFail` case, once per mode | see below |
 
 `ParseError::Unsupported` and `CodecError::Unsupported` always count as
 failures.
@@ -44,7 +45,23 @@ failures.
 The `codec` check does not require the encoded Ion to equal the input Ion:
 the reference runners decode Ion symbols as strings and accept legacy
 `$date`/`$time` forms, so the encoder writes strings and the new canonical
-forms (see ADR 0005). Evaluation results are not checked until an evaluator exists.
+forms (see ADR 0005).
+
+### The `eval` check
+
+The check evaluates each statement with the case's `env`. A case has one
+assertion per typing mode. The check runs every assertion in its mode:
+permissive (`EvalModeCoerce`) or strict (`EvalModeError`). One test id exists
+per assertion and mode: `<id>#coerce` or `<id>#error`.
+
+- An `EvaluationSuccess` assertion passes when the result equals the expected
+  `output`.
+- An `EvaluationFail` assertion passes when evaluation raises `TypeError` or
+  `DataError`.
+- A result of `EvalError::Unsupported` is recorded as not applicable. It is
+  never a pass and never an expected error. The not-applicable set shrinks
+  as later parts of M4 add queries, functions and CAST.
+- `eval-equiv` cases are not applicable until M4b.
 
 A test case whose `statement` names an `equiv_class` is checked once per
 statement of that class (ids end in `[0]`, `[1]`, ...). Test ids have the form
@@ -105,8 +122,8 @@ files, so the codec must accept both.
 ## Current status
 
 At commit `2ef0ce2`, after M1 (data model), M1b (MAP and graph), M2
-(parser), M2b (graph MATCH), M3a (printer), M3b (pretty layout) and M3d
-(error recovery):
+(parser), M2b (graph MATCH), M3a (printer), M3b (pretty layout), M3d
+(error recovery) and M4a (expression evaluation):
 
 | Check | Passed | Total | N/A |
 |---|---|---|---|
@@ -117,6 +134,7 @@ At commit `2ef0ce2`, after M1 (data model), M1b (MAP and graph), M2
 | `print-roundtrip` | 5310 | 5313 | 3 |
 | `pretty-roundtrip` | 5310 | 5313 | 3 |
 | `recovery` | 5410 | 5410 | 0 |
+| `eval` | 2950 | 9960 | 6976 |
 
 The 3 `eval-parse` failures are corpus defects (bead `partiql-zhj.9`):
 
@@ -128,12 +146,52 @@ The 3 `eval-parse` failures are corpus defects (bead `partiql-zhj.9`):
 - `eval-equiv/spec-tests.ion` "equiv coercion of a SELECT subquery into a
   scalar" `[1]`: a struct with a missing comma.
 
+### The `eval` check
+
+Of 9960 assertions, 2950 pass and 6976 are not applicable: they need queries,
+functions, CAST, graph MATCH or `?`, which later parts of M4 add. 34 fail. To
+list them, run `PARTIQL_CONFORMANCE_SHOW=eval mise run test:conformance`. The
+34 ids come from 19 cases. Each case fails in both modes, except three that
+fail in permissive mode only and one that fails in strict mode only. The
+reasons:
+
+- **Corpus parser defects (4 ids).** `cardinality.ion` (the case with `()`)
+  and `group-by.ion` "max and min of rep grouped by fiscal_year" do not parse
+  (see the `eval-parse` defects above).
+- **Undefined variable (3 ids).** The two `path.ion` cases "subscript with
+  non-existent variable" and the `spec-tests.ion` case "data type mismatch in
+  logical expression" expect MISSING in permissive mode.
+  The dedicated cases in `undefined-variable-behavior.ion` expect an error
+  in both modes, and the evaluator follows them: an undefined name is a
+  `DataError`. M4b can revisit this when name resolution moves to the
+  lowering.
+- **Interval times or divided by a precision-overflow value (8 ids).**
+  `INTERVAL '2' DAY * 50`, `INTERVAL '3' YEAR * 50`, `INTERVAL '2' DAY / 0.02`
+  and `INTERVAL '3' YEAR / 0.03` expect a failure because the result has more
+  than two leading digits. The value model keeps no leading precision, and the
+  specification marks this case as unsettled (partiql-lang#100), so the
+  evaluator returns the exact result and does not cap it.
+- **Interval divided by `2.25e-1` (6 ids).** The corpus expects a
+  floating-point division. An exponent literal is a DECIMAL here, so the
+  division is exact and gives a different result. These cases pass when
+  approximate literals are modelled.
+- **TIME and TIMESTAMP "explicit ... with offset - failure" (4 ids).** The
+  corpus expects `TIME WITHOUT TIME ZONE '...+01:00'` to fail. The parser
+  does not keep WITHOUT TIME ZONE apart, so this needs a parser change.
+- **DECIMAL(p,s) IS-type (4 ids).** `1.000 IS DECIMAL(3,3)` and
+  `123.456 IS DECIMAL(7,3)` expect results that do not agree with the rules for precision and scale
+  that the other cases of the corpus follow.
+- **Map key cast (2 ids).** "access map with cross-type cast integer to
+  decimal key" needs CAST of a map key (M4d).
+- **`a.*.*.*.*` in strict mode (1 id).** The corpus expects a failure. Every
+  `.*` step applies to a tuple, so the evaluator succeeds; the corpus
+  expectation is taken as an artifact.
+- **Deep list equality (2 ids).** `equalListDifferentTypesWithNullMissingEquivalenceTrue`
+  expects two lists that differ in NULL and MISSING elements to be equal.
+  The equality of the value model gives false.
+
 Every corpus value passes `codec`, including the `$map` (M1b MAP) and
 `$graph` (M1b graph) values.
-
-The future eval comparison must treat a DATE and a midnight UTC TIMESTAMP as
-equal where the corpus writes a date as a plain Ion timestamp outside a typed
-`$map` position (`eval/primitives/map.ion` lines 850 and 1194).
 
 All 172 `.ion` files decode with `moonrockz/ion` 0.2.0 (5,611 test cases).
 

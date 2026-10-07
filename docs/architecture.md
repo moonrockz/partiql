@@ -108,6 +108,22 @@ graph TD
     form, or through `moonrockz/pretty` at a width for the pretty layout;
     comments from the source are written at the nearest node boundary.
     Depends on `ast` and `moonrockz/pretty`.
+- `partiql-eval`
+  - root: `evaluate(Statement, env~, mode?) -> Value raise EvalError`,
+    `evaluate_text(String, env~, mode?)`, `Bindings` (the global
+    variables: `empty`, `of_tuple`, `of_ion`), and the re-exports `Mode`
+    (`Permissive` or `Strict`) and `EvalError`.
+  - `plan`: the logical plan (`Expr`, `Step`), `Mode` and `EvalError`
+    (`TypeError`, `DataError`, `Unsupported`, `Syntax`). M4a has scalar
+    expressions only; M4b adds relational operators (ADR 0006).
+  - `lower`: syntax tree to plan. It desugars the surface forms, converts
+    literals (numbers, datetimes, intervals, Ion) to values, and raises
+    `Unsupported` with a span for a form that is not evaluated yet.
+  - `ops`: the semantics of each operator as pure functions on values:
+    numeric and decimal arithmetic, comparison, three-valued logic, LIKE,
+    datetime and interval arithmetic, type tests and path steps.
+  - `interp`: walks the plan with a `Mode` and the bindings, and applies
+    `ops`.
 - `partiql`
   - root: the executable.
   - `cli`: `run(args, io?) -> Outcome`, with the commands `parse`, `check`,
