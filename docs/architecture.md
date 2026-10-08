@@ -113,16 +113,29 @@ graph TD
     `evaluate_text(String, env~, mode?)`, `Bindings` (the global
     variables: `empty`, `of_tuple`, `of_ion`), and the re-exports `Mode`
     (`Permissive` or `Strict`) and `EvalError`.
-  - `plan`: the logical plan (`Expr`, `Step`), `Mode` and `EvalError`
-    (`TypeError`, `DataError`, `Unsupported`, `Syntax`). M4a has scalar
-    expressions only; M4b adds relational operators (ADR 0006).
+  - `plan`: the logical plan, `Mode` and `EvalError` (`TypeError`,
+    `DataError`, `Unsupported`, `Syntax`). `Expr` and `Step` are scalar
+    expressions and path steps. `Rel` is the relational part, close to the
+    binding-tuple algebra: `Scan` (with AT), `Unpivot`, `Filter` (WHERE),
+    `Join` (`JoinKind`: cross, inner, left, right) and `Let`. An `Expr`
+    holds a query block with a `Rel` and a `Projection` (`Value`, `Items`,
+    `Star`), and a subquery with a `SubqueryUse` (`Scalar` or `Column`).
+    ADR 0006 has the rationale.
   - `lower`: syntax tree to plan. It desugars the surface forms, converts
     literals (numbers, datetimes, intervals, Ion) to values, and raises
     `Unsupported` with a span for a form that is not evaluated yet, or for
-    a type parameter that `IS` does not check. Chains of binary operators,
-    AND and OR are lowered in a loop; any other nesting deeper than 200
-    levels (an Ion literal included) is a `DataError`, so the evaluator
-    does not overflow the stack. One known exception is outside this module:
+    a type parameter that `IS` does not check. `query.mbt` lowers a query
+    block and resolves names: a name is a local (FROM, AT or LET variable),
+    a global binding, or an attribute of an in-scope FROM variable, in that
+    order. A FROM source expression finds a global before a FROM
+    variable. An unbound name
+    with a FROM variable in scope is a path step on it; with none in scope
+    it is an undefined-variable `DataError`. `depth.mbt` is the depth guard:
+    it charges each part of a plan with the stack it uses when it runs and
+    refuses a plan above 200 levels with a `DataError`, so the evaluator
+    does not overflow the stack. Chains of binary operators, AND and OR
+    are lowered in a loop; an Ion literal counts one level per level of its
+    value. One known exception is outside this module:
     the Ion text reader that scans Ion literals recurses per nesting level,
     so a literal nested about 10,000 levels deep overflows the stack before
     evaluation starts (moonrockz/ion#65, bead `partiql-5se.9`).
@@ -131,8 +144,16 @@ graph TD
     datetime and interval arithmetic, type tests and path steps. `=`
     compares the elements of collections with its own datetime rule, and
     IN uses `=`.
-  - `interp`: walks the plan with a `Mode` and the bindings, and applies
-    `ops`. Operator chains run in a loop.
+  - `interp`: walks the plan with a `Ctx` (the global bindings, the `Mode`
+    and the error of a relation's iterator) and applies `ops`. Operator
+    chains run in a loop. A binding tuple is an `Env`: a chain of frames,
+    innermost first, where each frame points to its outer frame. A
+    correlated subquery reads the outer row without a copy. A relation
+    (`Rel`) streams its rows as an `Iter[Env]` (`relation.mbt`): scans and
+    joins produce rows on demand, and a join keeps rows in an array only for
+    a right join. The `Iter` of the core library cannot raise, so `rows`
+    keeps the first error in the `Ctx` and ends the iteration, and `pull`
+    and `each` raise it after the last good row.
 - `partiql`
   - root: the executable.
   - `cli`: `run(args, io?) -> Outcome`, with the commands `parse`, `check`,

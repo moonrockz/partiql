@@ -10,7 +10,7 @@ measures the exit criteria (see [conformance.md](conformance.md)).
 | [M1 Data model](https://github.com/moonrockz/partiql/issues/1) | `Value` ADT, absent values, list/bag/tuple semantics, equality and total ordering, PartiQL-encoded Ion codec | All `env` and `output` values in the corpus round-trip (`codec` check) |
 | [M2 Parser](https://github.com/moonrockz/partiql/issues/2) | Lexer, AST, parser, embedded Ion literals | `success/syntax` and `fail/syntax` pass; all evaluation statements parse (`syntax` and `eval-parse` checks) |
 | [M3 Printer and errors](https://github.com/moonrockz/partiql/issues/3) | AST printer, errors with source spans | Parse, print and parse again gives an equal AST for every corpus statement |
-| [M4 Evaluation](https://github.com/moonrockz/partiql/issues/22) | `partiql-eval`: expressions (M4a), queries (M4b), CLI `query` (M4e), grouping and aggregates (M4c), functions and CAST (M4d) | The `eval` check passes every assertion that does not hit an unsupported form (M4a); later parts shrink the not-applicable set |
+| [M4 Evaluation](https://github.com/moonrockz/partiql/issues/22) | `partiql-eval`: expressions (M4a), queries (M4b1, M4b2), CLI `query` (M4e), grouping and aggregates (M4c), functions and CAST (M4d) | The `eval` check passes every assertion that does not hit an unsupported form (M4a, M4b1); later parts shrink the not-applicable set |
 | Later | Static analysis, CLI REPL, tree-sitter corpus | Defined in later specs |
 
 ## M0 Setup
@@ -98,18 +98,24 @@ Its parts, in this order:
   It evaluates literals, collections, paths, operators, LIKE, BETWEEN, IN,
   IS, CASE, COALESCE, NULLIF, and datetime and interval arithmetic.
   `evaluate` and `evaluate_text` take global `Bindings` and a `Mode`. The
-  `eval` conformance check passes 2952 assertions; 6976 are not applicable
-  because they need queries, functions, CAST, graph MATCH or `?`; 32 fail
-  (see `conformance.md`).
-- **M4b: queries.** Relational operators in the plan: FROM (scans,
-  unnesting, joins, AT, BY), LET, WHERE, the SELECT forms, ORDER BY,
-  LIMIT/OFFSET, set operations, PIVOT/UNPIVOT, subqueries, and the
+  `eval` conformance check passed 2952 assertions at that point.
+- **M4b1 (done): query core.** The plan gains relational operators (`Rel`):
+  scans over collections (with AT), UNPIVOT, cross, inner, left and right
+  joins, LET and WHERE. A query block has the projections SELECT VALUE,
+  SELECT list (with `x.*`) and SELECT `*`, and DISTINCT under grouping
+  equivalence. Subqueries are values, with scalar coercion of a
+  single-column subquery, and `VALUES` is a bag of lists. Name resolution is
+  in the lowering. The `eval` conformance check passes 3719 of 9960
+  assertions; 6195 are not applicable; 46 fail (see `conformance.md`). The
+  conformance suite and the property laws cover the plan.
+- **M4b2: queries, part two** (bead `partiql-5se.10`). ORDER BY, LIMIT and
+  OFFSET, set operations, PIVOT, WITH, array coercion of a subquery, and the
   `eval-equiv` cases.
-- **M4e: CLI `partiql query`.** Bindings from Ion files or stdin; the result
-  as Ion.
-- **M4c: grouping.** GROUP BY, GROUP AS, HAVING, and the aggregates COUNT,
+- **M4e: CLI `partiql query`** (bead `partiql-5se.3`). Bindings from Ion
+  files or stdin; the result as Ion.
+- **M4c: grouping** (bead `partiql-5se.4`). GROUP BY, GROUP AS, HAVING, and the aggregates COUNT,
   SUM, AVG, MIN and MAX.
-- **M4d: functions and CAST.** String, numeric and datetime functions,
+- **M4d: functions and CAST** (bead `partiql-5se.5`). String, numeric and datetime functions,
   EXTRACT, DATE_ADD, DATE_DIFF, TRIM, SUBSTRING, POSITION, OVERLAY,
   OVERLAPS, and CAST in both modes.
 

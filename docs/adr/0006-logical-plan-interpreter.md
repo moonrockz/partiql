@@ -39,11 +39,20 @@ interprets the plan. It does not interpret the syntax tree directly.
   logic, LIKE, datetime, paths) and does not know about the plan.
 - M4a has scalar expressions only, so the plan has no relational operators
   yet. M4b adds them (scans, unnesting, joins, filters, projections, sorting,
-  set operations, subqueries).
+  set operations, subqueries). M4b1 added scans, UNPIVOT, joins, LET, WHERE,
+  the SELECT forms and subqueries; M4b2 adds the rest.
 - Package layout of the module: `plan` (the plan and `EvalError`), `lower`
   (syntax tree to plan), `ops` (operator semantics), `interp` (the
   interpreter), and the root facade (`evaluate`, `evaluate_text`,
   `Bindings`).
+
+## Note from M4b1
+
+A relation in the plan (`Rel`) streams its binding tuples as an `Iter[Env]`.
+An `Env` is a chain of frames, so a correlated subquery reads the outer row
+without a copy. The interpreter holds no whole relation in memory, except for
+the right side of a right join. The core `Iter` cannot raise: the context
+keeps the error of an iterator, and the consumer raises it after the rows.
 
 ## Consequences
 
@@ -55,6 +64,6 @@ interprets the plan. It does not interpret the syntax tree directly.
 - Static analysis can later read the plan without running it.
 - One extra step (lowering) costs a little time on each query. A plan can be
   built once and run many times.
-- Name resolution moves to the lowering when queries arrive. Then an
-  undefined name can become a lowering decision (see
-  [conformance.md](../conformance.md)).
+- Name resolution is in the lowering since M4b1. An undefined name is still
+  a run-time `DataError`, because the corpus expects an error in both modes
+  (see [conformance.md](../conformance.md)).
