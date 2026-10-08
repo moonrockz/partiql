@@ -1,0 +1,189 @@
+///|
+fn bag(items : Array[@value.Value]) -> @value.Value {
+  Bag(@value.Bag::new(items))
+}
+
+///|
+test "FROM forms" {
+  @expect.expect_all(soft => {
+    soft
+    .expect(ev("SELECT VALUE [i, v] FROM [10, 20] AS v AT i"))
+    .to_equal(bag([List([Int(0), Int(10)]), List([Int(1), Int(20)])]))
+    soft
+    .expect(ev("SELECT VALUE i IS MISSING FROM <<10>> AS v AT i"))
+    .to_equal(bag([Bool(true)]))
+    soft
+    .expect(ev("SELECT VALUE [k, v] FROM UNPIVOT {'a': 1, 'b': 2} AS v AT k"))
+    .to_equal(bag([List([String("a"), Int(1)]), List([String("b"), Int(2)])]))
+    soft
+    .expect(ev("SELECT VALUE [x, y] FROM [1, 2] AS x, [10] AS y"))
+    .to_equal(bag([List([Int(1), Int(10)]), List([Int(2), Int(10)])]))
+    soft
+    .expect(ev("SELECT VALUE [x, y] FROM [[1, 2]] AS x, x AS y"))
+    .to_equal(
+      bag([
+        List([List([Int(1), Int(2)]), Int(1)]),
+        List([List([Int(1), Int(2)]), Int(2)]),
+      ]),
+    )
+    soft
+    .expect(
+      ev("SELECT VALUE [x, y] FROM [1, 2] AS x JOIN [2, 3] AS y ON x = y"),
+    )
+    .to_equal(bag([List([Int(2), Int(2)])]))
+    soft
+    .expect(
+      ev("SELECT VALUE [x, y] FROM [1, 2] AS x LEFT JOIN [2] AS y ON x = y"),
+    )
+    .to_equal(bag([List([Int(1), Null]), List([Int(2), Int(2)])]))
+    soft
+    .expect(ev("SELECT VALUE [x, y] FROM [1] AS x LEFT JOIN [] AS y ON TRUE"))
+    .to_equal(bag([List([Int(1), Null])]))
+    soft
+    .expect(ev("SELECT VALUE [x, y] FROM [1] AS x INNER JOIN [] AS y ON TRUE"))
+    .to_equal(bag([]))
+    soft
+    .expect(
+      ev("SELECT VALUE [x, y] FROM [1] AS x RIGHT JOIN [1, 2] AS y ON x = y"),
+    )
+    .to_equal(bag([List([Int(1), Int(1)]), List([Null, Int(2)])]))
+    soft
+    .expect_call(() => {
+      ev("SELECT VALUE x FROM [1] AS x FULL JOIN [1] AS y ON TRUE")
+    })
+    .to_raise_matching(
+      e => e is @eval.EvalError::Unsupported(..),
+      description="Unsupported",
+    )
+  })
+}
+
+///|
+test "FROM forms in strict mode" {
+  @expect.expect_all(soft => {
+    soft
+    .expect(ev("SELECT VALUE [x, y] FROM [1, 2] AS x, [10] AS y", mode=Strict))
+    .to_equal(bag([List([Int(1), Int(10)]), List([Int(2), Int(10)])]))
+    soft
+    .expect(
+      ev("SELECT VALUE [k, v] FROM UNPIVOT {'a': 1} AS v AT k", mode=Strict),
+    )
+    .to_equal(bag([List([String("a"), Int(1)])]))
+    soft
+    .expect_call(() => ev("SELECT VALUE v FROM UNPIVOT 1 AS v", mode=Strict))
+    .to_raise_matching(
+      e => e is @eval.EvalError::TypeError(..),
+      description="TypeError",
+    )
+    soft
+    .expect_call(() => ev("SELECT VALUE v FROM <<1>> AS v AT i", mode=Strict))
+    .to_raise_matching(
+      e => e is @eval.EvalError::TypeError(..),
+      description="TypeError",
+    )
+  })
+}
+
+///|
+test "UNPIVOT of a value that is not a tuple" {
+  // No corpus case: a non-tuple is the tuple {'_1': value} (spec section
+  // 5.2), in permissive mode.
+  @expect.expect_all(soft => {
+    soft
+    .expect(ev("SELECT VALUE [k, v] FROM UNPIVOT 1 AS v AT k"))
+    .to_equal(bag([List([String("_1"), Int(1)])]))
+    soft
+    .expect(ev("SELECT VALUE v FROM UNPIVOT {'a': 1, 'a': 2} AS v"))
+    .to_equal(bag([Int(1), Int(2)]))
+  })
+}
+
+///|
+test "lateral sources and the padding of outer joins" {
+  @expect.expect_all(soft => {
+    soft
+    .expect(ev("SELECT VALUE [v1, v2] FROM 1 AS v1, @v1 AS v2"))
+    .to_equal(bag([List([Int(1), Int(1)])]))
+    // LEFT CROSS JOIN pads when the right side is empty.
+    soft
+    .expect(
+      ev("SELECT VALUE [x, y] FROM [[1], []] AS x LEFT CROSS JOIN x AS y"),
+    )
+    .to_equal(bag([List([List([Int(1)]), Int(1)]), List([List([]), Null])]))
+    // Both AS and AT of the right side are padded.
+    soft
+    .expect(
+      ev("SELECT VALUE [y, j] FROM [1] AS x LEFT JOIN [] AS y AT j ON TRUE"),
+    )
+    .to_equal(bag([List([Null, Null])]))
+    // The ON clause sees the variable of its own right side, not later ones.
+    soft
+    .expect(
+      ev(
+        "SELECT VALUE [a, b, d] FROM [1, 3] AS a INNER JOIN [1, 2, 3] AS b ON b < 3 LEFT JOIN [1.1, 2.1] AS d ON b < d AND a <= d",
+        mode=Strict,
+      ),
+    )
+    .to_equal(
+      bag([
+        List([Int(1), Int(1), Decimal(@ion.Decimal::parse("1.1"))]),
+        List([Int(1), Int(1), Decimal(@ion.Decimal::parse("2.1"))]),
+        List([Int(1), Int(2), Decimal(@ion.Decimal::parse("2.1"))]),
+        List([Int(3), Int(1), Null]),
+        List([Int(3), Int(2), Null]),
+      ]),
+    )
+  })
+}
+
+///|
+test "parenthesized joins and long lists" {
+  @expect.expect_all(soft => {
+    soft
+    .expect(
+      ev("SELECT VALUE [x, y, z] FROM ([1] AS x CROSS JOIN [2] AS y), [3] AS z"),
+    )
+    .to_equal(bag([List([Int(1), Int(2), Int(3)])]))
+    soft
+    .expect(
+      ev("SELECT VALUE [x, y, z] FROM [1] AS x, ([2] AS y CROSS JOIN [3] AS z)"),
+    )
+    .to_equal(bag([List([Int(1), Int(2), Int(3)])]))
+  })
+  // A comma list lowers and runs in a loop, not by recursion per item.
+  let items = Array::makei(600, i => {
+    "[" + i.to_string() + "] AS v" + i.to_string()
+  })
+  let source = "SELECT VALUE v599 FROM " + items.join(", ")
+  @expect.expect(ev(source)).to_equal(bag([Int(599)]))
+}
+
+///|
+test "a plain name in a FROM source finds a global before a variable" {
+  // select.ion, joinWithShadowedGlobal: `a` is a global, so `a.b` is the
+  // global's attribute; `@a.b` is the variable's.
+  let a = @value.Tuple::new([("b", @value.Value::Int(7))])
+  let env = @eval.Bindings::of_tuple(
+    @value.Tuple::new([("a", @value.Value::Tuple(a))]),
+  )
+  @expect.expect_all(soft => {
+    soft
+    .expect(
+      @eval.evaluate_text(
+        "SELECT VALUE b FROM [{'b':5}] AS a, a.b AS b",
+        env~,
+        mode=Permissive,
+      ),
+    )
+    .to_equal(bag([Int(7)]))
+    soft
+    .expect(
+      @eval.evaluate_text(
+        "SELECT VALUE b FROM [{'b':5}] AS a, @a.b AS b",
+        env~,
+        mode=Permissive,
+      ),
+    )
+    .to_equal(bag([Int(5)]))
+  })
+}

@@ -1,18 +1,30 @@
 ///|
+fn find_global(
+  globals : Array[(String, @value.Value)],
+  name : String,
+  delimited : Bool,
+) -> @value.Value? {
+  let wanted = if delimited { name } else { name.to_lower() }
+  for entry in globals {
+    let key = if delimited { entry.0 } else { entry.0.to_lower() }
+    if key == wanted {
+      return Some(entry.1)
+    }
+  }
+  None
+}
+
+///|
 fn lookup(
   globals : Array[(String, @value.Value)],
   name : String,
   delimited : Bool,
   span : @ast.Span,
 ) -> @value.Value raise @plan.EvalError {
-  let wanted = if delimited { name } else { name.to_lower() }
-  for entry in globals {
-    let key = if delimited { entry.0 } else { entry.0.to_lower() }
-    if key == wanted {
-      return entry.1
-    }
+  match find_global(globals, name, delimited) {
+    Some(v) => v
+    None => raise DataError(message="undefined variable \{name}", span~)
   }
-  raise DataError(message="undefined variable \{name}", span~)
 }
 
 ///|
@@ -347,6 +359,7 @@ fn span_of(e : @plan.Expr) -> @ast.Span {
     | Coalesce(_, span)
     | NullIf(_, _, span)
     | Local(_, span)
+    | GlobalOrLocal(_, variable=_, delimited=_, span)
     | Select(_, _, distinct=_, span) => span
   }
 }
@@ -516,6 +529,15 @@ fn eval(
         x
       }
     }
+    GlobalOrLocal(name, variable~, delimited~, span) =>
+      match find_global(ctx.globals, name, delimited) {
+        Some(v) => v
+        None =>
+          match env.find(variable) {
+            Some(v) => v
+            None => raise DataError(message="undefined variable \{name}", span~)
+          }
+      }
     Local(name, span) =>
       match env.find(name) {
         Some(v) => v

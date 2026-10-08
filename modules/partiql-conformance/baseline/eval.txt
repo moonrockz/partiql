@@ -162,6 +162,8 @@ eval/primitives/bool.ion::bool::boolean literals{sql:"true",r:true}#coerce
 eval/primitives/bool.ion::bool::boolean literals{sql:"true",r:true}#error
 eval/primitives/date-time.ion::regression::dateTimePartsAsStructFieldNames#coerce
 eval/primitives/date-time.ion::regression::dateTimePartsAsStructFieldNames#error
+eval/primitives/date-time.ion::regression::dateTimePartsAsVariableNames#coerce
+eval/primitives/date-time.ion::regression::dateTimePartsAsVariableNames#error
 eval/primitives/functions/coalesce.ion::coalesce::coalesce valid cases{args:"1",result:(success 1)}#coerce
 eval/primitives/functions/coalesce.ion::coalesce::coalesce valid cases{args:"1",result:(success 1)}#error
 eval/primitives/functions/coalesce.ion::coalesce::coalesce valid cases{args:"1, 2",result:(success 1)}#coerce
@@ -2953,6 +2955,16 @@ eval/query/select/from-clause.ion::various types in from clause::rangeOverScalar
 eval/query/select/from-clause.ion::various types in from clause::rangeOverScalar#error
 eval/query/select/from-clause.ion::various types in from clause::rangeOverStruct#coerce
 eval/query/select/from-clause.ion::various types in from clause::rangeOverStruct#error
+eval/query/select/from-clause.ion::various types in from clause::rangeTwiceOverScalar#coerce
+eval/query/select/from-clause.ion::various types in from clause::rangeTwiceOverScalar#error
+eval/query/select/select.ion::select_join::correlatedJoinWithShadowedAttributes#coerce
+eval/query/select/select.ion::select_join::correlatedJoinWithShadowedAttributes#error
+eval/query/select/select.ion::select_join::correlatedJoinWithoutLexicalScope#coerce
+eval/query/select/select.ion::select_join::correlatedJoinWithoutLexicalScope#error
+eval/query/select/select.ion::select_join::joinWithShadowedGlobal#coerce
+eval/query/select/select.ion::select_join::joinWithShadowedGlobal#error
+eval/query/select/select.ion::select_join::selectJoinOnClauseScoping#coerce
+eval/query/select/select.ion::select_join::selectJoinOnClauseScoping#error
 eval/query/undefined-variable-behavior.ion::undefined_variable_behavior::undefinedUnqualifiedVariableIsMissingExprWithUndefinedVariableBehaviorMissing#coerce
 eval/query/undefined-variable-behavior.ion::undefined_variable_behavior::undefinedUnqualifiedVariableIsMissingExprWithUndefinedVariableBehaviorMissing#error
 eval/query/undefined-variable-behavior.ion::undefined_variable_behavior::undefinedUnqualifiedVariableIsNullExprWithUndefinedVariableBehaviorMissing#coerce

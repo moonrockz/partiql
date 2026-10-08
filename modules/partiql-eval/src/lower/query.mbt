@@ -4,18 +4,26 @@
 priv struct Scope {
   names : Array[String]
   outer : Scope?
+  /// Inside a FROM source, a plain name finds a global before a variable.
+  globals_first : Bool
 }
 
 ///|
 /// The scope outside every query: no variables.
 fn Scope::top() -> Scope {
-  { names: [], outer: None, }
+  { names: [], outer: None, globals_first: false, }
 }
 
 ///|
 /// A scope inside `self` that declares `names`.
 fn Scope::inner(self : Scope, names : Array[String]) -> Scope {
-  { names, outer: Some(self), }
+  { names, outer: Some(self), globals_first: false, }
+}
+
+///|
+/// The same scope, for the expression of a FROM source.
+fn Scope::for_source(self : Scope) -> Scope {
+  { ..self, globals_first: true, }
 }
 
 ///|
@@ -85,31 +93,15 @@ fn select_at(
   if s.let_ is [first, ..] {
     return unsupported("LET (M4b1)", first.span)
   }
-  let source = match s.from {
-    Some(Scan(source)) => source
-    Some(Unpivot(source)) => return unsupported("UNPIVOT (M4b1)", source.span)
-    Some(Join(j)) => return unsupported("a join (M4b1)", j.span)
+  let names = []
+  let from = match s.from {
+    Some(item) => from_item(item, scope, names, depth)
     None => return unsupported("SELECT without FROM (M4b1)", s.span)
   }
-  if source.by is Some(id) {
-    return unsupported("FROM ... BY (later)", id.span)
-  }
-  let as_ = from_name(source)
-  let at = source.at.map(id => id.text)
-  let names = match at {
-    Some(name) => [name, as_]
-    None => [as_]
-  }
   let inner = scope.inner(names)
-  let scan : @plan.Rel = Scan(
-    lower_at(source.expr, scope, depth),
-    as_~,
-    at~,
-    source.span,
-  )
   let rel : @plan.Rel = match s.where_ {
-    Some(w) => Filter(scan, lower_at(w, inner, depth), w.span)
-    None => scan
+    Some(w) => Filter(from, lower_at(w, inner, depth), w.span)
+    None => from
   }
   let projection : @plan.Projection = match s.projection {
     Value(e) => Value(lower_at(e, inner, depth))
@@ -134,5 +126,79 @@ fn from_name(source : @ast.FromSource) -> String {
         Path(_, [.., FieldString(name, ..)]) => name
         _ => "_1"
       }
+  }
+}
+
+///|
+/// Lowers a FROM item and appends the variables it declares to `names`, in
+/// order. A source sees the variables that come before it (lateral). A list
+/// of sources is a chain of joins on the left: the loop walks that chain, so
+/// a long list takes no recursion per item.
+fn from_item(
+  item : @ast.FromItem,
+  scope : Scope,
+  names : Array[String],
+  depth : Int,
+) -> @plan.Rel raise @plan.EvalError {
+  let joins = []
+  let mut leaf = item
+  while leaf is Join(j) {
+    joins.push(j)
+    leaf = j.left
+  }
+  let mut rel = from_leaf(leaf, scope, names, depth)
+  for j in joins.rev_iter() {
+    let kind : @plan.JoinKind = match (j.kind, j.form) {
+      (Full, _) => return unsupported("FULL JOIN (later)", j.span)
+      (Inner, Comma | Cross) => Cross
+      (Inner, On(_)) => Inner
+      (Left, _) => Left
+      (Right, _) => Right
+    }
+    // The right side of a RIGHT JOIN is read once, outside the left rows.
+    let right = if kind is Right {
+      let own = []
+      let right = from_item(j.right, scope, own, depth)
+      names.append(own)
+      right
+    } else {
+      from_item(j.right, scope, names, depth)
+    }
+    let on = match j.form {
+      On(e) => Some(lower_at(e, scope.inner(names), depth))
+      Comma | Cross => None
+    }
+    rel = Join(kind, rel, right, on~, j.span)
+  }
+  rel
+}
+
+///|
+fn from_leaf(
+  item : @ast.FromItem,
+  scope : Scope,
+  names : Array[String],
+  depth : Int,
+) -> @plan.Rel raise @plan.EvalError {
+  let (source, unpivot) = match item {
+    Scan(source) => (source, false)
+    Unpivot(source) => (source, true)
+    // `from_item` walks every join down to a source.
+    Join(j) => return unsupported("a join in a source position", j.span)
+  }
+  if source.by is Some(id) {
+    return unsupported("FROM ... BY (later)", id.span)
+  }
+  let as_ = from_name(source)
+  let at = source.at.map(id => id.text)
+  let expr = lower_at(source.expr, scope.inner(names).for_source(), depth)
+  if at is Some(name) {
+    names.push(name)
+  }
+  names.push(as_)
+  if unpivot {
+    Unpivot(expr, as_~, at~, source.span)
+  } else {
+    Scan(expr, as_~, at~, source.span)
   }
 }

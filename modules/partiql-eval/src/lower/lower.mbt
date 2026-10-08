@@ -58,10 +58,7 @@ fn literal(
 }
 
 ///|
-fn unsupported(
-  form : String,
-  span : @ast.Span,
-) -> @plan.Expr raise @plan.EvalError {
+fn[T] unsupported(form : String, span : @ast.Span) -> T raise @plan.EvalError {
   raise Unsupported(message="\{form} is not supported yet", span~)
 }
 
@@ -269,9 +266,14 @@ fn lower_at(
     Lit(Ion(_, v)) if depth + ion_depth(v) > max_depth =>
       raise DataError(message="expression is too deep", span~)
     Lit(l) => Const(literal(l, span), span)
-    VarRef(id, qualified=_) =>
+    VarRef(id, qualified~) =>
       match scope.resolve(id) {
-        Some(name) => Local(name, span)
+        Some(name) =>
+          if scope.globals_first && !qualified {
+            GlobalOrLocal(id.text, variable=name, delimited=id.delimited, span)
+          } else {
+            Local(name, span)
+          }
         None => Global(id.text, delimited=id.delimited, span)
       }
     // Spec M4a §5: a sexp and a row are lists.

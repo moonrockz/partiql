@@ -55,6 +55,10 @@ pub(all) enum Expr {
   NullIf(Expr, Expr, @ast.Span)
   /// A FROM variable, by the name it was declared with.
   Local(String, @ast.Span)
+  /// A name in a FROM source: the global of that name if there is one, else
+  /// the FROM variable `variable` (partiql-tests select.ion,
+  /// `joinWithShadowedGlobal`; `@name` selects the variable only).
+  GlobalOrLocal(String, variable~ : String, delimited~ : Bool, @ast.Span)
   /// A query block: the projection of each binding tuple of `rel`, as a bag.
   Select(Rel, Projection, distinct~ : Bool, @ast.Span)
 } derive(Debug)
@@ -65,9 +69,25 @@ pub(all) enum Rel {
   /// One binding of `as_` per element of a collection; `at` binds the
   /// element's position.
   Scan(Expr, as_~ : String, at~ : String?, @ast.Span)
+  /// One binding of `as_` per attribute value of a tuple; `at` binds the
+  /// attribute name.
+  Unpivot(Expr, as_~ : String, at~ : String?, @ast.Span)
   /// The binding tuples for which the predicate is TRUE.
   Filter(Rel, Expr, @ast.Span)
+  /// The pairs of a left and a right binding tuple. The right side sees the
+  /// variables of the left (lateral), except for `Right`. `on` is `None` when
+  /// every pair matches. `Left` and `Right` pad the side that finds no match
+  /// with NULL.
+  Join(JoinKind, Rel, Rel, on~ : Expr?, @ast.Span)
 } derive(Debug)
+
+///|
+pub(all) enum JoinKind {
+  Cross
+  Inner
+  Left
+  Right
+} derive(Debug, Eq)
 
 ///|
 /// What a query block makes of each binding tuple.
