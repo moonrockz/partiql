@@ -8,3 +8,7 @@ import {
   "moonrockz/ion/ion" @ion_core,
   "moonbitlang/core/debug",
 }
+
+import {
+  "moonrockz/expect",
+} for "wbtest"

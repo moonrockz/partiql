@@ -4,42 +4,68 @@
 // Errors and iterators: the producer of a core `Iter` cannot raise. A
 // relation therefore evaluates eagerly what it can before it builds its
 // iterator, and a step that must raise per row runs through `rows`, which
-// keeps the first error in the `Ctx` and ends the iteration. `each` is the
-// only consumer of a relation: after the rows, it raises the error that
-// ended them. So an error never stays in the `Ctx` after `each` returns.
+// keeps the error in the `Ctx` and ends the iteration. For a relation's
+// iterator, "no more rows" and "failed" both look like `None` to `next()`.
+//
+// The rule: never call `next()` on a relation's iterator. Read it with
+// `pull` (row by row) or `each` (to the end); both raise the error that
+// ended the rows and clear it from the `Ctx`. So an error never outlives the
+// read that met it, and a consumer never mistakes a failure for the end.
 
 ///|
 /// An iterator over the rows that `next` produces. An error of `next` ends
-/// the iteration and is kept for `each`; after an error, `next` is not
-/// called again.
+/// the iteration and is kept in `ctx` for `pull` or `each`; the first error
+/// kept wins. After the end or an error, `next` is not called again.
 fn rows(ctx : Ctx, next : () -> Env? raise @plan.EvalError) -> Iter[Env] {
+  let mut ended = false
   Iter::new(() => {
-    if ctx.failure is Some(_) {
+    if ended {
       return None
     }
-    try next() catch {
+    let row = try next() catch {
       err => {
-        ctx.failure = Some(err)
+        if ctx.failure is None {
+          ctx.failure = Some(err)
+        }
         None
       }
     } noraise {
       row => row
     }
+    if row is None {
+      ended = true
+    }
+    row
   })
 }
 
 ///|
-/// Calls `f` for each row of a relation, then raises the error that ended
-/// the rows, if any.
+/// The next row of a relation, or `None` at its end. Raises the error that
+/// ended the rows, and clears it from `ctx`.
+fn pull(it : Iter[Env], ctx : Ctx) -> Env? raise @plan.EvalError {
+  match it.next() {
+    Some(row) => Some(row)
+    None =>
+      match ctx.failure {
+        Some(err) => {
+          ctx.failure = None
+          raise err
+        }
+        None => None
+      }
+  }
+}
+
+///|
+/// Calls `f` for each row of a relation, to the end. Raises the error that
+/// ended the rows, and clears it from `ctx`.
 fn each(
   it : Iter[Env],
   ctx : Ctx,
   f : (Env) -> Unit raise @plan.EvalError,
 ) -> Unit raise @plan.EvalError {
-  it.each(f)
-  if ctx.failure is Some(err) {
-    ctx.failure = None
-    raise err
+  while pull(it, ctx) is Some(row) {
+    f(row)
   }
 }
 
@@ -56,7 +82,7 @@ fn relation(
     Filter(input, predicate, span) => {
       let input = relation(input, env, ctx)
       rows(ctx, () => {
-        while input.next() is Some(row) {
+        while pull(input, ctx) is Some(row) {
           if holds(eval(predicate, row, ctx), ctx.mode, span) {
             return Some(row)
           }

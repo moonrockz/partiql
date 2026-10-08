@@ -1,6 +1,6 @@
 ///|
 /// The context of one evaluation: the global bindings, the mode, and the
-/// first error of a relation's iterator, which `each` raises (see
+/// error of a relation's iterator, which `pull` and `each` raise (see
 /// relation.mbt).
 pub struct Ctx {
   globals : Array[(String, @value.Value)]
