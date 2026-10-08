@@ -135,9 +135,11 @@ fn scan(
 }
 
 ///|
-/// One binding per attribute of a tuple, `at` binding its name. Any other
-/// value is the tuple `{'_1': value}` in permissive mode and a `TypeError` in
-/// strict mode (spec section 5.2; the corpus has no case for it).
+/// One binding per attribute of a tuple, `at` binding its name, or per entry
+/// of a map, `at` binding its key (partiql-tests map.ion, "UNPIVOT"). MISSING
+/// has no bindings in permissive mode (path.ion, `unpivotMissing`). Any other
+/// value is the tuple `{'_1': value}` in permissive mode. In strict mode a
+/// value that is not a tuple or a map is a `TypeError` (spec section 5.2).
 fn unpivot(
   v : @value.Value,
   as_ : String,
@@ -146,23 +148,28 @@ fn unpivot(
   ctx : Ctx,
   span : @ast.Span,
 ) -> Iter[Env] raise @plan.EvalError {
-  let bind = (name : String, x : @value.Value) => {
+  let bind = (name : @value.Value, x : @value.Value) => {
     let outer = match at {
-      Some(at) => Frame(at, String(name), env)
+      Some(at) => Frame(at, name, env)
       None => env
     }
     Frame(as_, x, outer)
   }
   match unboxed(v) {
-    Tuple(t) => t.fields().iter().map(f => bind(f.0, f.1))
+    Tuple(t) => t.fields().iter().map(f => bind(String(f.0), f.1))
+    Map(m) => m.entries().iter().map(e => bind(e.0, e.1))
     _ =>
       match ctx.mode {
-        Permissive => Iter::singleton(bind("_1", v))
         Strict =>
           raise TypeError(
-            message="UNPIVOT over a value that is not a tuple",
+            message="UNPIVOT over a value that is not a tuple or a map",
             span~,
           )
+        Permissive =>
+          match unboxed(v) {
+            Missing => Iter::empty()
+            _ => Iter::singleton(bind(String("_1"), v))
+          }
       }
   }
 }
@@ -204,8 +211,11 @@ fn with_bindings(env : Env, row : Env, names : Array[String]) -> Env {
 /// the left variables). A right join cannot do that, as its unmatched rows
 /// are on the right: it reads the right side once, outside the left rows, and
 /// keeps those rows in an array with a flag per row for "matched" (the only
-/// materialization of a join). A chain of joins on the left is unrolled by a
-/// loop, not by recursion per join.
+/// materialization of a join).
+///
+/// The joins of a chain on the left run as one flat nested loop (`chain`),
+/// so one pull takes no recursion per join. Only a right join, which wraps
+/// the rows before it, nests; lowering bounds those.
 fn join(
   rel : @plan.Rel,
   env : Env,
@@ -220,15 +230,25 @@ fn join(
   let mut it = relation(leaf, env, ctx)
   // The variables of the left side grow with each step.
   let left_names = binds(leaf)
+  let run = []
   for step in steps.rev_iter() {
     let (kind, right, on, span) = step
-    it = match kind {
-      Right => right_join(it, right, on, span, env, ctx, left_names.copy())
-      _ => left_to_right(kind, it, right, on, span, ctx)
+    if kind is Right {
+      if !run.is_empty() {
+        it = chain(it, run.copy(), ctx)
+        run.clear()
+      }
+      it = right_join(it, right, on, span, env, ctx, left_names.copy())
+    } else {
+      run.push((kind, right, on, span))
     }
     left_names.append(binds(right))
   }
-  it
+  if run.is_empty() {
+    it
+  } else {
+    chain(it, run, ctx)
+  }
 }
 
 ///|
@@ -245,43 +265,70 @@ fn matches(
 }
 
 ///|
-fn left_to_right(
-  kind : @plan.JoinKind,
-  left : Iter[Env],
-  right : @plan.Rel,
-  on : @plan.Expr?,
-  span : @ast.Span,
+/// Cross, inner and left joins in a row, as one nested loop with one level
+/// per join. Level `k` holds the row it reads from (`lefts[k]`), the iterator
+/// of its right side inside that row, and whether a right row matched (for
+/// the padding of a left join). Like an odometer, the deepest level advances
+/// first; a level that runs out hands control back to the one before it. The
+/// right row of a level is read with `pull` at once, so its failure ends the
+/// rows before the next left row is read, and a left join does not pad after
+/// a failure.
+fn chain(
+  base : Iter[Env],
+  steps : Array[(@plan.JoinKind, @plan.Rel, @plan.Expr?, @ast.Span)],
   ctx : Ctx,
 ) -> Iter[Env] {
-  let right_names = binds(right)
-  let mut current : (Env, Iter[Env])? = None
-  let mut matched = false
+  let n = steps.length()
+  let names = steps.map(step => binds(step.1))
+  let lefts : Array[Env] = Array::make(n, Top)
+  let iters : Array[Iter[Env]?] = Array::make(n, None)
+  let matched = Array::make(n, false)
+  let mut k = 0
   rows(ctx, () => {
     while true {
-      match current {
+      let (kind, right, on, span) = steps[k]
+      match iters[k] {
         None =>
-          match pull(left, ctx) {
-            None => return None
-            Some(l) => {
-              current = Some((l, relation(right, l, ctx)))
-              matched = false
+          if k > 0 {
+            k -= 1
+          } else {
+            match pull(base, ctx) {
+              None => return None
+              Some(l) => {
+                lefts[0] = l
+                iters[0] = Some(relation(right, l, ctx))
+                matched[0] = false
+              }
             }
           }
-        Some((l, rs)) =>
-          // Read the right row at once: its failure belongs to this read.
-          match pull(rs, ctx) {
+        Some(rs) => {
+          let out = match pull(rs, ctx) {
             Some(r) =>
               if matches(on, r, ctx, span) {
-                matched = true
-                return Some(r)
+                matched[k] = true
+                Some(r)
+              } else {
+                None
               }
             None => {
-              current = None
-              if kind is Left && !matched {
-                return Some(padded(l, right_names))
+              iters[k] = None
+              if kind is Left && !matched[k] {
+                Some(padded(lefts[k], names[k]))
+              } else {
+                None
               }
             }
           }
+          if out is Some(o) {
+            if k == n - 1 {
+              return Some(o)
+            }
+            k += 1
+            lefts[k] = o
+            iters[k] = Some(relation(steps[k].1, o, ctx))
+            matched[k] = false
+          }
+        }
       }
     }
     None

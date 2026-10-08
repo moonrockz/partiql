@@ -150,12 +150,6 @@ test "parenthesized joins and long lists" {
     )
     .to_equal(bag([List([Int(1), Int(2), Int(3)])]))
   })
-  // A comma list lowers and runs in a loop, not by recursion per item.
-  let items = Array::makei(600, i => {
-    "[" + i.to_string() + "] AS v" + i.to_string()
-  })
-  let source = "SELECT VALUE v599 FROM " + items.join(", ")
-  @expect.expect(ev(source)).to_equal(bag([Int(599)]))
 }
 
 ///|
@@ -185,5 +179,99 @@ test "a plain name in a FROM source finds a global before a variable" {
       ),
     )
     .to_equal(bag([Int(5)]))
+  })
+}
+
+///|
+fn long_from(n : Int, sep : String, on? : String = "") -> String {
+  let items = Array::makei(n, i => {
+    "[" + i.to_string() + "] AS v" + i.to_string()
+  })
+  let mut text = "SELECT VALUE v" + (n - 1).to_string() + " FROM " + items[0]
+  for i = 1; i < n; i = i + 1 {
+    text = text + sep + items[i] + on
+  }
+  text
+}
+
+///|
+test "a FROM list of 10000 items" {
+  // The joins of a chain run as one flat loop: no stack per item.
+  @expect.expect_all(soft => {
+    soft.expect(ev(long_from(10000, ", "))).to_equal(bag([Int(9999)]))
+    soft.expect(ev(long_from(10000, " CROSS JOIN "))).to_equal(bag([Int(9999)]))
+    soft
+    .expect(ev(long_from(10000, " INNER JOIN ", on=" ON TRUE")))
+    .to_equal(bag([Int(9999)]))
+  })
+}
+
+///|
+test "a FROM list with an ON in every join" {
+  let items = Array::makei(3000, i => {
+    "[" + i.to_string() + "] AS v" + i.to_string()
+  })
+  let mut text = "SELECT VALUE v2999 FROM " + items[0]
+  for i = 1; i < 3000; i = i + 1 {
+    text = text + " LEFT JOIN " + items[i] + " ON TRUE"
+  }
+  @expect.expect(ev(text)).to_equal(bag([Int(2999)]))
+}
+
+///|
+test "right joins nest, and the depth guard bounds them" {
+  let mut text = "SELECT VALUE v FROM [1] AS v"
+  for _ in 0..<300 {
+    text = text + " RIGHT JOIN [1] AS w ON TRUE"
+  }
+  @expect.expect_call(() => ev(text)).to_raise_matching(
+    e => e is @eval.EvalError::DataError(..),
+    description="DataError",
+  )
+}
+
+///|
+test "UNPIVOT of MISSING and of a map" {
+  @expect.expect_all(soft => {
+    soft
+    .expect(ev("SELECT VALUE v FROM UNPIVOT MISSING AS v AT k"))
+    .to_equal(bag([]))
+    soft
+    .expect(ev("SELECT VALUE [k, v] FROM MISSING AS m, UNPIVOT m AS v AT k"))
+    .to_equal(bag([]))
+    soft
+    .expect_call(() => {
+      ev("SELECT VALUE v FROM UNPIVOT MISSING AS v", mode=Strict)
+    })
+    .to_raise_matching(
+      e => e is @eval.EvalError::TypeError(..),
+      description="TypeError",
+    )
+    soft
+    .expect(ev("SELECT VALUE [k, v] FROM UNPIVOT NULL AS v AT k"))
+    .to_equal(bag([List([String("_1"), Null])]))
+    for mode in [@eval.Mode::Permissive, Strict] {
+      soft
+      .expect(
+        ev(
+          "SELECT VALUE [k, v] FROM UNPIVOT MAP { 1: 'one', 2: 'two' } AS v AT k",
+          mode~,
+        ),
+      )
+      .to_equal(
+        bag([List([Int(1), String("one")]), List([Int(2), String("two")])]),
+      )
+      soft
+      .expect(ev("SELECT VALUE [k, v] FROM UNPIVOT MAP { } AS v AT k", mode~))
+      .to_equal(bag([]))
+      soft
+      .expect(
+        ev(
+          "SELECT VALUE [k, v] FROM UNPIVOT MAP { TRUE: 'yes' } AS v AT k",
+          mode~,
+        ),
+      )
+      .to_equal(bag([List([Bool(true), String("yes")])]))
+    }
   })
 }
