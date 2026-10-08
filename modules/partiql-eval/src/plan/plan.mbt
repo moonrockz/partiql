@@ -66,6 +66,18 @@ pub(all) enum Expr {
   Implicit(String, delimited~ : Bool, locals~ : Array[String], @ast.Span)
   /// A query block: the projection of each binding tuple of `rel`, as a bag.
   Select(Rel, Projection, distinct~ : Bool, @ast.Span)
+  /// A single-column `SELECT` (the first operand, a `Select`) used where a
+  /// value is needed: see `SubqueryUse`.
+  Subquery(Expr, SubqueryUse, @ast.Span)
+} derive(Debug)
+
+///|
+pub(all) enum SubqueryUse {
+  /// One value: NULL for no row, the value of the column for one row, and
+  /// for more rows MISSING (permissive) or a `DataError` (strict).
+  Scalar
+  /// The bag of the value of the column of each row (`x IN (SELECT a ...)`).
+  Column
 } derive(Debug)
 
 ///|
@@ -147,7 +159,8 @@ pub fn Expr::span(self : Expr) -> @ast.Span {
     | Local(_, span)
     | GlobalOrLocal(_, variable=_, delimited=_, span)
     | Implicit(_, delimited=_, locals=_, span)
-    | Select(_, _, distinct=_, span) => span
+    | Select(_, _, distinct=_, span)
+    | Subquery(_, _, span) => span
   }
 }
 

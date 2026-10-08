@@ -45,6 +45,7 @@ pub(all) enum Expr {
   GlobalOrLocal(String, variable~ : String, delimited~ : Bool, @ast.Span)
   Implicit(String, delimited~ : Bool, locals~ : Array[String], @ast.Span)
   Select(Rel, Projection, distinct~ : Bool, @ast.Span)
+  Subquery(Expr, SubqueryUse, @ast.Span)
 } derive(@debug.Debug)
 pub fn Expr::span(Self) -> @ast.Span
 
@@ -85,6 +86,11 @@ pub(all) enum Step {
   Index(Expr)
   AllElements
   AllFields
+} derive(@debug.Debug)
+
+pub(all) enum SubqueryUse {
+  Scalar
+  Column
 } derive(@debug.Debug)
 
 // Type aliases

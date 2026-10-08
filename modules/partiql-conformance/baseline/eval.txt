@@ -172,6 +172,8 @@ eval/primitives/basic.ion::basic::rowValueConstructor#coerce
 eval/primitives/basic.ion::basic::rowValueConstructor#error
 eval/primitives/basic.ion::basic::structLiteral#coerce
 eval/primitives/basic.ion::basic::structLiteral#error
+eval/primitives/basic.ion::basic::tableValueConstructor#coerce
+eval/primitives/basic.ion::basic::tableValueConstructor#error
 eval/primitives/bool.ion::bool::boolean literals{sql:"NOT false",r:true}#coerce
 eval/primitives/bool.ion::bool::boolean literals{sql:"NOT false",r:true}#error
 eval/primitives/bool.ion::bool::boolean literals{sql:"NOT true",r:false}#coerce
@@ -2308,6 +2310,8 @@ eval/primitives/operators/in-operator.ion::in::inPredicateSubQuerySelectValue#co
 eval/primitives/operators/in-operator.ion::in::inPredicateSubQuerySelectValue#error
 eval/primitives/operators/in-operator.ion::in::inPredicateWithExpressionOnRightSide#coerce
 eval/primitives/operators/in-operator.ion::in::inPredicateWithExpressionOnRightSide#error
+eval/primitives/operators/in-operator.ion::in::inPredicateWithTableConstructor#coerce
+eval/primitives/operators/in-operator.ion::in::inPredicateWithTableConstructor#error
 eval/primitives/operators/in-operator.ion::in::notInPredicate#coerce
 eval/primitives/operators/in-operator.ion::in::notInPredicate#error
 eval/primitives/operators/in-operator.ion::in::notInPredicateSingleExpr#coerce
@@ -2322,6 +2326,8 @@ eval/primitives/operators/in-operator.ion::in::notInPredicateSubQuerySelectValue
 eval/primitives/operators/in-operator.ion::in::notInPredicateSubQuerySelectValue#error
 eval/primitives/operators/in-operator.ion::in::notInPredicateWithExpressionOnRightSide#coerce
 eval/primitives/operators/in-operator.ion::in::notInPredicateWithExpressionOnRightSide#error
+eval/primitives/operators/in-operator.ion::in::notInPredicateWithTableConstructor#coerce
+eval/primitives/operators/in-operator.ion::in::notInPredicateWithTableConstructor#error
 eval/primitives/operators/is-operators.ion::is::0.00 is DECIMAL(4,3)#coerce
 eval/primitives/operators/is-operators.ion::is::0.00 is DECIMAL(4,3)#error
 eval/primitives/operators/is-operators.ion::is::0.001 is DECIMAL(3,3)#coerce
@@ -3678,6 +3684,7 @@ eval/spec-tests.ion::section-8::null and true#coerce
 eval/spec-tests.ion::section-8::null and true#error
 eval/spec-tests.ion::section-8::null is missing#coerce
 eval/spec-tests.ion::section-8::null is missing#error
+eval/spec-tests.ion::section-9::inner select evaluating to collection with more than one element#coerce
 extended/eval/primitives/int.ion::division_by_zero_error::divide by zero{sql:"1 % 0"}#coerce
 extended/eval/primitives/int.ion::division_by_zero_error::divide by zero{sql:"1 % 0"}#error
 extended/eval/primitives/int.ion::division_by_zero_error::divide by zero{sql:"1 / 0"}#coerce

@@ -12,6 +12,8 @@
 // - A scalar expression: 1 per level (its operands run in a nested `eval`).
 //   A chain of binary operators, AND and OR runs in a loop: its operands
 //   are all one level down.
+// - A subquery used as a value: 1, its query 1 below it (a wrapper that
+//   reads the rows of the nested `eval`).
 // - A literal: 1 per level of its value (operations on a value recurse on
 //   it).
 // - A query block: 1, its FROM, WHERE and joins 1 below it, its projection 2
@@ -105,6 +107,7 @@ fn push_operands(e : @plan.Expr, level : Int, pending : Array[Pending]) -> Unit 
     | IsMissing(x, negated=_, _)
     | Unary(_, x, _)
     | Not(x, _)
+    | Subquery(x, _, _)
     | BoolTest(x, _, negated=_, _)
     | IsType(x, _, negated=_, _) => push(x)
     Binary(_, _, _, _) | And(_, _, _) | Or(_, _, _) => {

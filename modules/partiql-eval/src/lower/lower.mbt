@@ -209,11 +209,11 @@ fn lower_chain(
       _ => break
     }
   }
-  let mut result = lower_at(leaf, scope, depth)
+  let mut result = scalar_at(leaf, scope, depth)
   for link in links.rev_iter() {
     result = match link {
       BinaryLink(op, r, span) =>
-        Binary(op, result, lower_at(r, scope, depth), span)
+        Binary(op, result, scalar_at(r, scope, depth), span)
       AndLink(r, span) => And(result, lower_at(r, scope, depth), span)
       OrLink(r, span) => Or(result, lower_at(r, scope, depth), span)
     }
@@ -299,7 +299,7 @@ fn lower_at(
     Struct(fields) => TupleOf(lower_pairs(fields, scope, depth), span)
     Map(entries) => MapOf(lower_pairs(entries, scope, depth), span)
     Query(q) => query_at(q, scope, depth)
-    Values(_) => unsupported("VALUES (M4b)", span)
+    Values(rows) => BagOf(lower_all(rows, scope, depth), span)
     GraphMatch(_) => unsupported("graph MATCH (later)", span)
     Parameter => unsupported("a parameter (later)", span)
     Error => raise DataError(message="a broken expression", span~)
@@ -312,46 +312,47 @@ fn lower_at(
     // `-9223372036854775808` is a literal: its magnitude is out of range.
     Unary(Neg, { kind: Lit(Int(text)), .. }) =>
       Const(integer_value("-" + text, span), span)
-    Unary(op, x) => Unary(op, lower_at(x, scope, depth), span)
+    Unary(op, x) => Unary(op, scalar_at(x, scope, depth), span)
     Binary(_, _, _) | And(_, _) | Or(_, _) => lower_chain(e, scope, depth)
     Not(x) => Not(lower_at(x, scope, depth), span)
     BoolTest(x, truth, negated~) =>
-      BoolTest(lower_at(x, scope, depth), truth, negated~, span)
+      BoolTest(scalar_at(x, scope, depth), truth, negated~, span)
     Like(x, pattern~, escape~, negated~) =>
       Like(
-        lower_at(x, scope, depth),
-        pattern=lower_at(pattern, scope, depth),
-        escape=escape.map(x => lower_at(x, scope, depth)),
+        scalar_at(x, scope, depth),
+        pattern=scalar_at(pattern, scope, depth),
+        escape=escape.map(x => scalar_at(x, scope, depth)),
         negated~,
         span,
       )
     Between(x, low~, high~, negated~) =>
       Between(
-        lower_at(x, scope, depth),
-        low=lower_at(low, scope, depth),
-        high=lower_at(high, scope, depth),
+        scalar_at(x, scope, depth),
+        low=scalar_at(low, scope, depth),
+        high=scalar_at(high, scope, depth),
         negated~,
         span,
       )
     In(x, c, negated~) =>
-      In(lower_at(x, scope, depth), lower_at(c, scope, depth), negated~, span)
-    IsNull(x, negated~) => IsNull(lower_at(x, scope, depth), negated~, span)
+      In(scalar_at(x, scope, depth), column_at(c, scope, depth), negated~, span)
+    IsNull(x, negated~) => IsNull(scalar_at(x, scope, depth), negated~, span)
     IsMissing(x, negated~) =>
-      IsMissing(lower_at(x, scope, depth), negated~, span)
+      IsMissing(scalar_at(x, scope, depth), negated~, span)
     IsType(x, t, negated~) =>
-      IsType(lower_at(x, scope, depth), type_test(t, span), negated~, span)
+      IsType(scalar_at(x, scope, depth), type_test(t, span), negated~, span)
     Case(operand~, branches~, default~) =>
       Case(
-        operand=operand.map(x => lower_at(x, scope, depth)),
+        operand=operand.map(x => scalar_at(x, scope, depth)),
         branches=branches.map(b => {
-          (lower_at(b.0, scope, depth), lower_at(b.1, scope, depth))
+          (scalar_at(b.0, scope, depth), scalar_at(b.1, scope, depth))
         }),
-        default=default.map(x => lower_at(x, scope, depth)),
+        default=default.map(x => scalar_at(x, scope, depth)),
         span,
       )
-    Coalesce(items) => Coalesce(lower_all(items, scope, depth), span)
+    Coalesce(items) =>
+      Coalesce(items.map(x => scalar_at(x, scope, depth)), span)
     NullIf(a, b) =>
-      NullIf(lower_at(a, scope, depth), lower_at(b, scope, depth), span)
+      NullIf(scalar_at(a, scope, depth), scalar_at(b, scope, depth), span)
     Overlaps(_, _)
     | Cast(_, _)
     | Extract(_, _)

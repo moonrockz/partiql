@@ -141,7 +141,7 @@ fn select_at(
                   Some(id) => id.text
                   None => implicit_name(e, i)
                 },
-                lower_at(e, inner, depth),
+                scalar_at(e, inner, depth),
               )
             AllFields(e, ..) => @plan.Item::AllFields(lower_at(e, inner, depth))
           },
@@ -287,5 +287,48 @@ fn from_span(item : @ast.FromItem) -> @ast.Span {
   match item {
     Scan(s) | Unpivot(s) => s.span
     Join(j) => j.span
+  }
+}
+
+///|
+/// Whether `e` is a subquery `(SELECT item FROM ...)` with exactly one
+/// projection item that is not `SELECT VALUE`, `*` or `x.*`.
+fn is_single_column(e : @ast.Expr) -> Bool {
+  match e.kind {
+    Query({ body: Select({ projection: Items([Expr(_, ..)]), .. }), .. }) =>
+      true
+    _ => false
+  }
+}
+
+///|
+/// Lowers an operand that needs one value: a single-column `SELECT` there
+/// gives NULL for no row, its value for one row (spec M4b1 §9).
+fn scalar_at(
+  e : @ast.Expr,
+  scope : Scope,
+  depth : Int,
+) -> @plan.Expr raise @plan.EvalError {
+  let inner = lower_at(e, scope, depth)
+  if is_single_column(e) {
+    Subquery(inner, Scalar, e.span)
+  } else {
+    inner
+  }
+}
+
+///|
+/// Lowers the collection of an `IN`: a single-column `SELECT` there is the
+/// bag of the value of each row.
+fn column_at(
+  e : @ast.Expr,
+  scope : Scope,
+  depth : Int,
+) -> @plan.Expr raise @plan.EvalError {
+  let inner = lower_at(e, scope, depth)
+  if is_single_column(e) {
+    Subquery(inner, Column, e.span)
+  } else {
+    inner
   }
 }

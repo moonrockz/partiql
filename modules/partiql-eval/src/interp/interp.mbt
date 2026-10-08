@@ -547,5 +547,55 @@ fn eval(
       }
     Select(rel, projection, distinct~, _) =>
       select(rel, projection, distinct, env, ctx)
+    Subquery(query, use_, span) =>
+      subquery(eval(query, env, ctx), use_, ctx, span)
+  }
+}
+
+///|
+/// The value of the only column of a row of a single-column `SELECT`: MISSING
+/// when the row has none (a MISSING item is left out of a tuple).
+fn column_value(row : @value.Value) -> @value.Value {
+  match row {
+    Tuple(t) =>
+      match t.fields() {
+        [(_, v), ..] => v
+        [] => Missing
+      }
+    other => other
+  }
+}
+
+///|
+/// A single-column `SELECT` where one value (`Scalar`) or a collection
+/// (`Column`) is needed. More than one row for a value is MISSING in
+/// permissive mode (partiql-tests spec-tests section 10, where the order with
+/// two customers has no `customerName`) and a `DataError` in strict mode.
+fn subquery(
+  rows : @value.Value,
+  use_ : @plan.SubqueryUse,
+  ctx : Ctx,
+  span : @ast.Span,
+) -> @value.Value raise @plan.EvalError {
+  let items = match rows {
+    Bag(b) => b.items()
+    other => [other]
+  }
+  match use_ {
+    Column => Bag(@value.Bag::new(items.map(column_value)))
+    Scalar =>
+      match items {
+        [] => Null
+        [row] => column_value(row)
+        _ =>
+          match ctx.mode {
+            Permissive => Missing
+            Strict =>
+              raise DataError(
+                message="a subquery that gives one value found several rows",
+                span~,
+              )
+          }
+      }
   }
 }
