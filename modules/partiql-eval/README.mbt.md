@@ -9,9 +9,7 @@ let value = @eval.evaluate_text("1 + 2", env=@eval.Bindings::empty())
 // value == Int(3)
 ```
 
-A query runs against global bindings. `Bindings::of_ion` reads an Ion
-struct, and each field becomes a global variable. `SELECT` with `WHERE` gives
-a bag:
+A query gives a bag. This one has no global bindings:
 
 ```moonbit
 let value = @eval.evaluate_text(

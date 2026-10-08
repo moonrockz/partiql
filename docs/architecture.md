@@ -128,9 +128,13 @@ graph TD
     block and resolves names: a name is a local (FROM, AT or LET variable),
     a global binding, or an attribute of an in-scope FROM variable, in that
     order. A FROM source expression finds a global before a FROM
-    variable. An unbound name
-    with a FROM variable in scope is a path step on it; with none in scope
-    it is an undefined-variable `DataError`. `depth.mbt` is the depth guard:
+    variable. An unbound name with FROM variables in scope
+    resolves as a global first, then as the attribute of the first in-scope
+    FROM variable tuple that has it (innermost query first, in FROM order);
+    found nowhere it is MISSING in permissive mode and a `TypeError` in
+    strict mode. With no FROM variable in scope it lowers to a global, and
+    the undefined-variable `DataError` is raised at run time in both modes.
+    `depth.mbt` is the depth guard:
     it charges each part of a plan with the stack it uses when it runs and
     refuses a plan above 200 levels with a `DataError`, so the evaluator
     does not overflow the stack. Chains of binary operators, AND and OR
