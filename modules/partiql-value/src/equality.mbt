@@ -95,3 +95,114 @@ pub fn eqg(a : Value, b : Value) -> Bool {
     _ => a == b
   }
 }
+
+///|
+/// The digits of an exact number without trailing zeros of its coefficient,
+/// so that numbers that are equal have one key.
+fn number_key(n : Num) -> String {
+  match n {
+    NaN => "nan"
+    NegInf => "-inf"
+    PosInf => "+inf"
+    Finite(c, e) => {
+      let text = c.to_string()
+      let mut end = text.length()
+      let mut exponent = e
+      while end > 1 && text[end - 1] == '0' {
+        end -= 1
+        exponent += 1
+      }
+      "n\{text[:end].to_owned()}e\{exponent}"
+    }
+  }
+}
+
+///|
+fn bytes_key(b : Bytes) -> String {
+  let out = StringBuilder()
+  for i in 0..<b.length() {
+    out.write_string(b[i].to_int().to_string())
+    out.write_char(',')
+  }
+  out.to_string()
+}
+
+///|
+fn clock_key(t : Time) -> String {
+  let (s, n) = if t.offset is Some(_) { t.utc_key() } else { t.local_key() }
+  "\{t.offset is Some(_)}:\{s}:\{n}"
+}
+
+///|
+fn group_key_at(v : Value, depth : Int) -> String {
+  let sub = (x : Value) => group_key_at(x, depth - 1)
+  match lowered(v) {
+    None => "x"
+    Some(x) =>
+      match x {
+        Null => "N"
+        Missing => "M"
+        Bool(b) => "b\{b}"
+        String(s) => "s\{s}"
+        Clob(b) | Blob(b) => "y" + bytes_key(b)
+        Date(d) => "d\{d.year}-\{d.month}-\{d.day}"
+        Time(t) => "t" + clock_key(t)
+        Timestamp(t) => {
+          let (s, n) = if t.time.offset is Some(_) {
+            t.utc_key()
+          } else {
+            t.local_key()
+          }
+          "T\{t.time.offset is Some(_)}:\{s}:\{n}"
+        }
+        IntervalYM(i) => "ym\{i.months}"
+        IntervalDT(i) => "dt\{i.seconds}:\{i.nanos}"
+        List(items) =>
+          if depth > 0 {
+            "l[" + items.map(sub).join(",") + "]"
+          } else {
+            "l\{items.length()}"
+          }
+        Bag(b) =>
+          if depth > 0 {
+            let keys = b.items().map(sub)
+            keys.sort()
+            "b[" + keys.join(",") + "]"
+          } else {
+            "g\{b.length()}"
+          }
+        Tuple(t) =>
+          if depth > 0 {
+            let keys = t.fields().map(f => "\{f.0}=" + sub(f.1))
+            keys.sort()
+            "u[" + keys.join(",") + "]"
+          } else {
+            "u\{t.length()}"
+          }
+        Map(m) =>
+          if depth > 0 {
+            let keys = m.entries().map(e => sub(e.0) + "=" + sub(e.1))
+            keys.sort()
+            "m[" + keys.join(",") + "]"
+          } else {
+            "m\{m.entries().length()}"
+          }
+        Graph(_) => "G"
+        Ion(_) => "x"
+        _ =>
+          match num_of(x) {
+            Some(n) => number_key(n)
+            None => "?"
+          }
+      }
+  }
+}
+
+///|
+/// A key that values which are `eqg` share, for hashing (the DISTINCT of
+/// SELECT, GROUP BY). It reads two levels into a collection, deeper values
+/// by kind and size only, so it takes no deep recursion; values that differ
+/// only below that share a key.
+pub fn group_key(v : Value) -> String {
+  group_key_at(v, 2)
+}

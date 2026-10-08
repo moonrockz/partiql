@@ -525,54 +525,20 @@ fn add_fields(
 
 ///|
 /// The values of `items` without a repeat, in the order of their first
-/// occurrence. Two values repeat if they are `==` (bags and tuples as
-/// multisets). Each value goes to a bucket of a hash of its shape (`shape`);
-/// only the values of one bucket are compared, so the cost is linear unless
-/// many values share a shape.
+/// occurrence. Two values repeat if they are grouping equivalent (`eqg`: the
+/// test of GROUP BY, so `1`, `1.0` and `1e0` are one value, NULLs are one
+/// value, and bags and tuples compare as multisets). Each value goes to a
+/// bucket of its `group_key`; only the values of one bucket are compared, so
+/// the cost is linear unless many values share a key.
 fn dedupe(items : Array[@value.Value]) -> Array[@value.Value] {
   let buckets : Map[String, Array[@value.Value]] = Map([])
   let out = []
   for v in items {
-    let bucket = buckets.get_or_init(shape(v), () => [])
-    if !bucket.contains(v) {
+    let bucket = buckets.get_or_init(@value.group_key(v), () => [])
+    if !bucket.any(seen => @value.eqg(seen, v)) {
       bucket.push(v)
       out.push(v)
     }
   }
   out
-}
-
-///|
-/// A key that values which are `==` share. It looks one level into a tuple and
-/// no deeper, so computing it takes no recursion.
-fn shape(v : @value.Value) -> String {
-  match unboxed(v) {
-    Tuple(t) => {
-      let parts = t.fields().map(f => "\{f.0}=\{leaf(f.1)}")
-      parts.sort()
-      "t" + parts.join(",")
-    }
-    other => leaf(other)
-  }
-}
-
-///|
-/// A key for a value that is the same for values which are `==`: the value for
-/// a scalar, the kind and the length for a collection.
-fn leaf(v : @value.Value) -> String {
-  match unboxed(v) {
-    Null
-    | Missing
-    | Bool(_)
-    | Int(_)
-    | BigInt(_)
-    | Float(_)
-    | Decimal(_)
-    | String(_) => @debug.to_string(v)
-    List(items) => "l\{items.length()}"
-    Bag(b) => "b\{b.length()}"
-    Tuple(t) => "t\{t.length()}"
-    Map(_) => "m"
-    _ => "o"
-  }
 }

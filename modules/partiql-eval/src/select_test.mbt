@@ -119,3 +119,44 @@ test "a long LET list evaluates without overflowing the stack" {
     bag_of([Int(3000)]),
   )
 }
+
+///|
+test "DISTINCT uses grouping equivalence" {
+  @expect.expect_all(soft => {
+    soft
+    .expect(ev("SELECT DISTINCT VALUE x FROM [1, 1.0, 1e0, 2] AS x"))
+    .to_equal(bag_of([Int(1), Int(2)]))
+    soft
+    .expect(ev("SELECT DISTINCT VALUE x FROM [1.0, 1.00, 1] AS x"))
+    .to_equal(bag_of([Decimal(@ion.Decimal::parse("1.0"))]))
+    soft
+    .expect(ev("SELECT DISTINCT VALUE x FROM [[1], [1.0], [2]] AS x"))
+    .to_equal(bag_of([List([Int(1)]), List([Int(2)])]))
+    soft
+    .expect(ev("SELECT DISTINCT VALUE x FROM [NULL, NULL, MISSING] AS x"))
+    .to_equal(bag_of([Null, Missing]))
+  })
+}
+
+///|
+test "DISTINCT over many values is not quadratic" {
+  let lists = Array::makei(20000, i => "[\{i}]").join(",")
+  let dates = Array::makei(20000, i => {
+    "DATE '\{2000 + i / 18}-01-\{i % 18 + 10}'"
+  })
+  let tuples = Array::makei(20000, i => "{'a': \{i}, 'b': [\{i}]}")
+  @expect.expect_all(soft => {
+    match ev("SELECT DISTINCT VALUE x FROM [\{lists}] AS x") {
+      Bag(b) => soft.expect(b.length()).to_equal(20000)
+      _ => soft.expect(false).to_be_true()
+    }
+    match ev("SELECT DISTINCT VALUE x FROM [\{dates.join(",")}] AS x") {
+      Bag(b) => soft.expect(b.length()).to_equal(20000)
+      _ => soft.expect(false).to_be_true()
+    }
+    match ev("SELECT DISTINCT x.a FROM [\{tuples.join(",")}] AS x") {
+      Bag(b) => soft.expect(b.length()).to_equal(20000)
+      _ => soft.expect(false).to_be_true()
+    }
+  })
+}

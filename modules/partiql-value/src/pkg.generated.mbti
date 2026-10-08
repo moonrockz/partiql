@@ -12,6 +12,8 @@ pub fn compare(Value, Value, nulls~ : NullOrder) -> Int
 
 pub fn eqg(Value, Value) -> Bool
 
+pub fn group_key(Value) -> String
+
 pub fn sql_equals(Value, Value) -> Value
 
 pub fn timestamp_of_ion(@ion.Timestamp) -> Timestamp
