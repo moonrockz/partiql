@@ -127,3 +127,27 @@ test "IS with an interval qualifier that is not valid is a data error" {
     }
   })
 }
+
+///|
+test "CHAR without a length is CHAR(1)" {
+  @expect.expect_all(soft => {
+    soft.expect(ev("'a' IS CHAR")).to_equal(Bool(true))
+    soft.expect(ev("'abcd' IS CHAR")).to_equal(Bool(false))
+    soft.expect(ev("'' IS CHAR")).to_equal(Bool(false))
+    soft.expect(ev("'😀' IS CHAR")).to_equal(Bool(true))
+    soft.expect(ev("'abcd' IS VARCHAR")).to_equal(Bool(true))
+  })
+}
+
+///|
+test "DECIMAL(p,s) counts the digits of a positive exponent" {
+  @expect.expect_all(soft => {
+    soft.expect(ev("1e3 IS DECIMAL(1,0)")).to_equal(Bool(false))
+    soft.expect(ev("1e3 IS DECIMAL(4,0)")).to_equal(Bool(true))
+    soft.expect(ev("`1d3` IS DECIMAL(1,0)")).to_equal(Bool(false))
+    soft.expect(ev("`1d3` IS DECIMAL(4,0)")).to_equal(Bool(true))
+    soft.expect(ev("1e2147483647 IS DECIMAL(1,0)")).to_equal(Bool(false))
+    soft.expect(ev("12.5e1 IS DECIMAL(3,0)")).to_equal(Bool(true))
+    soft.expect(ev("0e5 IS DECIMAL(1,0)")).to_equal(Bool(true))
+  })
+}
