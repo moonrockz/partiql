@@ -131,10 +131,11 @@ fn type_test(
 
 ///|
 /// The deepest nesting that lowering accepts. The parser limits parentheses
-/// and prefix operators, but not postfix chains such as `x IS NULL IS NULL`;
-/// this limit keeps every recursion here and in the interpreter off the end
-/// of the stack. Left-associative operator chains do not count: they are
-/// lowered and run in a loop.
+/// and prefix operators, but not postfix chains such as `x IS NULL IS NULL`.
+/// Lowering stops at this depth, which keeps its own recursion off the end
+/// of the stack; `within_depth` (depth.mbt) then bounds the nesting of the
+/// plan when it runs. Left-associative operator chains do not count: they
+/// are lowered and run in a loop.
 let max_depth : Int = 200
 
 ///|
@@ -246,7 +247,7 @@ fn ion_depth(v : @ion_core.IonValue) -> Int {
 ///|
 /// Lowers an expression.
 pub fn lower(e : @ast.Expr) -> @plan.Expr raise @plan.EvalError {
-  lower_at(e, Scope::top(), 0)
+  within_depth(lower_at(e, Scope::top(), 0))
 }
 
 ///|

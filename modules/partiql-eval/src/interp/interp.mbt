@@ -178,7 +178,7 @@ fn run_tuple(
           Strict =>
             raise TypeError(
               message="a struct key must be a string",
-              span=span_of(field.0),
+              span=field.0.span(),
             )
         }
     }
@@ -330,37 +330,6 @@ fn run_case(
   match default {
     Some(e) => eval(e, env, ctx)
     None => Null
-  }
-}
-
-///|
-fn span_of(e : @plan.Expr) -> @ast.Span {
-  match e {
-    Const(_, span)
-    | Global(_, delimited=_, span)
-    | ListOf(_, span)
-    | BagOf(_, span)
-    | TupleOf(_, span)
-    | MapOf(_, span)
-    | Path(_, _, span)
-    | IsNull(_, negated=_, span)
-    | IsMissing(_, negated=_, span)
-    | Unary(_, _, span)
-    | Binary(_, _, _, span)
-    | And(_, _, span)
-    | Or(_, _, span)
-    | Not(_, span)
-    | BoolTest(_, _, negated=_, span)
-    | Like(_, pattern=_, escape=_, negated=_, span)
-    | Between(_, low=_, high=_, negated=_, span)
-    | In(_, _, negated=_, span)
-    | IsType(_, _, negated=_, span)
-    | Case(operand=_, branches=_, default=_, span)
-    | Coalesce(_, span)
-    | NullIf(_, _, span)
-    | Local(_, span)
-    | GlobalOrLocal(_, variable=_, delimited=_, span)
-    | Select(_, _, distinct=_, span) => span
   }
 }
 

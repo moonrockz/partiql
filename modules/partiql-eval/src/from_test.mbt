@@ -349,3 +349,41 @@ test "right joins after a nested item count against it" {
     }
   })
 }
+
+///|
+/// Level `d + 1` has level `d` as a subquery in the ON of its first join,
+/// then `r` RIGHT JOINs: that ON runs inside all of them.
+fn subquery_in_on(levels : Int, r : Int) -> String {
+  let mut text = "SELECT VALUE 1 FROM [1] AS z"
+  for _ in 0..<levels {
+    text = "SELECT VALUE 1 FROM [1] AS a JOIN [1] AS b ON (" +
+      text +
+      ") IS NOT MISSING" +
+      " RIGHT JOIN [1] AS w ON TRUE".repeat(r)
+  }
+  text
+}
+
+///|
+test "a subquery in an ON counts the right joins after it" {
+  @expect.expect_all(soft => {
+    for shape in [(20, 60), (40, 100)] {
+      soft
+      .expect_call(() => ev(subquery_in_on(shape.0, shape.1)))
+      .to_raise_matching(
+        e => e is @eval.EvalError::DataError(..),
+        description="DataError at \{shape.0} levels of \{shape.1}",
+      )
+    }
+    soft.expect(ev(subquery_in_on(3, 2))).to_equal(bag([Int(1)]))
+  })
+}
+
+///|
+test "a long parenthesized FROM list as a right side" {
+  let items = Array::makei(10000, i => "[1] AS b" + i.to_string())
+  let text = "SELECT VALUE a FROM [1] AS a CROSS JOIN (" +
+    items.join(" CROSS JOIN ") +
+    ")"
+  @expect.expect(ev(text)).to_equal(bag([Int(1)]))
+}

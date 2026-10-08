@@ -47,7 +47,7 @@ fn Scope::resolve(self : Scope, id : @ast.Identifier) -> String? {
 ///|
 /// Lowers a query statement.
 pub fn lower_query(q : @ast.Query) -> @plan.Expr raise @plan.EvalError {
-  query_at(q, Scope::top(), 0)
+  within_depth(query_at(q, Scope::top(), 0))
 }
 
 ///|
@@ -152,21 +152,6 @@ fn from_item(
     joins.push(j)
     leaf = j.left
   }
-  // Each RIGHT JOIN in a chain wraps the rows before it when they run, so
-  // every right side of the chain runs inside all of them. The guard counts
-  // them all, which bounds the nesting along any path.
-  let mut rights = 0
-  for j in joins {
-    if j.kind is Right {
-      rights += 1
-    }
-  }
-  if depth + rights >= max_depth {
-    raise DataError(
-      message="FROM list is too deeply nested",
-      span=from_span(item),
-    )
-  }
   let mut rel = from_leaf(leaf, scope, names, depth)
   for j in joins.rev_iter() {
     let kind : @plan.JoinKind = match (j.kind, j.form) {
@@ -179,11 +164,11 @@ fn from_item(
     // The right side of a RIGHT JOIN is read once, outside the left rows.
     let right = if kind is Right {
       let own = []
-      let right = from_item(j.right, scope, own, depth + rights + 1)
+      let right = from_item(j.right, scope, own, depth + 1)
       names.append(own)
       right
     } else {
-      from_item(j.right, scope, names, depth + rights + 1)
+      from_item(j.right, scope, names, depth + 1)
     }
     let on = match j.form {
       On(e) => Some(lower_at(e, scope.inner(names), depth))

@@ -175,17 +175,28 @@ fn unpivot(
 }
 
 ///|
-/// The variables a relation binds, in no particular order.
+/// The variables a relation binds: those of the left side of a join before
+/// those of the right. A loop with a stack of pending relations, so a long
+/// chain of joins takes no recursion.
 fn binds(rel : @plan.Rel) -> Array[String] {
-  match rel {
-    Scan(_, as_~, at~, _) | Unpivot(_, as_~, at~, _) =>
-      match at {
-        Some(at) => [at, as_]
-        None => [as_]
+  let names = []
+  let pending = [rel]
+  while pending.pop() is Some(r) {
+    match r {
+      Scan(_, as_~, at~, _) | Unpivot(_, as_~, at~, _) => {
+        if at is Some(at) {
+          names.push(at)
+        }
+        names.push(as_)
       }
-    Filter(input, _, _) => binds(input)
-    Join(_, l, r, on=_, _) => binds(l) + binds(r)
+      Filter(input, _, _) => pending.push(input)
+      Join(_, l, r, on=_, _) => {
+        pending.push(r)
+        pending.push(l)
+      }
+    }
   }
+  names
 }
 
 ///|

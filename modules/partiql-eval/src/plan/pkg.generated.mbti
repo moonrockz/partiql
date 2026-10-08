@@ -45,6 +45,7 @@ pub(all) enum Expr {
   GlobalOrLocal(String, variable~ : String, delimited~ : Bool, @ast.Span)
   Select(Rel, Projection, distinct~ : Bool, @ast.Span)
 } derive(@debug.Debug)
+pub fn Expr::span(Self) -> @ast.Span
 
 pub(all) enum JoinKind {
   Cross
@@ -68,6 +69,7 @@ pub(all) enum Rel {
   Filter(Rel, Expr, @ast.Span)
   Join(JoinKind, Rel, Rel, on~ : Expr?, @ast.Span)
 } derive(@debug.Debug)
+pub fn Rel::span(Self) -> @ast.Span
 
 pub(all) enum Step {
   Field(String, delimited~ : Bool)
