@@ -125,41 +125,105 @@ test "law: a LEFT JOIN keeps every left row" {
 }
 
 ///|
+/// Atoms for DISTINCT: numbers equal across kinds (1, 1.0, 1e0), NULL and
+/// MISSING, so the grouping-equivalence path is exercised.
+let distinct_atoms : Array[String] = [
+  "1", "1.0", "1e0", "`1.0e0`", "2", "2.0", "2e0", "'a'", "'a'", "NULL", "MISSING",
+  "TRUE", "[1]", "[1.0]", "{'a': 1}", "{'a': 1.0}", "<<1>>", "<<1.0>>",
+]
+
+///|
+struct DistinctText {
+  text : String
+} derive(Debug)
+
+///|
+impl @quickcheck.Arbitrary for DistinctText with fn arbitrary(_size, rs) {
+  let n = pick(rs, 9)
+  let items = Array::makei(n, _ => {
+    distinct_atoms[pick(rs, distinct_atoms.length())]
+  })
+  { text: "[\{items.join(", ")}]", }
+}
+
+///|
+impl @quickcheck.Shrink for DistinctText
+
+///|
+fn items_of(v : @value.Value) -> Array[@value.Value]? {
+  match v {
+    Bag(b) => Some(b.items().to_owned())
+    List(l) => Some(l)
+    _ => None
+  }
+}
+
+///|
 test "law: SELECT DISTINCT is idempotent" {
   @quickcheck.check(
-    (c : CollText) => {
-      let once = run("SELECT DISTINCT VALUE x FROM \{c.text()} AS x")
+    (c : DistinctText) => {
+      let once = run("SELECT DISTINCT VALUE x FROM \{c.text} AS x")
       let twice = run(
-        "SELECT DISTINCT VALUE x FROM (SELECT DISTINCT VALUE x FROM \{c.text()} AS x) AS x",
+        "SELECT DISTINCT VALUE x FROM (SELECT DISTINCT VALUE x FROM \{c.text} AS x) AS x",
       )
-      let rows_once = run("SELECT DISTINCT x FROM \{c.text()} AS x")
-      once == twice && once is Bag(_) && rows_once is Bag(_)
+      once == twice && once is Bag(_)
     },
     count=1000,
   )
 }
 
 ///|
-test "law: SELECT DISTINCT VALUE has no two grouping-equal elements" {
+/// DISTINCT keeps one element per grouping-equivalence class: no two result
+/// elements are eqg, every input element has an eqg result element, and every
+/// result element is an input element.
+test "law: SELECT DISTINCT VALUE keeps one element per class and drops none" {
   @quickcheck.check(
-    (c : CollText) => {
-      match run("SELECT DISTINCT VALUE x FROM \{c.text()} AS x") {
-        Bag(bag) => {
-          let items = bag.items()
-          for i in 0..<items.length() {
-            for j in (i + 1)..<items.length() {
-              if @value.eqg(items[i], items[j]) {
-                return false
-              }
-            }
-          }
-          true
-        }
-        _ => false
+    (c : DistinctText) => {
+      let input = match items_of(run("SELECT VALUE x FROM \{c.text} AS x")) {
+        Some(items) => items
+        None => return false
       }
+      let out = match
+        items_of(run("SELECT DISTINCT VALUE x FROM \{c.text} AS x")) {
+        Some(items) => items
+        None => return false
+      }
+      for i in 0..<out.length() {
+        for j in (i + 1)..<out.length() {
+          if @value.eqg(out[i], out[j]) {
+            return false
+          }
+        }
+      }
+      input.iter().all(x => out.iter().any(y => @value.eqg(x, y))) &&
+      out.iter().all(y => input.iter().any(x => @value.eqg(x, y)))
     },
     count=1000,
   )
+}
+
+///|
+test "SELECT DISTINCT VALUE merges grouping-equal numbers of every kind" {
+  @expect.expect_all(soft => {
+    soft
+    .expect(count_of(run("SELECT DISTINCT VALUE x FROM <<1, 1.0, 1e0>> AS x")))
+    .to_equal(1)
+    soft
+    .expect(
+      count_of(run("SELECT DISTINCT VALUE x FROM <<1, 2, 1.0, 2e0>> AS x")),
+    )
+    .to_equal(2)
+    soft
+    .expect(
+      count_of(run("SELECT DISTINCT VALUE x FROM <<NULL, NULL, 1>> AS x")),
+    )
+    .to_equal(2)
+    soft
+    .expect(
+      count_of(run("SELECT DISTINCT VALUE x FROM [MISSING, MISSING, 1] AS x")),
+    )
+    .to_equal(2)
+  })
 }
 
 ///|
@@ -241,17 +305,21 @@ fn count_of(v : @value.Value) -> Int {
 test "totality: a 100000-element bag through scan, filter and project" {
   let n = 100000
   let items : Array[@value.Value] = Array::makei(n, i => Int(i.to_int64()))
-  let env = @eval.Bindings::of_tuple(@value.Tuple::new([("c", List(items))]))
+  let env = @eval.Bindings::of_tuple(
+    @value.Tuple::new([("c", Bag(@value.Bag::new(items))), ("l", List(items))]),
+  )
   let q = (s : String) => @eval.evaluate_text(s, env~)
   let scan = q("SELECT VALUE x FROM c AS x")
   let filtered = q("SELECT VALUE x FROM c AS x WHERE x % 2 = 0")
   let projected = q("SELECT x + 1 AS y FROM c AS x WHERE x < 50000")
   let distinct = q("SELECT DISTINCT VALUE x % 10 FROM c AS x")
+  let from_list = q("SELECT VALUE x FROM l AS x WHERE x >= 0")
   @expect.expect_all(soft => {
     soft.expect(count_of(scan)).to_equal(n)
     soft.expect(count_of(filtered)).to_equal(n / 2)
     soft.expect(count_of(projected)).to_equal(50000)
     soft.expect(count_of(distinct)).to_equal(10)
+    soft.expect(count_of(from_list)).to_equal(n)
   })
 }
 
