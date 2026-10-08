@@ -134,6 +134,9 @@ graph TD
     global; found nowhere it is MISSING in permissive mode and a `TypeError` in
     strict mode. With no FROM variable in scope it lowers to a global, and
     the undefined-variable `DataError` is raised at run time in both modes.
+    A variable name that a FROM clause declares twice (AS, AT or an implicit
+    name) is a `DataError` that suggests `AS`; names compare exactly, and a
+    LET variable or an inner query may shadow an outer name.
     `depth.mbt` is the depth guard:
     it charges each part of a plan with the stack it uses when it runs and
     refuses a plan above 200 levels with a `DataError`, so the evaluator

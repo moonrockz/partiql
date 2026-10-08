@@ -236,7 +236,9 @@ fn from_item(
     let right = if kind is Right {
       let own = []
       let right = from_item(j.right, scope, own, sources, depth + 1)
-      names.append(own)
+      for name in own {
+        declare_variable(names, name, j.span)
+      }
       right
     } else {
       from_item(j.right, scope, names, sources, depth + 1)
@@ -248,6 +250,25 @@ fn from_item(
     rel = Join(kind, rel, right, on~, j.span)
   }
   rel
+}
+
+///|
+/// Declares the FROM variable `name` in `names`. A repeat of a name in one
+/// FROM clause is an error, as in SQL. Declared names compare exactly: the
+/// conformance suite keeps `an_alias` and `AN_ALIAS` apart as two variables
+/// (a lookup by regular identifier finds both and is ambiguous).
+fn declare_variable(
+  names : Array[String],
+  name : String,
+  span : @ast.Span,
+) -> Unit raise @plan.EvalError {
+  if names.contains(name) {
+    raise DataError(
+      message="FROM variable \{name} is declared twice; name one of them with AS",
+      span~,
+    )
+  }
+  names.push(name)
 }
 
 ///|
@@ -271,10 +292,10 @@ fn from_leaf(
   sources.val += 1
   let at = source.at.map(id => id.text)
   let expr = lower_plain(source.expr, scope.inner(names).for_source(), depth)
-  if at is Some(name) {
-    names.push(name)
+  if source.at is Some(id) {
+    declare_variable(names, id.text, id.span)
   }
-  names.push(as_)
+  declare_variable(names, as_, source.span)
   if unpivot {
     Unpivot(expr, as_~, at~, source.span)
   } else {

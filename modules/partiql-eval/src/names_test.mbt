@@ -178,3 +178,51 @@ test "implicit name: variable attribute before global" {
     .to_equal(bag([String("global-a")]))
   })
 }
+
+///|
+test "a repeated FROM variable is an error" {
+  let items = @value.Tuple::new([("items", List([Int(1)]))])
+  let env = @eval.Bindings::of_tuple(
+    @value.Tuple::new([
+      ("s", Tuple(items)),
+      ("u", Tuple(items)),
+      ("t", List([Int(1)])),
+    ]),
+  )
+  fn rejects(q : String, mode : @eval.Mode) -> (Bool, String) {
+    try @eval.evaluate_text(q, env~, mode~) catch {
+      @eval.EvalError::DataError(message~, ..) => (true, message)
+      _ => (false, "")
+    } noraise {
+      _ => (false, "")
+    }
+  }
+
+  @expect.expect_all(soft => {
+    for mode in [@eval.Mode::Permissive, @eval.Mode::Strict] {
+      for
+        q in [
+          "SELECT * FROM [{'a':1}] AS x, [{'b':2}] AS x", "SELECT * FROM s.items, u.items",
+          "SELECT * FROM t AS x AT x",
+        ] {
+        let (bad, message) = rejects(q, mode)
+        soft.expect(bad).to_be_true()
+        soft.expect(message).to_contain("AS")
+      }
+    }
+    // LET and an inner query may shadow
+    soft
+    .expect(
+      @eval.evaluate_text("SELECT VALUE x FROM [1] AS x LET 2 AS x", env~),
+    )
+    .to_equal(bag([Int(2)]))
+    soft
+    .expect(
+      @eval.evaluate_text(
+        "SELECT VALUE (SELECT VALUE x FROM [5] AS x) FROM [1] AS x",
+        env~,
+      ),
+    )
+    .to_equal(bag([bag([Int(5)])]))
+  })
+}

@@ -356,10 +356,11 @@ test "right joins after a nested item count against it" {
 fn subquery_in_on(levels : Int, r : Int) -> String {
   let mut text = "SELECT VALUE 1 FROM [1] AS z"
   for _ in 0..<levels {
+    let rights = Array::makei(r, i => " RIGHT JOIN [1] AS w\{i} ON TRUE")
     text = "SELECT VALUE 1 FROM [1] AS a JOIN [1] AS b ON (" +
       text +
       ") IS NOT MISSING" +
-      " RIGHT JOIN [1] AS w ON TRUE".repeat(r)
+      rights.join("")
   }
   text
 }
