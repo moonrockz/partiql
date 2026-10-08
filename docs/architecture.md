@@ -23,7 +23,7 @@ fixed from the start (see [ADR 0001](adr/0001-workspace-monorepo.md)).
 |---|---|---|---|---|
 | `moonrockz/partiql-value` | root (`Value`), `ion` (codec), `arbitrary` (generators) | `moonrockz/ion` | wasm, wasm-gc, js, native | yes |
 | `moonrockz/partiql-syntax` | root (`parse`), `ast`, `lexer`, `parser` | `moonrockz/ion` | wasm, wasm-gc, js, native | yes |
-| `moonrockz/partiql-eval` | reserved: plan, catalog, functions, evaluator | value, syntax | all four | later |
+| `moonrockz/partiql-eval` | root (`evaluate`), `plan`, `lower`, `ops`, `interp` | value, syntax, `moonrockz/ion` | wasm, wasm-gc, js, native | yes |
 | `moonrockz/partiql` | root (executable), `cli` | `moonbitlang/x` (later: value, syntax, eval) | native, wasm | yes |
 | `moonrockz/partiql-conformance` | root (test-only) | value, syntax, `moonrockz/ion`, `moonbitlang/x` | native, js | no |
 
@@ -41,6 +41,8 @@ graph TD
   conformance[moonrockz/partiql-conformance] --> value
   conformance --> syntax
   conformance --> ion
+  eval[moonrockz/partiql-eval] --> value
+  eval --> syntax
 ```
 
 ## Package plan
@@ -106,6 +108,28 @@ graph TD
     form, or through `moonrockz/pretty` at a width for the pretty layout;
     comments from the source are written at the nearest node boundary.
     Depends on `ast` and `moonrockz/pretty`.
+- `partiql-eval`
+  - root: `evaluate(Statement, env~, mode?) -> Value raise EvalError`,
+    `evaluate_text(String, env~, mode?)`, `Bindings` (the global
+    variables: `empty`, `of_tuple`, `of_ion`), and the re-exports `Mode`
+    (`Permissive` or `Strict`) and `EvalError`.
+  - `plan`: the logical plan (`Expr`, `Step`), `Mode` and `EvalError`
+    (`TypeError`, `DataError`, `Unsupported`, `Syntax`). M4a has scalar
+    expressions only; M4b adds relational operators (ADR 0006).
+  - `lower`: syntax tree to plan. It desugars the surface forms, converts
+    literals (numbers, datetimes, intervals, Ion) to values, and raises
+    `Unsupported` with a span for a form that is not evaluated yet, or for
+    a type parameter that `IS` does not check. Chains of binary operators,
+    AND and OR are lowered in a loop; any other nesting deeper than 200
+    levels (an Ion literal included) is a `DataError`, so no query text
+    overflows the stack.
+  - `ops`: the semantics of each operator as pure functions on values:
+    numeric and decimal arithmetic, comparison, three-valued logic, LIKE,
+    datetime and interval arithmetic, type tests and path steps. `=`
+    compares the elements of collections with its own datetime rule, and
+    IN uses `=`.
+  - `interp`: walks the plan with a `Mode` and the bindings, and applies
+    `ops`. Operator chains run in a loop.
 - `partiql`
   - root: the executable.
   - `cli`: `run(args, io?) -> Outcome`, with the commands `parse`, `check`,
@@ -121,5 +145,5 @@ graph TD
 - Library code may use the base class library (`moonbitlang/core`,
   `moonbitlang/x`, `moonbitlang/async`) and `moonrockz/ion`. A
   target-restricted dependency needs `supported_targets` and a reason.
-- When `partiql-eval` is created, insert it before `partiql` in the publish
-  order (`mise-tasks/release/publish`).
+- The publish order (`mise-tasks/release/publish`) is `partiql-value`,
+  `partiql-syntax`, `partiql-eval`, `partiql`.

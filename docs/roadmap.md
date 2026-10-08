@@ -10,7 +10,8 @@ measures the exit criteria (see [conformance.md](conformance.md)).
 | [M1 Data model](https://github.com/moonrockz/partiql/issues/1) | `Value` ADT, absent values, list/bag/tuple semantics, equality and total ordering, PartiQL-encoded Ion codec | All `env` and `output` values in the corpus round-trip (`codec` check) |
 | [M2 Parser](https://github.com/moonrockz/partiql/issues/2) | Lexer, AST, parser, embedded Ion literals | `success/syntax` and `fail/syntax` pass; all evaluation statements parse (`syntax` and `eval-parse` checks) |
 | [M3 Printer and errors](https://github.com/moonrockz/partiql/issues/3) | AST printer, errors with source spans | Parse, print and parse again gives an equal AST for every corpus statement |
-| Later | Static analysis, logical plan, `partiql-eval`, CLI REPL, tree-sitter corpus | Defined in later specs |
+| [M4 Evaluation](https://github.com/moonrockz/partiql/issues/22) | `partiql-eval`: expressions (M4a), queries (M4b), CLI `query` (M4e), grouping and aggregates (M4c), functions and CAST (M4d) | The `eval` check passes every assertion that does not hit an unsupported form (M4a); later parts shrink the not-applicable set |
+| Later | Static analysis, CLI REPL, tree-sitter corpus | Defined in later specs |
 
 ## M0 Setup
 
@@ -87,6 +88,34 @@ M3 has four parts, done in this order:
   The `recovery` conformance check passes for all 5410 corpus statements.
   `partiql check`, `parse` and `format` report every error.
 
+## M4 Evaluation
+
+M4 makes PartiQL statements run, in permissive and in strict typing mode.
+Its parts, in this order:
+
+- **M4a (done): expressions.** The new module `moonrockz/partiql-eval`
+  lowers the syntax tree to a logical plan and interprets it (ADR 0006).
+  It evaluates literals, collections, paths, operators, LIKE, BETWEEN, IN,
+  IS, CASE, COALESCE, NULLIF, and datetime and interval arithmetic.
+  `evaluate` and `evaluate_text` take global `Bindings` and a `Mode`. The
+  `eval` conformance check passes 2952 assertions; 6976 are not applicable
+  because they need queries, functions, CAST, graph MATCH or `?`; 32 fail
+  (see `conformance.md`).
+- **M4b: queries.** Relational operators in the plan: FROM (scans,
+  unnesting, joins, AT, BY), LET, WHERE, the SELECT forms, ORDER BY,
+  LIMIT/OFFSET, set operations, PIVOT/UNPIVOT, subqueries, and the
+  `eval-equiv` cases.
+- **M4e: CLI `partiql query`.** Bindings from Ion files or stdin; the result
+  as Ion.
+- **M4c: grouping.** GROUP BY, GROUP AS, HAVING, and the aggregates COUNT,
+  SUM, AVG, MIN and MAX.
+- **M4d: functions and CAST.** String, numeric and datetime functions,
+  EXTRACT, DATE_ADD, DATE_DIFF, TRIM, SUBSTRING, POSITION, OVERLAY,
+  OVERLAPS, and CAST in both modes.
+
+Graph MATCH evaluation and `?` parameters come after M4. A REPL is not part
+of M4.
+
 ## Tracking
 
 Tasks are tracked with beads (`bd ready`). The public roadmap is in the GitHub
@@ -96,3 +125,4 @@ issue each:
 - M1: [#1](https://github.com/moonrockz/partiql/issues/1) (beads `partiql-9er`)
 - M2: [#2](https://github.com/moonrockz/partiql/issues/2) (beads `partiql-zhj`)
 - M3: [#3](https://github.com/moonrockz/partiql/issues/3) (beads `partiql-sfz`)
+- M4: [#22](https://github.com/moonrockz/partiql/issues/22)

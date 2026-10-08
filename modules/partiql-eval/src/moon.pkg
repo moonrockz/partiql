@@ -1,0 +1,21 @@
+import {
+  "moonrockz/partiql-eval/plan",
+  "moonrockz/partiql-eval/lower",
+  "moonrockz/partiql-eval/interp",
+  "moonrockz/partiql-syntax" @syntax,
+  "moonrockz/partiql-value" @value,
+  "moonrockz/partiql-value/ion" @partiql_ion,
+  "moonrockz/ion/ion" @ion_core,
+  "moonbitlang/core/debug",
+}
+
+import {
+  "moonrockz/partiql-eval" @eval,
+  "moonrockz/partiql-value" @value,
+  "moonrockz/ion/ion",
+  "moonrockz/ion/text",
+  "moonrockz/expect",
+  "moonbitlang/core/quickcheck",
+  "moonbitlang/core/quickcheck/splitmix",
+  "moonbitlang/core/debug",
+} for "test"

@@ -38,6 +38,12 @@ modules/
 │       ├── ast/                  # syntax tree, Span, ParseError
 │       ├── lexer/                # tokens, Ion-aware literal scanning
 │       └── parser/               # recursive descent + precedence ladder
+├── partiql-eval/                 # moonrockz/partiql-eval
+│   └── src/                      # evaluate, evaluate_text, Bindings
+│       ├── plan/                 # logical plan, Mode, EvalError
+│       ├── lower/                # syntax tree -> plan
+│       ├── ops/                  # operator semantics on values
+│       └── interp/               # plan interpreter
 ├── partiql/                      # moonrockz/partiql: the CLI (moonx moonrockz/partiql)
 │   └── src/                      # executable entry point
 │       └── cli/                  # the command line as a library (run -> Outcome)
@@ -168,7 +174,7 @@ Types: `feat`, `fix`, `docs`, `refactor`, `perf`, `test`, `build`, `ci`,
 `chore`, `style`. Breaking changes: add `!` after type (for example
 `feat(syntax)!: change the AST`).
 
-Scopes: `value`, `syntax`, `cli`, `conformance`, `ci`, `build`, `docs`.
+Scopes: `value`, `syntax`, `eval`, `cli`, `conformance`, `ci`, `build`, `docs`.
 
 ## Workspace and Modules
 
@@ -240,14 +246,16 @@ Tasks are file-based scripts in `mise-tasks/`. Never add inline `[tasks]` to
 
 ## Conformance
 
-`modules/partiql-conformance` runs partiql-tests with seven checks:
+`modules/partiql-conformance` runs partiql-tests with eight checks:
 `syntax` (SyntaxSuccess and SyntaxFail cases), `eval-parse` (every evaluation
 statement must parse), `codec` (every `env` and `output` value must
 round-trip through the PartiQL-encoded Ion codec), `ion-roundtrip` (each
 `$ion` payload), `print-roundtrip` (parse, print and parse again give the
 same tree), `pretty-roundtrip` (the same with the pretty layout at width
 40) and `recovery` (error recovery gives the strict tree on valid input and
-includes the strict error on invalid input). See `docs/conformance.md`.
+includes the strict error on invalid input) and `eval` (each evaluation
+assertion runs in permissive and in strict mode; `Unsupported` counts as not
+applicable, never as a pass). See `docs/conformance.md`.
 
 Rules:
 

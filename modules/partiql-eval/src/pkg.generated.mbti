@@ -1,0 +1,31 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "moonrockz/partiql-eval"
+
+import {
+  "moonrockz/ion/ion",
+  "moonrockz/partiql-eval/plan",
+  "moonrockz/partiql-syntax/ast",
+  "moonrockz/partiql-value",
+}
+
+// Values
+pub fn evaluate(@ast.Statement, env~ : Bindings, mode? : @plan.Mode) -> @partiql-value.Value raise @plan.EvalError
+
+pub fn evaluate_text(String, env~ : Bindings, mode? : @plan.Mode) -> @partiql-value.Value raise @plan.EvalError
+
+// Errors
+
+// Types and methods
+pub struct Bindings {
+  // private fields
+}
+pub fn Bindings::empty() -> Self
+pub fn Bindings::of_ion(@ion.IonValue) -> Self raise @plan.EvalError
+pub fn Bindings::of_tuple(@partiql-value.Tuple) -> Self
+
+// Type aliases
+pub using @plan {type EvalError}
+
+pub using @plan {type Mode}
+
+// Traits

@@ -1,16 +1,18 @@
-// The PartiQL conformance harness. Never published: it runs the
-// partiql-tests suite (git submodule `partiql-tests`) against the
-// workspace modules.
+// The moonrockz/partiql-eval module: the PartiQL evaluator.
 
-name = "moonrockz/partiql-conformance"
+name = "moonrockz/partiql-eval"
 
 version = "0.1.0"
+
+readme = "README.mbt.md"
 
 repository = "https://github.com/moonrockz/partiql"
 
 license = "Apache-2.0"
 
-description = "Conformance harness for moonrockz/partiql. Not published."
+keywords = [ "partiql", "sql", "query", "evaluator" ]
+
+description = "A PartiQL evaluator for MoonBit."
 
 source = "src"
 
@@ -21,8 +23,6 @@ warnings = "-implicit_impl_as_method"
 import {
   "moonrockz/partiql-value@0.1.0",
   "moonrockz/partiql-syntax@0.1.0",
-  "moonrockz/partiql-eval@0.1.0",
   "moonrockz/ion@0.2.0",
-  "moonbitlang/x@0.5.5",
   "moonrockz/expect@0.6.0",
 }

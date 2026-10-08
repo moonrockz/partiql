@@ -253,3 +253,77 @@ fn check_recovery(statement : String) -> Outcome {
       }
   }
 }
+
+///|
+test "eval check" {
+  let ion = (s : String) => @text.read_ion(s)
+  @expect.expect_all(soft => {
+    soft.expect(check_eval("1", None, Coerce, Value(ion("1")))).to_equal(Pass)
+    soft
+    .expect(check_eval("{'a': 1}", None, Error, Value(ion("{a: 1}"))))
+    .to_equal(Pass)
+    soft
+    .expect(check_eval("<<1, 2>>", None, Coerce, Value(ion("$bag::[2, 1]"))))
+    .to_equal(Pass)
+    soft
+    .expect(check_eval("2", None, Coerce, Value(ion("1"))))
+    .to_equal(Fail("got Int(2)"))
+    soft
+    .expect(check_eval("SELECT 1", None, Coerce, Value(ion("1"))))
+    .to_equal(NotApplicable)
+    soft.expect(check_eval("SELECT FROM", None, Coerce, Failure)).to_equal(Pass)
+    soft
+    .expect(check_eval("x", Some(ion("{x: 3}")), Coerce, Value(ion("3"))))
+    .to_equal(Pass)
+  })
+}
+
+///|
+priv enum Expected {
+  Value(@ion.IonValue)
+  Failure
+}
+
+///|
+/// M4: evaluate in `mode` with `env`, compare with the expected value under
+/// the value model's identity, or expect a failure. `Unsupported` is not
+/// applicable (never a pass).
+fn check_eval(
+  statement : String,
+  env : @ion.IonValue?,
+  mode : EvalMode,
+  expected : Expected,
+) -> Outcome {
+  let bindings = match env {
+    None => @eval.Bindings::empty()
+    Some(v) =>
+      @eval.Bindings::of_ion(v) catch {
+        e => return Fail("env: \{@debug.to_string(e)}")
+      }
+  }
+  let m : @eval.Mode = match mode {
+    Coerce => Permissive
+    Error => Strict
+  }
+  let result = try @eval.evaluate_text(statement, env=bindings, mode=m) catch {
+    @eval.EvalError::Unsupported(..) => return NotApplicable
+    e => Err(e)
+  } noraise {
+    v => Ok(v)
+  }
+  match (expected, result) {
+    (Failure, Err(_)) => Pass
+    (Failure, Ok(v)) => Fail("expected a failure, got \{@debug.to_string(v)}")
+    (Value(_), Err(e)) => Fail("raised \{@debug.to_string(e)}")
+    (Value(ion), Ok(v)) => {
+      let want = @partiql_ion.from_ion(ion) catch {
+        e => return Fail("output: \{@debug.to_string(e)}")
+      }
+      if v == want {
+        Pass
+      } else {
+        Fail("got \{@debug.to_string(v)}")
+      }
+    }
+  }
+}
