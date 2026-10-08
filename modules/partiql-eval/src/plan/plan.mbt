@@ -84,6 +84,9 @@ pub(all) enum Rel {
   /// every pair matches. `Left` and `Right` pad the side that finds no match
   /// with NULL.
   Join(JoinKind, Rel, Rel, on~ : Expr?, @ast.Span)
+  /// Each binding tuple with one more variable per `(name, expr)`, bound in
+  /// order: an expression sees the variables before it (LET).
+  Let(Rel, Array[(String, Expr)], @ast.Span)
 } derive(Debug)
 
 ///|
@@ -99,6 +102,20 @@ pub(all) enum JoinKind {
 pub(all) enum Projection {
   /// `SELECT VALUE e`
   Value(Expr)
+  /// `SELECT item, ...`: the attributes of one tuple.
+  Items(Array[Item])
+  /// `SELECT *`: the attributes of the tuple of each FROM variable `names`,
+  /// in order.
+  Star(Array[String])
+} derive(Debug)
+
+///|
+/// An item of a SELECT list.
+pub(all) enum Item {
+  /// `expr AS name`, the name given or implied.
+  Named(String, Expr)
+  /// `expr.*`
+  AllFields(Expr)
 } derive(Debug)
 
 ///|
@@ -141,6 +158,7 @@ pub fn Rel::span(self : Rel) -> @ast.Span {
     Scan(_, as_=_, at=_, span)
     | Unpivot(_, as_=_, at=_, span)
     | Filter(_, _, span)
-    | Join(_, _, _, on=_, span) => span
+    | Join(_, _, _, on=_, span)
+    | Let(_, _, span) => span
   }
 }

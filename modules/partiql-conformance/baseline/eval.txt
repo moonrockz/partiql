@@ -102,12 +102,30 @@ eval/ion/primitives/operators/nary-operators.ion::nary::equalListDifferentTypesT
 eval/ion/primitives/operators/nary-operators.ion::nary::equalListDifferentTypesTrue#error
 eval/ion/primitives/operators/nary-operators.ion::nary::listDifferentTypesDifferentOrderFalse#coerce
 eval/ion/primitives/operators/nary-operators.ion::nary::listDifferentTypesDifferentOrderFalse#error
+eval/ion/primitives/symbol.ion::empty-symbol::Empty Symbol in table (with Ion data)#coerce
+eval/ion/primitives/symbol.ion::empty-symbol::Empty Symbol in table (with Ion data)#error
 eval/ion/query/select/from-clause.ion::various types in from clause::rangeOverSexp#coerce
 eval/ion/query/select/from-clause.ion::various types in from clause::rangeOverSexp#error
+eval/ion/query/select/projection.ion::project various container types::projectOfSexp#coerce
+eval/ion/query/select/projection.ion::project various container types::projectOfSexp#error
+eval/misc.ion::uncategorized::emptySymbol#coerce
+eval/misc.ion::uncategorized::emptySymbol#error
+eval/misc.ion::uncategorized::emptySymbolInGlobals#coerce
+eval/misc.ion::uncategorized::emptySymbolInGlobals#error
+eval/misc.ion::uncategorized::explicitAliasSelectSingleSourceWithWhere#coerce
+eval/misc.ion::uncategorized::explicitAliasSelectSingleSourceWithWhere#error
+eval/misc.ion::uncategorized::implicitAliasSelectSingleSource#coerce
+eval/misc.ion::uncategorized::implicitAliasSelectSingleSource#error
+eval/misc.ion::uncategorized::selectIndexStruct#coerce
+eval/misc.ion::uncategorized::selectIndexStruct#error
+eval/misc.ion::uncategorized::selectStarSingleSource#coerce
+eval/misc.ion::uncategorized::selectStarSingleSource#error
 eval/misc.ion::uncategorized::selectValueStructConstructorWithMissing#coerce
 eval/misc.ion::uncategorized::selectValueStructConstructorWithMissing#error
 eval/misc.ion::uncategorized::selectValues#coerce
 eval/misc.ion::uncategorized::selectValues#error
+eval/misc.ion::uncategorized::variableShadow#coerce
+eval/misc.ion::uncategorized::variableShadow#error
 eval/primitives/basic.ion::arithmetic with mixed type::arithmetic with null/missing#coerce
 eval/primitives/basic.ion::arithmetic with mixed type::arithmetic with null/missing#error
 eval/primitives/basic.ion::arithmetic with mixed type::division with mixed StaticType#coerce
@@ -576,6 +594,62 @@ eval/primitives/int.ion::int::leading zeros{sql:"01",result:1}#coerce
 eval/primitives/int.ion::int::leading zeros{sql:"01",result:1}#error
 eval/primitives/int.ion::int::negative zero equality#coerce
 eval/primitives/int.ion::int::negative zero equality#error
+eval/primitives/int8.ion::int8::PG_INT8_01#coerce
+eval/primitives/int8.ion::int8::PG_INT8_01#error
+eval/primitives/int8.ion::int8::PG_INT8_02#coerce
+eval/primitives/int8.ion::int8::PG_INT8_02#error
+eval/primitives/int8.ion::int8::PG_INT8_03#coerce
+eval/primitives/int8.ion::int8::PG_INT8_03#error
+eval/primitives/int8.ion::int8::PG_INT8_04#coerce
+eval/primitives/int8.ion::int8::PG_INT8_04#error
+eval/primitives/int8.ion::int8::PG_INT8_05#coerce
+eval/primitives/int8.ion::int8::PG_INT8_05#error
+eval/primitives/int8.ion::int8::PG_INT8_06#coerce
+eval/primitives/int8.ion::int8::PG_INT8_06#error
+eval/primitives/int8.ion::int8::PG_INT8_07#coerce
+eval/primitives/int8.ion::int8::PG_INT8_07#error
+eval/primitives/int8.ion::int8::PG_INT8_08#coerce
+eval/primitives/int8.ion::int8::PG_INT8_08#error
+eval/primitives/int8.ion::int8::PG_INT8_09#coerce
+eval/primitives/int8.ion::int8::PG_INT8_09#error
+eval/primitives/int8.ion::int8::PG_INT8_10#coerce
+eval/primitives/int8.ion::int8::PG_INT8_10#error
+eval/primitives/int8.ion::int8::PG_INT8_11#coerce
+eval/primitives/int8.ion::int8::PG_INT8_11#error
+eval/primitives/int8.ion::int8::PG_INT8_12#coerce
+eval/primitives/int8.ion::int8::PG_INT8_12#error
+eval/primitives/int8.ion::int8::PG_INT8_13#coerce
+eval/primitives/int8.ion::int8::PG_INT8_13#error
+eval/primitives/int8.ion::int8::PG_INT8_14#coerce
+eval/primitives/int8.ion::int8::PG_INT8_14#error
+eval/primitives/int8.ion::int8::PG_INT8_15#coerce
+eval/primitives/int8.ion::int8::PG_INT8_15#error
+eval/primitives/int8.ion::int8::PG_INT8_16#coerce
+eval/primitives/int8.ion::int8::PG_INT8_16#error
+eval/primitives/int8.ion::int8::PG_INT8_17#coerce
+eval/primitives/int8.ion::int8::PG_INT8_17#error
+eval/primitives/int8.ion::int8::PG_INT8_18#coerce
+eval/primitives/int8.ion::int8::PG_INT8_18#error
+eval/primitives/int8.ion::int8::PG_INT8_19#coerce
+eval/primitives/int8.ion::int8::PG_INT8_19#error
+eval/primitives/int8.ion::int8::PG_INT8_20#coerce
+eval/primitives/int8.ion::int8::PG_INT8_20#error
+eval/primitives/int8.ion::int8::PG_INT8_21#coerce
+eval/primitives/int8.ion::int8::PG_INT8_21#error
+eval/primitives/int8.ion::int8::PG_INT8_22#coerce
+eval/primitives/int8.ion::int8::PG_INT8_22#error
+eval/primitives/int8.ion::int8::PG_INT8_23#coerce
+eval/primitives/int8.ion::int8::PG_INT8_23#error
+eval/primitives/int8.ion::int8::PG_INT8_24#coerce
+eval/primitives/int8.ion::int8::PG_INT8_24#error
+eval/primitives/int8.ion::int8::PG_INT8_25#coerce
+eval/primitives/int8.ion::int8::PG_INT8_25#error
+eval/primitives/int8.ion::int8::PG_INT8_26#coerce
+eval/primitives/int8.ion::int8::PG_INT8_26#error
+eval/primitives/int8.ion::int8::PG_INT8_27#coerce
+eval/primitives/int8.ion::int8::PG_INT8_27#error
+eval/primitives/int8.ion::int8::PG_INT8_28#coerce
+eval/primitives/int8.ion::int8::PG_INT8_28#error
 eval/primitives/interval.ion::interval::interval day - out of range#coerce
 eval/primitives/interval.ion::interval::interval day - out of range#error
 eval/primitives/interval.ion::interval::interval day hour mixed#coerce
@@ -837,6 +911,12 @@ eval/primitives/map.ion::map::equal maps with different insertion order are equa
 eval/primitives/map.ion::map::equal maps with different insertion order are equal#error
 eval/primitives/map.ion::map::equal maps with same entries are equal#coerce
 eval/primitives/map.ion::map::equal maps with same entries are equal#error
+eval/primitives/map.ion::map::filter environment map entries by value#coerce
+eval/primitives/map.ion::map::filter environment map entries by value#error
+eval/primitives/map.ion::map::filter rows by map key value#coerce
+eval/primitives/map.ion::map::filter rows by map key value#error
+eval/primitives/map.ion::map::filter with unpivot only entries with score above 80#coerce
+eval/primitives/map.ion::map::filter with unpivot only entries with score above 80#error
 eval/primitives/map.ion::map::integer IS MAP returns false#coerce
 eval/primitives/map.ion::map::integer IS MAP returns false#error
 eval/primitives/map.ion::map::map IS MAP with integer keys returns true#coerce
@@ -857,8 +937,24 @@ eval/primitives/map.ion::map::maps with different sizes are not equal#coerce
 eval/primitives/map.ion::map::maps with different sizes are not equal#error
 eval/primitives/map.ion::map::maps with different values are not equal#coerce
 eval/primitives/map.ion::map::maps with different values are not equal#error
+eval/primitives/map.ion::map::select values from environment map#coerce
+eval/primitives/map.ion::map::select values from environment map#error
 eval/primitives/map.ion::map::struct IS MAP returns false#coerce
 eval/primitives/map.ion::map::struct IS MAP returns false#error
+eval/primitives/map.ion::map::unpivot bool-keyed environment map#coerce
+eval/primitives/map.ion::map::unpivot bool-keyed environment map#error
+eval/primitives/map.ion::map::unpivot empty map produces empty bag#coerce
+eval/primitives/map.ion::map::unpivot empty map produces empty bag#error
+eval/primitives/map.ion::map::unpivot environment map with filter#coerce
+eval/primitives/map.ion::map::unpivot environment map with filter#error
+eval/primitives/map.ion::map::unpivot literal map with decimal keys#coerce
+eval/primitives/map.ion::map::unpivot literal map with decimal keys#error
+eval/primitives/map.ion::map::unpivot literal map with integer keys#coerce
+eval/primitives/map.ion::map::unpivot literal map with integer keys#error
+eval/primitives/map.ion::map::unpivot literal map with string keys#coerce
+eval/primitives/map.ion::map::unpivot literal map with string keys#error
+eval/primitives/map.ion::map::unpivot map with boolean keys#coerce
+eval/primitives/map.ion::map::unpivot map with boolean keys#error
 eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{Arabic Lorem Ipsum Text}#coerce
 eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{Arabic Lorem Ipsum Text}#error
 eval/primitives/naughty-strings.ion::naughty-strings::big list of naughty strings{Arabic Text with Heavy Diacritical Marks}#coerce
@@ -2242,6 +2338,224 @@ eval/primitives/operators/is-operators.ion::is::123.456 is DECIMAL(6,2)#coerce
 eval/primitives/operators/is-operators.ion::is::123.456 is DECIMAL(6,2)#error
 eval/primitives/operators/is-operators.ion::is::123.456 is DECIMAL(6,4)#coerce
 eval/primitives/operators/is-operators.ion::is::123.456 is DECIMAL(6,4)#error
+eval/primitives/operators/like.ion::empty-string-for-like-pattern::Empty String for LIKE pattern and text evaluates to true#coerce
+eval/primitives/operators/like.ion::empty-string-for-like-pattern::Empty String for LIKE pattern and text evaluates to true#error
+eval/primitives/operators/like.ion::empty-string-for-like-pattern::Empty String for LIKE pattern evaluates to false#coerce
+eval/primitives/operators/like.ion::empty-string-for-like-pattern::Empty String for LIKE pattern evaluates to false#error
+eval/primitives/operators/like.ion::empty-string-for-like-pattern::More than one character given for ESCAPE#coerce
+eval/primitives/operators/like.ion::empty-string-for-like-pattern::More than one character given for ESCAPE#error
+eval/primitives/operators/like.ion::like::empty string value on any of the 2 inputs (text and/or pattern){likeExpr:" ''    LIKE '%' ",result:(bag {sid:"S1",grade:"90%"} {sid:"S2",grade:"80%"})}#coerce
+eval/primitives/operators/like.ion::like::empty string value on any of the 2 inputs (text and/or pattern){likeExpr:" ''    LIKE '%' ",result:(bag {sid:"S1",grade:"90%"} {sid:"S2",grade:"80%"})}#error
+eval/primitives/operators/like.ion::like::empty string value on any of the 2 inputs (text and/or pattern){likeExpr:" ''    LIKE '' ",result:(bag {sid:"S1",grade:"90%"} {sid:"S2",grade:"80%"})}#coerce
+eval/primitives/operators/like.ion::like::empty string value on any of the 2 inputs (text and/or pattern){likeExpr:" ''    LIKE '' ",result:(bag {sid:"S1",grade:"90%"} {sid:"S2",grade:"80%"})}#error
+eval/primitives/operators/like.ion::like::empty string value on any of the 2 inputs (text and/or pattern){likeExpr:" ''    LIKE 'S1' ",result:(bag)}#coerce
+eval/primitives/operators/like.ion::like::empty string value on any of the 2 inputs (text and/or pattern){likeExpr:" ''    LIKE 'S1' ",result:(bag)}#error
+eval/primitives/operators/like.ion::like::empty string value on any of the 2 inputs (text and/or pattern){likeExpr:" ''    LIKE '_'  ",result:(bag)}#coerce
+eval/primitives/operators/like.ion::like::empty string value on any of the 2 inputs (text and/or pattern){likeExpr:" ''    LIKE '_'  ",result:(bag)}#error
+eval/primitives/operators/like.ion::like::empty string value on any of the 2 inputs (text and/or pattern){likeExpr:" ''    LIKE null ",result:(bag)}#coerce
+eval/primitives/operators/like.ion::like::empty string value on any of the 2 inputs (text and/or pattern){likeExpr:" ''    LIKE null ",result:(bag)}#error
+eval/primitives/operators/like.ion::like::empty string value on any of the 2 inputs (text and/or pattern){likeExpr:" d.sid LIKE ''   ",result:(bag)}#coerce
+eval/primitives/operators/like.ion::like::empty string value on any of the 2 inputs (text and/or pattern){likeExpr:" d.sid LIKE ''   ",result:(bag)}#error
+eval/primitives/operators/like.ion::like::empty string value on any of the 2 inputs (text and/or pattern){likeExpr:" null  LIKE ''   ",result:(bag)}#coerce
+eval/primitives/operators/like.ion::like::empty string value on any of the 2 inputs (text and/or pattern){likeExpr:" null  LIKE ''   ",result:(bag)}#error
+eval/primitives/operators/like.ion::like::like expression value, pattern, and escape as variable references#coerce
+eval/primitives/operators/like.ion::like::like expression value, pattern, and escape as variable references#error
+eval/primitives/operators/like.ion::like::like-expression with ESCAPE specified that DO NOT match{text:" '%'    ",pattern:" '[%[%'   "}#coerce
+eval/primitives/operators/like.ion::like::like-expression with ESCAPE specified that DO NOT match{text:" '%'    ",pattern:" '[%[%'   "}#error
+eval/primitives/operators/like.ion::like::like-expression with ESCAPE specified that DO NOT match{text:" '100%' ",pattern:" '1%_[%1' "}#coerce
+eval/primitives/operators/like.ion::like::like-expression with ESCAPE specified that DO NOT match{text:" '100%' ",pattern:" '1%_[%1' "}#error
+eval/primitives/operators/like.ion::like::like-expression with ESCAPE specified that DO NOT match{text:" '100%' ",pattern:" '1000[%' "}#coerce
+eval/primitives/operators/like.ion::like::like-expression with ESCAPE specified that DO NOT match{text:" '100%' ",pattern:" '1000[%' "}#error
+eval/primitives/operators/like.ion::like::like-expression with ESCAPE specified that DO NOT match{text:" '100%' ",pattern:" '1_[%_'  "}#coerce
+eval/primitives/operators/like.ion::like::like-expression with ESCAPE specified that DO NOT match{text:" '100%' ",pattern:" '1_[%_'  "}#error
+eval/primitives/operators/like.ion::like::like-expression with ESCAPE specified that DO NOT match{text:" '100%' ",pattern:" '[%100'  "}#coerce
+eval/primitives/operators/like.ion::like::like-expression with ESCAPE specified that DO NOT match{text:" '100%' ",pattern:" '[%100'  "}#error
+eval/primitives/operators/like.ion::like::like-expression with ESCAPE specified that DO NOT match{text:" '_'    ",pattern:" '[_[_'   "}#coerce
+eval/primitives/operators/like.ion::like::like-expression with ESCAPE specified that DO NOT match{text:" '_'    ",pattern:" '[_[_'   "}#error
+eval/primitives/operators/like.ion::like::like-expression with ESCAPE specified that DO NOT match{text:" '_'    ",pattern:" '_[_'    "}#coerce
+eval/primitives/operators/like.ion::like::like-expression with ESCAPE specified that DO NOT match{text:" '_'    ",pattern:" '_[_'    "}#error
+eval/primitives/operators/like.ion::like::like-expression with ESCAPE specified that match{text:" '%'          ",pattern:" '[%'            "}#coerce
+eval/primitives/operators/like.ion::like::like-expression with ESCAPE specified that match{text:" '%'          ",pattern:" '[%'            "}#error
+eval/primitives/operators/like.ion::like::like-expression with ESCAPE specified that match{text:" '100%'       ",pattern:" '%[%'           "}#coerce
+eval/primitives/operators/like.ion::like::like-expression with ESCAPE specified that match{text:" '100%'       ",pattern:" '%[%'           "}#error
+eval/primitives/operators/like.ion::like::like-expression with ESCAPE specified that match{text:" '100%'       ",pattern:" '1%[%'          "}#coerce
+eval/primitives/operators/like.ion::like::like-expression with ESCAPE specified that match{text:" '100%'       ",pattern:" '1%[%'          "}#error
+eval/primitives/operators/like.ion::like::like-expression with ESCAPE specified that match{text:" '100%'       ",pattern:" '100[%'         "}#coerce
+eval/primitives/operators/like.ion::like::like-expression with ESCAPE specified that match{text:" '100%'       ",pattern:" '100[%'         "}#error
+eval/primitives/operators/like.ion::like::like-expression with ESCAPE specified that match{text:" '100%'       ",pattern:" '1_%'           "}#coerce
+eval/primitives/operators/like.ion::like::like-expression with ESCAPE specified that match{text:" '100%'       ",pattern:" '1_%'           "}#error
+eval/primitives/operators/like.ion::like::like-expression with ESCAPE specified that match{text:" '100%'       ",pattern:" '1__[%'         "}#coerce
+eval/primitives/operators/like.ion::like::like-expression with ESCAPE specified that match{text:" '100%'       ",pattern:" '1__[%'         "}#error
+eval/primitives/operators/like.ion::like::like-expression with ESCAPE specified that match{text:" '11%22%33%'  ",pattern:" '%[%%[%%[%'     "}#coerce
+eval/primitives/operators/like.ion::like::like-expression with ESCAPE specified that match{text:" '11%22%33%'  ",pattern:" '%[%%[%%[%'     "}#error
+eval/primitives/operators/like.ion::like::like-expression with ESCAPE specified that match{text:" '11%22%33%'  ",pattern:" '1%[%2%[%3%[%'  "}#coerce
+eval/primitives/operators/like.ion::like::like-expression with ESCAPE specified that match{text:" '11%22%33%'  ",pattern:" '1%[%2%[%3%[%'  "}#error
+eval/primitives/operators/like.ion::like::like-expression with ESCAPE specified that match{text:" '11%22%33%'  ",pattern:" '1_[%2%[%3_[%'  "}#coerce
+eval/primitives/operators/like.ion::like::like-expression with ESCAPE specified that match{text:" '11%22%33%'  ",pattern:" '1_[%2%[%3_[%'  "}#error
+eval/primitives/operators/like.ion::like::like-expression with ESCAPE specified that match{text:" '11%22%33%'  ",pattern:" '__[%__[%__[%'  "}#coerce
+eval/primitives/operators/like.ion::like::like-expression with ESCAPE specified that match{text:" '11%22%33%'  ",pattern:" '__[%__[%__[%'  "}#error
+eval/primitives/operators/like.ion::like::like-expression with ESCAPE specified that match{text:" '1_000_000%' ",pattern:" '%[_0%0[_000[%' "}#coerce
+eval/primitives/operators/like.ion::like::like-expression with ESCAPE specified that match{text:" '1_000_000%' ",pattern:" '%[_0%0[_000[%' "}#error
+eval/primitives/operators/like.ion::like::like-expression with ESCAPE specified that match{text:" '1_000_000%' ",pattern:" '%[_0%0[__%_[%' "}#coerce
+eval/primitives/operators/like.ion::like::like-expression with ESCAPE specified that match{text:" '1_000_000%' ",pattern:" '%[_0%0[__%_[%' "}#error
+eval/primitives/operators/like.ion::like::like-expression with ESCAPE specified that match{text:" '1_000_000%' ",pattern:" '%[_000[_000[%' "}#coerce
+eval/primitives/operators/like.ion::like::like-expression with ESCAPE specified that match{text:" '1_000_000%' ",pattern:" '%[_000[_000[%' "}#error
+eval/primitives/operators/like.ion::like::like-expression with ESCAPE specified that match{text:" '1_000_000%' ",pattern:" '%[_0_0[_000[%' "}#coerce
+eval/primitives/operators/like.ion::like::like-expression with ESCAPE specified that match{text:" '1_000_000%' ",pattern:" '%[_0_0[_000[%' "}#error
+eval/primitives/operators/like.ion::like::like-expression with ESCAPE specified that match{text:" '1_000_000%' ",pattern:" '1[_000[_000[%' "}#coerce
+eval/primitives/operators/like.ion::like::like-expression with ESCAPE specified that match{text:" '1_000_000%' ",pattern:" '1[_000[_000[%' "}#error
+eval/primitives/operators/like.ion::like::like-expression with ESCAPE specified that match{text:" '1_000_000%' ",pattern:" '_[_000[_000[%' "}#coerce
+eval/primitives/operators/like.ion::like::like-expression with ESCAPE specified that match{text:" '1_000_000%' ",pattern:" '_[_000[_000[%' "}#error
+eval/primitives/operators/like.ion::like::like-expression with ESCAPE specified that match{text:" '_'          ",pattern:" '[_'            "}#coerce
+eval/primitives/operators/like.ion::like::like-expression with ESCAPE specified that match{text:" '_'          ",pattern:" '[_'            "}#error
+eval/primitives/operators/like.ion::like::non-empty strings for text and pattern that DO NOT match{text:" ''        ",pattern:" '^'        "}#coerce
+eval/primitives/operators/like.ion::like::non-empty strings for text and pattern that DO NOT match{text:" ''        ",pattern:" '^'        "}#error
+eval/primitives/operators/like.ion::like::non-empty strings for text and pattern that DO NOT match{text:" 'A'         ",pattern:" 'a'          "}#coerce
+eval/primitives/operators/like.ion::like::non-empty strings for text and pattern that DO NOT match{text:" 'A'         ",pattern:" 'a'          "}#error
+eval/primitives/operators/like.ion::like::non-empty strings for text and pattern that DO NOT match{text:" 'AAaBBbCCc' ",pattern:" 'A%%%X%%%%c' "}#coerce
+eval/primitives/operators/like.ion::like::non-empty strings for text and pattern that DO NOT match{text:" 'AAaBBbCCc' ",pattern:" 'A%%%X%%%%c' "}#error
+eval/primitives/operators/like.ion::like::non-empty strings for text and pattern that DO NOT match{text:" 'AAaBBbCCc' ",pattern:" 'A%%X%%c'    "}#coerce
+eval/primitives/operators/like.ion::like::non-empty strings for text and pattern that DO NOT match{text:" 'AAaBBbCCc' ",pattern:" 'A%%X%%c'    "}#error
+eval/primitives/operators/like.ion::like::non-empty strings for text and pattern that DO NOT match{text:" 'AAaBBbCCc' ",pattern:" 'A%Aba%c'    "}#coerce
+eval/primitives/operators/like.ion::like::non-empty strings for text and pattern that DO NOT match{text:" 'AAaBBbCCc' ",pattern:" 'A%Aba%c'    "}#error
+eval/primitives/operators/like.ion::like::non-empty strings for text and pattern that DO NOT match{text:" 'AAaBBbCCc' ",pattern:" 'A%X%c'      "}#coerce
+eval/primitives/operators/like.ion::like::non-empty strings for text and pattern that DO NOT match{text:" 'AAaBBbCCc' ",pattern:" 'A%X%c'      "}#error
+eval/primitives/operators/like.ion::like::non-empty strings for text and pattern that DO NOT match{text:" 'AAaBBbCCc' ",pattern:" 'A%Xc'       "}#coerce
+eval/primitives/operators/like.ion::like::non-empty strings for text and pattern that DO NOT match{text:" 'AAaBBbCCc' ",pattern:" 'A%Xc'       "}#error
+eval/primitives/operators/like.ion::like::non-empty strings for text and pattern that DO NOT match{text:" 'AAaBBbCCc' ",pattern:" 'AX%c'       "}#coerce
+eval/primitives/operators/like.ion::like::non-empty strings for text and pattern that DO NOT match{text:" 'AAaBBbCCc' ",pattern:" 'AX%c'       "}#error
+eval/primitives/operators/like.ion::like::non-empty strings for text and pattern that DO NOT match{text:" 'AAaBBbCCc' ",pattern:" 'X%%'        "}#coerce
+eval/primitives/operators/like.ion::like::non-empty strings for text and pattern that DO NOT match{text:" 'AAaBBbCCc' ",pattern:" 'X%%'        "}#error
+eval/primitives/operators/like.ion::like::non-empty strings for text and pattern that DO NOT match{text:" 'ABC'       ",pattern:" '%B'         "}#coerce
+eval/primitives/operators/like.ion::like::non-empty strings for text and pattern that DO NOT match{text:" 'ABC'       ",pattern:" '%B'         "}#error
+eval/primitives/operators/like.ion::like::non-empty strings for text and pattern that DO NOT match{text:" 'ABC'       ",pattern:" '%BCD'       "}#coerce
+eval/primitives/operators/like.ion::like::non-empty strings for text and pattern that DO NOT match{text:" 'ABC'       ",pattern:" '%BCD'       "}#error
+eval/primitives/operators/like.ion::like::non-empty strings for text and pattern that DO NOT match{text:" 'ABC'       ",pattern:" '%_%_%_%_%'  "}#coerce
+eval/primitives/operators/like.ion::like::non-empty strings for text and pattern that DO NOT match{text:" 'ABC'       ",pattern:" '%_%_%_%_%'  "}#error
+eval/primitives/operators/like.ion::like::non-empty strings for text and pattern that DO NOT match{text:" 'ABC'       ",pattern:" 'ABC_'       "}#coerce
+eval/primitives/operators/like.ion::like::non-empty strings for text and pattern that DO NOT match{text:" 'ABC'       ",pattern:" 'ABC_'       "}#error
+eval/primitives/operators/like.ion::like::non-empty strings for text and pattern that DO NOT match{text:" 'ABC'       ",pattern:" 'AB_C'       "}#coerce
+eval/primitives/operators/like.ion::like::non-empty strings for text and pattern that DO NOT match{text:" 'ABC'       ",pattern:" 'AB_C'       "}#error
+eval/primitives/operators/like.ion::like::non-empty strings for text and pattern that DO NOT match{text:" 'ABC'       ",pattern:" 'A_B'        "}#coerce
+eval/primitives/operators/like.ion::like::non-empty strings for text and pattern that DO NOT match{text:" 'ABC'       ",pattern:" 'A_B'        "}#error
+eval/primitives/operators/like.ion::like::non-empty strings for text and pattern that DO NOT match{text:" 'ABC'       ",pattern:" 'B%'         "}#coerce
+eval/primitives/operators/like.ion::like::non-empty strings for text and pattern that DO NOT match{text:" 'ABC'       ",pattern:" 'B%'         "}#error
+eval/primitives/operators/like.ion::like::non-empty strings for text and pattern that DO NOT match{text:" 'ABC'       ",pattern:" 'B%C'        "}#coerce
+eval/primitives/operators/like.ion::like::non-empty strings for text and pattern that DO NOT match{text:" 'ABC'       ",pattern:" 'B%C'        "}#error
+eval/primitives/operators/like.ion::like::non-empty strings for text and pattern that DO NOT match{text:" 'ABC'       ",pattern:" '_ABC'       "}#coerce
+eval/primitives/operators/like.ion::like::non-empty strings for text and pattern that DO NOT match{text:" 'ABC'       ",pattern:" '_ABC'       "}#error
+eval/primitives/operators/like.ion::like::non-empty strings for text and pattern that DO NOT match{text:" 'ABC'       ",pattern:" '_AC'        "}#coerce
+eval/primitives/operators/like.ion::like::non-empty strings for text and pattern that DO NOT match{text:" 'ABC'       ",pattern:" '_AC'        "}#error
+eval/primitives/operators/like.ion::like::non-empty strings for text and pattern that DO NOT match{text:" 'ABC'       ",pattern:" '__'         "}#coerce
+eval/primitives/operators/like.ion::like::non-empty strings for text and pattern that DO NOT match{text:" 'ABC'       ",pattern:" '__'         "}#error
+eval/primitives/operators/like.ion::like::non-empty strings for text and pattern that DO NOT match{text:" 'ABC'       ",pattern:" '____'       "}#coerce
+eval/primitives/operators/like.ion::like::non-empty strings for text and pattern that DO NOT match{text:" 'ABC'       ",pattern:" '____'       "}#error
+eval/primitives/operators/like.ion::like::non-empty strings for text and pattern that DO NOT match{text:" '\\'        ",pattern:" '/'         "}#coerce
+eval/primitives/operators/like.ion::like::non-empty strings for text and pattern that DO NOT match{text:" '\\'        ",pattern:" '/'         "}#error
+eval/primitives/operators/like.ion::like::non-empty strings for text and pattern that match{text:" '%'         ",pattern:" '%'          "}#coerce
+eval/primitives/operators/like.ion::like::non-empty strings for text and pattern that match{text:" '%'         ",pattern:" '%'          "}#error
+eval/primitives/operators/like.ion::like::non-empty strings for text and pattern that match{text:" '%'         ",pattern:" '_'          "}#coerce
+eval/primitives/operators/like.ion::like::non-empty strings for text and pattern that match{text:" '%'         ",pattern:" '_'          "}#error
+eval/primitives/operators/like.ion::like::non-empty strings for text and pattern that match{text:" ''        ",pattern:" ''         "}#coerce
+eval/primitives/operators/like.ion::like::non-empty strings for text and pattern that match{text:" ''        ",pattern:" ''         "}#error
+eval/primitives/operators/like.ion::like::non-empty strings for text and pattern that match{text:" 'A'         ",pattern:" 'A'          "}#coerce
+eval/primitives/operators/like.ion::like::non-empty strings for text and pattern that match{text:" 'A'         ",pattern:" 'A'          "}#error
+eval/primitives/operators/like.ion::like::non-empty strings for text and pattern that match{text:" 'AAaBBbCCc' ",pattern:" '%B%C%%'     "}#coerce
+eval/primitives/operators/like.ion::like::non-empty strings for text and pattern that match{text:" 'AAaBBbCCc' ",pattern:" '%B%C%%'     "}#error
+eval/primitives/operators/like.ion::like::non-empty strings for text and pattern that match{text:" 'AAaBBbCCc' ",pattern:" '%B%C%'      "}#coerce
+eval/primitives/operators/like.ion::like::non-empty strings for text and pattern that match{text:" 'AAaBBbCCc' ",pattern:" '%B%C%'      "}#error
+eval/primitives/operators/like.ion::like::non-empty strings for text and pattern that match{text:" 'AAaBBbCCc' ",pattern:" '%__b%C_%'   "}#coerce
+eval/primitives/operators/like.ion::like::non-empty strings for text and pattern that match{text:" 'AAaBBbCCc' ",pattern:" '%__b%C_%'   "}#error
+eval/primitives/operators/like.ion::like::non-empty strings for text and pattern that match{text:" 'AAaBBbCCc' ",pattern:" '%b%C%'      "}#coerce
+eval/primitives/operators/like.ion::like::non-empty strings for text and pattern that match{text:" 'AAaBBbCCc' ",pattern:" '%b%C%'      "}#error
+eval/primitives/operators/like.ion::like::non-empty strings for text and pattern that match{text:" 'AAaBBbCCc' ",pattern:" '%bC%'       "}#coerce
+eval/primitives/operators/like.ion::like::non-empty strings for text and pattern that match{text:" 'AAaBBbCCc' ",pattern:" '%bC%'       "}#error
+eval/primitives/operators/like.ion::like::non-empty strings for text and pattern that match{text:" 'AAaBBbCCc' ",pattern:" 'A%%%A%%%%c' "}#coerce
+eval/primitives/operators/like.ion::like::non-empty strings for text and pattern that match{text:" 'AAaBBbCCc' ",pattern:" 'A%%%A%%%%c' "}#error
+eval/primitives/operators/like.ion::like::non-empty strings for text and pattern that match{text:" 'AAaBBbCCc' ",pattern:" 'A%%'        "}#coerce
+eval/primitives/operators/like.ion::like::non-empty strings for text and pattern that match{text:" 'AAaBBbCCc' ",pattern:" 'A%%'        "}#error
+eval/primitives/operators/like.ion::like::non-empty strings for text and pattern that match{text:" 'AAaBBbCCc' ",pattern:" 'A%%B%%c'    "}#coerce
+eval/primitives/operators/like.ion::like::non-empty strings for text and pattern that match{text:" 'AAaBBbCCc' ",pattern:" 'A%%B%%c'    "}#error
+eval/primitives/operators/like.ion::like::non-empty strings for text and pattern that match{text:" 'AAaBBbCCc' ",pattern:" 'A%%c'       "}#coerce
+eval/primitives/operators/like.ion::like::non-empty strings for text and pattern that match{text:" 'AAaBBbCCc' ",pattern:" 'A%%c'       "}#error
+eval/primitives/operators/like.ion::like::non-empty strings for text and pattern that match{text:" 'AAaBBbCCc' ",pattern:" 'A%A%c'      "}#coerce
+eval/primitives/operators/like.ion::like::non-empty strings for text and pattern that match{text:" 'AAaBBbCCc' ",pattern:" 'A%A%c'      "}#error
+eval/primitives/operators/like.ion::like::non-empty strings for text and pattern that match{text:" 'AAaBBbCCc' ",pattern:" 'A%Aa%c'     "}#coerce
+eval/primitives/operators/like.ion::like::non-empty strings for text and pattern that match{text:" 'AAaBBbCCc' ",pattern:" 'A%Aa%c'     "}#error
+eval/primitives/operators/like.ion::like::non-empty strings for text and pattern that match{text:" 'AAaBBbCCc' ",pattern:" 'A%B%c'      "}#coerce
+eval/primitives/operators/like.ion::like::non-empty strings for text and pattern that match{text:" 'AAaBBbCCc' ",pattern:" 'A%B%c'      "}#error
+eval/primitives/operators/like.ion::like::non-empty strings for text and pattern that match{text:" 'AAaBBbCCc' ",pattern:" 'A%c'        "}#coerce
+eval/primitives/operators/like.ion::like::non-empty strings for text and pattern that match{text:" 'AAaBBbCCc' ",pattern:" 'A%c'        "}#error
+eval/primitives/operators/like.ion::like::non-empty strings for text and pattern that match{text:" 'ABC'       ",pattern:" '%%%%'       "}#coerce
+eval/primitives/operators/like.ion::like::non-empty strings for text and pattern that match{text:" 'ABC'       ",pattern:" '%%%%'       "}#error
+eval/primitives/operators/like.ion::like::non-empty strings for text and pattern that match{text:" 'ABC'       ",pattern:" '%'          "}#coerce
+eval/primitives/operators/like.ion::like::non-empty strings for text and pattern that match{text:" 'ABC'       ",pattern:" '%'          "}#error
+eval/primitives/operators/like.ion::like::non-empty strings for text and pattern that match{text:" 'ABC'       ",pattern:" '%ABC'       "}#coerce
+eval/primitives/operators/like.ion::like::non-empty strings for text and pattern that match{text:" 'ABC'       ",pattern:" '%ABC'       "}#error
+eval/primitives/operators/like.ion::like::non-empty strings for text and pattern that match{text:" 'ABC'       ",pattern:" '%BC'        "}#coerce
+eval/primitives/operators/like.ion::like::non-empty strings for text and pattern that match{text:" 'ABC'       ",pattern:" '%BC'        "}#error
+eval/primitives/operators/like.ion::like::non-empty strings for text and pattern that match{text:" 'ABC'       ",pattern:" '%C'         "}#coerce
+eval/primitives/operators/like.ion::like::non-empty strings for text and pattern that match{text:" 'ABC'       ",pattern:" '%C'         "}#error
+eval/primitives/operators/like.ion::like::non-empty strings for text and pattern that match{text:" 'ABC'       ",pattern:" '%_%_%_%'    "}#coerce
+eval/primitives/operators/like.ion::like::non-empty strings for text and pattern that match{text:" 'ABC'       ",pattern:" '%_%_%_%'    "}#error
+eval/primitives/operators/like.ion::like::non-empty strings for text and pattern that match{text:" 'ABC'       ",pattern:" '%_%_%_'     "}#coerce
+eval/primitives/operators/like.ion::like::non-empty strings for text and pattern that match{text:" 'ABC'       ",pattern:" '%_%_%_'     "}#error
+eval/primitives/operators/like.ion::like::non-empty strings for text and pattern that match{text:" 'ABC'       ",pattern:" 'A%%%'       "}#coerce
+eval/primitives/operators/like.ion::like::non-empty strings for text and pattern that match{text:" 'ABC'       ",pattern:" 'A%%%'       "}#error
+eval/primitives/operators/like.ion::like::non-empty strings for text and pattern that match{text:" 'ABC'       ",pattern:" 'A%'         "}#coerce
+eval/primitives/operators/like.ion::like::non-empty strings for text and pattern that match{text:" 'ABC'       ",pattern:" 'A%'         "}#error
+eval/primitives/operators/like.ion::like::non-empty strings for text and pattern that match{text:" 'ABC'       ",pattern:" 'A%C'        "}#coerce
+eval/primitives/operators/like.ion::like::non-empty strings for text and pattern that match{text:" 'ABC'       ",pattern:" 'A%C'        "}#error
+eval/primitives/operators/like.ion::like::non-empty strings for text and pattern that match{text:" 'ABC'       ",pattern:" 'AB%'        "}#coerce
+eval/primitives/operators/like.ion::like::non-empty strings for text and pattern that match{text:" 'ABC'       ",pattern:" 'AB%'        "}#error
+eval/primitives/operators/like.ion::like::non-empty strings for text and pattern that match{text:" 'ABC'       ",pattern:" 'ABC%'       "}#coerce
+eval/primitives/operators/like.ion::like::non-empty strings for text and pattern that match{text:" 'ABC'       ",pattern:" 'ABC%'       "}#error
+eval/primitives/operators/like.ion::like::non-empty strings for text and pattern that match{text:" 'ABC'       ",pattern:" 'AB_'        "}#coerce
+eval/primitives/operators/like.ion::like::non-empty strings for text and pattern that match{text:" 'ABC'       ",pattern:" 'AB_'        "}#error
+eval/primitives/operators/like.ion::like::non-empty strings for text and pattern that match{text:" 'ABC'       ",pattern:" 'A_C'        "}#coerce
+eval/primitives/operators/like.ion::like::non-empty strings for text and pattern that match{text:" 'ABC'       ",pattern:" 'A_C'        "}#error
+eval/primitives/operators/like.ion::like::non-empty strings for text and pattern that match{text:" 'ABC'       ",pattern:" 'A__'        "}#coerce
+eval/primitives/operators/like.ion::like::non-empty strings for text and pattern that match{text:" 'ABC'       ",pattern:" 'A__'        "}#error
+eval/primitives/operators/like.ion::like::non-empty strings for text and pattern that match{text:" 'ABC'       ",pattern:" '_%%B%%%_'   "}#coerce
+eval/primitives/operators/like.ion::like::non-empty strings for text and pattern that match{text:" 'ABC'       ",pattern:" '_%%B%%%_'   "}#error
+eval/primitives/operators/like.ion::like::non-empty strings for text and pattern that match{text:" 'ABC'       ",pattern:" '_%%_%%%_'   "}#coerce
+eval/primitives/operators/like.ion::like::non-empty strings for text and pattern that match{text:" 'ABC'       ",pattern:" '_%%_%%%_'   "}#error
+eval/primitives/operators/like.ion::like::non-empty strings for text and pattern that match{text:" 'ABC'       ",pattern:" '_%_%_%'     "}#coerce
+eval/primitives/operators/like.ion::like::non-empty strings for text and pattern that match{text:" 'ABC'       ",pattern:" '_%_%_%'     "}#error
+eval/primitives/operators/like.ion::like::non-empty strings for text and pattern that match{text:" 'ABC'       ",pattern:" '_%_%_'      "}#coerce
+eval/primitives/operators/like.ion::like::non-empty strings for text and pattern that match{text:" 'ABC'       ",pattern:" '_%_%_'      "}#error
+eval/primitives/operators/like.ion::like::non-empty strings for text and pattern that match{text:" 'ABC'       ",pattern:" '_BC'        "}#coerce
+eval/primitives/operators/like.ion::like::non-empty strings for text and pattern that match{text:" 'ABC'       ",pattern:" '_BC'        "}#error
+eval/primitives/operators/like.ion::like::non-empty strings for text and pattern that match{text:" 'ABC'       ",pattern:" '__C'        "}#coerce
+eval/primitives/operators/like.ion::like::non-empty strings for text and pattern that match{text:" 'ABC'       ",pattern:" '__C'        "}#error
+eval/primitives/operators/like.ion::like::non-empty strings for text and pattern that match{text:" 'ABC'       ",pattern:" '___'        "}#coerce
+eval/primitives/operators/like.ion::like::non-empty strings for text and pattern that match{text:" 'ABC'       ",pattern:" '___'        "}#error
+eval/primitives/operators/like.ion::like::non-empty strings for text and pattern that match{text:" '\\'        ",pattern:" '\\'         "}#coerce
+eval/primitives/operators/like.ion::like::non-empty strings for text and pattern that match{text:" '\\'        ",pattern:" '\\'         "}#error
+eval/primitives/operators/like.ion::like::non-empty strings for text and pattern that match{text:" '_'         ",pattern:" '%'          "}#coerce
+eval/primitives/operators/like.ion::like::non-empty strings for text and pattern that match{text:" '_'         ",pattern:" '%'          "}#error
+eval/primitives/operators/like.ion::like::non-empty strings for text and pattern that match{text:" '_'         ",pattern:" '_'          "}#coerce
+eval/primitives/operators/like.ion::like::non-empty strings for text and pattern that match{text:" '_'         ",pattern:" '_'          "}#error
+eval/primitives/operators/like.ion::like::null value on any of the 3 inputs returns false{likeExpr:" d.sid LIKE 'S1' ESCAPE null "}#coerce
+eval/primitives/operators/like.ion::like::null value on any of the 3 inputs returns false{likeExpr:" d.sid LIKE 'S1' ESCAPE null "}#error
+eval/primitives/operators/like.ion::like::null value on any of the 3 inputs returns false{likeExpr:" d.sid LIKE null "}#coerce
+eval/primitives/operators/like.ion::like::null value on any of the 3 inputs returns false{likeExpr:" d.sid LIKE null "}#error
+eval/primitives/operators/like.ion::like::null value on any of the 3 inputs returns false{likeExpr:" d.sid LIKE null ESCAPE '['  "}#coerce
+eval/primitives/operators/like.ion::like::null value on any of the 3 inputs returns false{likeExpr:" d.sid LIKE null ESCAPE '['  "}#error
+eval/primitives/operators/like.ion::like::null value on any of the 3 inputs returns false{likeExpr:" d.sid LIKE null ESCAPE null "}#coerce
+eval/primitives/operators/like.ion::like::null value on any of the 3 inputs returns false{likeExpr:" d.sid LIKE null ESCAPE null "}#error
+eval/primitives/operators/like.ion::like::null value on any of the 3 inputs returns false{likeExpr:" null  LIKE 'S1' "}#coerce
+eval/primitives/operators/like.ion::like::null value on any of the 3 inputs returns false{likeExpr:" null  LIKE 'S1' "}#error
+eval/primitives/operators/like.ion::like::null value on any of the 3 inputs returns false{likeExpr:" null  LIKE 'S1' ESCAPE '['  "}#coerce
+eval/primitives/operators/like.ion::like::null value on any of the 3 inputs returns false{likeExpr:" null  LIKE 'S1' ESCAPE '['  "}#error
+eval/primitives/operators/like.ion::like::null value on any of the 3 inputs returns false{likeExpr:" null  LIKE 'S1' ESCAPE null "}#coerce
+eval/primitives/operators/like.ion::like::null value on any of the 3 inputs returns false{likeExpr:" null  LIKE 'S1' ESCAPE null "}#error
+eval/primitives/operators/like.ion::like::null value on any of the 3 inputs returns false{likeExpr:" null  LIKE null "}#coerce
+eval/primitives/operators/like.ion::like::null value on any of the 3 inputs returns false{likeExpr:" null  LIKE null "}#error
+eval/primitives/operators/like.ion::like::null value on any of the 3 inputs returns false{likeExpr:" null  LIKE null ESCAPE '['  "}#coerce
+eval/primitives/operators/like.ion::like::null value on any of the 3 inputs returns false{likeExpr:" null  LIKE null ESCAPE '['  "}#error
+eval/primitives/operators/like.ion::like::null value on any of the 3 inputs returns false{likeExpr:" null  LIKE null ESCAPE null "}#coerce
+eval/primitives/operators/like.ion::like::null value on any of the 3 inputs returns false{likeExpr:" null  LIKE null ESCAPE null "}#error
 eval/primitives/operators/like.ion::null-missing-mistyped-for-like::'some value' LIKE 'some pattern' ESCAPE MISSING#coerce
 eval/primitives/operators/like.ion::null-missing-mistyped-for-like::'some value' LIKE 'some pattern' ESCAPE MISSING#error
 eval/primitives/operators/like.ion::null-missing-mistyped-for-like::'some value' LIKE 'some pattern' ESCAPE NULL#coerce
@@ -2768,6 +3082,14 @@ eval/primitives/path.ion::path-expressions::dotted path expression with unquoted
 eval/primitives/path.ion::path-expressions::dotted path expression with unquoted identifiers accesses field UNAMBIGUOUS_FIELD (uppercase)#error
 eval/primitives/path.ion::path-expressions::dotted path expression with unquoted identifiers accesses field unambiguous_field (lowercase)#coerce
 eval/primitives/path.ion::path-expressions::dotted path expression with unquoted identifiers accesses field unambiguous_field (lowercase)#error
+eval/primitives/path.ion::path-expressions::path expression with ambiguous table alias (lowercase, quoted)#coerce
+eval/primitives/path.ion::path-expressions::path expression with ambiguous table alias (lowercase, quoted)#error
+eval/primitives/path.ion::path-expressions::path expression with ambiguous table alias (uppercase)#coerce
+eval/primitives/path.ion::path-expressions::path expression with ambiguous table alias (uppercase)#error
+eval/primitives/path.ion::path-expressions::path expression with table alias in lowercase#coerce
+eval/primitives/path.ion::path-expressions::path expression with table alias in lowercase#error
+eval/primitives/path.ion::path-expressions::path expression with table alias in uppercase#coerce
+eval/primitives/path.ion::path-expressions::path expression with table alias in uppercase#error
 eval/primitives/path.ion::path-expressions::subscript with literal string in lowercase#coerce
 eval/primitives/path.ion::path-expressions::subscript with literal string in lowercase#error
 eval/primitives/path.ion::path-expressions::subscript with literal string in uppercase#coerce
@@ -2780,6 +3102,24 @@ eval/primitives/path.ion::path-expressions::subscript with variable in mixed cas
 eval/primitives/path.ion::path-expressions::subscript with variable in mixed case#error
 eval/primitives/path.ion::path-expressions::subscript with variable in uppercase#coerce
 eval/primitives/path.ion::path-expressions::subscript with variable in uppercase#error
+eval/primitives/path.ion::path-missing-field-access-in-from-clause::access array index on missing field in FROM clause#coerce
+eval/primitives/path.ion::path-missing-field-access-in-from-clause::access array index on missing field in FROM clause#error
+eval/primitives/path.ion::path-missing-field-access-in-from-clause::access array index on nested missing field in FROM clause#coerce
+eval/primitives/path.ion::path-missing-field-access-in-from-clause::access array index on nested missing field in FROM clause#error
+eval/primitives/path.ion::path-missing-field-access-in-from-clause::access deeply nested missing field in FROM clause#coerce
+eval/primitives/path.ion::path-missing-field-access-in-from-clause::access deeply nested missing field in FROM clause#error
+eval/primitives/path.ion::path-missing-field-access-in-from-clause::access missing field in FROM clause with scan#coerce
+eval/primitives/path.ion::path-missing-field-access-in-from-clause::access missing field in FROM clause with scan#error
+eval/primitives/path.ion::path-missing-field-access-in-from-clause::access missing field in FROM with JOIN#coerce
+eval/primitives/path.ion::path-missing-field-access-in-from-clause::access missing field in FROM with JOIN#error
+eval/primitives/path.ion::path-missing-field-access-in-from-clause::access nested array index on missing field in FROM clause#coerce
+eval/primitives/path.ion::path-missing-field-access-in-from-clause::access nested array index on missing field in FROM clause#error
+eval/primitives/path.ion::path-missing-field-access-in-from-clause::access nested missing field in FROM clause with scan#coerce
+eval/primitives/path.ion::path-missing-field-access-in-from-clause::access nested missing field in FROM clause with scan#error
+eval/primitives/path.ion::path-missing-field-access-in-from-clause::iterate over array index on missing field in FROM clause#coerce
+eval/primitives/path.ion::path-missing-field-access-in-from-clause::iterate over array index on missing field in FROM clause#error
+eval/primitives/path.ion::path-missing-field-access-in-from-clause::mixed existing and missing fields in FROM clause#coerce
+eval/primitives/path.ion::path-missing-field-access-in-from-clause::mixed existing and missing fields in FROM clause#error
 eval/primitives/path.ion::path::pathDotMissingAttribute#coerce
 eval/primitives/path.ion::path::pathDotMissingAttribute#error
 eval/primitives/path.ion::path::pathDotOnly#coerce
@@ -2837,6 +3177,18 @@ eval/primitives/path.ion::pathUnpivotMissing::pathUnpivotEmptyStruct2#coerce
 eval/primitives/path.ion::pathUnpivotMissing::pathUnpivotEmptyStruct2#error
 eval/primitives/path.ion::pathUnpivotMissing::pathUnpivotEmptyStruct3#coerce
 eval/primitives/path.ion::pathUnpivotMissing::pathUnpivotEmptyStruct3#error
+eval/primitives/path.ion::pathUnpivotMissing::unpivotEmptyStruct#coerce
+eval/primitives/path.ion::pathUnpivotMissing::unpivotEmptyStruct#error
+eval/primitives/path.ion::pathUnpivotMissing::unpivotMissing#coerce
+eval/primitives/path.ion::pathUnpivotMissing::unpivotMissing#error
+eval/primitives/path.ion::pathUnpivotMissing::unpivotMissingCrossJoinWithAsAndAt#coerce
+eval/primitives/path.ion::pathUnpivotMissing::unpivotMissingCrossJoinWithAsAndAt#error
+eval/primitives/path.ion::pathUnpivotMissing::unpivotMissingWithAsAndAt#coerce
+eval/primitives/path.ion::pathUnpivotMissing::unpivotMissingWithAsAndAt#error
+eval/primitives/path.ion::pathUnpivotMissing::unpivotStructWithMissingField#coerce
+eval/primitives/path.ion::pathUnpivotMissing::unpivotStructWithMissingField#error
+eval/primitives/path.ion::repeated-field-on-struct::repeated field on struct is ambiguous{identifier:" \"repeated\" ",cn:10,bn:"repeated"}#error
+eval/primitives/path.ion::repeated-field-on-struct::repeated field on struct is ambiguous{identifier:"REPEATED",cn:9,bn:"REPEATED"}#error
 eval/primitives/string.ion::string::concatenation with non-nulls{Cyrillic Alphabet Concatenation Test - Split at Position 33}#coerce
 eval/primitives/string.ion::string::concatenation with non-nulls{Cyrillic Alphabet Concatenation Test - Split at Position 33}#error
 eval/primitives/string.ion::string::concatenation with non-nulls{Mathematical Bold pangram concatenation test - joining 'quick brown fox ' with 'jumps over' using Unicode Mathematical Bold characters}#coerce
@@ -2881,6 +3233,12 @@ eval/primitives/string.ion::string::concatenation with null values{left:"NULL",r
 eval/primitives/string.ion::string::concatenation with null values{left:"NULL",right:"'b'"}#error
 eval/primitives/string.ion::string::concatenation with null values{left:"NULL",right:"NULL"}#coerce
 eval/primitives/string.ion::string::concatenation with null values{left:"NULL",right:"NULL"}#error
+eval/primitives/symbol.ion::empty-symbol::Empty Symbol in alias#coerce
+eval/primitives/symbol.ion::empty-symbol::Empty Symbol in alias#error
+eval/primitives/symbol.ion::empty-symbol::Empty Symbol in globals#coerce
+eval/primitives/symbol.ion::empty-symbol::Empty Symbol in globals#error
+eval/primitives/symbol.ion::empty-symbol::Empty Symbol in table#coerce
+eval/primitives/symbol.ion::empty-symbol::Empty Symbol in table#error
 eval/primitives/time.ion::time::explicit time end of day#coerce
 eval/primitives/time.ion::time::explicit time end of day#error
 eval/primitives/time.ion::time::explicit time midnight#coerce
@@ -2933,12 +3291,66 @@ eval/primitives/timestamp.ion::timestampz::timestampz positive offset#coerce
 eval/primitives/timestamp.ion::timestampz::timestampz positive offset#error
 eval/primitives/timestamp.ion::timestampz::timestampz without offset - failure#coerce
 eval/primitives/timestamp.ion::timestampz::timestampz without offset - failure#error
+eval/query/join/joins.ion::join-with-condition::join on column - 1 table contains 1 row with the value null#coerce
+eval/query/join/joins.ion::join-with-condition::join on column - 1 table contains 1 row with the value null#error
+eval/query/join/joins.ion::join-with-condition::join on column - ON condition = false#coerce
+eval/query/join/joins.ion::join-with-condition::join on column - ON condition = false#error
+eval/query/join/joins.ion::join-with-condition::join on column - ON conidition = true #coerce
+eval/query/join/joins.ion::join-with-condition::join on column - ON conidition = true #error
+eval/query/join/joins.ion::join-with-condition::join on column - all column values non-null#coerce
+eval/query/join/joins.ion::join-with-condition::join on column - all column values non-null#error
+eval/query/join/joins.ion::join-with-condition::join on column - some column values are null#coerce
+eval/query/join/joins.ion::join-with-condition::join on column - some column values are null#error
+eval/query/join/joins.ion::join::PG_JOIN_01#coerce
+eval/query/join/joins.ion::join::PG_JOIN_01#error
+eval/query/join/joins.ion::join::PG_JOIN_02#coerce
+eval/query/join/joins.ion::join::PG_JOIN_02#error
+eval/query/join/joins.ion::join::PG_JOIN_03#coerce
+eval/query/join/joins.ion::join::PG_JOIN_03#error
+eval/query/join/joins.ion::join::PG_JOIN_04#coerce
+eval/query/join/joins.ion::join::PG_JOIN_04#error
+eval/query/join/joins.ion::join::PG_JOIN_05#coerce
+eval/query/join/joins.ion::join::PG_JOIN_05#error
+eval/query/join/joins.ion::join::PG_JOIN_06#coerce
+eval/query/join/joins.ion::join::PG_JOIN_06#error
+eval/query/join/joins.ion::join::PG_JOIN_07#coerce
+eval/query/join/joins.ion::join::PG_JOIN_07#error
+eval/query/join/joins.ion::join::PG_JOIN_08#coerce
+eval/query/join/joins.ion::join::PG_JOIN_08#error
+eval/query/join/joins.ion::join::PG_JOIN_10#coerce
+eval/query/join/joins.ion::join::PG_JOIN_10#error
+eval/query/join/joins.ion::joins::selectCrossProduct#coerce
+eval/query/join/joins.ion::joins::selectCrossProduct#error
+eval/query/order-by.ion::edge_cases::Empty Projection item (unordered) -- Output (unordered)#coerce
+eval/query/order-by.ion::edge_cases::Empty Projection item (unordered) -- Output (unordered)#error
+eval/query/select/from-clause.ion::auto-generated aliases::comma-join-auto-alias#coerce
+eval/query/select/from-clause.ion::auto-generated aliases::comma-join-auto-alias#error
+eval/query/select/from-clause.ion::auto-generated aliases::comma-join-multiple-records-auto-alias#coerce
+eval/query/select/from-clause.ion::auto-generated aliases::comma-join-multiple-records-auto-alias#error
+eval/query/select/from-clause.ion::auto-generated aliases::cross-join-nested-auto-alias#coerce
+eval/query/select/from-clause.ion::auto-generated aliases::cross-join-nested-auto-alias#error
+eval/query/select/from-clause.ion::auto-generated aliases::mixed-join-auto-alias#coerce
+eval/query/select/from-clause.ion::auto-generated aliases::mixed-join-auto-alias#error
+eval/query/select/from-clause.ion::auto-generated aliases::multiple-comma-join-auto-alias#coerce
+eval/query/select/from-clause.ion::auto-generated aliases::multiple-comma-join-auto-alias#error
+eval/query/select/from-clause.ion::auto-generated aliases::multiple-cross-join-multiple-records-auto-alias#coerce
+eval/query/select/from-clause.ion::auto-generated aliases::multiple-cross-join-multiple-records-auto-alias#error
+eval/query/select/from-clause.ion::auto-generated aliases::nested-parenthesized-joins-auto-alias#coerce
+eval/query/select/from-clause.ion::auto-generated aliases::nested-parenthesized-joins-auto-alias#error
+eval/query/select/from-clause.ion::path in from clause::ordinalAccessWithNegativeIndex#coerce
+eval/query/select/from-clause.ion::path in from clause::ordinalAccessWithNegativeIndex#error
+eval/query/select/from-clause.ion::path in from clause::ordinalAccessWithNegativeIndexAndBindings#coerce
+eval/query/select/from-clause.ion::path in from clause::ordinalAccessWithNegativeIndexAndBindings#error
 eval/query/select/from-clause.ion::path in from clause::selectFromBagAndAtUnpivotWildCardOverScalar#coerce
 eval/query/select/from-clause.ion::path in from clause::selectFromBagAndAtUnpivotWildCardOverScalar#error
 eval/query/select/from-clause.ion::path in from clause::selectFromListAndAtUnpivotWildCardOverScalar#coerce
 eval/query/select/from-clause.ion::path in from clause::selectFromListAndAtUnpivotWildCardOverScalar#error
 eval/query/select/from-clause.ion::path in from clause::selectFromScalarAndAtUnpivotWildCardOverScalar#coerce
 eval/query/select/from-clause.ion::path in from clause::selectFromScalarAndAtUnpivotWildCardOverScalar#error
+eval/query/select/from-clause.ion::path in from clause::selectPathUnpivotWildCardOverStructMultiple#coerce
+eval/query/select/from-clause.ion::path in from clause::selectPathUnpivotWildCardOverStructMultiple#error
+eval/query/select/from-clause.ion::path in from clause::selectStarSingleSourceHoisted#coerce
+eval/query/select/from-clause.ion::path in from clause::selectStarSingleSourceHoisted#error
 eval/query/select/from-clause.ion::various types in from clause::rangeOverBagWithAt#coerce
 eval/query/select/from-clause.ion::various types in from clause::rangeOverBagWithAt#error
 eval/query/select/from-clause.ion::various types in from clause::rangeOverList#coerce
@@ -2959,14 +3371,208 @@ eval/query/select/from-clause.ion::various types in from clause::rangeOverStruct
 eval/query/select/from-clause.ion::various types in from clause::rangeOverStruct#error
 eval/query/select/from-clause.ion::various types in from clause::rangeTwiceOverScalar#coerce
 eval/query/select/from-clause.ion::various types in from clause::rangeTwiceOverScalar#error
+eval/query/select/projection.ion::project various container types::projectOfBagOfBag#coerce
+eval/query/select/projection.ion::project various container types::projectOfBagOfBag#error
+eval/query/select/projection.ion::project various container types::projectOfBagOfList#coerce
+eval/query/select/projection.ion::project various container types::projectOfBagOfList#error
+eval/query/select/projection.ion::project various container types::projectOfListOfBag#coerce
+eval/query/select/projection.ion::project various container types::projectOfListOfBag#error
+eval/query/select/projection.ion::project various container types::projectOfListOfList#coerce
+eval/query/select/projection.ion::project various container types::projectOfListOfList#error
+eval/query/select/projection.ion::project various container types::projectOfUnpivotPath#coerce
+eval/query/select/projection.ion::project various container types::projectOfUnpivotPath#error
+eval/query/select/projection.ion::projection iteration behavior unfiltered::projectionIterationBehaviorUnfiltered_select_list#coerce
+eval/query/select/projection.ion::projection iteration behavior unfiltered::projectionIterationBehaviorUnfiltered_select_list#error
+eval/query/select/projection.ion::projection iteration behavior unfiltered::projectionIterationBehaviorUnfiltered_select_star#coerce
+eval/query/select/projection.ion::projection iteration behavior unfiltered::projectionIterationBehaviorUnfiltered_select_star#error
+eval/query/select/projection.ion::projection iteration behavior unfiltered::undefinedUnqualifiedVariable_inSelect_withProjectionOption#coerce
+eval/query/select/projection.ion::projection iteration behavior unfiltered::undefinedUnqualifiedVariable_inSelect_withProjectionOption#error
+eval/query/select/select-distinct.ion::select-distinct-value::distinct value single table#coerce
+eval/query/select/select-distinct.ion::select-distinct-value::distinct value single table#error
+eval/query/select/select-distinct.ion::select-distinct::distinct column single table#coerce
+eval/query/select/select-distinct.ion::select-distinct::distinct column single table#error
+eval/query/select/select-distinct.ion::select-distinct::distinct star single table#coerce
+eval/query/select/select-distinct.ion::select-distinct::distinct star single table#error
+eval/query/select/select-mysql.ion::select::MYSQL_SELECT_01#coerce
+eval/query/select/select-mysql.ion::select::MYSQL_SELECT_01#error
+eval/query/select/select-mysql.ion::select::MYSQL_SELECT_02#coerce
+eval/query/select/select-mysql.ion::select::MYSQL_SELECT_02#error
+eval/query/select/select-mysql.ion::select::MYSQL_SELECT_03#coerce
+eval/query/select/select-mysql.ion::select::MYSQL_SELECT_03#error
+eval/query/select/select-mysql.ion::select::MYSQL_SELECT_04#coerce
+eval/query/select/select-mysql.ion::select::MYSQL_SELECT_04#error
+eval/query/select/select-mysql.ion::select::MYSQL_SELECT_05#coerce
+eval/query/select/select-mysql.ion::select::MYSQL_SELECT_05#error
+eval/query/select/select-mysql.ion::select::MYSQL_SELECT_06#coerce
+eval/query/select/select-mysql.ion::select::MYSQL_SELECT_06#error
+eval/query/select/select-mysql.ion::select::MYSQL_SELECT_07#coerce
+eval/query/select/select-mysql.ion::select::MYSQL_SELECT_07#error
+eval/query/select/select-mysql.ion::select::MYSQL_SELECT_08#coerce
+eval/query/select/select-mysql.ion::select::MYSQL_SELECT_08#error
+eval/query/select/select-mysql.ion::select::MYSQL_SELECT_09#coerce
+eval/query/select/select-mysql.ion::select::MYSQL_SELECT_09#error
+eval/query/select/select-mysql.ion::select::MYSQL_SELECT_10#coerce
+eval/query/select/select-mysql.ion::select::MYSQL_SELECT_10#error
+eval/query/select/select-mysql.ion::select::MYSQL_SELECT_11#coerce
+eval/query/select/select-mysql.ion::select::MYSQL_SELECT_11#error
+eval/query/select/select-mysql.ion::select::MYSQL_SELECT_12#coerce
+eval/query/select/select-mysql.ion::select::MYSQL_SELECT_12#error
+eval/query/select/select-mysql.ion::select::MYSQL_SELECT_13#coerce
+eval/query/select/select-mysql.ion::select::MYSQL_SELECT_13#error
+eval/query/select/select-mysql.ion::select::MYSQL_SELECT_14#coerce
+eval/query/select/select-mysql.ion::select::MYSQL_SELECT_14#error
+eval/query/select/select-mysql.ion::select::MYSQL_SELECT_15#coerce
+eval/query/select/select-mysql.ion::select::MYSQL_SELECT_15#error
+eval/query/select/select-mysql.ion::select::MYSQL_SELECT_16#coerce
+eval/query/select/select-mysql.ion::select::MYSQL_SELECT_16#error
+eval/query/select/select-mysql.ion::select::MYSQL_SELECT_17#coerce
+eval/query/select/select-mysql.ion::select::MYSQL_SELECT_17#error
+eval/query/select/select-mysql.ion::select::MYSQL_SELECT_18#coerce
+eval/query/select/select-mysql.ion::select::MYSQL_SELECT_18#error
+eval/query/select/select-mysql.ion::select::MYSQL_SELECT_19#coerce
+eval/query/select/select-mysql.ion::select::MYSQL_SELECT_19#error
+eval/query/select/select-mysql.ion::select::MYSQL_SELECT_20#coerce
+eval/query/select/select-mysql.ion::select::MYSQL_SELECT_20#error
+eval/query/select/select-mysql.ion::select::MYSQL_SELECT_21#coerce
+eval/query/select/select-mysql.ion::select::MYSQL_SELECT_21#error
+eval/query/select/select-mysql.ion::select::MYSQL_SELECT_22#coerce
+eval/query/select/select-mysql.ion::select::MYSQL_SELECT_22#error
+eval/query/select/select-mysql.ion::select::MYSQL_SELECT_23#coerce
+eval/query/select/select-mysql.ion::select::MYSQL_SELECT_23#error
+eval/query/select/select-mysql.ion::select::MYSQL_SELECT_25#coerce
+eval/query/select/select-mysql.ion::select::MYSQL_SELECT_25#error
+eval/query/select/select-mysql.ion::select::MYSQL_SELECT_27#coerce
+eval/query/select/select-mysql.ion::select::MYSQL_SELECT_27#error
+eval/query/select/select-mysql.ion::select::MYSQL_SELECT_28#coerce
+eval/query/select/select-mysql.ion::select::MYSQL_SELECT_28#error
+eval/query/select/select-mysql.ion::select::MYSQL_SELECT_29#coerce
+eval/query/select/select-mysql.ion::select::MYSQL_SELECT_29#error
+eval/query/select/select-mysql.ion::select::MYSQL_SELECT_30#coerce
+eval/query/select/select-mysql.ion::select::MYSQL_SELECT_30#error
+eval/query/select/select-mysql.ion::select::MYSQL_SELECT_31#coerce
+eval/query/select/select-mysql.ion::select::MYSQL_SELECT_31#error
+eval/query/select/select-postgresql.ion::select::PG_SELECT_01#coerce
+eval/query/select/select-postgresql.ion::select::PG_SELECT_01#error
+eval/query/select/select-postgresql.ion::select::PG_SELECT_02#coerce
+eval/query/select/select-postgresql.ion::select::PG_SELECT_02#error
+eval/query/select/select-postgresql.ion::select::PG_SELECT_03#coerce
+eval/query/select/select-postgresql.ion::select::PG_SELECT_03#error
+eval/query/select/select-postgresql.ion::select::PG_SELECT_04#coerce
+eval/query/select/select-postgresql.ion::select::PG_SELECT_04#error
+eval/query/select/select-postgresql.ion::select::PG_SELECT_05#coerce
+eval/query/select/select-postgresql.ion::select::PG_SELECT_05#error
+eval/query/select/select-postgresql.ion::select::PG_SELECT_06#coerce
+eval/query/select/select-postgresql.ion::select::PG_SELECT_06#error
+eval/query/select/select-postgresql.ion::select::PG_SELECT_07#coerce
+eval/query/select/select-postgresql.ion::select::PG_SELECT_07#error
+eval/query/select/select-postgresql.ion::select::PG_SELECT_08#coerce
+eval/query/select/select-postgresql.ion::select::PG_SELECT_08#error
+eval/query/select/select-postgresql.ion::select::PG_SELECT_09#coerce
+eval/query/select/select-postgresql.ion::select::PG_SELECT_09#error
+eval/query/select/select-postgresql.ion::select::PG_SELECT_10#coerce
+eval/query/select/select-postgresql.ion::select::PG_SELECT_10#error
+eval/query/select/select-postgresql.ion::select::PG_SELECT_12#coerce
+eval/query/select/select-postgresql.ion::select::PG_SELECT_12#error
+eval/query/select/select-postgresql.ion::select::PG_SELECT_13#coerce
+eval/query/select/select-postgresql.ion::select::PG_SELECT_13#error
+eval/query/select/select-star.ion::select-star::* with multiple tables#coerce
+eval/query/select/select-star.ion::select-star::* with multiple tables#error
+eval/query/select/select-star.ion::select-star::* with no aliases on a single table (personnel)#coerce
+eval/query/select/select-star.ion::select-star::* with no aliases on a single table (personnel)#error
+eval/query/select/select-star.ion::select-star::* with no aliases on a single table (ships)#coerce
+eval/query/select/select-star.ion::select-star::* with no aliases on a single table (ships)#error
+eval/query/select/select-star.ion::select-star::Doubled alias.* with multiple tables#coerce
+eval/query/select/select-star.ion::select-star::Doubled alias.* with multiple tables#error
+eval/query/select/select-star.ion::select-star::Two alias.* on a single table#coerce
+eval/query/select/select-star.ion::select-star::Two alias.* on a single table#error
+eval/query/select/select-star.ion::select-star::alias.* on a single table (personnel)#coerce
+eval/query/select/select-star.ion::select-star::alias.* on a single table (personnel)#error
+eval/query/select/select-star.ion::select-star::alias.* on a single table (ships)#coerce
+eval/query/select/select-star.ion::select-star::alias.* on a single table (ships)#error
+eval/query/select/select-star.ion::select-star::alias.* with multiple tables#coerce
+eval/query/select/select-star.ion::select-star::alias.* with multiple tables#error
+eval/query/select/select-star.ion::select-star::alias1.alias2.*#coerce
+eval/query/select/select-star.ion::select-star::alias1.alias2.*#error
+eval/query/select/select.ion::SELECT path with inline environment#coerce
+eval/query/select/select.ion::SELECT path with inline environment#error
+eval/query/select/select.ion::SELECT path#coerce
+eval/query/select/select.ion::SELECT path#error
+eval/query/select/select.ion::ordered names::aliasOrderedNamesSelectList#coerce
+eval/query/select/select.ion::ordered names::aliasOrderedNamesSelectList#error
+eval/query/select/select.ion::ordered names::aliasWildcardOrderedNames#coerce
+eval/query/select/select.ion::ordered names::aliasWildcardOrderedNames#error
+eval/query/select/select.ion::ordered names::aliasWildcardOrderedNamesSelectList#coerce
+eval/query/select/select.ion::ordered names::aliasWildcardOrderedNamesSelectList#error
+eval/query/select/select.ion::ordered names::wildcardOrderedNames#coerce
+eval/query/select/select.ion::ordered names::wildcardOrderedNames#error
+eval/query/select/select.ion::select distinct::selectDistinct#coerce
+eval/query/select/select.ion::select distinct::selectDistinct#error
+eval/query/select/select.ion::select distinct::selectDistinctExpressionAndWhere#coerce
+eval/query/select/select.ion::select distinct::selectDistinctExpressionAndWhere#error
+eval/query/select/select.ion::select distinct::selectDistinctStarBags#coerce
+eval/query/select/select.ion::select distinct::selectDistinctStarBags#error
+eval/query/select/select.ion::select distinct::selectDistinctStarIntegers#coerce
+eval/query/select/select.ion::select distinct::selectDistinctStarIntegers#error
+eval/query/select/select.ion::select distinct::selectDistinctStarLists#coerce
+eval/query/select/select.ion::select distinct::selectDistinctStarLists#error
+eval/query/select/select.ion::select distinct::selectDistinctStarMixed#coerce
+eval/query/select/select.ion::select distinct::selectDistinctStarMixed#error
+eval/query/select/select.ion::select distinct::selectDistinctStarScalars#coerce
+eval/query/select/select.ion::select distinct::selectDistinctStarScalars#error
+eval/query/select/select.ion::select distinct::selectDistinctStarStructs#coerce
+eval/query/select/select.ion::select distinct::selectDistinctStarStructs#error
+eval/query/select/select.ion::select distinct::selectDistinctStarUnknowns#coerce
+eval/query/select/select.ion::select distinct::selectDistinctStarUnknowns#error
+eval/query/select/select.ion::select distinct::selectDistinctSubQuery#coerce
+eval/query/select/select.ion::select distinct::selectDistinctSubQuery#error
+eval/query/select/select.ion::select distinct::selectDistinctValue#coerce
+eval/query/select/select.ion::select distinct::selectDistinctValue#error
+eval/query/select/select.ion::select distinct::selectDistinctWithJoin#coerce
+eval/query/select/select.ion::select distinct::selectDistinctWithJoin#error
+eval/query/select/select.ion::select distinct::selectDistinctWithSubQuery#coerce
+eval/query/select/select.ion::select distinct::selectDistinctWithSubQuery#error
+eval/query/select/select.ion::select list item::explicitAliasSelectSingleSource#coerce
+eval/query/select/select.ion::select list item::explicitAliasSelectSingleSource#error
+eval/query/select/select.ion::select list item::properAliasFromPathInSelect#coerce
+eval/query/select/select.ion::select list item::properAliasFromPathInSelect#error
+eval/query/select/select.ion::select list item::selectImplicitAndExplicitAliasSingleSourceHoisted#coerce
+eval/query/select/select.ion::select list item::selectImplicitAndExplicitAliasSingleSourceHoisted#error
+eval/query/select/select.ion::select list item::selectListWithMissing#coerce
+eval/query/select/select.ion::select list item::selectListWithMissing#error
+eval/query/select/select.ion::select list item::syntheticColumnNameInSelect#coerce
+eval/query/select/select.ion::select list item::syntheticColumnNameInSelect#error
+eval/query/select/select.ion::select_bugs::MYSQL_SELECT_BUG_01#coerce
+eval/query/select/select.ion::select_bugs::MYSQL_SELECT_BUG_01#error
+eval/query/select/select.ion::select_bugs::MYSQL_SELECT_BUG_02#coerce
+eval/query/select/select.ion::select_bugs::MYSQL_SELECT_BUG_02#error
+eval/query/select/select.ion::select_bugs::MYSQL_SELECT_BUG_03#coerce
+eval/query/select/select.ion::select_bugs::MYSQL_SELECT_BUG_03#error
+eval/query/select/select.ion::select_bugs::MYSQL_SELECT_BUG_04#coerce
+eval/query/select/select.ion::select_bugs::MYSQL_SELECT_BUG_04#error
 eval/query/select/select.ion::select_join::correlatedJoinWithShadowedAttributes#coerce
 eval/query/select/select.ion::select_join::correlatedJoinWithShadowedAttributes#error
 eval/query/select/select.ion::select_join::correlatedJoinWithoutLexicalScope#coerce
 eval/query/select/select.ion::select_join::correlatedJoinWithoutLexicalScope#error
 eval/query/select/select.ion::select_join::joinWithShadowedGlobal#coerce
 eval/query/select/select.ion::select_join::joinWithShadowedGlobal#error
+eval/query/select/select.ion::select_join::nestedSelectJoinWithUnpivot#coerce
+eval/query/select/select.ion::select_join::nestedSelectJoinWithUnpivot#error
+eval/query/select/select.ion::select_join::selectCorrelatedJoin#coerce
+eval/query/select/select.ion::select_join::selectCorrelatedJoin#error
+eval/query/select/select.ion::select_join::selectCorrelatedUnpivot#coerce
+eval/query/select/select.ion::select_join::selectCorrelatedUnpivot#error
+eval/query/select/select.ion::select_join::selectJoin#coerce
+eval/query/select/select.ion::select_join::selectJoin#error
 eval/query/select/select.ion::select_join::selectJoinOnClauseScoping#coerce
 eval/query/select/select.ion::select_join::selectJoinOnClauseScoping#error
+eval/query/select/select.ion::select_join::selectNonCorrelatedJoin#coerce
+eval/query/select/select.ion::select_join::selectNonCorrelatedJoin#error
+eval/query/select/select.ion::select_where::selectWhereStrinEqualsDifferentCase#coerce
+eval/query/select/select.ion::select_where::selectWhereStrinEqualsDifferentCase#error
+eval/query/select/select.ion::select_where::selectWhereStringEqualsSameCase#coerce
+eval/query/select/select.ion::select_where::selectWhereStringEqualsSameCase#error
+eval/query/undefined-variable-behavior.ion::undefined_variable_behavior::undefinedUnqualifiedVariableInSelectWithUndefinedVariableBehaviorMissing#coerce
+eval/query/undefined-variable-behavior.ion::undefined_variable_behavior::undefinedUnqualifiedVariableInSelectWithUndefinedVariableBehaviorMissing#error
 eval/query/undefined-variable-behavior.ion::undefined_variable_behavior::undefinedUnqualifiedVariableIsMissingExprWithUndefinedVariableBehaviorMissing#coerce
 eval/query/undefined-variable-behavior.ion::undefined_variable_behavior::undefinedUnqualifiedVariableIsMissingExprWithUndefinedVariableBehaviorMissing#error
 eval/query/undefined-variable-behavior.ion::undefined_variable_behavior::undefinedUnqualifiedVariableIsNullExprWithUndefinedVariableBehaviorMissing#coerce
@@ -2985,6 +3591,30 @@ eval/spec-tests.ion::section-4::tuple navigation missing attribute dot notation#
 eval/spec-tests.ion::section-4::tuple navigation missing attribute dot notation#error
 eval/spec-tests.ion::section-4::tuple navigation with array notation without explicit CAST to string#coerce
 eval/spec-tests.ion::section-4::tuple navigation with array notation without explicit CAST to string#error
+eval/spec-tests.ion::section-4::wildcard steps in SELECT clause item#coerce
+eval/spec-tests.ion::section-4::wildcard steps in SELECT clause item#error
+eval/spec-tests.ion::section-5::ranging over attribute value pairs with UNPIVOT#coerce
+eval/spec-tests.ion::section-5::ranging over attribute value pairs with UNPIVOT#error
+eval/spec-tests.ion::section-5::single source FROM with absent value missing and AT clause#coerce
+eval/spec-tests.ion::section-5::single source FROM with absent value missing and AT clause#error
+eval/spec-tests.ion::section-5::single source FROM with absent value missing#coerce
+eval/spec-tests.ion::section-5::single source FROM with absent value missing#error
+eval/spec-tests.ion::section-5::single source FROM with absent value null and AT clause#coerce
+eval/spec-tests.ion::section-5::single source FROM with absent value null and AT clause#error
+eval/spec-tests.ion::section-5::single source FROM with absent value null#coerce
+eval/spec-tests.ion::section-5::single source FROM with absent value null#error
+eval/spec-tests.ion::section-5::single source FROM with bag and AT clause#coerce
+eval/spec-tests.ion::section-5::single source FROM with bag and AT clause#error
+eval/spec-tests.ion::section-5::single source FROM with list and AT clause#coerce
+eval/spec-tests.ion::section-5::single source FROM with list and AT clause#error
+eval/spec-tests.ion::section-5::single source FROM with scalar and AT clause#coerce
+eval/spec-tests.ion::section-5::single source FROM with scalar and AT clause#error
+eval/spec-tests.ion::section-5::single source FROM with scalar#coerce
+eval/spec-tests.ion::section-5::single source FROM with scalar#error
+eval/spec-tests.ion::section-5::single source FROM with tuple and AT clause#coerce
+eval/spec-tests.ion::section-5::single source FROM with tuple and AT clause#error
+eval/spec-tests.ion::section-5::single source FROM with tuple#coerce
+eval/spec-tests.ion::section-5::single source FROM with tuple#error
 eval/spec-tests.ion::section-6::array element evaluates to MISSING#coerce
 eval/spec-tests.ion::section-6::array element evaluates to MISSING#error
 eval/spec-tests.ion::section-6::attribute value evaluates to MISSING#coerce
@@ -3001,6 +3631,8 @@ eval/spec-tests.ion::section-6::select value with tuple constructor#coerce
 eval/spec-tests.ion::section-6::select value with tuple constructor#error
 eval/spec-tests.ion::section-6::select value#coerce
 eval/spec-tests.ion::section-6::select value#error
+eval/spec-tests.ion::section-6::select variable star with non tuples#coerce
+eval/spec-tests.ion::section-6::select variable star with non tuples#error
 eval/spec-tests.ion::section-6::tuple constructor and mistyped attribute name#coerce
 eval/spec-tests.ion::section-6::tuple constructor and mistyped attribute name#error
 eval/spec-tests.ion::section-7::data type mismatch in comparison expression#coerce

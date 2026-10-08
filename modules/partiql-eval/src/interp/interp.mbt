@@ -545,7 +545,7 @@ fn eval(
         // Lowering resolves a local name only when a FROM declares it.
         None => raise DataError(message="undefined variable \{name}", span~)
       }
-    Select(rel, projection, distinct~, span) =>
-      select(rel, projection, distinct, env, ctx, span)
+    Select(rel, projection, distinct~, _) =>
+      select(rel, projection, distinct, env, ctx)
   }
 }

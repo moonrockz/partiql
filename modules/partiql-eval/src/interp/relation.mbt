@@ -82,6 +82,21 @@ fn relation(
     Unpivot(source, as_~, at~, span) =>
       unpivot(eval(source, env, ctx), as_, at, env, ctx, span)
     Join(_, _, _, on=_, _) => join(rel, env, ctx)
+    Let(input, bindings, _) => {
+      let input = relation(input, env, ctx)
+      rows(ctx, () => {
+        match pull(input, ctx) {
+          Some(row) => {
+            let mut bound = row
+            for binding in bindings {
+              bound = Frame(binding.0, eval(binding.1, bound, ctx), bound)
+            }
+            Some(bound)
+          }
+          None => None
+        }
+      })
+    }
     Filter(input, predicate, span) => {
       let input = relation(input, env, ctx)
       rows(ctx, () => {
@@ -189,7 +204,7 @@ fn binds(rel : @plan.Rel) -> Array[String] {
         }
         names.push(as_)
       }
-      Filter(input, _, _) => pending.push(input)
+      Filter(input, _, _) | Let(input, _, _) => pending.push(input)
       Join(_, l, r, on=_, _) => {
         pending.push(r)
         pending.push(l)
@@ -444,16 +459,120 @@ fn select(
   distinct : Bool,
   env : Env,
   ctx : Ctx,
-  span : @ast.Span,
 ) -> @value.Value raise @plan.EvalError {
-  if distinct {
-    raise Unsupported(message="SELECT DISTINCT is not supported yet", span~)
-  }
   let out = []
   each(relation(rel, env, ctx), ctx, row => {
-    match projection {
-      Value(e) => out.push(eval(e, row, ctx))
-    }
+    out.push(project(projection, row, ctx))
   })
-  Bag(@value.Bag::new(out))
+  Bag(@value.Bag::new(if distinct { dedupe(out) } else { out }))
+}
+
+///|
+/// The projection of one binding tuple.
+fn project(
+  projection : @plan.Projection,
+  row : Env,
+  ctx : Ctx,
+) -> @value.Value raise @plan.EvalError {
+  match projection {
+    Value(e) => eval(e, row, ctx)
+    Star(names) => {
+      let fields = []
+      for i, name in names {
+        if row.find(name) is Some(v) {
+          add_fields(fields, v, i)
+        }
+      }
+      Tuple(@value.Tuple::new(fields))
+    }
+    Items(items) => {
+      let fields = []
+      for i, item in items {
+        match item {
+          Named(name, e) => {
+            let v = eval(e, row, ctx)
+            // A MISSING item has no attribute in permissive mode.
+            if v is Missing && ctx.mode is Strict {
+              raise TypeError(message="a SELECT item is MISSING", span=e.span())
+            }
+            fields.push((name, v))
+          }
+          AllFields(e) => add_fields(fields, eval(e, row, ctx), i)
+        }
+      }
+      Tuple(@value.Tuple::new(fields))
+    }
+  }
+}
+
+///|
+/// Appends the attributes of `v` to `fields`. A value that is not a tuple is
+/// the attribute `_` and `position` + 1, in both modes (partiql-tests
+/// projection.ion, `projectOfListOfList`; spec-tests.ion, "select variable
+/// star with non tuples"). It keeps its exact Ion form (projection.ion,
+/// `projectOfSexp`). MISSING has no attributes.
+fn add_fields(
+  fields : Array[(String, @value.Value)],
+  v : @value.Value,
+  position : Int,
+) -> Unit {
+  match unboxed(v) {
+    Tuple(t) => t.fields().each(f => fields.push(f))
+    Missing => ()
+    _ => fields.push(("_\{position + 1}", v))
+  }
+}
+
+///|
+/// The values of `items` without a repeat, in the order of their first
+/// occurrence. Two values repeat if they are `==` (bags and tuples as
+/// multisets). Each value goes to a bucket of a hash of its shape (`shape`);
+/// only the values of one bucket are compared, so the cost is linear unless
+/// many values share a shape.
+fn dedupe(items : Array[@value.Value]) -> Array[@value.Value] {
+  let buckets : Map[String, Array[@value.Value]] = Map([])
+  let out = []
+  for v in items {
+    let bucket = buckets.get_or_init(shape(v), () => [])
+    if !bucket.contains(v) {
+      bucket.push(v)
+      out.push(v)
+    }
+  }
+  out
+}
+
+///|
+/// A key that values which are `==` share. It looks one level into a tuple and
+/// no deeper, so computing it takes no recursion.
+fn shape(v : @value.Value) -> String {
+  match unboxed(v) {
+    Tuple(t) => {
+      let parts = t.fields().map(f => "\{f.0}=\{leaf(f.1)}")
+      parts.sort()
+      "t" + parts.join(",")
+    }
+    other => leaf(other)
+  }
+}
+
+///|
+/// A key for a value that is the same for values which are `==`: the value for
+/// a scalar, the kind and the length for a collection.
+fn leaf(v : @value.Value) -> String {
+  match unboxed(v) {
+    Null
+    | Missing
+    | Bool(_)
+    | Int(_)
+    | BigInt(_)
+    | Float(_)
+    | Decimal(_)
+    | String(_) => @debug.to_string(v)
+    List(items) => "l\{items.length()}"
+    Bag(b) => "b\{b.length()}"
+    Tuple(t) => "t\{t.length()}"
+    Map(_) => "m"
+    _ => "o"
+  }
 }

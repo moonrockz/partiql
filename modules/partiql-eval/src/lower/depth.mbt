@@ -19,6 +19,10 @@
 // - A FROM source: 1, its expression 1 below it. Measured with a query in a
 //   FROM source: about 1.6 per query block and source.
 // - A WHERE: 1, its input and its condition 1 below it.
+// - A LET: 1, its input and each of its expressions 1 below it (it runs like
+//   a WHERE: one wrapper over the input, each expression in a nested `eval`).
+// - A SELECT list: every item 2 below the query block, like SELECT VALUE;
+//   `*` evaluates nothing.
 // - A join: one wrapper per right join, and one per run of cross, inner and
 //   left joins between them (`chain` runs a run as one flat loop). Each
 //   wrapper is 1; the wrappers nest in the order of the joins, the last one
@@ -148,6 +152,13 @@ fn push_operands(e : @plan.Expr, level : Int, pending : Array[Pending]) -> Unit 
       pending.push(RelAt(rel, below))
       match projection {
         Value(x) => pending.push(ExprAt(x, below + 1))
+        Items(items) =>
+          for item in items {
+            match item {
+              Named(_, x) | AllFields(x) => pending.push(ExprAt(x, below + 1))
+            }
+          }
+        Star(_) => ()
       }
     }
   }
@@ -215,6 +226,12 @@ fn within_depth(plan : @plan.Expr) -> @plan.Expr raise @plan.EvalError {
       RelAt(Filter(input, predicate, _), level) => {
         pending.push(RelAt(input, level + 1))
         pending.push(ExprAt(predicate, level + 1))
+      }
+      RelAt(Let(input, bindings, _), level) => {
+        pending.push(RelAt(input, level + 1))
+        for binding in bindings {
+          pending.push(ExprAt(binding.1, level + 1))
+        }
       }
       RelAt(Join(_, _, _, on=_, _) as rel, level) =>
         push_join(rel, level, pending)

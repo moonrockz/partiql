@@ -48,6 +48,11 @@ pub(all) enum Expr {
 } derive(@debug.Debug)
 pub fn Expr::span(Self) -> @ast.Span
 
+pub(all) enum Item {
+  Named(String, Expr)
+  AllFields(Expr)
+} derive(@debug.Debug)
+
 pub(all) enum JoinKind {
   Cross
   Inner
@@ -62,6 +67,8 @@ pub(all) enum Mode {
 
 pub(all) enum Projection {
   Value(Expr)
+  Items(Array[Item])
+  Star(Array[String])
 } derive(@debug.Debug)
 
 pub(all) enum Rel {
@@ -69,6 +76,7 @@ pub(all) enum Rel {
   Unpivot(Expr, as_~ : String, at~ : String?, @ast.Span)
   Filter(Rel, Expr, @ast.Span)
   Join(JoinKind, Rel, Rel, on~ : Expr?, @ast.Span)
+  Let(Rel, Array[(String, Expr)], @ast.Span)
 } derive(@debug.Debug)
 pub fn Rel::span(Self) -> @ast.Span
 

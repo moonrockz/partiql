@@ -103,23 +103,52 @@ fn select_at(
   if s.having is Some(e) {
     return unsupported("HAVING (M4c)", e.span)
   }
-  if s.let_ is [first, ..] {
-    return unsupported("LET (M4b1)", first.span)
-  }
   let names = []
+  let sources = Ref(0)
   let from = match s.from {
-    Some(item) => from_item(item, scope, names, depth)
+    Some(item) => from_item(item, scope, names, sources, depth)
     None => return unsupported("SELECT without FROM (M4b1)", s.span)
   }
+  let variables = from_variables(from)
+  // A LET expression sees the variables before it, so `names` grows as the
+  // bindings are lowered.
+  let bindings = []
+  for l in s.let_ {
+    bindings.push((l.name.text, lower_at(l.expr, scope.inner(names), depth)))
+    names.push(l.name.text)
+  }
   let inner = scope.inner(names)
+  let let_rel : @plan.Rel = if bindings.is_empty() {
+    from
+  } else {
+    Let(from, bindings, s.let_[0].span)
+  }
   let rel : @plan.Rel = match s.where_ {
-    Some(w) => Filter(from, lower_at(w, inner, depth), w.span)
-    None => from
+    Some(w) => Filter(let_rel, lower_at(w, inner, depth), w.span)
+    None => let_rel
   }
   let projection : @plan.Projection = match s.projection {
     Value(e) => Value(lower_at(e, inner, depth))
-    Star(span) => return unsupported("SELECT * (M4b1)", span)
-    Items(_) => return unsupported("a SELECT list (M4b1)", s.span)
+    Star(_) => Star(variables)
+    Items(items) => {
+      let out : Array[@plan.Item] = []
+      for i, item in items {
+        out.push(
+          match item {
+            Expr(e, as_~, ..) =>
+              @plan.Item::Named(
+                match as_ {
+                  Some(id) => id.text
+                  None => implicit_name(e, i)
+                },
+                lower_at(e, inner, depth),
+              )
+            AllFields(e, ..) => @plan.Item::AllFields(lower_at(e, inner, depth))
+          },
+        )
+      }
+      Items(out)
+    }
     Pivot(..) => return unsupported("PIVOT (M4b2)", s.span)
   }
   Select(rel, projection, distinct=s.quantifier is Some(Distinct), s.span)
@@ -127,19 +156,47 @@ fn select_at(
 
 ///|
 /// The variable of a FROM source: its `AS` name, else the name of the
-/// variable or of the last field of the path it scans, else `_1`
-/// (partiql-lang-kotlin's rule).
-fn from_name(source : @ast.FromSource) -> String {
+/// variable or of the last field of the path it scans, else `_` and its
+/// position among the sources of the query block, from 1 (partiql-lang-kotlin's
+/// rule; `SELECT * FROM <<{'a': 1}>>, <<{'b': 2}>>` needs two names).
+fn from_name(source : @ast.FromSource, position : Int) -> String {
   match source.as_ {
     Some(id) => id.text
-    None =>
-      match source.expr.kind {
-        VarRef(id, ..) => id.text
-        Path(_, [.., Field(id)]) => id.text
-        Path(_, [.., FieldString(name, ..)]) => name
-        _ => "_1"
-      }
+    None => implicit_name(source.expr, position)
   }
+}
+
+///|
+/// The name of an expression without `AS`: the name of the variable or of the
+/// last field of the path, else `_` and the position `index` (from 0) in its
+/// list plus 1.
+fn implicit_name(e : @ast.Expr, index : Int) -> String {
+  match e.kind {
+    VarRef(id, ..) => id.text
+    Path(_, [.., Field(id)]) => id.text
+    Path(_, [.., FieldString(name, ..)]) => name
+    _ => "_\{index + 1}"
+  }
+}
+
+///|
+/// The variables that a FROM binds, without the `AT` ones, in FROM order. A
+/// loop with a stack of pending relations, so a long chain of joins takes no
+/// recursion.
+fn from_variables(rel : @plan.Rel) -> Array[String] {
+  let names = []
+  let pending = [rel]
+  while pending.pop() is Some(r) {
+    match r {
+      Scan(_, as_~, at=_, _) | Unpivot(_, as_~, at=_, _) => names.push(as_)
+      Filter(input, _, _) | Let(input, _, _) => pending.push(input)
+      Join(_, l, r, on=_, _) => {
+        pending.push(r)
+        pending.push(l)
+      }
+    }
+  }
+  names
 }
 
 ///|
@@ -151,6 +208,7 @@ fn from_item(
   item : @ast.FromItem,
   scope : Scope,
   names : Array[String],
+  sources : Ref[Int],
   depth : Int,
 ) -> @plan.Rel raise @plan.EvalError {
   if depth >= max_depth {
@@ -165,7 +223,7 @@ fn from_item(
     joins.push(j)
     leaf = j.left
   }
-  let mut rel = from_leaf(leaf, scope, names, depth)
+  let mut rel = from_leaf(leaf, scope, names, sources, depth)
   for j in joins.rev_iter() {
     let kind : @plan.JoinKind = match (j.kind, j.form) {
       (Full, _) => return unsupported("FULL JOIN (later)", j.span)
@@ -177,11 +235,11 @@ fn from_item(
     // The right side of a RIGHT JOIN is read once, outside the left rows.
     let right = if kind is Right {
       let own = []
-      let right = from_item(j.right, scope, own, depth + 1)
+      let right = from_item(j.right, scope, own, sources, depth + 1)
       names.append(own)
       right
     } else {
-      from_item(j.right, scope, names, depth + 1)
+      from_item(j.right, scope, names, sources, depth + 1)
     }
     let on = match j.form {
       On(e) => Some(lower_at(e, scope.inner(names), depth))
@@ -197,6 +255,7 @@ fn from_leaf(
   item : @ast.FromItem,
   scope : Scope,
   names : Array[String],
+  sources : Ref[Int],
   depth : Int,
 ) -> @plan.Rel raise @plan.EvalError {
   let (source, unpivot) = match item {
@@ -208,7 +267,8 @@ fn from_leaf(
   if source.by is Some(id) {
     return unsupported("FROM ... BY (later)", id.span)
   }
-  let as_ = from_name(source)
+  let as_ = from_name(source, sources.val)
+  sources.val += 1
   let at = source.at.map(id => id.text)
   let expr = lower_at(source.expr, scope.inner(names).for_source(), depth)
   if at is Some(name) {
