@@ -173,11 +173,11 @@ fn from_item(
     }
     let right = if kind is Right {
       let own = []
-      let right = from_item(j.right, scope, own, depth + 1)
+      let right = from_item(j.right, scope, own, depth + rights + 1)
       names.append(own)
       right
     } else {
-      from_item(j.right, scope, names, depth + 1)
+      from_item(j.right, scope, names, depth + rights + 1)
     }
     let on = match j.form {
       On(e) => Some(lower_at(e, scope.inner(names), depth))

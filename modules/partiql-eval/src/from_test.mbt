@@ -275,3 +275,44 @@ test "UNPIVOT of MISSING and of a map" {
     }
   })
 }
+
+///|
+/// Level `d` is `[1] AS a_d RIGHT JOIN (level d+1) ON TRUE`, then `198 - d`
+/// more RIGHT JOINs: the nesting of right joins at run time is the sum.
+fn nested_rights(levels : Int) -> String {
+  let mut text = "[1] AS z CROSS JOIN [1] AS y"
+  for d = levels - 1; d >= 0; d = d - 1 {
+    let mut level = "[1] AS a" +
+      d.to_string() +
+      " RIGHT JOIN (" +
+      text +
+      ") ON TRUE"
+    for _ in 0..<(198 - d) {
+      level = level + " RIGHT JOIN [1] AS w" + d.to_string() + " ON TRUE"
+    }
+    text = level
+  }
+  "SELECT VALUE z FROM " + text
+}
+
+///|
+test "nested right joins are bounded in total" {
+  @expect.expect_all(soft => {
+    for levels in [6, 12] {
+      soft
+      .expect_call(() => ev(nested_rights(levels)))
+      .to_raise_matching(
+        e => e is @eval.EvalError::DataError(..),
+        description="DataError",
+      )
+    }
+    // A realistic nesting still runs.
+    soft
+    .expect(
+      ev(
+        "SELECT VALUE [a, b, c] FROM [1] AS a RIGHT JOIN ([2] AS b RIGHT JOIN [3] AS c ON TRUE) ON TRUE",
+      ),
+    )
+    .to_equal(bag([List([Int(1), Int(2), Int(3)])]))
+  })
+}
