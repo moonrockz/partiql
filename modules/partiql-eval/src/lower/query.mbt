@@ -153,8 +153,20 @@ fn from_item(
     leaf = j.left
   }
   // Each RIGHT JOIN in a chain wraps the rows before it when they run, so
-  // the chain counts them against the depth guard.
+  // every right side of the chain runs inside all of them. The guard counts
+  // them all, which bounds the nesting along any path.
   let mut rights = 0
+  for j in joins {
+    if j.kind is Right {
+      rights += 1
+    }
+  }
+  if depth + rights >= max_depth {
+    raise DataError(
+      message="FROM list is too deeply nested",
+      span=from_span(item),
+    )
+  }
   let mut rel = from_leaf(leaf, scope, names, depth)
   for j in joins.rev_iter() {
     let kind : @plan.JoinKind = match (j.kind, j.form) {
@@ -165,12 +177,6 @@ fn from_item(
       (Right, _) => Right
     }
     // The right side of a RIGHT JOIN is read once, outside the left rows.
-    if kind is Right {
-      rights += 1
-      if depth + rights >= max_depth {
-        raise DataError(message="FROM list is too deeply nested", span=j.span)
-      }
-    }
     let right = if kind is Right {
       let own = []
       let right = from_item(j.right, scope, own, depth + rights + 1)

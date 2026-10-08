@@ -316,3 +316,36 @@ test "nested right joins are bounded in total" {
     .to_equal(bag([List([Int(1), Int(2), Int(3)])]))
   })
 }
+
+///|
+/// `levels` nested levels; each is `[1] AS a_d RIGHT JOIN (level d+1) ON TRUE`
+/// followed by `r` more RIGHT JOINs.
+fn nested_rights_each(levels : Int, r : Int) -> String {
+  let mut text = "[1] AS z CROSS JOIN [1] AS y"
+  for d = levels - 1; d >= 0; d = d - 1 {
+    let mut level = "[1] AS a" +
+      d.to_string() +
+      " RIGHT JOIN (" +
+      text +
+      ") ON TRUE"
+    for _ in 0..<r {
+      level = level + " RIGHT JOIN [1] AS w" + d.to_string() + " ON TRUE"
+    }
+    text = level
+  }
+  "SELECT VALUE z FROM " + text
+}
+
+///|
+test "right joins after a nested item count against it" {
+  @expect.expect_all(soft => {
+    for shape in [(20, 100), (10, 50)] {
+      soft
+      .expect_call(() => ev(nested_rights_each(shape.0, shape.1)))
+      .to_raise_matching(
+        e => e is @eval.EvalError::DataError(..),
+        description="DataError",
+      )
+    }
+  })
+}
