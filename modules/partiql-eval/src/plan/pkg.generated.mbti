@@ -43,6 +43,7 @@ pub(all) enum Expr {
   NullIf(Expr, Expr, @ast.Span)
   Local(String, @ast.Span)
   GlobalOrLocal(String, variable~ : String, delimited~ : Bool, @ast.Span)
+  Implicit(String, delimited~ : Bool, locals~ : Array[String], @ast.Span)
   Select(Rel, Projection, distinct~ : Bool, @ast.Span)
 } derive(@debug.Debug)
 pub fn Expr::span(Self) -> @ast.Span

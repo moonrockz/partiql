@@ -275,7 +275,16 @@ fn lower_at(
           } else {
             Local(name, span)
           }
-        None => Global(id.text, delimited=id.delimited, span)
+        None =>
+          match scope.locals() {
+            [] => Global(id.text, delimited=id.delimited, span)
+            locals =>
+              if qualified {
+                raise DataError(message="undefined variable @\{id.text}", span~)
+              } else {
+                Implicit(id.text, delimited=id.delimited, locals~, span)
+              }
+          }
       }
     // Spec M4a §5: a sexp and a row are lists.
     List(items) | Sexp(items) | Row(items) =>

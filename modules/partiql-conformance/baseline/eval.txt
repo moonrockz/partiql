@@ -106,6 +106,8 @@ eval/ion/query/select/from-clause.ion::various types in from clause::rangeOverSe
 eval/ion/query/select/from-clause.ion::various types in from clause::rangeOverSexp#error
 eval/misc.ion::uncategorized::selectValueStructConstructorWithMissing#coerce
 eval/misc.ion::uncategorized::selectValueStructConstructorWithMissing#error
+eval/misc.ion::uncategorized::selectValues#coerce
+eval/misc.ion::uncategorized::selectValues#error
 eval/primitives/basic.ion::arithmetic with mixed type::arithmetic with null/missing#coerce
 eval/primitives/basic.ion::arithmetic with mixed type::arithmetic with null/missing#error
 eval/primitives/basic.ion::arithmetic with mixed type::division with mixed StaticType#coerce

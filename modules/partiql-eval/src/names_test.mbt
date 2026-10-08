@@ -1,0 +1,113 @@
+///|
+fn names_env() -> @eval.Bindings {
+  let row1 = @value.Tuple::new([("a", Int(1)), ("b", Int(2))])
+  let row2 = @value.Tuple::new([("a", Int(3))])
+  @eval.Bindings::of_tuple(
+    @value.Tuple::new([
+      ("t", List([Tuple(row1), Tuple(row2)])),
+      ("a", Int(100)),
+      ("s", List([Tuple(@value.Tuple::new([("x", Int(1))]))])),
+    ]),
+  )
+}
+
+///|
+fn names_ev(
+  source : String,
+  mode? : @eval.Mode = Permissive,
+) -> @value.Value raise @eval.EvalError {
+  @eval.evaluate_text(source, env=names_env(), mode~)
+}
+
+///|
+test "names in queries" {
+  @expect.expect_all(soft => {
+    // a local variable wins over a global of the same name
+    soft
+    .expect(names_ev("SELECT VALUE a FROM [5] AS a"))
+    .to_equal(bag([Int(5)]))
+    // a global is visible inside a query
+    soft
+    .expect(names_ev("SELECT VALUE a FROM t AS r"))
+    .to_equal(bag([Int(100), Int(100)]))
+    // an unbound name is an attribute of a FROM variable's tuple
+    soft
+    .expect(names_ev("SELECT VALUE b FROM t AS r"))
+    .to_equal(bag([Int(2), Missing]))
+    // @x takes locals only
+    soft
+    .expect(names_ev("SELECT VALUE @r.a FROM t AS r"))
+    .to_equal(bag([Int(1), Int(3)]))
+    // shadowing does not leak out of a subquery
+    soft
+    .expect(
+      names_ev("SELECT VALUE [(SELECT VALUE a FROM [7] AS a), a] FROM [1] AS z"),
+    )
+    .to_equal(bag([List([bag([Int(7)]), Int(100)])]))
+    // case-insensitive unless quoted
+    soft
+    .expect(names_ev("SELECT VALUE R.A FROM t AS r"))
+    .to_equal(bag([Int(1), Int(3)]))
+  })
+}
+
+///|
+test "implicit attributes in FROM order" {
+  @expect.expect_all(soft => {
+    soft
+    .expect(names_ev("SELECT VALUE x FROM [{'x': 1}] AS p, [{'x': 2}] AS q"))
+    .to_equal(bag([Int(1)]))
+    soft
+    .expect(names_ev("SELECT VALUE y FROM [{'x': 1}] AS p, [{'y': 2}] AS q"))
+    .to_equal(bag([Int(2)]))
+    // an outer variable is reached from a subquery
+    soft
+    .expect(
+      names_ev(
+        "SELECT VALUE (SELECT VALUE x FROM [5] AS i) FROM [{'x': 9}] AS o",
+      ),
+    )
+    .to_equal(bag([bag([Int(9)])]))
+    // an ON clause sees the attributes of the variables declared so far
+    soft
+    .expect(
+      names_ev(
+        "SELECT VALUE y FROM [{'x': 1}] AS p JOIN [{'y': 2}] AS q ON y = x + 1",
+      ),
+    )
+    .to_equal(bag([Int(2)]))
+  })
+}
+
+///|
+test "a name found nowhere" {
+  @expect.expect_all(soft => {
+    soft
+    .expect(names_ev("SELECT VALUE nope FROM t AS r"))
+    .to_equal(bag([Missing, Missing]))
+    soft
+    .expect_call(() => names_ev("SELECT VALUE nope FROM t AS r", mode=Strict))
+    .to_raise_matching(
+      e => e is @eval.EvalError::TypeError(..),
+      description="TypeError",
+    )
+    soft
+    .expect_call(() => names_ev("nope"))
+    .to_raise_matching(
+      e => e is @eval.EvalError::DataError(..),
+      description="DataError",
+    )
+    soft
+    .expect_call(() => names_ev("SELECT VALUE 1 FROM nope AS r"))
+    .to_raise_matching(
+      e => e is @eval.EvalError::DataError(..),
+      description="DataError",
+    )
+    soft
+    .expect_call(() => names_ev("SELECT VALUE @nope FROM t AS r"))
+    .to_raise_matching(
+      e => e is @eval.EvalError::DataError(..),
+      description="DataError",
+    )
+  })
+}

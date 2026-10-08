@@ -28,6 +28,37 @@ fn lookup(
 }
 
 ///|
+/// A name that no FROM variable declares: the global of that name, else the
+/// attribute of that name of the first tuple among the variables `locals`
+/// that is bound in `env`. Found nowhere, it is MISSING in permissive mode and
+/// a `TypeError` in strict mode (the variables in scope are the evidence that
+/// the name is meant as an attribute).
+fn implicit(
+  name : String,
+  delimited : Bool,
+  locals : Array[String],
+  env : Env,
+  ctx : Ctx,
+  span : @ast.Span,
+) -> @value.Value raise @plan.EvalError {
+  if find_global(ctx.globals, name, delimited) is Some(v) {
+    return v
+  }
+  for variable in locals {
+    if env.find(variable) is Some(v) {
+      let found = @ops.field(v, name, delimited~) catch {
+        TypeFailure(_) => Missing
+        DataFailure(message) => raise DataError(message~, span~)
+      }
+      if !(found is Missing) {
+        return found
+      }
+    }
+  }
+  typed(ctx.mode, span, () => raise TypeFailure("undefined variable \{name}"))
+}
+
+///|
 /// Runs an operation. A type failure is MISSING in permissive mode and a
 /// `TypeError` in strict mode; a data failure is a `DataError` in both modes
 /// (spec M4a §4).
@@ -507,6 +538,8 @@ fn eval(
             None => raise DataError(message="undefined variable \{name}", span~)
           }
       }
+    Implicit(name, delimited~, locals~, span) =>
+      implicit(name, delimited, locals, env, ctx, span)
     Local(name, span) =>
       match env.find(name) {
         Some(v) => v

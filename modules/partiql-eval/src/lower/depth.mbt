@@ -81,7 +81,8 @@ fn push_operands(e : @plan.Expr, level : Int, pending : Array[Pending]) -> Unit 
     Const(_, _)
     | Global(_, delimited=_, _)
     | Local(_, _)
-    | GlobalOrLocal(_, variable=_, delimited=_, _) => ()
+    | GlobalOrLocal(_, variable=_, delimited=_, _)
+    | Implicit(_, delimited=_, locals=_, _) => ()
     ListOf(items, _) | BagOf(items, _) | Coalesce(items, _) => items.each(push)
     TupleOf(pairs, _) | MapOf(pairs, _) =>
       for pair in pairs {

@@ -45,6 +45,19 @@ fn Scope::resolve(self : Scope, id : @ast.Identifier) -> String? {
 }
 
 ///|
+/// The names of every variable in scope, the innermost query first and each
+/// query in FROM order.
+fn Scope::locals(self : Scope) -> Array[String] {
+  let all = []
+  let mut scope = Some(self)
+  while scope is Some(s) {
+    all.append(s.names)
+    scope = s.outer
+  }
+  all
+}
+
+///|
 /// Lowers a query statement.
 pub fn lower_query(q : @ast.Query) -> @plan.Expr raise @plan.EvalError {
   within_depth(query_at(q, Scope::top(), 0))
