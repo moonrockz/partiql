@@ -53,4 +53,25 @@ pub(all) enum Expr {
   )
   Coalesce(Array[Expr], @ast.Span)
   NullIf(Expr, Expr, @ast.Span)
+  /// A FROM variable, by the name it was declared with.
+  Local(String, @ast.Span)
+  /// A query block: the projection of each binding tuple of `rel`, as a bag.
+  Select(Rel, Projection, distinct~ : Bool, @ast.Span)
+} derive(Debug)
+
+///|
+/// A relational plan node (spec M4b1 §3): it produces binding tuples.
+pub(all) enum Rel {
+  /// One binding of `as_` per element of a collection; `at` binds the
+  /// element's position.
+  Scan(Expr, as_~ : String, at~ : String?, @ast.Span)
+  /// The binding tuples for which the predicate is TRUE.
+  Filter(Rel, Expr, @ast.Span)
+} derive(Debug)
+
+///|
+/// What a query block makes of each binding tuple.
+pub(all) enum Projection {
+  /// `SELECT VALUE e`
+  Value(Expr)
 } derive(Debug)

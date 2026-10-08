@@ -41,12 +41,23 @@ pub(all) enum Expr {
   Case(operand~ : Expr?, branches~ : Array[(Expr, Expr)], default~ : Expr?, @ast.Span)
   Coalesce(Array[Expr], @ast.Span)
   NullIf(Expr, Expr, @ast.Span)
+  Local(String, @ast.Span)
+  Select(Rel, Projection, distinct~ : Bool, @ast.Span)
 } derive(@debug.Debug)
 
 pub(all) enum Mode {
   Permissive
   Strict
 } derive(Eq, @debug.Debug)
+
+pub(all) enum Projection {
+  Value(Expr)
+} derive(@debug.Debug)
+
+pub(all) enum Rel {
+  Scan(Expr, as_~ : String, at~ : String?, @ast.Span)
+  Filter(Rel, Expr, @ast.Span)
+} derive(@debug.Debug)
 
 pub(all) enum Step {
   Field(String, delimited~ : Bool)

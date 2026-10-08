@@ -7,11 +7,17 @@ import {
 }
 
 // Values
-pub fn run(@plan.Expr, Array[(String, @partiql-value.Value)], @plan.Mode) -> @partiql-value.Value raise @plan.EvalError
+pub fn run(@plan.Expr, Ctx) -> @partiql-value.Value raise @plan.EvalError
 
 // Errors
 
 // Types and methods
+pub struct Ctx {
+  globals : Array[(String, @partiql-value.Value)]
+  mode : @plan.Mode
+  // private fields
+}
+pub fn Ctx::new(Array[(String, @partiql-value.Value)], mode~ : @plan.Mode) -> Self
 
 // Type aliases
 

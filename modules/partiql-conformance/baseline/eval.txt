@@ -102,6 +102,26 @@ eval/ion/primitives/operators/nary-operators.ion::nary::equalListDifferentTypesT
 eval/ion/primitives/operators/nary-operators.ion::nary::equalListDifferentTypesTrue#error
 eval/ion/primitives/operators/nary-operators.ion::nary::listDifferentTypesDifferentOrderFalse#coerce
 eval/ion/primitives/operators/nary-operators.ion::nary::listDifferentTypesDifferentOrderFalse#error
+eval/ion/query/select/from-clause.ion::various types in from clause::rangeOverSexp#coerce
+eval/ion/query/select/from-clause.ion::various types in from clause::rangeOverSexp#error
+eval/misc.ion::uncategorized::selectValueStructConstructorWithMissing#coerce
+eval/misc.ion::uncategorized::selectValueStructConstructorWithMissing#error
+eval/primitives/basic.ion::arithmetic with mixed type::arithmetic with null/missing#coerce
+eval/primitives/basic.ion::arithmetic with mixed type::arithmetic with null/missing#error
+eval/primitives/basic.ion::arithmetic with mixed type::division with mixed StaticType#coerce
+eval/primitives/basic.ion::arithmetic with mixed type::division with mixed StaticType#error
+eval/primitives/basic.ion::arithmetic with mixed type::minus with mixed StaticType#coerce
+eval/primitives/basic.ion::arithmetic with mixed type::minus with mixed StaticType#error
+eval/primitives/basic.ion::arithmetic with mixed type::modulo with mixed StaticType#coerce
+eval/primitives/basic.ion::arithmetic with mixed type::modulo with mixed StaticType#error
+eval/primitives/basic.ion::arithmetic with mixed type::multiplication with mixed StaticType#coerce
+eval/primitives/basic.ion::arithmetic with mixed type::multiplication with mixed StaticType#error
+eval/primitives/basic.ion::arithmetic with mixed type::plus with mixed StaticType#coerce
+eval/primitives/basic.ion::arithmetic with mixed type::plus with mixed StaticType#error
+eval/primitives/basic.ion::arithmetic with mixed type::unary minus with mixed StaticType#coerce
+eval/primitives/basic.ion::arithmetic with mixed type::unary minus with mixed StaticType#error
+eval/primitives/basic.ion::arithmetic with mixed type::unary plus with mixed StaticType#coerce
+eval/primitives/basic.ion::arithmetic with mixed type::unary plus with mixed StaticType#error
 eval/primitives/basic.ion::basic::bagLiteral#coerce
 eval/primitives/basic.ion::basic::bagLiteral#error
 eval/primitives/basic.ion::basic::decimalRoundDown#coerce
@@ -140,6 +160,8 @@ eval/primitives/bool.ion::bool::boolean literals{sql:"false",r:false}#coerce
 eval/primitives/bool.ion::bool::boolean literals{sql:"false",r:false}#error
 eval/primitives/bool.ion::bool::boolean literals{sql:"true",r:true}#coerce
 eval/primitives/bool.ion::bool::boolean literals{sql:"true",r:true}#error
+eval/primitives/date-time.ion::regression::dateTimePartsAsStructFieldNames#coerce
+eval/primitives/date-time.ion::regression::dateTimePartsAsStructFieldNames#error
 eval/primitives/functions/coalesce.ion::coalesce::coalesce valid cases{args:"1",result:(success 1)}#coerce
 eval/primitives/functions/coalesce.ion::coalesce::coalesce valid cases{args:"1",result:(success 1)}#error
 eval/primitives/functions/coalesce.ion::coalesce::coalesce valid cases{args:"1, 2",result:(success 1)}#coerce
@@ -786,6 +808,9 @@ eval/primitives/map.ion::map::construct a map with decimal keys#coerce
 eval/primitives/map.ion::map::construct a map with decimal keys#error
 eval/primitives/map.ion::map::construct a map with duplicate key keeps last value in permissive and errors in strict#coerce
 eval/primitives/map.ion::map::construct a map with duplicate key keeps last value in permissive and errors in strict#error
+eval/primitives/map.ion::map::construct a map with evaluated missing value drops the entry#coerce
+eval/primitives/map.ion::map::construct a map with evaluated null value preserves the key#coerce
+eval/primitives/map.ion::map::construct a map with evaluated null value preserves the key#error
 eval/primitives/map.ion::map::construct a map with explicit missing value drops the entry#coerce
 eval/primitives/map.ion::map::construct a map with explicit missing value drops the entry#error
 eval/primitives/map.ion::map::construct a map with explicit null value preserves the key#coerce
@@ -1738,6 +1763,22 @@ eval/primitives/operators/between-operator.ion::between::between timestampz date
 eval/primitives/operators/between-operator.ion::between::between timestampz date date false#error
 eval/primitives/operators/between-operator.ion::between::between timestampz date date true#coerce
 eval/primitives/operators/between-operator.ion::between::between timestampz date date true#error
+eval/primitives/operators/between-operator.ion::between::betweenPredicate#coerce
+eval/primitives/operators/between-operator.ion::between::betweenPredicate#error
+eval/primitives/operators/between-operator.ion::between::betweenStringsPredicate#coerce
+eval/primitives/operators/between-operator.ion::between::betweenStringsPredicate#error
+eval/primitives/operators/between-operator.ion::between::notBetweenPredicate#coerce
+eval/primitives/operators/between-operator.ion::between::notBetweenPredicate#error
+eval/primitives/operators/between-operator.ion::between::notBetweenStringsPredicate#coerce
+eval/primitives/operators/between-operator.ion::between::notBetweenStringsPredicate#error
+eval/primitives/operators/case-operator.ion::case::searchedCase#coerce
+eval/primitives/operators/case-operator.ion::case::searchedCase#error
+eval/primitives/operators/case-operator.ion::case::searchedCaseNoElse#coerce
+eval/primitives/operators/case-operator.ion::case::searchedCaseNoElse#error
+eval/primitives/operators/case-operator.ion::case::simpleCase#coerce
+eval/primitives/operators/case-operator.ion::case::simpleCase#error
+eval/primitives/operators/case-operator.ion::case::simpleCaseNoElse#coerce
+eval/primitives/operators/case-operator.ion::case::simpleCaseNoElse#error
 eval/primitives/operators/comparison.ion::date_vs_date::date_eq_different#coerce
 eval/primitives/operators/comparison.ion::date_vs_date::date_eq_different#error
 eval/primitives/operators/comparison.ion::date_vs_date::date_eq_same#coerce
@@ -2154,6 +2195,33 @@ eval/primitives/operators/divide.ion::divide::INTERVAL '7' MONTH / MISSING#coerc
 eval/primitives/operators/divide.ion::divide::INTERVAL '7' MONTH / MISSING#error
 eval/primitives/operators/divide.ion::divide::INTERVAL '7' MONTH / NULL#coerce
 eval/primitives/operators/divide.ion::divide::INTERVAL '7' MONTH / NULL#error
+eval/primitives/operators/in-operator.ion::in::inPredicate#coerce
+eval/primitives/operators/in-operator.ion::in::inPredicate#error
+eval/primitives/operators/in-operator.ion::in::inPredicateSingleExpr#coerce
+eval/primitives/operators/in-operator.ion::in::inPredicateSingleItem#coerce
+eval/primitives/operators/in-operator.ion::in::inPredicateSingleItem#error
+eval/primitives/operators/in-operator.ion::in::inPredicateSingleItemListVar#coerce
+eval/primitives/operators/in-operator.ion::in::inPredicateSingleItemListVar#error
+eval/primitives/operators/in-operator.ion::in::inPredicateSingleListVar#coerce
+eval/primitives/operators/in-operator.ion::in::inPredicateSingleListVar#error
+eval/primitives/operators/in-operator.ion::in::inPredicateSubQuerySelectValue#coerce
+eval/primitives/operators/in-operator.ion::in::inPredicateSubQuerySelectValue#error
+eval/primitives/operators/in-operator.ion::in::inPredicateWithExpressionOnRightSide#coerce
+eval/primitives/operators/in-operator.ion::in::inPredicateWithExpressionOnRightSide#error
+eval/primitives/operators/in-operator.ion::in::notInPredicate#coerce
+eval/primitives/operators/in-operator.ion::in::notInPredicate#error
+eval/primitives/operators/in-operator.ion::in::notInPredicateSingleExpr#coerce
+eval/primitives/operators/in-operator.ion::in::notInPredicateSingleExpr#error
+eval/primitives/operators/in-operator.ion::in::notInPredicateSingleItem#coerce
+eval/primitives/operators/in-operator.ion::in::notInPredicateSingleItem#error
+eval/primitives/operators/in-operator.ion::in::notInPredicateSingleItemListVar#coerce
+eval/primitives/operators/in-operator.ion::in::notInPredicateSingleItemListVar#error
+eval/primitives/operators/in-operator.ion::in::notInPredicateSingleListVar#coerce
+eval/primitives/operators/in-operator.ion::in::notInPredicateSingleListVar#error
+eval/primitives/operators/in-operator.ion::in::notInPredicateSubQuerySelectValue#coerce
+eval/primitives/operators/in-operator.ion::in::notInPredicateSubQuerySelectValue#error
+eval/primitives/operators/in-operator.ion::in::notInPredicateWithExpressionOnRightSide#coerce
+eval/primitives/operators/in-operator.ion::in::notInPredicateWithExpressionOnRightSide#error
 eval/primitives/operators/is-operators.ion::is::0.00 is DECIMAL(4,3)#coerce
 eval/primitives/operators/is-operators.ion::is::0.00 is DECIMAL(4,3)#error
 eval/primitives/operators/is-operators.ion::is::0.001 is DECIMAL(3,3)#coerce
@@ -2757,6 +2825,8 @@ eval/primitives/path.ion::path::pathWildcard#coerce
 eval/primitives/path.ion::path::pathWildcard#error
 eval/primitives/path.ion::path::pathWildcardPath#coerce
 eval/primitives/path.ion::path::pathWildcardPath#error
+eval/primitives/path.ion::path::selectValuePath#coerce
+eval/primitives/path.ion::path::selectValuePath#error
 eval/primitives/path.ion::pathUnpivotMissing::pathUnpivotEmptyStruct1#coerce
 eval/primitives/path.ion::pathUnpivotMissing::pathUnpivotEmptyStruct1#error
 eval/primitives/path.ion::pathUnpivotMissing::pathUnpivotEmptyStruct2#coerce
@@ -2859,6 +2929,30 @@ eval/primitives/timestamp.ion::timestampz::timestampz positive offset#coerce
 eval/primitives/timestamp.ion::timestampz::timestampz positive offset#error
 eval/primitives/timestamp.ion::timestampz::timestampz without offset - failure#coerce
 eval/primitives/timestamp.ion::timestampz::timestampz without offset - failure#error
+eval/query/select/from-clause.ion::path in from clause::selectFromBagAndAtUnpivotWildCardOverScalar#coerce
+eval/query/select/from-clause.ion::path in from clause::selectFromBagAndAtUnpivotWildCardOverScalar#error
+eval/query/select/from-clause.ion::path in from clause::selectFromListAndAtUnpivotWildCardOverScalar#coerce
+eval/query/select/from-clause.ion::path in from clause::selectFromListAndAtUnpivotWildCardOverScalar#error
+eval/query/select/from-clause.ion::path in from clause::selectFromScalarAndAtUnpivotWildCardOverScalar#coerce
+eval/query/select/from-clause.ion::path in from clause::selectFromScalarAndAtUnpivotWildCardOverScalar#error
+eval/query/select/from-clause.ion::various types in from clause::rangeOverBagWithAt#coerce
+eval/query/select/from-clause.ion::various types in from clause::rangeOverBagWithAt#error
+eval/query/select/from-clause.ion::various types in from clause::rangeOverList#coerce
+eval/query/select/from-clause.ion::various types in from clause::rangeOverList#error
+eval/query/select/from-clause.ion::various types in from clause::rangeOverListConstructorWithAsAndAt#coerce
+eval/query/select/from-clause.ion::various types in from clause::rangeOverListConstructorWithAsAndAt#error
+eval/query/select/from-clause.ion::various types in from clause::rangeOverListConstructorWithAt#coerce
+eval/query/select/from-clause.ion::various types in from clause::rangeOverListConstructorWithAt#error
+eval/query/select/from-clause.ion::various types in from clause::rangeOverListWithAsAndAt#coerce
+eval/query/select/from-clause.ion::various types in from clause::rangeOverListWithAsAndAt#error
+eval/query/select/from-clause.ion::various types in from clause::rangeOverListWithAt#coerce
+eval/query/select/from-clause.ion::various types in from clause::rangeOverListWithAt#error
+eval/query/select/from-clause.ion::various types in from clause::rangeOverNestedWithAt#coerce
+eval/query/select/from-clause.ion::various types in from clause::rangeOverNestedWithAt#error
+eval/query/select/from-clause.ion::various types in from clause::rangeOverScalar#coerce
+eval/query/select/from-clause.ion::various types in from clause::rangeOverScalar#error
+eval/query/select/from-clause.ion::various types in from clause::rangeOverStruct#coerce
+eval/query/select/from-clause.ion::various types in from clause::rangeOverStruct#error
 eval/query/undefined-variable-behavior.ion::undefined_variable_behavior::undefinedUnqualifiedVariableIsMissingExprWithUndefinedVariableBehaviorMissing#coerce
 eval/query/undefined-variable-behavior.ion::undefined_variable_behavior::undefinedUnqualifiedVariableIsMissingExprWithUndefinedVariableBehaviorMissing#error
 eval/query/undefined-variable-behavior.ion::undefined_variable_behavior::undefinedUnqualifiedVariableIsNullExprWithUndefinedVariableBehaviorMissing#coerce
@@ -2877,6 +2971,24 @@ eval/spec-tests.ion::section-4::tuple navigation missing attribute dot notation#
 eval/spec-tests.ion::section-4::tuple navigation missing attribute dot notation#error
 eval/spec-tests.ion::section-4::tuple navigation with array notation without explicit CAST to string#coerce
 eval/spec-tests.ion::section-4::tuple navigation with array notation without explicit CAST to string#error
+eval/spec-tests.ion::section-6::array element evaluates to MISSING#coerce
+eval/spec-tests.ion::section-6::array element evaluates to MISSING#error
+eval/spec-tests.ion::section-6::attribute value evaluates to MISSING#coerce
+eval/spec-tests.ion::section-6::attribute value evaluates to MISSING#error
+eval/spec-tests.ion::section-6::bag constructor#coerce
+eval/spec-tests.ion::section-6::bag constructor#error
+eval/spec-tests.ion::section-6::bag element evaluates to MISSING in bag constructor#coerce
+eval/spec-tests.ion::section-6::bag element evaluates to MISSING in bag constructor#error
+eval/spec-tests.ion::section-6::bag element evaluates to MISSING#coerce
+eval/spec-tests.ion::section-6::bag element evaluates to MISSING#error
+eval/spec-tests.ion::section-6::duplicate attribute names#coerce
+eval/spec-tests.ion::section-6::duplicate attribute names#error
+eval/spec-tests.ion::section-6::select value with tuple constructor#coerce
+eval/spec-tests.ion::section-6::select value with tuple constructor#error
+eval/spec-tests.ion::section-6::select value#coerce
+eval/spec-tests.ion::section-6::select value#error
+eval/spec-tests.ion::section-6::tuple constructor and mistyped attribute name#coerce
+eval/spec-tests.ion::section-6::tuple constructor and mistyped attribute name#error
 eval/spec-tests.ion::section-7::data type mismatch in comparison expression#coerce
 eval/spec-tests.ion::section-7::data type mismatch in comparison expression#error
 eval/spec-tests.ion::section-7::data type mismatch in logical expression#error
@@ -2910,6 +3022,8 @@ eval/spec-tests.ion::section-7::equality of scalar null#coerce
 eval/spec-tests.ion::section-7::equality of scalar null#error
 eval/spec-tests.ion::section-7::missing value in arithmetic expression#coerce
 eval/spec-tests.ion::section-7::missing value in arithmetic expression#error
+eval/spec-tests.ion::section-8::WHERE clause eliminating absent values#coerce
+eval/spec-tests.ion::section-8::WHERE clause eliminating absent values#error
 eval/spec-tests.ion::section-8::missing and true#coerce
 eval/spec-tests.ion::section-8::missing and true#error
 eval/spec-tests.ion::section-8::missing is missing#coerce

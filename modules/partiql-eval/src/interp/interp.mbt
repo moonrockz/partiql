@@ -1,12 +1,12 @@
 ///|
 fn lookup(
-  env : Array[(String, @value.Value)],
+  globals : Array[(String, @value.Value)],
   name : String,
   delimited : Bool,
   span : @ast.Span,
 ) -> @value.Value raise @plan.EvalError {
   let wanted = if delimited { name } else { name.to_lower() }
-  for entry in env {
+  for entry in globals {
     let key = if delimited { entry.0 } else { entry.0.to_lower() }
     if key == wanted {
       return entry.1
@@ -67,8 +67,8 @@ fn expand(
 fn run_path(
   base : @value.Value,
   steps : Array[@plan.Step],
-  env : Array[(String, @value.Value)],
-  mode : @plan.Mode,
+  env : Env,
+  ctx : Ctx,
   span : @ast.Span,
 ) -> @value.Value raise @plan.EvalError {
   let mut single : @value.Value = base
@@ -77,17 +77,17 @@ fn run_path(
     match step {
       AllElements | AllFields =>
         many = match many {
-          None => Some(expand(single, step, mode, span))
+          None => Some(expand(single, step, ctx.mode, span))
           Some(items) => {
             let out = []
             for item in items {
-              out.append(expand(item, step, mode, span))
+              out.append(expand(item, step, ctx.mode, span))
             }
             Some(out)
           }
         }
       _ => {
-        let apply = (v : @value.Value) => navigate(v, step, env, mode, span)
+        let apply = (v : @value.Value) => navigate(v, step, env, ctx, span)
         match many {
           None => single = apply(single)
           Some(items) => {
@@ -114,18 +114,18 @@ fn run_path(
 fn navigate(
   v : @value.Value,
   step : @plan.Step,
-  env : Array[(String, @value.Value)],
-  mode : @plan.Mode,
+  env : Env,
+  ctx : Ctx,
   span : @ast.Span,
 ) -> @value.Value raise @plan.EvalError {
   match step {
     Field(name, delimited~) =>
-      typed(mode, span, () => @ops.field(v, name, delimited~))
+      typed(ctx.mode, span, () => @ops.field(v, name, delimited~))
     Index(e) => {
-      let i = run(e, env, mode)
+      let i = eval(e, env, ctx)
       // A string literal, also an Ion one, names a field.
       let named = e is Const(c, _) && unboxed(c) is String(_)
-      typed(mode, span, () => @ops.index(v, i, named~))
+      typed(ctx.mode, span, () => @ops.index(v, i, named~))
     }
     AllElements | AllFields => v
   }
@@ -142,26 +142,26 @@ fn unboxed(v : @value.Value) -> @value.Value {
 ///|
 fn run_all(
   items : Array[@plan.Expr],
-  env : Array[(String, @value.Value)],
-  mode : @plan.Mode,
+  env : Env,
+  ctx : Ctx,
 ) -> Array[@value.Value] raise @plan.EvalError {
-  items.map(item => run(item, env, mode))
+  items.map(item => eval(item, env, ctx))
 }
 
 ///|
 fn run_tuple(
   fields : Array[(@plan.Expr, @plan.Expr)],
-  env : Array[(String, @value.Value)],
-  mode : @plan.Mode,
+  env : Env,
+  ctx : Ctx,
 ) -> @value.Value raise @plan.EvalError {
   let out : Array[(String, @value.Value)] = []
   for field in fields {
-    let value = run(field.1, env, mode)
-    match unboxed(run(field.0, env, mode)) {
+    let value = eval(field.1, env, ctx)
+    match unboxed(eval(field.0, env, ctx)) {
       String(key) => if !(value is Missing) { out.push((key, value)) }
       Missing => ()
       _ =>
-        match mode {
+        match ctx.mode {
           Permissive => ()
           Strict =>
             raise TypeError(
@@ -230,18 +230,18 @@ fn widen(v : @value.Value, t : @value.MapType) -> @value.Value {
 /// is an error (strict). The key and value types are inferred.
 fn run_map(
   entries : Array[(@plan.Expr, @plan.Expr)],
-  env : Array[(String, @value.Value)],
-  mode : @plan.Mode,
+  env : Env,
+  ctx : Ctx,
   span : @ast.Span,
 ) -> @value.Value raise @plan.EvalError {
   let pairs : Array[(@value.Value, @value.Value)] = []
   // Keys and values are lowered first, so that an Ion literal counts as the
   // value it stands for in the inferred types.
   for entry in entries {
-    let key = unboxed(run(entry.0, env, mode))
-    let value = unboxed(run(entry.1, env, mode))
+    let key = unboxed(eval(entry.0, env, ctx))
+    let value = unboxed(eval(entry.1, env, ctx))
     if key is (Null | Missing) {
-      match mode {
+      match ctx.mode {
         Permissive => continue
         Strict => return key
       }
@@ -260,7 +260,7 @@ fn run_map(
     let entry = (key, widen(pair.1, value_type))
     match unique.search_by(p => @value.eqg(p.0, key)) {
       Some(at) =>
-        match mode {
+        match ctx.mode {
           Permissive => unique[at] = entry
           Strict => raise TypeError(message="a duplicate map key", span~)
         }
@@ -298,25 +298,25 @@ fn run_case(
   operand : @plan.Expr?,
   branches : Array[(@plan.Expr, @plan.Expr)],
   default : @plan.Expr?,
-  env : Array[(String, @value.Value)],
-  mode : @plan.Mode,
+  env : Env,
+  ctx : Ctx,
 ) -> @value.Value raise @plan.EvalError {
   let subject = match operand {
-    Some(e) => Some(run(e, env, mode))
+    Some(e) => Some(eval(e, env, ctx))
     None => None
   }
   for branch in branches {
-    let condition = run(branch.0, env, mode)
+    let condition = eval(branch.0, env, ctx)
     let chosen = match subject {
       Some(v) => @ops.equal(v, condition)
       None => condition
     }
     if unboxed(chosen) is Bool(true) {
-      return run(branch.1, env, mode)
+      return eval(branch.1, env, ctx)
     }
   }
   match default {
-    Some(e) => run(e, env, mode)
+    Some(e) => eval(e, env, ctx)
     None => Null
   }
 }
@@ -345,7 +345,9 @@ fn span_of(e : @plan.Expr) -> @ast.Span {
     | IsType(_, _, negated=_, span)
     | Case(operand=_, branches=_, default=_, span)
     | Coalesce(_, span)
-    | NullIf(_, _, span) => span
+    | NullIf(_, _, span)
+    | Local(_, span)
+    | Select(_, _, distinct=_, span) => span
   }
 }
 
@@ -364,8 +366,8 @@ priv enum Link {
 /// left side, then its right side, then the operator.
 fn run_chain(
   e : @plan.Expr,
-  env : Array[(String, @value.Value)],
-  mode : @plan.Mode,
+  env : Env,
+  ctx : Ctx,
 ) -> @value.Value raise @plan.EvalError {
   let links : Array[Link] = []
   let mut leaf = e
@@ -386,21 +388,21 @@ fn run_chain(
       _ => break
     }
   }
-  let mut result = run(leaf, env, mode)
+  let mut result = eval(leaf, env, ctx)
   for link in links.rev_iter() {
     let a = result
     result = match link {
       BinaryLink(op, r, span) => {
-        let b = run(r, env, mode)
-        typed(mode, span, () => @ops.binary(op, a, b))
+        let b = eval(r, env, ctx)
+        typed(ctx.mode, span, () => @ops.binary(op, a, b))
       }
       AndLink(r, span) => {
-        let b = run(r, env, mode)
-        typed(mode, span, () => @ops.and_(a, b))
+        let b = eval(r, env, ctx)
+        typed(ctx.mode, span, () => @ops.and_(a, b))
       }
       OrLink(r, span) => {
-        let b = run(r, env, mode)
-        typed(mode, span, () => @ops.or_(a, b))
+        let b = eval(r, env, ctx)
+        typed(ctx.mode, span, () => @ops.or_(a, b))
       }
     }
   }
@@ -408,75 +410,97 @@ fn run_chain(
 }
 
 ///|
-/// Runs a plan against the global bindings `env`. Recursion follows the
-/// plan's depth, which lowering bounds; operator chains run in a loop.
-pub fn run(
+/// Runs a plan against the global bindings and the mode of `ctx`.
+pub fn run(e : @plan.Expr, ctx : Ctx) -> @value.Value raise @plan.EvalError {
+  eval(e, Top, ctx)
+}
+
+///|
+/// Evaluates an expression in the binding tuple `env`. Recursion follows the
+/// plan's depth, which lowering bounds; operator chains run in a loop, and
+/// the rows of a query in an iterator.
+fn eval(
   e : @plan.Expr,
-  env : Array[(String, @value.Value)],
-  mode : @plan.Mode,
+  env : Env,
+  ctx : Ctx,
 ) -> @value.Value raise @plan.EvalError {
   match e {
     Const(v, _) => v
-    Global(name, delimited~, span) => lookup(env, name, delimited, span)
-    ListOf(items, _) => List(run_all(items, env, mode))
-    BagOf(items, _) => Bag(@value.Bag::new(run_all(items, env, mode)))
-    TupleOf(fields, _) => run_tuple(fields, env, mode)
+    Global(name, delimited~, span) => lookup(ctx.globals, name, delimited, span)
+    ListOf(items, _) => List(run_all(items, env, ctx))
+    BagOf(items, _) => Bag(@value.Bag::new(run_all(items, env, ctx)))
+    TupleOf(fields, _) => run_tuple(fields, env, ctx)
     Path(base, steps, span) =>
-      run_path(run(base, env, mode), steps, env, mode, span)
+      run_path(eval(base, env, ctx), steps, env, ctx, span)
     IsNull(x, negated~, _) => {
-      let v = unboxed(run(x, env, mode))
+      let v = unboxed(eval(x, env, ctx))
       Bool((v is Null || v is Missing) != negated)
     }
     IsMissing(x, negated~, _) => {
-      let v = unboxed(run(x, env, mode))
+      let v = unboxed(eval(x, env, ctx))
       Bool((v is Missing) != negated)
     }
-    MapOf(entries, span) => run_map(entries, env, mode, span)
+    MapOf(entries, span) => run_map(entries, env, ctx, span)
     Unary(op, x, span) => {
-      let v = run(x, env, mode)
-      typed(mode, span, () => @ops.neg(v, negate=op is Neg))
+      let v = eval(x, env, ctx)
+      typed(ctx.mode, span, () => @ops.neg(v, negate=op is Neg))
     }
-    Binary(_, _, _, _) | And(_, _, _) | Or(_, _, _) => run_chain(e, env, mode)
+    Binary(_, _, _, _) | And(_, _, _) | Or(_, _, _) => run_chain(e, env, ctx)
     Not(x, span) => {
-      let v = run(x, env, mode)
-      typed(mode, span, () => @ops.not_(v))
+      let v = eval(x, env, ctx)
+      typed(ctx.mode, span, () => @ops.not_(v))
     }
     BoolTest(x, truth, negated~, _) =>
-      Bool(@ops.bool_test(run(x, env, mode), truth, negated~))
+      Bool(@ops.bool_test(eval(x, env, ctx), truth, negated~))
     Like(x, pattern~, escape~, negated~, span) => {
-      let v = run(x, env, mode)
-      let p = run(pattern, env, mode)
-      let e = escape.map(e => run(e, env, mode))
-      negate(typed(mode, span, () => @ops.like(v, p, e)), negated, mode, span)
+      let v = eval(x, env, ctx)
+      let p = eval(pattern, env, ctx)
+      let e = escape.map(e => eval(e, env, ctx))
+      negate(
+        typed(ctx.mode, span, () => @ops.like(v, p, e)),
+        negated,
+        ctx.mode,
+        span,
+      )
     }
     Between(x, low~, high~, negated~, span) => {
-      let v = run(x, env, mode)
-      let lo = run(low, env, mode)
-      let hi = run(high, env, mode)
-      let above = typed(mode, span, () => @ops.greater_eq(v, lo))
-      let below = typed(mode, span, () => @ops.less_eq(v, hi))
+      let v = eval(x, env, ctx)
+      let lo = eval(low, env, ctx)
+      let hi = eval(high, env, ctx)
+      let above = typed(ctx.mode, span, () => @ops.greater_eq(v, lo))
+      let below = typed(ctx.mode, span, () => @ops.less_eq(v, hi))
       // MISSING if any operand or comparison is MISSING (spec M4a §5).
       let combined = if [v, lo, hi, above, below].any(x => unboxed(x) is Missing) {
         @value.Value::Missing
       } else {
-        typed(mode, span, () => @ops.and_(above, below))
+        typed(ctx.mode, span, () => @ops.and_(above, below))
       }
-      negate(combined, negated, mode, span)
+      negate(combined, negated, ctx.mode, span)
     }
     In(x, c, negated~, span) => {
-      let v = run(x, env, mode)
-      let items = run(c, env, mode)
-      negate(typed(mode, span, () => @ops.in_(v, items)), negated, mode, span)
+      let v = eval(x, env, ctx)
+      let items = eval(c, env, ctx)
+      negate(
+        typed(ctx.mode, span, () => @ops.in_(v, items)),
+        negated,
+        ctx.mode,
+        span,
+      )
     }
     IsType(x, t, negated~, span) => {
-      let v = run(x, env, mode)
-      negate(typed(mode, span, () => @ops.is_type(v, t)), negated, mode, span)
+      let v = eval(x, env, ctx)
+      negate(
+        typed(ctx.mode, span, () => @ops.is_type(v, t)),
+        negated,
+        ctx.mode,
+        span,
+      )
     }
     Case(operand~, branches~, default~, _) =>
-      run_case(operand, branches, default, env, mode)
+      run_case(operand, branches, default, env, ctx)
     Coalesce(items, _) => {
       for item in items {
-        let v = run(item, env, mode)
+        let v = eval(item, env, ctx)
         if !(unboxed(v) is (Null | Missing)) {
           return v
         }
@@ -484,13 +508,21 @@ pub fn run(
       Null
     }
     NullIf(a, b, _) => {
-      let x = run(a, env, mode)
-      let y = run(b, env, mode)
+      let x = eval(a, env, ctx)
+      let y = eval(b, env, ctx)
       if @ops.equal(x, y) is Bool(true) {
         Null
       } else {
         x
       }
     }
+    Local(name, span) =>
+      match env.find(name) {
+        Some(v) => v
+        // Lowering resolves a local name only when a FROM declares it.
+        None => raise DataError(message="undefined variable \{name}", span~)
+      }
+    Select(rel, projection, distinct~, span) =>
+      select(rel, projection, distinct, env, ctx, span)
   }
 }
