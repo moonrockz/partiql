@@ -26,10 +26,13 @@ test "names in queries" {
     soft
     .expect(names_ev("SELECT VALUE a FROM [5] AS a"))
     .to_equal(bag([Int(5)]))
-    // a global is visible inside a query
+    // a global is visible inside a query; a variable's attribute wins
     soft
     .expect(names_ev("SELECT VALUE a FROM t AS r"))
-    .to_equal(bag([Int(100), Int(100)]))
+    .to_equal(bag([Int(1), Int(3)]))
+    soft
+    .expect(names_ev("SELECT VALUE a FROM [{'b': 1}] AS r"))
+    .to_equal(bag([Int(100)]))
     // an unbound name is an attribute of a FROM variable's tuple
     soft
     .expect(names_ev("SELECT VALUE b FROM t AS r"))
@@ -158,5 +161,20 @@ test "case and scope of implicit names" {
     .to_equal(bag([Int(1), Int(2)]))
     // `@t` outside a query is unchanged
     soft.expect(names_ev("@a")).to_equal(Int(100))
+  })
+}
+
+///|
+test "implicit name: variable attribute before global" {
+  let env = @eval.Bindings::of_tuple(
+    @value.Tuple::new([("a", String("global-a"))]),
+  )
+  @expect.expect_all(soft => {
+    soft
+    .expect(@eval.evaluate_text("SELECT VALUE a FROM [{'a': 1}] AS x", env~))
+    .to_equal(bag([Int(1)]))
+    soft
+    .expect(@eval.evaluate_text("SELECT VALUE a FROM [{'b': 1}] AS x", env~))
+    .to_equal(bag([String("global-a")]))
   })
 }

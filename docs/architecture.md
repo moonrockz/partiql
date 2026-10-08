@@ -126,12 +126,12 @@ graph TD
     `Unsupported` with a span for a form that is not evaluated yet, or for
     a type parameter that `IS` does not check. `query.mbt` lowers a query
     block and resolves names: a name is a local (FROM, AT or LET variable),
-    a global binding, or an attribute of an in-scope FROM variable, in that
+    an attribute of an in-scope query variable, or a global binding, in that
     order. A FROM source expression finds a global before a FROM
-    variable. An unbound name with FROM variables in scope
-    resolves as a global first, then as the attribute of the first in-scope
-    FROM variable tuple that has it (innermost query first, in FROM order);
-    found nowhere it is MISSING in permissive mode and a `TypeError` in
+    variable. An unbound name with query variables in scope (FROM AS and AT,
+    and LET) resolves first as the attribute of the first in-scope variable
+    tuple that has it (innermost query first, in declared order), then as a
+    global; found nowhere it is MISSING in permissive mode and a `TypeError` in
     strict mode. With no FROM variable in scope it lowers to a global, and
     the undefined-variable `DataError` is raised at run time in both modes.
     `depth.mbt` is the depth guard:

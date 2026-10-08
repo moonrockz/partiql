@@ -28,9 +28,9 @@ fn lookup(
 }
 
 ///|
-/// A name that no FROM variable declares: the global of that name, else the
-/// attribute of that name of the first tuple among the variables `locals`
-/// that is bound in `env`. Found nowhere, it is MISSING in permissive
+/// A name that no variable declares: the attribute of that name of the first
+/// tuple among the variables `locals` that is bound in `env`, else the global
+/// of that name. Found nowhere, it is MISSING in permissive
 /// mode and a `TypeError` in strict mode, like the path step `variable.name`.
 fn implicit(
   name : String,
@@ -40,9 +40,6 @@ fn implicit(
   ctx : Ctx,
   span : @ast.Span,
 ) -> @value.Value raise @plan.EvalError {
-  if find_global(ctx.globals, name, delimited) is Some(v) {
-    return v
-  }
   for variable in locals {
     if env.find(variable) is Some(v) {
       let found = @ops.field(v, name, delimited~) catch {
@@ -53,6 +50,9 @@ fn implicit(
         return found
       }
     }
+  }
+  if find_global(ctx.globals, name, delimited) is Some(v) {
+    return v
   }
   typed(ctx.mode, span, () => raise TypeFailure("undefined variable \{name}"))
 }

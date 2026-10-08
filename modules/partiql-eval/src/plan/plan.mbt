@@ -59,10 +59,11 @@ pub(all) enum Expr {
   /// the FROM variable `variable` (partiql-tests select.ion,
   /// `joinWithShadowedGlobal`; `@name` selects the variable only).
   GlobalOrLocal(String, variable~ : String, delimited~ : Bool, @ast.Span)
-  /// A name that no FROM variable declares, inside a query: the global of
-  /// that name, else the attribute of that name of the first tuple among the
-  /// FROM variables `locals` (innermost query first, each in FROM order),
-  /// else MISSING (permissive) or a `TypeError` (strict).
+  /// A name that no variable declares, inside a query: the attribute of that
+  /// name of the first tuple among the query variables `locals` (FROM AS and
+  /// AT, and LET; innermost query first, each in declared order), else the
+  /// global of that name, else MISSING (permissive) or a `TypeError`
+  /// (strict).
   Implicit(String, delimited~ : Bool, locals~ : Array[String], @ast.Span)
   /// A query block: the projection of each binding tuple of `rel`, as a bag.
   Select(Rel, Projection, distinct~ : Bool, @ast.Span)
