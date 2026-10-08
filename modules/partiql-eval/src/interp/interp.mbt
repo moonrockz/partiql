@@ -30,8 +30,8 @@ fn lookup(
 ///|
 /// A name that no FROM variable declares: the global of that name, else the
 /// attribute of that name of the first tuple among the variables `locals`
-/// that is bound in `env`. Found nowhere, it is the undefined-variable
-/// `DataError` in both modes (spec M4b1 §4).
+/// that is bound in `env`. Found nowhere, it is MISSING in permissive
+/// mode and a `TypeError` in strict mode, like the path step `variable.name`.
 fn implicit(
   name : String,
   delimited : Bool,
@@ -54,7 +54,7 @@ fn implicit(
       }
     }
   }
-  raise DataError(message="undefined variable \{name}", span~)
+  typed(ctx.mode, span, () => raise TypeFailure("undefined variable \{name}"))
 }
 
 ///|

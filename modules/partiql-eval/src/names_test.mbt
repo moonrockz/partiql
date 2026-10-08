@@ -32,8 +32,14 @@ test "names in queries" {
     .to_equal(bag([Int(100), Int(100)]))
     // an unbound name is an attribute of a FROM variable's tuple
     soft
-    .expect(names_ev("SELECT VALUE b FROM [{'a': 1, 'b': 2}] AS r"))
-    .to_equal(bag([Int(2)]))
+    .expect(names_ev("SELECT VALUE b FROM t AS r"))
+    .to_equal(bag([Int(2), Missing]))
+    soft
+    .expect_call(() => names_ev("SELECT VALUE b FROM t AS r", mode=Strict))
+    .to_raise_matching(
+      e => e is @eval.EvalError::TypeError(..),
+      description="TypeError",
+    )
     // @x takes locals only
     soft
     .expect(names_ev("SELECT VALUE @r.a FROM t AS r"))
@@ -83,16 +89,13 @@ test "implicit attributes in FROM order" {
 test "a name found nowhere" {
   @expect.expect_all(soft => {
     soft
-    .expect_call(() => names_ev("SELECT VALUE nope FROM t AS r"))
-    .to_raise_matching(
-      e => e is @eval.EvalError::DataError(..),
-      description="DataError",
-    )
+    .expect(names_ev("SELECT VALUE nope FROM t AS r"))
+    .to_equal(bag([Missing, Missing]))
     soft
     .expect_call(() => names_ev("SELECT VALUE nope FROM t AS r", mode=Strict))
     .to_raise_matching(
-      e => e is @eval.EvalError::DataError(..),
-      description="DataError",
+      e => e is @eval.EvalError::TypeError(..),
+      description="TypeError",
     )
     // `@t` in the first source of a query is a variable, not the global `t`
     soft
@@ -109,11 +112,8 @@ test "a name found nowhere" {
     )
     // a delimited name matches an attribute of the same case only
     soft
-    .expect_call(() => names_ev("SELECT VALUE \"X\" FROM [{'x': 1}] AS p"))
-    .to_raise_matching(
-      e => e is @eval.EvalError::DataError(..),
-      description="DataError",
-    )
+    .expect(names_ev("SELECT VALUE \"X\" FROM [{'x': 1}] AS p"))
+    .to_equal(bag([Missing]))
     soft
     .expect_call(() => names_ev("nope"))
     .to_raise_matching(
