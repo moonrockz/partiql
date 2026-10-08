@@ -74,7 +74,7 @@ pub(all) enum Expr {
 ///|
 pub(all) enum SubqueryUse {
   /// One value: NULL for no row, the value of the column for one row, and
-  /// for more rows MISSING (permissive) or a `DataError` (strict).
+  /// for more rows MISSING (permissive) or a `TypeError` (strict).
   Scalar
   /// The bag of the value of the column of each row (`x IN (SELECT a ...)`).
   Column

@@ -141,7 +141,7 @@ fn select_at(
                   Some(id) => id.text
                   None => implicit_name(e, i)
                 },
-                scalar_at(e, inner, depth),
+                lower_at(e, inner, depth),
               )
             AllFields(e, ..) => @plan.Item::AllFields(lower_at(e, inner, depth))
           },
@@ -270,7 +270,7 @@ fn from_leaf(
   let as_ = from_name(source, sources.val)
   sources.val += 1
   let at = source.at.map(id => id.text)
-  let expr = lower_at(source.expr, scope.inner(names).for_source(), depth)
+  let expr = lower_plain(source.expr, scope.inner(names).for_source(), depth)
   if at is Some(name) {
     names.push(name)
   }
@@ -302,18 +302,21 @@ fn is_single_column(e : @ast.Expr) -> Bool {
 }
 
 ///|
-/// Lowers an operand that needs one value: a single-column `SELECT` there
-/// gives NULL for no row, its value for one row (spec M4b1 §9).
-fn scalar_at(
+/// Lowers an expression where a FROM source, the collection of an `IN` or a
+/// statement stands: a subquery there is not coerced.
+fn lower_plain(
   e : @ast.Expr,
   scope : Scope,
   depth : Int,
 ) -> @plan.Expr raise @plan.EvalError {
-  let inner = lower_at(e, scope, depth)
-  if is_single_column(e) {
-    Subquery(inner, Scalar, e.span)
-  } else {
-    inner
+  match e.kind {
+    Query(q) => {
+      if depth >= max_depth {
+        raise DataError(message="expression is too deep", span=e.span)
+      }
+      query_at(q, scope, depth + 1)
+    }
+    _ => lower_at(e, scope, depth)
   }
 }
 
@@ -325,7 +328,7 @@ fn column_at(
   scope : Scope,
   depth : Int,
 ) -> @plan.Expr raise @plan.EvalError {
-  let inner = lower_at(e, scope, depth)
+  let inner = lower_plain(e, scope, depth)
   if is_single_column(e) {
     Subquery(inner, Column, e.span)
   } else {

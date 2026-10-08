@@ -570,7 +570,7 @@ fn column_value(row : @value.Value) -> @value.Value {
 /// A single-column `SELECT` where one value (`Scalar`) or a collection
 /// (`Column`) is needed. More than one row for a value is MISSING in
 /// permissive mode (partiql-tests spec-tests section 10, where the order with
-/// two customers has no `customerName`) and a `DataError` in strict mode.
+/// two customers has no `customerName`) and a `TypeError` in strict mode.
 fn subquery(
   rows : @value.Value,
   use_ : @plan.SubqueryUse,
@@ -591,7 +591,7 @@ fn subquery(
           match ctx.mode {
             Permissive => Missing
             Strict =>
-              raise DataError(
+              raise TypeError(
                 message="a subquery that gives one value found several rows",
                 span~,
               )

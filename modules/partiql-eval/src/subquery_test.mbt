@@ -18,15 +18,15 @@ test "SQL coercion of a single-column SELECT" {
     soft.expect(ev("(SELECT x FROM [] AS x) IS NULL")).to_equal(Bool(true))
     soft.expect(ev("1 + (SELECT x FROM [2] AS x)")).to_equal(Int(3))
     // more than one row: MISSING in permissive mode (spec-tests section 10),
-    // a DataError in strict mode
+    // a TypeError in strict mode
     soft
     .expect(ev("(SELECT x FROM [1, 2] AS x) IS MISSING"))
     .to_equal(Bool(true))
     soft
     .expect_call(() => ev("1 = (SELECT x FROM [1, 2] AS x)", mode=Strict))
     .to_raise_matching(
-      e => e is @eval.EvalError::DataError(..),
-      description="DataError",
+      e => e is @eval.EvalError::TypeError(..),
+      description="TypeError",
     )
     // SELECT VALUE is never coerced
     soft.expect(ev("1 = (SELECT VALUE x FROM [1] AS x)")).to_equal(Bool(false))
@@ -83,4 +83,59 @@ test "nested coerced subqueries evaluate on every target" {
   // The parser limits the nesting before the depth guard can (more than about
   // 40 levels is a syntax error).
   @expect.expect(ev(nested_subqueries(30))).to_equal(Int(1))
+}
+
+///|
+test "a single-column SELECT is coerced in every position but FROM, IN and the top" {
+  @expect.expect_all(soft => {
+    soft.expect(ev("(SELECT x FROM [true] AS x) AND true")).to_equal(Bool(true))
+    soft.expect(ev("true AND (SELECT x FROM [true] AS x)")).to_equal(Bool(true))
+    soft.expect(ev("(SELECT x FROM [false] AS x) OR true")).to_equal(Bool(true))
+    soft.expect(ev("false OR (SELECT x FROM [true] AS x)")).to_equal(Bool(true))
+    soft.expect(ev("NOT (SELECT x FROM [false] AS x)")).to_equal(Bool(true))
+    soft
+    .expect(
+      ev("SELECT VALUE y FROM [1, 2] AS y WHERE (SELECT x FROM [true] AS x)"),
+    )
+    .to_equal(bag_of([Int(1), Int(2)]))
+    soft
+    .expect(
+      ev("SELECT VALUE z FROM [1] AS y LET (SELECT x FROM [7] AS x) AS z"),
+    )
+    .to_equal(bag_of([Int(7)]))
+    soft
+    .expect(ev("SELECT VALUE (SELECT x FROM [5] AS x) FROM [1] AS y"))
+    .to_equal(bag_of([Int(5)]))
+    soft.expect(ev("[(SELECT x FROM [5] AS x)]")).to_equal(List([Int(5)]))
+    soft.expect(ev("(SELECT x FROM [{'a': 3}] AS x).a")).to_equal(Int(3))
+    // not coerced: FROM sources, the right side of IN, the statement
+    soft
+    .expect(ev("SELECT VALUE y FROM (SELECT x FROM [5] AS x) AS y"))
+    .to_equal(bag_of([tuple([("x", Int(5))])]))
+    soft
+    .expect(ev("SELECT x FROM [5] AS x"))
+    .to_equal(bag_of([tuple([("x", Int(5))])]))
+    soft
+    .expect(ev("(SELECT x FROM [5] AS x)"))
+    .to_equal(bag_of([tuple([("x", Int(5))])]))
+    soft.expect(ev("5 IN (SELECT x FROM [5] AS x)")).to_equal(Bool(true))
+  })
+}
+
+///|
+test "array coercion of a subquery is unsupported" {
+  @expect.expect_all(soft => {
+    soft
+    .expect_call(() => ev("[1] = (SELECT x FROM [1] AS x)"))
+    .to_raise_matching(
+      e => e is @eval.EvalError::Unsupported(..),
+      description="Unsupported",
+    )
+    soft
+    .expect_call(() => ev("(SELECT x FROM [1] AS x) <> [1]"))
+    .to_raise_matching(
+      e => e is @eval.EvalError::Unsupported(..),
+      description="Unsupported",
+    )
+  })
 }

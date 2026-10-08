@@ -177,7 +177,7 @@ fn lower_step(
 /// One link of a left-associative chain: the operator, its right operand and
 /// the span of the whole link.
 priv enum Link {
-  BinaryLink(@ast.BinaryOp, @ast.Expr, @ast.Span)
+  BinaryLink(@ast.BinaryOp, @ast.Expr, @ast.Expr, @ast.Span)
   AndLink(@ast.Expr, @ast.Span)
   OrLink(@ast.Expr, @ast.Span)
 }
@@ -195,7 +195,7 @@ fn lower_chain(
   while true {
     match leaf.kind {
       Binary(op, l, r) => {
-        links.push(BinaryLink(op, r, leaf.span))
+        links.push(BinaryLink(op, l, r, leaf.span))
         leaf = l
       }
       And(l, r) => {
@@ -209,11 +209,19 @@ fn lower_chain(
       _ => break
     }
   }
-  let mut result = scalar_at(leaf, scope, depth)
+  let mut result = lower_at(leaf, scope, depth)
   for link in links.rev_iter() {
     result = match link {
-      BinaryLink(op, r, span) =>
-        Binary(op, result, scalar_at(r, scope, depth), span)
+      BinaryLink(op, l, r, span) => {
+        if is_comparison(op) &&
+          (
+            (is_single_column(l) && is_array_literal(r)) ||
+            (is_array_literal(l) && is_single_column(r))
+          ) {
+          return unsupported("array coercion of a subquery (M4b2)", span)
+        }
+        Binary(op, result, lower_at(r, scope, depth), span)
+      }
       AndLink(r, span) => And(result, lower_at(r, scope, depth), span)
       OrLink(r, span) => Or(result, lower_at(r, scope, depth), span)
     }
@@ -247,7 +255,7 @@ fn ion_depth(v : @ion_core.IonValue) -> Int {
 ///|
 /// Lowers an expression.
 pub fn lower(e : @ast.Expr) -> @plan.Expr raise @plan.EvalError {
-  within_depth(lower_at(e, Scope::top(), 0))
+  within_depth(lower_plain(e, Scope::top(), 0))
 }
 
 ///|
@@ -298,7 +306,14 @@ fn lower_at(
     Bag(items) => BagOf(lower_all(items, scope, depth), span)
     Struct(fields) => TupleOf(lower_pairs(fields, scope, depth), span)
     Map(entries) => MapOf(lower_pairs(entries, scope, depth), span)
-    Query(q) => query_at(q, scope, depth)
+    Query(q) => {
+      let inner = query_at(q, scope, depth)
+      if is_single_column(e) {
+        Subquery(inner, Scalar, span)
+      } else {
+        inner
+      }
+    }
     Values(rows) => BagOf(lower_all(rows, scope, depth), span)
     GraphMatch(_) => unsupported("graph MATCH (later)", span)
     Parameter => unsupported("a parameter (later)", span)
@@ -312,47 +327,46 @@ fn lower_at(
     // `-9223372036854775808` is a literal: its magnitude is out of range.
     Unary(Neg, { kind: Lit(Int(text)), .. }) =>
       Const(integer_value("-" + text, span), span)
-    Unary(op, x) => Unary(op, scalar_at(x, scope, depth), span)
+    Unary(op, x) => Unary(op, lower_at(x, scope, depth), span)
     Binary(_, _, _) | And(_, _) | Or(_, _) => lower_chain(e, scope, depth)
     Not(x) => Not(lower_at(x, scope, depth), span)
     BoolTest(x, truth, negated~) =>
-      BoolTest(scalar_at(x, scope, depth), truth, negated~, span)
+      BoolTest(lower_at(x, scope, depth), truth, negated~, span)
     Like(x, pattern~, escape~, negated~) =>
       Like(
-        scalar_at(x, scope, depth),
-        pattern=scalar_at(pattern, scope, depth),
-        escape=escape.map(x => scalar_at(x, scope, depth)),
+        lower_at(x, scope, depth),
+        pattern=lower_at(pattern, scope, depth),
+        escape=escape.map(x => lower_at(x, scope, depth)),
         negated~,
         span,
       )
     Between(x, low~, high~, negated~) =>
       Between(
-        scalar_at(x, scope, depth),
-        low=scalar_at(low, scope, depth),
-        high=scalar_at(high, scope, depth),
+        lower_at(x, scope, depth),
+        low=lower_at(low, scope, depth),
+        high=lower_at(high, scope, depth),
         negated~,
         span,
       )
     In(x, c, negated~) =>
-      In(scalar_at(x, scope, depth), column_at(c, scope, depth), negated~, span)
-    IsNull(x, negated~) => IsNull(scalar_at(x, scope, depth), negated~, span)
+      In(lower_at(x, scope, depth), column_at(c, scope, depth), negated~, span)
+    IsNull(x, negated~) => IsNull(lower_at(x, scope, depth), negated~, span)
     IsMissing(x, negated~) =>
-      IsMissing(scalar_at(x, scope, depth), negated~, span)
+      IsMissing(lower_at(x, scope, depth), negated~, span)
     IsType(x, t, negated~) =>
-      IsType(scalar_at(x, scope, depth), type_test(t, span), negated~, span)
+      IsType(lower_at(x, scope, depth), type_test(t, span), negated~, span)
     Case(operand~, branches~, default~) =>
       Case(
-        operand=operand.map(x => scalar_at(x, scope, depth)),
+        operand=operand.map(x => lower_at(x, scope, depth)),
         branches=branches.map(b => {
-          (scalar_at(b.0, scope, depth), scalar_at(b.1, scope, depth))
+          (lower_at(b.0, scope, depth), lower_at(b.1, scope, depth))
         }),
-        default=default.map(x => scalar_at(x, scope, depth)),
+        default=default.map(x => lower_at(x, scope, depth)),
         span,
       )
-    Coalesce(items) =>
-      Coalesce(items.map(x => scalar_at(x, scope, depth)), span)
+    Coalesce(items) => Coalesce(items.map(x => lower_at(x, scope, depth)), span)
     NullIf(a, b) =>
-      NullIf(scalar_at(a, scope, depth), scalar_at(b, scope, depth), span)
+      NullIf(lower_at(a, scope, depth), lower_at(b, scope, depth), span)
     Overlaps(_, _)
     | Cast(_, _)
     | Extract(_, _)
@@ -364,5 +378,21 @@ fn lower_at(
     | DateDiff(_, _, _)
     | Call(_, _, ..)
     | CallStar(_) => unsupported("a function call (M4d)", span)
+  }
+}
+
+///|
+fn is_comparison(op : @ast.BinaryOp) -> Bool {
+  match op {
+    Eq | Ne | Lt | Le | Gt | Ge => true
+    _ => false
+  }
+}
+
+///|
+fn is_array_literal(e : @ast.Expr) -> Bool {
+  match e.kind {
+    List(_) | Row(_) => true
+    _ => false
   }
 }
