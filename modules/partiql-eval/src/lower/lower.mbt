@@ -276,14 +276,20 @@ fn lower_at(
             Local(name, span)
           }
         None =>
-          match scope.locals() {
-            [] => Global(id.text, delimited=id.delimited, span)
-            locals =>
-              if qualified {
-                raise DataError(message="undefined variable @\{id.text}", span~)
-              } else {
-                Implicit(id.text, delimited=id.delimited, locals~, span)
-              }
+          if scope.outer is None {
+            Global(id.text, delimited=id.delimited, span)
+          } else if qualified {
+            // Inside a query `@x` names a FROM variable only.
+            raise DataError(message="undefined variable @\{id.text}", span~)
+          } else if scope.locals() is [] {
+            Global(id.text, delimited=id.delimited, span)
+          } else {
+            Implicit(
+              id.text,
+              delimited=id.delimited,
+              locals=scope.locals(),
+              span,
+            )
           }
       }
     // Spec M4a §5: a sexp and a row are lists.

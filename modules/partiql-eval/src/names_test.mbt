@@ -32,8 +32,8 @@ test "names in queries" {
     .to_equal(bag([Int(100), Int(100)]))
     // an unbound name is an attribute of a FROM variable's tuple
     soft
-    .expect(names_ev("SELECT VALUE b FROM t AS r"))
-    .to_equal(bag([Int(2), Missing]))
+    .expect(names_ev("SELECT VALUE b FROM [{'a': 1, 'b': 2}] AS r"))
+    .to_equal(bag([Int(2)]))
     // @x takes locals only
     soft
     .expect(names_ev("SELECT VALUE @r.a FROM t AS r"))
@@ -83,13 +83,36 @@ test "implicit attributes in FROM order" {
 test "a name found nowhere" {
   @expect.expect_all(soft => {
     soft
-    .expect(names_ev("SELECT VALUE nope FROM t AS r"))
-    .to_equal(bag([Missing, Missing]))
+    .expect_call(() => names_ev("SELECT VALUE nope FROM t AS r"))
+    .to_raise_matching(
+      e => e is @eval.EvalError::DataError(..),
+      description="DataError",
+    )
     soft
     .expect_call(() => names_ev("SELECT VALUE nope FROM t AS r", mode=Strict))
     .to_raise_matching(
-      e => e is @eval.EvalError::TypeError(..),
-      description="TypeError",
+      e => e is @eval.EvalError::DataError(..),
+      description="DataError",
+    )
+    // `@t` in the first source of a query is a variable, not the global `t`
+    soft
+    .expect_call(() => names_ev("SELECT VALUE 1 FROM @t"))
+    .to_raise_matching(
+      e => e is @eval.EvalError::DataError(..),
+      description="DataError",
+    )
+    soft
+    .expect_call(() => names_ev("SELECT VALUE 1 FROM [1] AS x, @t"))
+    .to_raise_matching(
+      e => e is @eval.EvalError::DataError(..),
+      description="DataError",
+    )
+    // a delimited name matches an attribute of the same case only
+    soft
+    .expect_call(() => names_ev("SELECT VALUE \"X\" FROM [{'x': 1}] AS p"))
+    .to_raise_matching(
+      e => e is @eval.EvalError::DataError(..),
+      description="DataError",
     )
     soft
     .expect_call(() => names_ev("nope"))
@@ -109,5 +132,31 @@ test "a name found nowhere" {
       e => e is @eval.EvalError::DataError(..),
       description="DataError",
     )
+  })
+}
+
+///|
+test "case and scope of implicit names" {
+  @expect.expect_all(soft => {
+    soft
+    .expect(names_ev("SELECT VALUE X FROM [{'x': 1}] AS p"))
+    .to_equal(bag([Int(1)]))
+    soft
+    .expect(names_ev("SELECT VALUE \"x\" FROM [{'x': 1}] AS p"))
+    .to_equal(bag([Int(1)]))
+    // a FROM-source subquery sees an outer variable
+    soft
+    .expect(
+      names_ev(
+        "SELECT VALUE v FROM [{'x': 4}] AS o, (SELECT VALUE x FROM [0] AS i) AS v",
+      ),
+    )
+    .to_equal(bag([Int(4)]))
+    // `@x` in a FROM source finds an earlier variable
+    soft
+    .expect(names_ev("SELECT VALUE y FROM [[1, 2]] AS x, @x AS y"))
+    .to_equal(bag([Int(1), Int(2)]))
+    // `@t` outside a query is unchanged
+    soft.expect(names_ev("@a")).to_equal(Int(100))
   })
 }
