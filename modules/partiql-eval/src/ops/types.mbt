@@ -7,16 +7,17 @@ fn in_range(v : @value.Value, low : Int64, high : Int64) -> Bool {
 }
 
 ///|
-/// The digits left of the point of a decimal, and its scale. Int64: `-e`
-/// must not overflow for the Int minimum.
+/// The digits left of the point of a decimal, and its scale. A positive
+/// exponent adds integer digits (`1e3` is 1000, four digits). Int64: `-e` and
+/// `digits + e` must not overflow at the Int limits.
 fn decimal_shape(d : @ion_core.Decimal) -> (Int64, Int64) {
-  let digits = if d.coefficient().is_zero() {
-    0L
-  } else {
-    digit_count(d.coefficient()).to_int64()
+  if d.coefficient().is_zero() {
+    return (0L, (-d.exponent().to_int64()).max(0L))
   }
-  let scale = (-d.exponent().to_int64()).max(0L)
-  ((digits - scale).max(0L), scale)
+  let digits = digit_count(d.coefficient()).to_int64()
+  let exponent = d.exponent().to_int64()
+  let scale = (-exponent).max(0L)
+  ((digits + exponent).max(0L), scale)
 }
 
 ///|
@@ -143,9 +144,10 @@ pub fn is_type(
       }
     Real | Double(_) => x is Float(_)
     // CHAR(n) holds exactly n characters, VARCHAR(n) at most n (code points).
-    Char(Some(n)) => x is String(s) && s.char_length() == n
+    // CHAR without a length is CHAR(1), as in SQL.
+    Char(length) => x is String(s) && s.char_length() == length.unwrap_or(1)
     Varchar(Some(n)) => x is String(s) && s.char_length() <= n
-    Char(None) | Varchar(None) | String | Symbol => x is String(_)
+    Varchar(None) | String | Symbol => x is String(_)
     Blob => x is Blob(_)
     Clob => x is Clob(_)
     Date => x is Date(_)

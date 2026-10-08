@@ -121,8 +121,11 @@ graph TD
     `Unsupported` with a span for a form that is not evaluated yet, or for
     a type parameter that `IS` does not check. Chains of binary operators,
     AND and OR are lowered in a loop; any other nesting deeper than 200
-    levels (an Ion literal included) is a `DataError`, so no query text
-    overflows the stack.
+    levels (an Ion literal included) is a `DataError`, so the evaluator
+    does not overflow the stack. One known exception is outside this module:
+    the Ion text reader that scans Ion literals recurses per nesting level,
+    so a literal nested about 10,000 levels deep overflows the stack before
+    evaluation starts (moonrockz/ion#65, bead `partiql-5se.9`).
   - `ops`: the semantics of each operator as pure functions on values:
     numeric and decimal arithmetic, comparison, three-valued logic, LIKE,
     datetime and interval arithmetic, type tests and path steps. `=`
