@@ -61,12 +61,13 @@ per assertion and mode: `<id>#coerce` or `<id>#error`.
 - A result of `EvalError::Unsupported` is recorded as not applicable. It is
   never a pass and never an expected error. The not-applicable set shrinks
   as later parts of M4 add queries, functions and CAST.
-- `eval-equiv` cases are not applicable until M4b.
+- `eval-equiv` cases are not applicable until M4b2.
 
 Two cases (`eval/primitives/map.ion`, lines 850 and 1194) expect a DATE
-written as a plain Ion timestamp. Both are not applicable in M4a, because they
-need `map_keys` and UNPIVOT. When they run, the comparison must treat a DATE
-and a midnight UTC TIMESTAMP as equal.
+written as a plain Ion timestamp. Line 850 needs `map_keys` and is not
+applicable. Line 1194 ("unpivot map with date keys") runs since M4b1 and
+fails in both modes, because the comparison does not treat a DATE and a
+midnight UTC TIMESTAMP as equal yet.
 
 A test case whose `statement` names an `equiv_class` is checked once per
 statement of that class (ids end in `[0]`, `[1]`, ...). Test ids have the form
@@ -127,8 +128,8 @@ files, so the codec must accept both.
 ## Current status
 
 After M1 (data model), M1b (MAP and graph), M2 (parser), M2b (graph
-MATCH), M3a (printer), M3b (pretty layout), M3d (error recovery) and M4a
-(expression evaluation):
+MATCH), M3a (printer), M3b (pretty layout), M3d (error recovery), M4a
+(expression evaluation) and M4b1 (query evaluation core):
 
 | Check | Passed | Total | N/A |
 |---|---|---|---|
@@ -139,7 +140,7 @@ MATCH), M3a (printer), M3b (pretty layout), M3d (error recovery) and M4a
 | `print-roundtrip` | 5310 | 5313 | 3 |
 | `pretty-roundtrip` | 5310 | 5313 | 3 |
 | `recovery` | 5410 | 5410 | 0 |
-| `eval` | 2952 | 9960 | 6976 |
+| `eval` | 3719 | 9960 | 6195 |
 
 The 3 `eval-parse` failures are corpus defects (bead `partiql-zhj.9`):
 
@@ -153,46 +154,68 @@ The 3 `eval-parse` failures are corpus defects (bead `partiql-zhj.9`):
 
 ### The `eval` check
 
-Of 9960 assertions, 2952 pass and 6976 are not applicable: they need queries,
-functions, CAST, graph MATCH or `?`, which later parts of M4 add. 32 fail. To
-list them, run `PARTIQL_CONFORMANCE_SHOW=eval mise run test:conformance`. The
-32 ids come from 18 cases. Each case fails in both modes, except three that
-fail in permissive mode only and one that fails in strict mode only. The
+Of 9960 assertions, 3719 pass and 6195 are not applicable: they need ORDER BY,
+LIMIT, set operations, PIVOT, WITH, grouping, functions, CAST, graph MATCH or
+`?`, which later parts of M4 add. 46 fail. M4b1 raised the passes from 2952
+to 3719 (767 more) and cut the not-applicable set by 781. To list the
+failures, run `PARTIQL_CONFORMANCE_SHOW=eval mise run test:conformance`. Each
+case fails in both modes, except where a reason below says otherwise. The
 reasons:
 
-- **Corpus parser defects (4 ids).** `cardinality.ion` (the case with `()`)
-  and `group-by.ion` "max and min of rep grouped by fiscal_year" do not parse
-  (see the `eval-parse` defects above).
+- **Corpus defects (6 ids).** `cardinality.ion` (the case with `()`) and
+  `group-by.ion` "max and min of rep grouped by fiscal_year" do not parse
+  (see the `eval-parse` defects above). `select.ion` `selectDistinctExpression`
+  writes strings as `"1"`, which is a quoted identifier, so the name is
+  undefined.
 - **Undefined variable (3 ids).** The two `path.ion` cases "subscript with
   non-existent variable" and the `spec-tests.ion` case "data type mismatch in
-  logical expression" expect MISSING in permissive mode.
-  The dedicated cases in `undefined-variable-behavior.ion` expect an error
-  in both modes, and the evaluator follows them: an undefined name is a
-  `DataError`. M4b can revisit this when name resolution moves to the
-  lowering.
-- **Interval times or divided by a precision-overflow value (8 ids).**
-  `INTERVAL '2' DAY * 50`, `INTERVAL '3' YEAR * 50`, `INTERVAL '2' DAY / 0.02`
-  and `INTERVAL '3' YEAR / 0.03` expect a failure because the result has more
+  logical expression" (permissive mode) expect MISSING. The dedicated cases in
+  `undefined-variable-behavior.ion` expect an error in both modes, and the
+  evaluator follows them: with no FROM variable in scope, an undefined name is
+  a `DataError`.
+- **IN with a non-collection right side (1 id).** `inPredicateSingleExpr`
+  expects `b.price IN 5` to succeed in strict mode, while
+  `notInPredicateSingleExpr` expects `b.price NOT IN 5` to fail. The
+  evaluator raises a `TypeError`, so the NOT IN case passes and this one
+  fails (spec M4b1, section 9).
+- **Outer join padding (6 ids).** `select.ion` `selectCorrelatedLeftJoin` and
+  `selectCorrelatedLeftJoinOnClause`, and `joins.ion` `PG_JOIN_09`, expect the
+  padded side of a LEFT JOIN to be a tuple of NULL attributes (`b.title` is
+  NULL; `SELECT *` lists the attributes). The evaluator pads the variable with
+  NULL, so the attribute is MISSING. This needs the schema of the padded
+  side (bead `partiql-5se.12`).
+- **Interval times or divided by a number (14 ids).** `INTERVAL '2' DAY * 50`,
+  `INTERVAL '3' YEAR * 50`, `INTERVAL '2' DAY / 0.02` and
+  `INTERVAL '3' YEAR / 0.03` expect a failure because the result has more
   than two leading digits. The value model keeps no leading precision, and the
   specification marks this case as unsettled (partiql-lang#100), so the
-  evaluator returns the exact result and does not cap it.
-- **Interval divided by `2.25e-1` (6 ids).** The corpus expects a
-  floating-point division. An exponent literal is a DECIMAL here, so the
-  division is exact and gives a different result. These cases pass when
-  approximate literals are modelled.
+  evaluator returns the exact result and does not cap it (8 ids). The
+  three `/ 2.25e-1` cases (6 ids) expect a floating-point
+  division. An exponent literal is a DECIMAL here, so the division is exact
+  and gives a different result. These pass when approximate literals are
+  modelled.
 - **TIME and TIMESTAMP "explicit ... with offset - failure" (4 ids).** The
   corpus expects `TIME WITHOUT TIME ZONE '...+01:00'` to fail. The parser
   does not keep WITHOUT TIME ZONE apart, so this needs a parser change.
 - **DECIMAL(p,s) IS-type (4 ids).** `1.000 IS DECIMAL(3,3)` and
-  `123.456 IS DECIMAL(7,3)` expect results that do not agree with the rules for precision and scale
-  that the other cases of the corpus follow.
+  `123.456 IS DECIMAL(7,3)` expect results that do not agree with the rules for
+  precision and scale that the other cases of the corpus follow.
 - **Map key match across numeric types (2 ids).** "access map with
   cross-type cast integer to decimal key" is `MAP { 1.0: 'one', 2.0: 'two' }[1]`
-  and expects `'one'`. The lookup needs an integer to find the decimal key
-  `1.0`. The evaluator does not match map keys across numeric types yet.
-- **`a.*.*.*.*` in strict mode (1 id).** The corpus expects a failure. Every
-  `.*` step applies to a tuple, so the evaluator succeeds; the corpus
-  expectation is taken as an artifact.
+  and expects `'one'`. The evaluator does not match map keys across numeric
+  types yet.
+- **DATE against Ion timestamp (2 ids).** "unpivot map with date keys" gives
+  DATE keys, and the corpus writes them as Ion timestamps. The comparison of
+  the harness does not treat a DATE and a midnight UTC TIMESTAMP as equal.
+- **Ambiguous names in strict mode (3 ids).** "repeated field on Ion struct is
+  ambiguous" (2 ids) and "path expression with ambiguous table alias
+  (lowercase, unquoted)" expect a failure when two names differ only in case.
+  The evaluator takes the first match.
+- **`a.*.*.*.*` in strict mode (1 id).** `pathUnpivotWildCardOverStructMultiple`
+  expects a failure. Every `.*` step applies to a tuple, so the evaluator
+  succeeds; the corpus expectation is taken as an artifact.
+
+The groups add up to 46 ids (6 + 3 + 1 + 6 + 14 + 4 + 4 + 2 + 2 + 3 + 1).
 
 Every corpus value passes `codec`, including the `$map` (M1b MAP) and
 `$graph` (M1b graph) values.

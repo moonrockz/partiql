@@ -41,18 +41,56 @@ pub(all) enum Expr {
   Case(operand~ : Expr?, branches~ : Array[(Expr, Expr)], default~ : Expr?, @ast.Span)
   Coalesce(Array[Expr], @ast.Span)
   NullIf(Expr, Expr, @ast.Span)
+  Local(String, @ast.Span)
+  GlobalOrLocal(String, variable~ : String, delimited~ : Bool, @ast.Span)
+  Implicit(String, delimited~ : Bool, locals~ : Array[String], @ast.Span)
+  Select(Rel, Projection, distinct~ : Bool, @ast.Span)
+  Subquery(Expr, SubqueryUse, @ast.Span)
 } derive(@debug.Debug)
+pub fn Expr::span(Self) -> @ast.Span
+
+pub(all) enum Item {
+  Named(String, Expr)
+  AllFields(Expr)
+} derive(@debug.Debug)
+
+pub(all) enum JoinKind {
+  Cross
+  Inner
+  Left
+  Right
+} derive(Eq, @debug.Debug)
 
 pub(all) enum Mode {
   Permissive
   Strict
 } derive(Eq, @debug.Debug)
 
+pub(all) enum Projection {
+  Value(Expr)
+  Items(Array[Item])
+  Star(Array[String])
+} derive(@debug.Debug)
+
+pub(all) enum Rel {
+  Scan(Expr, as_~ : String, at~ : String?, @ast.Span)
+  Unpivot(Expr, as_~ : String, at~ : String?, @ast.Span)
+  Filter(Rel, Expr, @ast.Span)
+  Join(JoinKind, Rel, Rel, on~ : Expr?, @ast.Span)
+  Let(Rel, Array[(String, Expr)], @ast.Span)
+} derive(@debug.Debug)
+pub fn Rel::span(Self) -> @ast.Span
+
 pub(all) enum Step {
   Field(String, delimited~ : Bool)
   Index(Expr)
   AllElements
   AllFields
+} derive(@debug.Debug)
+
+pub(all) enum SubqueryUse {
+  Scalar
+  Column
 } derive(@debug.Debug)
 
 // Type aliases

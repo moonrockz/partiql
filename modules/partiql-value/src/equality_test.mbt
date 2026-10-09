@@ -151,3 +151,33 @@ test "eqg" {
     soft.expect(@value.eqg(i(2), @value.Value::Float(2.0))).to_be_true()
   })
 }
+
+///|
+test "group_key is shared by values that are eqg" {
+  let dec = (c : BigInt, e : Int) => {
+    @value.Value::Decimal(@ion_core.Decimal::new(c, e))
+  }
+  let one = @value.Value::Int(1)
+  let bag = (items : Array[@value.Value]) => {
+    @value.Value::Bag(@value.Bag::new(items))
+  }
+  let nan = @value.Value::Float(@double.not_a_number)
+  let pairs = [
+    (one, dec(100N, -2)),
+    (one, @value.Value::Float(1.0)),
+    (dec(10N, 0), dec(1N, 1)),
+    (nan, @value.Value::Float(@double.not_a_number)),
+    (@value.Value::List([one]), @value.Value::List([dec(10N, -1)])),
+    (bag([one, @value.Value::Int(2)]), bag([dec(20N, -1), one])),
+    (@value.Value::Null, @value.Value::Null),
+  ]
+  @expect.expect_all(soft => {
+    for pair in pairs {
+      soft.expect(@value.eqg(pair.0, pair.1)).to_be_true()
+      soft.expect(@value.group_key(pair.0)).to_equal(@value.group_key(pair.1))
+    }
+    soft
+    .expect(@value.group_key(one) == @value.group_key(@value.Value::Int(2)))
+    .to_be_false()
+  })
+}

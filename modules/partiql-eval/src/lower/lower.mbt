@@ -58,10 +58,7 @@ fn literal(
 }
 
 ///|
-fn unsupported(
-  form : String,
-  span : @ast.Span,
-) -> @plan.Expr raise @plan.EvalError {
+fn[T] unsupported(form : String, span : @ast.Span) -> T raise @plan.EvalError {
   raise Unsupported(message="\{form} is not supported yet", span~)
 }
 
@@ -134,37 +131,43 @@ fn type_test(
 
 ///|
 /// The deepest nesting that lowering accepts. The parser limits parentheses
-/// and prefix operators, but not postfix chains such as `x IS NULL IS NULL`;
-/// this limit keeps every recursion here and in the interpreter off the end
-/// of the stack. Left-associative operator chains do not count: they are
-/// lowered and run in a loop.
+/// and prefix operators, but not postfix chains such as `x IS NULL IS NULL`.
+/// Lowering stops at this depth, which keeps its own recursion off the end
+/// of the stack; `within_depth` (depth.mbt) then bounds the nesting of the
+/// plan when it runs. Left-associative operator chains do not count: they
+/// are lowered and run in a loop.
 let max_depth : Int = 200
 
 ///|
 fn lower_all(
   items : Array[@ast.Expr],
+  scope : Scope,
   depth : Int,
 ) -> Array[@plan.Expr] raise @plan.EvalError {
-  items.map(item => lower_at(item, depth))
+  items.map(item => lower_at(item, scope, depth))
 }
 
 ///|
 fn lower_pairs(
   pairs : Array[(@ast.Expr, @ast.Expr)],
+  scope : Scope,
   depth : Int,
 ) -> Array[(@plan.Expr, @plan.Expr)] raise @plan.EvalError {
-  pairs.map(pair => (lower_at(pair.0, depth), lower_at(pair.1, depth)))
+  pairs.map(pair => {
+    (lower_at(pair.0, scope, depth), lower_at(pair.1, scope, depth))
+  })
 }
 
 ///|
 fn lower_step(
   s : @ast.PathStep,
+  scope : Scope,
   depth : Int,
 ) -> @plan.Step raise @plan.EvalError {
   match s {
     Field(id) => Field(id.text, delimited=id.delimited)
     FieldString(name, ..) => Field(name, delimited=true)
-    Index(e) => Index(lower_at(e, depth))
+    Index(e) => Index(lower_at(e, scope, depth))
     AllElements(_) => AllElements
     AllFields(_) => AllFields
   }
@@ -174,7 +177,7 @@ fn lower_step(
 /// One link of a left-associative chain: the operator, its right operand and
 /// the span of the whole link.
 priv enum Link {
-  BinaryLink(@ast.BinaryOp, @ast.Expr, @ast.Span)
+  BinaryLink(@ast.BinaryOp, @ast.Expr, @ast.Expr, @ast.Span)
   AndLink(@ast.Expr, @ast.Span)
   OrLink(@ast.Expr, @ast.Span)
 }
@@ -182,13 +185,17 @@ priv enum Link {
 ///|
 /// A chain of binary operators, AND and OR, lowered in a loop down its left
 /// spine: `1 + 1 + ... + 1` is as deep as it is long.
-fn lower_chain(e : @ast.Expr, depth : Int) -> @plan.Expr raise @plan.EvalError {
+fn lower_chain(
+  e : @ast.Expr,
+  scope : Scope,
+  depth : Int,
+) -> @plan.Expr raise @plan.EvalError {
   let links : Array[Link] = []
   let mut leaf = e
   while true {
     match leaf.kind {
       Binary(op, l, r) => {
-        links.push(BinaryLink(op, r, leaf.span))
+        links.push(BinaryLink(op, l, r, leaf.span))
         leaf = l
       }
       And(l, r) => {
@@ -202,12 +209,21 @@ fn lower_chain(e : @ast.Expr, depth : Int) -> @plan.Expr raise @plan.EvalError {
       _ => break
     }
   }
-  let mut result = lower_at(leaf, depth)
+  let mut result = lower_at(leaf, scope, depth)
   for link in links.rev_iter() {
     result = match link {
-      BinaryLink(op, r, span) => Binary(op, result, lower_at(r, depth), span)
-      AndLink(r, span) => And(result, lower_at(r, depth), span)
-      OrLink(r, span) => Or(result, lower_at(r, depth), span)
+      BinaryLink(op, l, r, span) => {
+        if is_comparison(op) &&
+          (
+            (is_single_column(l) && is_array_literal(r)) ||
+            (is_array_literal(l) && is_single_column(r))
+          ) {
+          return unsupported("array coercion of a subquery (M4b2)", span)
+        }
+        Binary(op, result, lower_at(r, scope, depth), span)
+      }
+      AndLink(r, span) => And(result, lower_at(r, scope, depth), span)
+      OrLink(r, span) => Or(result, lower_at(r, scope, depth), span)
     }
   }
   result
@@ -239,13 +255,17 @@ fn ion_depth(v : @ion_core.IonValue) -> Int {
 ///|
 /// Lowers an expression.
 pub fn lower(e : @ast.Expr) -> @plan.Expr raise @plan.EvalError {
-  lower_at(e, 0)
+  within_depth(lower_plain(e, Scope::top(), 0))
 }
 
 ///|
 /// Lowers an expression `depth` levels down; deeper than `max_depth` is a
 /// `DataError`.
-fn lower_at(e : @ast.Expr, depth : Int) -> @plan.Expr raise @plan.EvalError {
+fn lower_at(
+  e : @ast.Expr,
+  scope : Scope,
+  depth : Int,
+) -> @plan.Expr raise @plan.EvalError {
   let span = e.span
   if depth >= max_depth {
     raise DataError(message="expression is too deep", span~)
@@ -255,59 +275,98 @@ fn lower_at(e : @ast.Expr, depth : Int) -> @plan.Expr raise @plan.EvalError {
     Lit(Ion(_, v)) if depth + ion_depth(v) > max_depth =>
       raise DataError(message="expression is too deep", span~)
     Lit(l) => Const(literal(l, span), span)
-    VarRef(id, qualified=_) => Global(id.text, delimited=id.delimited, span)
+    VarRef(id, qualified~) =>
+      match scope.resolve(id) {
+        Some(name) =>
+          if scope.globals_first && !qualified {
+            GlobalOrLocal(id.text, variable=name, delimited=id.delimited, span)
+          } else {
+            Local(name, span)
+          }
+        None =>
+          if scope.outer is None {
+            Global(id.text, delimited=id.delimited, span)
+          } else if qualified {
+            // Inside a query `@x` names a FROM variable only.
+            raise DataError(message="undefined variable @\{id.text}", span~)
+          } else if scope.locals() is [] {
+            Global(id.text, delimited=id.delimited, span)
+          } else {
+            Implicit(
+              id.text,
+              delimited=id.delimited,
+              locals=scope.locals(),
+              span,
+            )
+          }
+      }
     // Spec M4a §5: a sexp and a row are lists.
     List(items) | Sexp(items) | Row(items) =>
-      ListOf(lower_all(items, depth), span)
-    Bag(items) => BagOf(lower_all(items, depth), span)
-    Struct(fields) => TupleOf(lower_pairs(fields, depth), span)
-    Map(entries) => MapOf(lower_pairs(entries, depth), span)
-    Query(_) => unsupported("a subquery (M4b)", span)
-    Values(_) => unsupported("VALUES (M4b)", span)
+      ListOf(lower_all(items, scope, depth), span)
+    Bag(items) => BagOf(lower_all(items, scope, depth), span)
+    Struct(fields) => TupleOf(lower_pairs(fields, scope, depth), span)
+    Map(entries) => MapOf(lower_pairs(entries, scope, depth), span)
+    Query(q) => {
+      let inner = query_at(q, scope, depth)
+      if is_single_column(e) {
+        Subquery(inner, Scalar, span)
+      } else {
+        inner
+      }
+    }
+    Values(rows) => BagOf(lower_all(rows, scope, depth), span)
     GraphMatch(_) => unsupported("graph MATCH (later)", span)
     Parameter => unsupported("a parameter (later)", span)
     Error => raise DataError(message="a broken expression", span~)
     Path(base, steps) =>
-      Path(lower_at(base, depth), steps.map(s => lower_step(s, depth)), span)
+      Path(
+        lower_at(base, scope, depth),
+        steps.map(s => lower_step(s, scope, depth)),
+        span,
+      )
     // `-9223372036854775808` is a literal: its magnitude is out of range.
     Unary(Neg, { kind: Lit(Int(text)), .. }) =>
       Const(integer_value("-" + text, span), span)
-    Unary(op, x) => Unary(op, lower_at(x, depth), span)
-    Binary(_, _, _) | And(_, _) | Or(_, _) => lower_chain(e, depth)
-    Not(x) => Not(lower_at(x, depth), span)
+    Unary(op, x) => Unary(op, lower_at(x, scope, depth), span)
+    Binary(_, _, _) | And(_, _) | Or(_, _) => lower_chain(e, scope, depth)
+    Not(x) => Not(lower_at(x, scope, depth), span)
     BoolTest(x, truth, negated~) =>
-      BoolTest(lower_at(x, depth), truth, negated~, span)
+      BoolTest(lower_at(x, scope, depth), truth, negated~, span)
     Like(x, pattern~, escape~, negated~) =>
       Like(
-        lower_at(x, depth),
-        pattern=lower_at(pattern, depth),
-        escape=escape.map(x => lower_at(x, depth)),
+        lower_at(x, scope, depth),
+        pattern=lower_at(pattern, scope, depth),
+        escape=escape.map(x => lower_at(x, scope, depth)),
         negated~,
         span,
       )
     Between(x, low~, high~, negated~) =>
       Between(
-        lower_at(x, depth),
-        low=lower_at(low, depth),
-        high=lower_at(high, depth),
+        lower_at(x, scope, depth),
+        low=lower_at(low, scope, depth),
+        high=lower_at(high, scope, depth),
         negated~,
         span,
       )
     In(x, c, negated~) =>
-      In(lower_at(x, depth), lower_at(c, depth), negated~, span)
-    IsNull(x, negated~) => IsNull(lower_at(x, depth), negated~, span)
-    IsMissing(x, negated~) => IsMissing(lower_at(x, depth), negated~, span)
+      In(lower_at(x, scope, depth), column_at(c, scope, depth), negated~, span)
+    IsNull(x, negated~) => IsNull(lower_at(x, scope, depth), negated~, span)
+    IsMissing(x, negated~) =>
+      IsMissing(lower_at(x, scope, depth), negated~, span)
     IsType(x, t, negated~) =>
-      IsType(lower_at(x, depth), type_test(t, span), negated~, span)
+      IsType(lower_at(x, scope, depth), type_test(t, span), negated~, span)
     Case(operand~, branches~, default~) =>
       Case(
-        operand=operand.map(x => lower_at(x, depth)),
-        branches=branches.map(b => (lower_at(b.0, depth), lower_at(b.1, depth))),
-        default=default.map(x => lower_at(x, depth)),
+        operand=operand.map(x => lower_at(x, scope, depth)),
+        branches=branches.map(b => {
+          (lower_at(b.0, scope, depth), lower_at(b.1, scope, depth))
+        }),
+        default=default.map(x => lower_at(x, scope, depth)),
         span,
       )
-    Coalesce(items) => Coalesce(lower_all(items, depth), span)
-    NullIf(a, b) => NullIf(lower_at(a, depth), lower_at(b, depth), span)
+    Coalesce(items) => Coalesce(items.map(x => lower_at(x, scope, depth)), span)
+    NullIf(a, b) =>
+      NullIf(lower_at(a, scope, depth), lower_at(b, scope, depth), span)
     Overlaps(_, _)
     | Cast(_, _)
     | Extract(_, _)
@@ -319,5 +378,21 @@ fn lower_at(e : @ast.Expr, depth : Int) -> @plan.Expr raise @plan.EvalError {
     | DateDiff(_, _, _)
     | Call(_, _, ..)
     | CallStar(_) => unsupported("a function call (M4d)", span)
+  }
+}
+
+///|
+fn is_comparison(op : @ast.BinaryOp) -> Bool {
+  match op {
+    Eq | Ne | Lt | Le | Gt | Ge => true
+    _ => false
+  }
+}
+
+///|
+fn is_array_literal(e : @ast.Expr) -> Bool {
+  match e.kind {
+    List(_) | Row(_) => true
+    _ => false
   }
 }

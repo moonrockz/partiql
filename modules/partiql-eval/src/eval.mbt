@@ -34,18 +34,18 @@ pub fn Bindings::of_ion(value : @ion_core.IonValue) -> Bindings raise EvalError 
 }
 
 ///|
-/// Evaluates a statement. Only expression statements run in this version.
+/// Evaluates a statement. A form that this version does not evaluate raises
+/// `Unsupported`.
 pub fn evaluate(
   statement : @syntax.Statement,
   env~ : Bindings,
   mode? : Mode = Permissive,
 ) -> @value.Value raise EvalError {
   match statement {
-    Query(
-      { body: Expr(e), with_: [], order_by: [], limit: None, offset: None, .. }
-    ) => @interp.run(@lower.lower(e), env.entries, mode)
-    Query({ span, .. }) | Error(span) =>
-      raise Unsupported(message="queries are not supported yet (M4b)", span~)
+    Query(q) =>
+      @interp.run(@lower.lower_query(q), @interp.Ctx::new(env.entries, mode~))
+    Error(span) =>
+      raise Unsupported(message="a statement that could not be read", span~)
   }
 }
 
