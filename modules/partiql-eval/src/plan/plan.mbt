@@ -81,6 +81,19 @@ pub(all) enum Expr {
     aliases~ : Array[String],
     @ast.Span
   )
+  /// `left op right`, as a bag. `outer` is the PartiQL bag operator (OUTER);
+  /// otherwise SQL rules apply: both operands are relations, matched by
+  /// position or by `corresponding` (plan rulings 4-7). `all` keeps
+  /// duplicates.
+  SetOp(
+    @ast.SetOpKind,
+    all~ : Bool,
+    outer~ : Bool,
+    corresponding~ : @ast.Corresponding?,
+    Expr,
+    Expr,
+    @ast.Span
+  )
 } derive(Debug)
 
 ///|
@@ -191,7 +204,8 @@ pub fn Expr::span(self : Expr) -> @ast.Span {
     | Implicit(_, delimited=_, locals=_, span)
     | Select(_, _, distinct=_, span)
     | Subquery(_, _, span)
-    | Query(_, order=_, limit=_, offset=_, aliases=_, span) => span
+    | Query(_, order=_, limit=_, offset=_, aliases=_, span)
+    | SetOp(_, all=_, outer=_, corresponding=_, _, _, span) => span
   }
 }
 

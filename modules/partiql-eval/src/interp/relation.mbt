@@ -502,9 +502,7 @@ fn select_pairs(
 /// DISTINCT drops a repeat as the rows stream, so `upto` counts distinct
 /// values. Two values repeat if they are grouping equivalent (`eqg`: the
 /// test of GROUP BY, so `1`, `1.0` and `1e0` are one value, NULLs are one
-/// value, and bags and tuples compare as multisets). Each value goes to a
-/// bucket of its `group_key`; only the values of one bucket are compared, so
-/// the cost is linear unless many values share a key.
+/// value, and bags and tuples compare as multisets); see `Counter`.
 fn select_pairs_upto(
   rel : @plan.Rel,
   projection : @plan.Projection,
@@ -517,16 +515,12 @@ fn select_pairs_upto(
   if upto is Some(n) && n <= 0L {
     return out
   }
-  let buckets : Map[String, Array[@value.Value]] = Map([])
+  let seen = Counter::new()
   let it = relation(rel, env, ctx)
   while pull(it, ctx) is Some(row) {
     let v = project(projection, row, ctx)
-    if distinct {
-      let bucket = buckets.get_or_init(@value.group_key(v), () => [])
-      if bucket.any(seen => @value.eqg(seen, v)) {
-        continue
-      }
-      bucket.push(v)
+    if distinct && !seen.add(v) {
+      continue
     }
     out.push((row, v))
     if upto is Some(n) && out.length().to_int64() >= n {

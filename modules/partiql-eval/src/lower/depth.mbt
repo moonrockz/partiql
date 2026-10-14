@@ -27,6 +27,8 @@
 //   `*` evaluates nothing.
 // - A query with ORDER BY: 1, its body, each sort key, its LIMIT and its
 //   OFFSET 1 below it (they run in a nested `eval` from the query's loop).
+// - A chain of set operations: 1, every operand 1 below it (the chain runs
+//   in a loop down its left spine, like a chain of binary operators).
 // - A join: one wrapper per right join, and one per run of cross, inner and
 //   left joins between them (`chain` runs a run as one flat loop). Each
 //   wrapper is 1; the wrappers nest in the order of the joins, the last one
@@ -173,6 +175,14 @@ fn push_operands(
         }
         Star(_) => ()
       }
+    }
+    SetOp(_, all=_, outer=_, corresponding=_, _, _, _) => {
+      let mut leaf = e
+      while leaf is SetOp(_, all=_, outer=_, corresponding=_, l, r, _) {
+        push(r)
+        leaf = l
+      }
+      push(leaf)
     }
     Query(body, order~, limit~, offset~, aliases=_, _) => {
       push(body)

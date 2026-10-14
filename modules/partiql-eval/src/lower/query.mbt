@@ -98,7 +98,8 @@ fn query_at(
     }
     Expr(e) =>
       (lower_at(e, scope, depth), [], scope.inner([@plan.row_variable]))
-    SetOp(op) => return unsupported("a set operation (M4b2)", op.span)
+    SetOp(op) =>
+      (set_op_at(op, scope, depth), [], scope.inner([@plan.row_variable]))
     Table(_) => return unsupported("TABLE (later)", q.span)
   }
   if q.order_by.is_empty() && limit is None && offset is None {
@@ -118,6 +119,52 @@ fn query_at(
     }
   })
   Query(body, order~, limit~, offset~, aliases~, q.span)
+}
+
+///|
+/// Lowers a chain of set operations. The chain is walked down its left
+/// spine in a loop, through every left operand that is a set operation
+/// without clauses of its own (`A UNION B UNION C` is `(A UNION B) UNION
+/// C`), so a long chain takes no recursion per link. The operands see the
+/// scope of the query.
+fn set_op_at(
+  op : @ast.SetOp,
+  scope : Scope,
+  depth : Int32,
+) -> @plan.Expr raise @plan.EvalError {
+  if depth >= max_depth {
+    raise DataError(message="query is too deeply nested", span=op.span)
+  }
+  let steps = [op]
+  let mut leaf = op.left
+  while leaf is { body: SetOp(inner), .. } && !has_clauses(leaf) {
+    steps.push(inner)
+    leaf = inner.left
+  }
+  let mut acc = query_at(leaf, scope, depth + 1)
+  for step in steps.rev_iter() {
+    let right = query_at(step.right, scope, depth + 1)
+    acc = SetOp(
+      step.op,
+      all=step.quantifier is Some(All),
+      outer=step.outer,
+      corresponding=step.corresponding,
+      acc,
+      right,
+      step.span,
+    )
+  }
+  acc
+}
+
+///|
+/// Whether a query has a clause of its own: WITH, ORDER BY, LIMIT or
+/// OFFSET.
+fn has_clauses(q : @ast.Query) -> Bool {
+  !q.with_.is_empty() ||
+  !q.order_by.is_empty() ||
+  q.limit is Some(_) ||
+  q.offset is Some(_)
 }
 
 ///|

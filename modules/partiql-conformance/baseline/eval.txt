@@ -1831,6 +1831,57 @@ eval/primitives/null.ion::null::null comparison{sql:"NULL IS NULL",result:true}#
 eval/primitives/null.ion::null::null comparison{sql:"NULL IS NULL",result:true}#error
 eval/primitives/null.ion::null::null comparison{sql:"NULL",result:null}#coerce
 eval/primitives/null.ion::null::null comparison{sql:"NULL",result:null}#error
+eval/primitives/operators/bag-operators.ion::bagOperators::OUTER EXCEPT with ORDER BY LIMIT OFFSET on children#coerce
+eval/primitives/operators/bag-operators.ion::bagOperators::OUTER EXCEPT with ORDER BY LIMIT OFFSET on children#error
+eval/primitives/operators/bag-operators.ion::bagOperators::OUTER INTERSECT with ORDER BY LIMIT OFFSET on children#coerce
+eval/primitives/operators/bag-operators.ion::bagOperators::OUTER INTERSECT with ORDER BY LIMIT OFFSET on children#error
+eval/primitives/operators/bag-operators.ion::bagOperators::OUTER UNION with ORDER BY LIMIT OFFSET on children#coerce
+eval/primitives/operators/bag-operators.ion::bagOperators::OUTER UNION with ORDER BY LIMIT OFFSET on children#error
+eval/primitives/operators/bag-operators.ion::bagOperators::PartiQL OUTER EXCEPT with ORDER BY LIMIT on children and bag op#coerce
+eval/primitives/operators/bag-operators.ion::bagOperators::PartiQL OUTER EXCEPT with ORDER BY LIMIT on children and bag op#error
+eval/primitives/operators/bag-operators.ion::bagOperators::PartiQL OUTER INTERSECT with ORDER BY LIMIT on children and bag op#coerce
+eval/primitives/operators/bag-operators.ion::bagOperators::PartiQL OUTER INTERSECT with ORDER BY LIMIT on children and bag op#error
+eval/primitives/operators/bag-operators.ion::bagOperators::PartiQL OUTER UNION with ORDER BY LIMIT on children and bag op#coerce
+eval/primitives/operators/bag-operators.ion::bagOperators::PartiQL OUTER UNION with ORDER BY LIMIT on children and bag op#error
+eval/primitives/operators/bag-operators.ion::bagOperators::SQL EXCEPT with ORDER BY LIMIT on children and set op#coerce
+eval/primitives/operators/bag-operators.ion::bagOperators::SQL EXCEPT with ORDER BY LIMIT on children and set op#error
+eval/primitives/operators/bag-operators.ion::bagOperators::SQL INTERSECT with ORDER BY LIMIT on children and set op#coerce
+eval/primitives/operators/bag-operators.ion::bagOperators::SQL INTERSECT with ORDER BY LIMIT on children and set op#error
+eval/primitives/operators/bag-operators.ion::bagOperators::SQL UNION with ORDER BY LIMIT on children and set op#coerce
+eval/primitives/operators/bag-operators.ion::bagOperators::SQL UNION with ORDER BY LIMIT on children and set op#error
+eval/primitives/operators/bag-operators.ion::bagOperators::outerExceptAll#coerce
+eval/primitives/operators/bag-operators.ion::bagOperators::outerExceptAll#error
+eval/primitives/operators/bag-operators.ion::bagOperators::outerExceptCoerceList#coerce
+eval/primitives/operators/bag-operators.ion::bagOperators::outerExceptCoerceList#error
+eval/primitives/operators/bag-operators.ion::bagOperators::outerExceptCoerceNullMissing#coerce
+eval/primitives/operators/bag-operators.ion::bagOperators::outerExceptCoerceScalar#coerce
+eval/primitives/operators/bag-operators.ion::bagOperators::outerExceptCoerceScalar#error
+eval/primitives/operators/bag-operators.ion::bagOperators::outerExceptCoerceStruct#coerce
+eval/primitives/operators/bag-operators.ion::bagOperators::outerExceptCoerceStruct#error
+eval/primitives/operators/bag-operators.ion::bagOperators::outerExceptDistinct#coerce
+eval/primitives/operators/bag-operators.ion::bagOperators::outerExceptDistinct#error
+eval/primitives/operators/bag-operators.ion::bagOperators::outerIntersectAll switched lhs and rhs#coerce
+eval/primitives/operators/bag-operators.ion::bagOperators::outerIntersectAll switched lhs and rhs#error
+eval/primitives/operators/bag-operators.ion::bagOperators::outerIntersectAll#coerce
+eval/primitives/operators/bag-operators.ion::bagOperators::outerIntersectAll#error
+eval/primitives/operators/bag-operators.ion::bagOperators::outerIntersectCoerceList#coerce
+eval/primitives/operators/bag-operators.ion::bagOperators::outerIntersectCoerceList#error
+eval/primitives/operators/bag-operators.ion::bagOperators::outerIntersectCoerceScalar#coerce
+eval/primitives/operators/bag-operators.ion::bagOperators::outerIntersectCoerceScalar#error
+eval/primitives/operators/bag-operators.ion::bagOperators::outerIntersectCoerceStruct#coerce
+eval/primitives/operators/bag-operators.ion::bagOperators::outerIntersectCoerceStruct#error
+eval/primitives/operators/bag-operators.ion::bagOperators::outerIntersectDistinct#coerce
+eval/primitives/operators/bag-operators.ion::bagOperators::outerIntersectDistinct#error
+eval/primitives/operators/bag-operators.ion::bagOperators::outerUnionAll#coerce
+eval/primitives/operators/bag-operators.ion::bagOperators::outerUnionAll#error
+eval/primitives/operators/bag-operators.ion::bagOperators::outerUnionCoerceList#coerce
+eval/primitives/operators/bag-operators.ion::bagOperators::outerUnionCoerceList#error
+eval/primitives/operators/bag-operators.ion::bagOperators::outerUnionCoerceScalar#coerce
+eval/primitives/operators/bag-operators.ion::bagOperators::outerUnionCoerceScalar#error
+eval/primitives/operators/bag-operators.ion::bagOperators::outerUnionCoerceStruct#coerce
+eval/primitives/operators/bag-operators.ion::bagOperators::outerUnionCoerceStruct#error
+eval/primitives/operators/bag-operators.ion::bagOperators::outerUnionDistinct#coerce
+eval/primitives/operators/bag-operators.ion::bagOperators::outerUnionDistinct#error
 eval/primitives/operators/between-operator.ion::between::between date date date false#coerce
 eval/primitives/operators/between-operator.ion::between::between date date date false#error
 eval/primitives/operators/between-operator.ion::between::between date date date true#coerce
@@ -3727,6 +3778,12 @@ eval/query/select/select.ion::select_where::selectWhereStrinEqualsDifferentCase#
 eval/query/select/select.ion::select_where::selectWhereStrinEqualsDifferentCase#error
 eval/query/select/select.ion::select_where::selectWhereStringEqualsSameCase#coerce
 eval/query/select/select.ion::select_where::selectWhereStringEqualsSameCase#error
+eval/query/setop.ion::except::limit offset order by on except#coerce
+eval/query/setop.ion::except::limit offset order by on except#error
+eval/query/setop.ion::intersect::limit offset order by on intersect#coerce
+eval/query/setop.ion::intersect::limit offset order by on intersect#error
+eval/query/setop.ion::union::limit offset order by on union#coerce
+eval/query/setop.ion::union::limit offset order by on union#error
 eval/query/undefined-variable-behavior.ion::undefined_variable_behavior::undefinedUnqualifiedVariableInSelectWithUndefinedVariableBehaviorMissing#coerce
 eval/query/undefined-variable-behavior.ion::undefined_variable_behavior::undefinedUnqualifiedVariableInSelectWithUndefinedVariableBehaviorMissing#error
 eval/query/undefined-variable-behavior.ion::undefined_variable_behavior::undefinedUnqualifiedVariableIsMissingExprWithUndefinedVariableBehaviorMissing#coerce
@@ -3735,6 +3792,36 @@ eval/query/undefined-variable-behavior.ion::undefined_variable_behavior::undefin
 eval/query/undefined-variable-behavior.ion::undefined_variable_behavior::undefinedUnqualifiedVariableIsNullExprWithUndefinedVariableBehaviorMissing#error
 eval/query/undefined-variable-behavior.ion::undefined_variable_behavior::undefinedUnqualifiedVariableWithUndefinedVariableBehaviorMissing#coerce
 eval/query/undefined-variable-behavior.ion::undefined_variable_behavior::undefinedUnqualifiedVariableWithUndefinedVariableBehaviorMissing#error
+eval/rfc/0007.ion::bag::Example 2.3 — Union of Compatible Relations; Mismatch Column Names; Using OUTER UNION#coerce
+eval/rfc/0007.ion::bag::Example 2.3 — Union of Compatible Relations; Mismatch Column Names; Using OUTER UNION#error
+eval/rfc/0007.ion::bag::Example 3 — Outer union of Heterogenous Relations#coerce
+eval/rfc/0007.ion::bag::Example 3 — Outer union of Heterogenous Relations#error
+eval/rfc/0007.ion::bag::Example 6 — Value Coercion#coerce
+eval/rfc/0007.ion::bag::Example 6 — Value Coercion#error
+eval/rfc/0007.ion::bag::Example 6 — Value Coercion; Coercion of single value#coerce
+eval/rfc/0007.ion::bag::Example 6 — Value Coercion; Coercion of single value#error
+eval/rfc/0007.ion::bag::Example 7 — `SELECT * FROM engineering.employees OUTER EXCEPT << >>`#coerce
+eval/rfc/0007.ion::bag::Example 7 — `SELECT * FROM engineering.employees OUTER EXCEPT << >>`#error
+eval/rfc/0007.ion::bag::Example 7 — `engineering.employees OUTER UNION << MISSING >>`#coerce
+eval/rfc/0007.ion::bag::Example 7 — `engineering.employees OUTER UNION << MISSING >>`#error
+eval/rfc/0007.ion::bag::Example 7 — `engineering.employees UNION << MISSING >>`#coerce
+eval/rfc/0007.ion::bag::Example 7 — `engineering.employees UNION << MISSING >>`#error
+eval/rfc/0007.ion::bag::Example 7 — result is the empty bag#coerce
+eval/rfc/0007.ion::bag::Example 7 — result is the empty bag#error
+eval/rfc/0007.ion::set::Example 1 — Union of Compatible Relations#coerce
+eval/rfc/0007.ion::set::Example 1 — Union of Compatible Relations#error
+eval/rfc/0007.ion::set::Example 2.1 — Union of Compatible Relations; Mismatch Column Names; Without CORRESPONDING Clause#coerce
+eval/rfc/0007.ion::set::Example 2.1 — Union of Compatible Relations; Mismatch Column Names; Without CORRESPONDING Clause#error
+eval/rfc/0007.ion::set::Example 2.2 — Union of Compatible Relations; Mismatch Column Names; With CORRESPONDING Clause#coerce
+eval/rfc/0007.ion::set::Example 2.2 — Union of Compatible Relations; Mismatch Column Names; With CORRESPONDING Clause#error
+eval/rfc/0007.ion::set::Example 3 — Union of Heterogenous Relations#coerce
+eval/rfc/0007.ion::set::Example 3 — Union of Heterogenous Relations#error
+eval/rfc/0007.ion::set::Example 4 — Intersection of Compatible Relations#coerce
+eval/rfc/0007.ion::set::Example 4 — Intersection of Compatible Relations#error
+eval/rfc/0007.ion::set::Example 5 — Difference of Compatible Relations#coerce
+eval/rfc/0007.ion::set::Example 5 — Difference of Compatible Relations#error
+eval/rfc/0007.ion::set::Example 6 - Value Coercion not union-compatible#coerce
+eval/rfc/0007.ion::set::Example 6 - Value Coercion not union-compatible#error
 eval/spec-tests.ion::section-14::pivot to tuple from collection of tuples#coerce
 eval/spec-tests.ion::section-14::pivot to tuple from collection of tuples#error
 eval/spec-tests.ion::section-4::array navigation with wrongly typed array index#coerce
