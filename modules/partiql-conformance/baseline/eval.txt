@@ -1,3 +1,82 @@
+eval-equiv/rfc/0007.ion::bag::Example 6 — Value Coercion OUTER UNION[0]#coerce
+eval-equiv/rfc/0007.ion::bag::Example 6 — Value Coercion OUTER UNION[1]#coerce
+eval-equiv/rfc/0007.ion::bag::Example 7 — NULL and MISSING Coercion - 1[0]#coerce
+eval-equiv/rfc/0007.ion::bag::Example 7 — NULL and MISSING Coercion - 1[0]#error
+eval-equiv/rfc/0007.ion::bag::Example 7 — NULL and MISSING Coercion - 1[1]#coerce
+eval-equiv/rfc/0007.ion::bag::Example 7 — NULL and MISSING Coercion - 1[1]#error
+eval-equiv/rfc/0007.ion::bag::Example 7 — NULL and MISSING Coercion - 1[2]#coerce
+eval-equiv/rfc/0007.ion::bag::Example 7 — NULL and MISSING Coercion - 1[2]#error
+eval-equiv/rfc/0007.ion::bag::Example 7 — NULL and MISSING Coercion - 1[3]#coerce
+eval-equiv/rfc/0007.ion::bag::Example 7 — NULL and MISSING Coercion - 1[3]#error
+eval-equiv/rfc/0007.ion::bag::Example 7 — NULL and MISSING Coercion - 2[0]#coerce
+eval-equiv/rfc/0007.ion::bag::Example 7 — NULL and MISSING Coercion - 2[0]#error
+eval-equiv/rfc/0007.ion::bag::Example 7 — NULL and MISSING Coercion - 2[1]#coerce
+eval-equiv/rfc/0007.ion::bag::Example 7 — NULL and MISSING Coercion - 2[1]#error
+eval-equiv/rfc/0007.ion::bag::Example 7 — NULL and MISSING Coercion - 2[2]#coerce
+eval-equiv/rfc/0007.ion::bag::Example 7 — NULL and MISSING Coercion - 2[2]#error
+eval-equiv/rfc/0007.ion::set::Example 2.2 — With CORRESPONDING Clause[0]#coerce
+eval-equiv/rfc/0007.ion::set::Example 2.2 — With CORRESPONDING Clause[0]#error
+eval-equiv/rfc/0007.ion::set::Example 2.2 — With CORRESPONDING Clause[1]#coerce
+eval-equiv/rfc/0007.ion::set::Example 2.2 — With CORRESPONDING Clause[1]#error
+eval-equiv/rfc/0007.ion::set::Example 2.2 — With CORRESPONDING Clause[2]#coerce
+eval-equiv/rfc/0007.ion::set::Example 2.2 — With CORRESPONDING Clause[2]#error
+eval-equiv/spec-tests.ion::section-12::equiv coercions with explicit literals[1]#coerce
+eval-equiv/spec-tests.ion::section-4::equiv path collection expression with wildcard steps[0]#coerce
+eval-equiv/spec-tests.ion::section-4::equiv path collection expression with wildcard steps[0]#error
+eval-equiv/spec-tests.ion::section-4::equiv path collection expression with wildcard steps[1]#coerce
+eval-equiv/spec-tests.ion::section-4::equiv path expression with wildcard steps[0]#coerce
+eval-equiv/spec-tests.ion::section-4::equiv path expression with wildcard steps[0]#error
+eval-equiv/spec-tests.ion::section-4::equiv path expression with wildcard steps[1]#coerce
+eval-equiv/spec-tests.ion::section-4::equiv path expression with wildcard steps[1]#error
+eval-equiv/spec-tests.ion::section-4::equiv path expression with wildcard steps[2]#coerce
+eval-equiv/spec-tests.ion::section-4::equiv path expression with wildcard steps[2]#error
+eval-equiv/spec-tests.ion::section-4::equiv tuple path navigation with array notation[0]#coerce
+eval-equiv/spec-tests.ion::section-4::equiv tuple path navigation with array notation[0]#error
+eval-equiv/spec-tests.ion::section-4::equiv tuple path navigation with array notation[1]#coerce
+eval-equiv/spec-tests.ion::section-4::equiv tuple path navigation with array notation[1]#error
+eval-equiv/spec-tests.ion::section-4::equiv tuple path navigation[0]#coerce
+eval-equiv/spec-tests.ion::section-4::equiv tuple path navigation[0]#error
+eval-equiv/spec-tests.ion::section-4::equiv tuple path navigation[1]#coerce
+eval-equiv/spec-tests.ion::section-4::equiv tuple path navigation[1]#error
+eval-equiv/spec-tests.ion::section-4::equiv wildcard steps collection[0]#coerce
+eval-equiv/spec-tests.ion::section-4::equiv wildcard steps collection[0]#error
+eval-equiv/spec-tests.ion::section-4::equiv wildcard steps collection[1]#coerce
+eval-equiv/spec-tests.ion::section-4::equiv wildcard steps collection[1]#error
+eval-equiv/spec-tests.ion::section-4::equiv wildcard steps struct[0]#coerce
+eval-equiv/spec-tests.ion::section-4::equiv wildcard steps struct[0]#error
+eval-equiv/spec-tests.ion::section-4::equiv wildcard steps struct[1]#coerce
+eval-equiv/spec-tests.ion::section-4::equiv wildcard steps struct[1]#error
+eval-equiv/spec-tests.ion::section-5::equiv attribute value pair unpivot missing[0]#error
+eval-equiv/spec-tests.ion::section-5::equiv attribute value pair unpivot missing[1]#coerce
+eval-equiv/spec-tests.ion::section-5::equiv attribute value pair unpivot non-missing[0]#error
+eval-equiv/spec-tests.ion::section-5::equiv left join[0]#coerce
+eval-equiv/spec-tests.ion::section-5::equiv left join[0]#error
+eval-equiv/spec-tests.ion::section-5::equiv left join[1]#coerce
+eval-equiv/spec-tests.ion::section-5::equiv left join[1]#error
+eval-equiv/spec-tests.ion::section-5::equiv of comma, cross join, and join[0]#coerce
+eval-equiv/spec-tests.ion::section-5::equiv of comma, cross join, and join[0]#error
+eval-equiv/spec-tests.ion::section-5::equiv of comma, cross join, and join[1]#coerce
+eval-equiv/spec-tests.ion::section-5::equiv of comma, cross join, and join[1]#error
+eval-equiv/spec-tests.ion::section-5::equiv of comma, cross join, and join[2]#coerce
+eval-equiv/spec-tests.ion::section-5::equiv of comma, cross join, and join[2]#error
+eval-equiv/spec-tests.ion::section-5::equiv of comma, cross join, and join[3]#coerce
+eval-equiv/spec-tests.ion::section-5::equiv of comma, cross join, and join[3]#error
+eval-equiv/spec-tests.ion::section-5::equiv unnesting tuple in from source[0]#coerce
+eval-equiv/spec-tests.ion::section-5::equiv unnesting tuple in from source[0]#error
+eval-equiv/spec-tests.ion::section-5::equiv unnesting tuple in from source[1]#coerce
+eval-equiv/spec-tests.ion::section-5::equiv unnesting tuple in from source[1]#error
+eval-equiv/spec-tests.ion::section-5::equiv unnesting tuple in from source[2]#coerce
+eval-equiv/spec-tests.ion::section-5::equiv unnesting tuple in from source[2]#error
+eval-equiv/spec-tests.ion::section-6::equiv array constructor[0]#coerce
+eval-equiv/spec-tests.ion::section-6::equiv array constructor[0]#error
+eval-equiv/spec-tests.ion::section-6::equiv array constructor[1]#coerce
+eval-equiv/spec-tests.ion::section-6::equiv array constructor[1]#error
+eval-equiv/spec-tests.ion::section-6::equiv nested subquery in select value[0]#coerce
+eval-equiv/spec-tests.ion::section-6::equiv nested subquery in select value[0]#error
+eval-equiv/spec-tests.ion::section-6::equiv nested subquery in select value[1]#coerce
+eval-equiv/spec-tests.ion::section-6::equiv nested subquery in select value[1]#error
+eval-equiv/spec-tests.ion::section-6::equiv tupleunion with select list[0]#coerce
+eval-equiv/spec-tests.ion::section-6::equiv tupleunion with select list[0]#error
 eval/ion/primitives/null.ion::null::null comparison{sql:"`null.blob` = MISSING",result:null}#coerce
 eval/ion/primitives/null.ion::null::null comparison{sql:"`null.blob` = MISSING",result:null}#error
 eval/ion/primitives/null.ion::null::null comparison{sql:"`null.blob` = NULL",result:null}#coerce
@@ -104,6 +183,26 @@ eval/ion/primitives/operators/nary-operators.ion::nary::listDifferentTypesDiffer
 eval/ion/primitives/operators/nary-operators.ion::nary::listDifferentTypesDifferentOrderFalse#error
 eval/ion/primitives/symbol.ion::empty-symbol::Empty Symbol in table (with Ion data)#coerce
 eval/ion/primitives/symbol.ion::empty-symbol::Empty Symbol in table (with Ion data)#error
+eval/ion/query/order-by.ion::edge_cases::+inf before numeric values then -inf then nan (DESC)#coerce
+eval/ion/query/order-by.ion::edge_cases::+inf before numeric values then -inf then nan (DESC)#error
+eval/ion/query/order-by.ion::edge_cases::LOB types follow their lexicographical ordering by octet (ASC)#coerce
+eval/ion/query/order-by.ion::edge_cases::LOB types follow their lexicographical ordering by octet (ASC)#error
+eval/ion/query/order-by.ion::edge_cases::LOB types should ordered (DESC)#coerce
+eval/ion/query/order-by.ion::edge_cases::LOB types should ordered (DESC)#error
+eval/ion/query/order-by.ion::edge_cases::lists items should be ordered by data types (ASC) (nulls last as default for asc) (including ion data)#coerce
+eval/ion/query/order-by.ion::edge_cases::lists items should be ordered by data types (ASC) (nulls last as default for asc) (including ion data)#error
+eval/ion/query/order-by.ion::edge_cases::lists items should be ordered by data types (DESC) (nulls first as default for desc) (including ion data)#coerce
+eval/ion/query/order-by.ion::edge_cases::lists items should be ordered by data types (DESC) (nulls first as default for desc) (including ion data)#error
+eval/ion/query/order-by.ion::edge_cases::nan before -inf, then numeric values then +inf (ASC)#coerce
+eval/ion/query/order-by.ion::edge_cases::nan before -inf, then numeric values then +inf (ASC)#error
+eval/ion/query/order-by.ion::edge_cases::structs should be ordered by data types (ASC) (nulls last as default for asc) (including ion data)#coerce
+eval/ion/query/order-by.ion::edge_cases::structs should be ordered by data types (ASC) (nulls last as default for asc) (including ion data)#error
+eval/ion/query/order-by.ion::edge_cases::structs should be ordered by data types (DESC) (nulls first as default for desc) (including ion data)#coerce
+eval/ion/query/order-by.ion::edge_cases::structs should be ordered by data types (DESC) (nulls first as default for desc) (including ion data)#error
+eval/ion/query/order-by.ion::edge_cases::text types compared by lexicographical ordering of Unicode scalar (ASC)#coerce
+eval/ion/query/order-by.ion::edge_cases::text types compared by lexicographical ordering of Unicode scalar (ASC)#error
+eval/ion/query/order-by.ion::edge_cases::text types compared by lexicographical ordering of Unicode scalar (DESC)#coerce
+eval/ion/query/order-by.ion::edge_cases::text types compared by lexicographical ordering of Unicode scalar (DESC)#error
 eval/ion/query/select/from-clause.ion::various types in from clause::rangeOverSexp#coerce
 eval/ion/query/select/from-clause.ion::various types in from clause::rangeOverSexp#error
 eval/ion/query/select/projection.ion::project various container types::projectOfSexp#coerce
@@ -939,6 +1038,12 @@ eval/primitives/map.ion::map::maps with different sizes are not equal#coerce
 eval/primitives/map.ion::map::maps with different sizes are not equal#error
 eval/primitives/map.ion::map::maps with different values are not equal#coerce
 eval/primitives/map.ion::map::maps with different values are not equal#error
+eval/primitives/map.ion::map::order by map access value#coerce
+eval/primitives/map.ion::map::order by map access value#error
+eval/primitives/map.ion::map::order by map column sorts by entries#coerce
+eval/primitives/map.ion::map::order by map column sorts by entries#error
+eval/primitives/map.ion::map::order unpivoted entries by key#coerce
+eval/primitives/map.ion::map::order unpivoted entries by key#error
 eval/primitives/map.ion::map::select values from environment map#coerce
 eval/primitives/map.ion::map::select values from environment map#error
 eval/primitives/map.ion::map::struct IS MAP returns false#coerce
@@ -1805,6 +1910,57 @@ eval/primitives/null.ion::null::null comparison{sql:"NULL IS NULL",result:true}#
 eval/primitives/null.ion::null::null comparison{sql:"NULL IS NULL",result:true}#error
 eval/primitives/null.ion::null::null comparison{sql:"NULL",result:null}#coerce
 eval/primitives/null.ion::null::null comparison{sql:"NULL",result:null}#error
+eval/primitives/operators/bag-operators.ion::bagOperators::OUTER EXCEPT with ORDER BY LIMIT OFFSET on children#coerce
+eval/primitives/operators/bag-operators.ion::bagOperators::OUTER EXCEPT with ORDER BY LIMIT OFFSET on children#error
+eval/primitives/operators/bag-operators.ion::bagOperators::OUTER INTERSECT with ORDER BY LIMIT OFFSET on children#coerce
+eval/primitives/operators/bag-operators.ion::bagOperators::OUTER INTERSECT with ORDER BY LIMIT OFFSET on children#error
+eval/primitives/operators/bag-operators.ion::bagOperators::OUTER UNION with ORDER BY LIMIT OFFSET on children#coerce
+eval/primitives/operators/bag-operators.ion::bagOperators::OUTER UNION with ORDER BY LIMIT OFFSET on children#error
+eval/primitives/operators/bag-operators.ion::bagOperators::PartiQL OUTER EXCEPT with ORDER BY LIMIT on children and bag op#coerce
+eval/primitives/operators/bag-operators.ion::bagOperators::PartiQL OUTER EXCEPT with ORDER BY LIMIT on children and bag op#error
+eval/primitives/operators/bag-operators.ion::bagOperators::PartiQL OUTER INTERSECT with ORDER BY LIMIT on children and bag op#coerce
+eval/primitives/operators/bag-operators.ion::bagOperators::PartiQL OUTER INTERSECT with ORDER BY LIMIT on children and bag op#error
+eval/primitives/operators/bag-operators.ion::bagOperators::PartiQL OUTER UNION with ORDER BY LIMIT on children and bag op#coerce
+eval/primitives/operators/bag-operators.ion::bagOperators::PartiQL OUTER UNION with ORDER BY LIMIT on children and bag op#error
+eval/primitives/operators/bag-operators.ion::bagOperators::SQL EXCEPT with ORDER BY LIMIT on children and set op#coerce
+eval/primitives/operators/bag-operators.ion::bagOperators::SQL EXCEPT with ORDER BY LIMIT on children and set op#error
+eval/primitives/operators/bag-operators.ion::bagOperators::SQL INTERSECT with ORDER BY LIMIT on children and set op#coerce
+eval/primitives/operators/bag-operators.ion::bagOperators::SQL INTERSECT with ORDER BY LIMIT on children and set op#error
+eval/primitives/operators/bag-operators.ion::bagOperators::SQL UNION with ORDER BY LIMIT on children and set op#coerce
+eval/primitives/operators/bag-operators.ion::bagOperators::SQL UNION with ORDER BY LIMIT on children and set op#error
+eval/primitives/operators/bag-operators.ion::bagOperators::outerExceptAll#coerce
+eval/primitives/operators/bag-operators.ion::bagOperators::outerExceptAll#error
+eval/primitives/operators/bag-operators.ion::bagOperators::outerExceptCoerceList#coerce
+eval/primitives/operators/bag-operators.ion::bagOperators::outerExceptCoerceList#error
+eval/primitives/operators/bag-operators.ion::bagOperators::outerExceptCoerceNullMissing#coerce
+eval/primitives/operators/bag-operators.ion::bagOperators::outerExceptCoerceScalar#coerce
+eval/primitives/operators/bag-operators.ion::bagOperators::outerExceptCoerceScalar#error
+eval/primitives/operators/bag-operators.ion::bagOperators::outerExceptCoerceStruct#coerce
+eval/primitives/operators/bag-operators.ion::bagOperators::outerExceptCoerceStruct#error
+eval/primitives/operators/bag-operators.ion::bagOperators::outerExceptDistinct#coerce
+eval/primitives/operators/bag-operators.ion::bagOperators::outerExceptDistinct#error
+eval/primitives/operators/bag-operators.ion::bagOperators::outerIntersectAll switched lhs and rhs#coerce
+eval/primitives/operators/bag-operators.ion::bagOperators::outerIntersectAll switched lhs and rhs#error
+eval/primitives/operators/bag-operators.ion::bagOperators::outerIntersectAll#coerce
+eval/primitives/operators/bag-operators.ion::bagOperators::outerIntersectAll#error
+eval/primitives/operators/bag-operators.ion::bagOperators::outerIntersectCoerceList#coerce
+eval/primitives/operators/bag-operators.ion::bagOperators::outerIntersectCoerceList#error
+eval/primitives/operators/bag-operators.ion::bagOperators::outerIntersectCoerceScalar#coerce
+eval/primitives/operators/bag-operators.ion::bagOperators::outerIntersectCoerceScalar#error
+eval/primitives/operators/bag-operators.ion::bagOperators::outerIntersectCoerceStruct#coerce
+eval/primitives/operators/bag-operators.ion::bagOperators::outerIntersectCoerceStruct#error
+eval/primitives/operators/bag-operators.ion::bagOperators::outerIntersectDistinct#coerce
+eval/primitives/operators/bag-operators.ion::bagOperators::outerIntersectDistinct#error
+eval/primitives/operators/bag-operators.ion::bagOperators::outerUnionAll#coerce
+eval/primitives/operators/bag-operators.ion::bagOperators::outerUnionAll#error
+eval/primitives/operators/bag-operators.ion::bagOperators::outerUnionCoerceList#coerce
+eval/primitives/operators/bag-operators.ion::bagOperators::outerUnionCoerceList#error
+eval/primitives/operators/bag-operators.ion::bagOperators::outerUnionCoerceScalar#coerce
+eval/primitives/operators/bag-operators.ion::bagOperators::outerUnionCoerceScalar#error
+eval/primitives/operators/bag-operators.ion::bagOperators::outerUnionCoerceStruct#coerce
+eval/primitives/operators/bag-operators.ion::bagOperators::outerUnionCoerceStruct#error
+eval/primitives/operators/bag-operators.ion::bagOperators::outerUnionDistinct#coerce
+eval/primitives/operators/bag-operators.ion::bagOperators::outerUnionDistinct#error
 eval/primitives/operators/between-operator.ion::between::between date date date false#coerce
 eval/primitives/operators/between-operator.ion::between::between date date date false#error
 eval/primitives/operators/between-operator.ion::between::between date date date true#coerce
@@ -3327,8 +3483,124 @@ eval/query/join/joins.ion::join::PG_JOIN_10#coerce
 eval/query/join/joins.ion::join::PG_JOIN_10#error
 eval/query/join/joins.ion::joins::selectCrossProduct#coerce
 eval/query/join/joins.ion::joins::selectCrossProduct#error
+eval/query/limitoffset.ion::limit_offset::limit 1 offset 1#coerce
+eval/query/limitoffset.ion::limit_offset::limit 1 offset 1#error
+eval/query/limitoffset.ion::limit_offset::limit 10 offset 1#coerce
+eval/query/limitoffset.ion::limit_offset::limit 10 offset 1#error
+eval/query/limitoffset.ion::limit_offset::limit 10 offset 10#coerce
+eval/query/limitoffset.ion::limit_offset::limit 10 offset 10#error
+eval/query/limitoffset.ion::limit_offset::offset -1#coerce
+eval/query/limitoffset.ion::limit_offset::offset -1#error
+eval/query/limitoffset.ion::limit_offset::offset 0#coerce
+eval/query/limitoffset.ion::limit_offset::offset 0#error
+eval/query/limitoffset.ion::limit_offset::offset 1#coerce
+eval/query/limitoffset.ion::limit_offset::offset 1#error
+eval/query/limitoffset.ion::limit_offset::offset 1-2#coerce
+eval/query/limitoffset.ion::limit_offset::offset 1-2#error
+eval/query/limitoffset.ion::limit_offset::offset 2#coerce
+eval/query/limitoffset.ion::limit_offset::offset 2#error
+eval/query/limitoffset.ion::limit_offset::offset 2*1#coerce
+eval/query/limitoffset.ion::limit_offset::offset 2*1#error
+eval/query/limitoffset.ion::limit_offset::offset 2+1#coerce
+eval/query/limitoffset.ion::limit_offset::offset 2+1#error
+eval/query/limitoffset.ion::limit_offset::offset 2-1#coerce
+eval/query/limitoffset.ion::limit_offset::offset 2-1#error
+eval/query/limitoffset.ion::limit_offset::offset 2/1#coerce
+eval/query/limitoffset.ion::limit_offset::offset 2/1#error
+eval/query/limitoffset.ion::limit_offset::offset 2^31#coerce
+eval/query/limitoffset.ion::limit_offset::offset 2^31#error
+eval/query/limitoffset.ion::limit_offset::offset 2^63#coerce
+eval/query/limitoffset.ion::limit_offset::offset 2^63#error
+eval/query/limitoffset.ion::limit_offset::offset <decimal>>#coerce
+eval/query/limitoffset.ion::limit_offset::offset <decimal>>#error
+eval/query/limitoffset.ion::limit_offset::offset <str>#coerce
+eval/query/limitoffset.ion::limit_offset::offset <str>#error
+eval/query/limitoffset.ion::limit_offset::offset with pivot#coerce
+eval/query/limitoffset.ion::limit_offset::offset with pivot#error
+eval/query/order-by.ion::alias::order by alias in nested sfw#coerce
+eval/query/order-by.ion::alias::order by alias in nested sfw#error
+eval/query/order-by.ion::alias::order by expression alias#coerce
+eval/query/order-by.ion::alias::order by expression alias#error
+eval/query/order-by.ion::alias::order by multiple aliases#coerce
+eval/query/order-by.ion::alias::order by multiple aliases#error
+eval/query/order-by.ion::alias::order by select alias#coerce
+eval/query/order-by.ion::alias::order by select alias#error
+eval/query/order-by.ion::data_types::should order data types by the specifications (NULLS FIRST default for desc)#coerce
+eval/query/order-by.ion::data_types::should order data types by the specifications (NULLS FIRST default for desc)#error
+eval/query/order-by.ion::data_types::should order data types by the specifications (NULLS LAST default for asc)#coerce
+eval/query/order-by.ion::data_types::should order data types by the specifications (NULLS LAST default for asc)#error
+eval/query/order-by.ion::data_types::should order data types by the specifications (nulls should be first due to nulls spec)#coerce
+eval/query/order-by.ion::data_types::should order data types by the specifications (nulls should be first due to nulls spec)#error
+eval/query/order-by.ion::data_types::should order data types by the specifications (nulls should be last due to nulls spec)#coerce
+eval/query/order-by.ion::data_types::should order data types by the specifications (nulls should be last due to nulls spec)#error
+eval/query/order-by.ion::edge_cases::Empty Output (ordered)#coerce
+eval/query/order-by.ion::edge_cases::Empty Output (ordered)#error
+eval/query/order-by.ion::edge_cases::Empty Projection item (ordered) -- Output (ordered)#coerce
+eval/query/order-by.ion::edge_cases::Empty Projection item (ordered) -- Output (ordered)#error
+eval/query/order-by.ion::edge_cases::Empty Projection item (ordered) -- Output (unordered)#coerce
+eval/query/order-by.ion::edge_cases::Empty Projection item (ordered) -- Output (unordered)#error
+eval/query/order-by.ion::edge_cases::Empty Projection item (unordered) -- Output (ordered)#coerce
+eval/query/order-by.ion::edge_cases::Empty Projection item (unordered) -- Output (ordered)#error
 eval/query/order-by.ion::edge_cases::Empty Projection item (unordered) -- Output (unordered)#coerce
 eval/query/order-by.ion::edge_cases::Empty Projection item (unordered) -- Output (unordered)#error
+eval/query/order-by.ion::edge_cases::bags compared as sorted lists (ASC)#coerce
+eval/query/order-by.ion::edge_cases::bags compared as sorted lists (ASC)#error
+eval/query/order-by.ion::edge_cases::bags compared as sorted lists (DESC)#coerce
+eval/query/order-by.ion::edge_cases::bags compared as sorted lists (DESC)#error
+eval/query/order-by.ion::edge_cases::false before true (ASC)#coerce
+eval/query/order-by.ion::edge_cases::false before true (ASC)#error
+eval/query/order-by.ion::edge_cases::lists compared lexicographically based on comparison of elements (ASC)#coerce
+eval/query/order-by.ion::edge_cases::lists compared lexicographically based on comparison of elements (ASC)#error
+eval/query/order-by.ion::edge_cases::lists compared lexicographically based on comparison of elements (DESC)#coerce
+eval/query/order-by.ion::edge_cases::lists compared lexicographically based on comparison of elements (DESC)#error
+eval/query/order-by.ion::edge_cases::lists items should be ordered by data types (ASC) (nulls last as default for asc)#coerce
+eval/query/order-by.ion::edge_cases::lists items should be ordered by data types (ASC) (nulls last as default for asc)#error
+eval/query/order-by.ion::edge_cases::lists items should be ordered by data types (DESC) (nulls first as default for desc)#coerce
+eval/query/order-by.ion::edge_cases::lists items should be ordered by data types (DESC) (nulls first as default for desc)#error
+eval/query/order-by.ion::edge_cases::longer array comes first (DESC)#coerce
+eval/query/order-by.ion::edge_cases::longer array comes first (DESC)#error
+eval/query/order-by.ion::edge_cases::shorter array comes first (ASC)#coerce
+eval/query/order-by.ion::edge_cases::shorter array comes first (ASC)#error
+eval/query/order-by.ion::edge_cases::structs compared lexicographically first by key then by value (ASC)#coerce
+eval/query/order-by.ion::edge_cases::structs compared lexicographically first by key then by value (ASC)#error
+eval/query/order-by.ion::edge_cases::structs compared lexicographically first by key then by value (DESC)#coerce
+eval/query/order-by.ion::edge_cases::structs compared lexicographically first by key then by value (DESC)#error
+eval/query/order-by.ion::edge_cases::structs should be ordered by data types (ASC) (nulls last as default for asc)#coerce
+eval/query/order-by.ion::edge_cases::structs should be ordered by data types (ASC) (nulls last as default for asc)#error
+eval/query/order-by.ion::edge_cases::testing alias support#coerce
+eval/query/order-by.ion::edge_cases::testing alias support#error
+eval/query/order-by.ion::edge_cases::testing nested alias support#coerce
+eval/query/order-by.ion::edge_cases::testing nested alias support#error
+eval/query/order-by.ion::edge_cases::true before false (DESC)#coerce
+eval/query/order-by.ion::edge_cases::true before false (DESC)#error
+eval/query/order-by.ion::simple::col1 asc#coerce
+eval/query/order-by.ion::simple::col1 asc#error
+eval/query/order-by.ion::simple::col1 asc, col2 asc#coerce
+eval/query/order-by.ion::simple::col1 asc, col2 asc#error
+eval/query/order-by.ion::simple::col1 desc#coerce
+eval/query/order-by.ion::simple::col1 desc#error
+eval/query/order-by.ion::simple::nulls first as default for supplierId_nulls desc#coerce
+eval/query/order-by.ion::simple::nulls first as default for supplierId_nulls desc#error
+eval/query/order-by.ion::simple::nulls first for supplierId_nulls desc#coerce
+eval/query/order-by.ion::simple::nulls first for supplierId_nulls desc#error
+eval/query/order-by.ion::simple::nulls last for supplierId_nulls desc#coerce
+eval/query/order-by.ion::simple::nulls last for supplierId_nulls desc#error
+eval/query/order-by.ion::simple::price desc, productId asc#coerce
+eval/query/order-by.ion::simple::price desc, productId asc#error
+eval/query/order-by.ion::simple::supplierId_nulls asc nulls last, productId asc#coerce
+eval/query/order-by.ion::simple::supplierId_nulls asc nulls last, productId asc#error
+eval/query/order-by.ion::simple::supplierId_nulls nulls first#coerce
+eval/query/order-by.ion::simple::supplierId_nulls nulls first#error
+eval/query/order-by.ion::simple::supplierId_nulls nulls last#coerce
+eval/query/order-by.ion::simple::supplierId_nulls nulls last#error
+eval/query/pivot.ion::pivot::pivotBadFieldType#coerce
+eval/query/pivot.ion::pivot::pivotBadFieldType#error
+eval/query/pivot.ion::pivot::pivotFrom#coerce
+eval/query/pivot.ion::pivot::pivotFrom#error
+eval/query/pivot.ion::pivot::pivotLiteralFieldNameFrom#coerce
+eval/query/pivot.ion::pivot::pivotLiteralFieldNameFrom#error
+eval/query/pivot.ion::pivot::pivotUnpivotWithWhereOrderByLimit#coerce
+eval/query/pivot.ion::pivot::pivotUnpivotWithWhereOrderByLimit#error
 eval/query/select/from-clause.ion::auto-generated aliases::comma-join-auto-alias#coerce
 eval/query/select/from-clause.ion::auto-generated aliases::comma-join-auto-alias#error
 eval/query/select/from-clause.ion::auto-generated aliases::comma-join-multiple-records-auto-alias#coerce
@@ -3457,6 +3729,12 @@ eval/query/select/select-mysql.ion::select::MYSQL_SELECT_30#coerce
 eval/query/select/select-mysql.ion::select::MYSQL_SELECT_30#error
 eval/query/select/select-mysql.ion::select::MYSQL_SELECT_31#coerce
 eval/query/select/select-mysql.ion::select::MYSQL_SELECT_31#error
+eval/query/select/select-mysql.ion::select::MYSQL_SELECT_32#coerce
+eval/query/select/select-mysql.ion::select::MYSQL_SELECT_32#error
+eval/query/select/select-mysql.ion::select::MYSQL_SELECT_33#coerce
+eval/query/select/select-mysql.ion::select::MYSQL_SELECT_33#error
+eval/query/select/select-mysql.ion::select::MYSQL_SELECT_34#coerce
+eval/query/select/select-mysql.ion::select::MYSQL_SELECT_34#error
 eval/query/select/select-postgresql.ion::select::PG_SELECT_01#coerce
 eval/query/select/select-postgresql.ion::select::PG_SELECT_01#error
 eval/query/select/select-postgresql.ion::select::PG_SELECT_02#coerce
@@ -3561,6 +3839,8 @@ eval/query/select/select.ion::select_join::correlatedJoinWithoutLexicalScope#coe
 eval/query/select/select.ion::select_join::correlatedJoinWithoutLexicalScope#error
 eval/query/select/select.ion::select_join::joinWithShadowedGlobal#coerce
 eval/query/select/select.ion::select_join::joinWithShadowedGlobal#error
+eval/query/select/select.ion::select_join::nestedSelectJoinLimit#coerce
+eval/query/select/select.ion::select_join::nestedSelectJoinLimit#error
 eval/query/select/select.ion::select_join::nestedSelectJoinWithUnpivot#coerce
 eval/query/select/select.ion::select_join::nestedSelectJoinWithUnpivot#error
 eval/query/select/select.ion::select_join::selectCorrelatedJoin#coerce
@@ -3577,6 +3857,12 @@ eval/query/select/select.ion::select_where::selectWhereStrinEqualsDifferentCase#
 eval/query/select/select.ion::select_where::selectWhereStrinEqualsDifferentCase#error
 eval/query/select/select.ion::select_where::selectWhereStringEqualsSameCase#coerce
 eval/query/select/select.ion::select_where::selectWhereStringEqualsSameCase#error
+eval/query/setop.ion::except::limit offset order by on except#coerce
+eval/query/setop.ion::except::limit offset order by on except#error
+eval/query/setop.ion::intersect::limit offset order by on intersect#coerce
+eval/query/setop.ion::intersect::limit offset order by on intersect#error
+eval/query/setop.ion::union::limit offset order by on union#coerce
+eval/query/setop.ion::union::limit offset order by on union#error
 eval/query/undefined-variable-behavior.ion::undefined_variable_behavior::undefinedUnqualifiedVariableInSelectWithUndefinedVariableBehaviorMissing#coerce
 eval/query/undefined-variable-behavior.ion::undefined_variable_behavior::undefinedUnqualifiedVariableInSelectWithUndefinedVariableBehaviorMissing#error
 eval/query/undefined-variable-behavior.ion::undefined_variable_behavior::undefinedUnqualifiedVariableIsMissingExprWithUndefinedVariableBehaviorMissing#coerce
@@ -3585,6 +3871,38 @@ eval/query/undefined-variable-behavior.ion::undefined_variable_behavior::undefin
 eval/query/undefined-variable-behavior.ion::undefined_variable_behavior::undefinedUnqualifiedVariableIsNullExprWithUndefinedVariableBehaviorMissing#error
 eval/query/undefined-variable-behavior.ion::undefined_variable_behavior::undefinedUnqualifiedVariableWithUndefinedVariableBehaviorMissing#coerce
 eval/query/undefined-variable-behavior.ion::undefined_variable_behavior::undefinedUnqualifiedVariableWithUndefinedVariableBehaviorMissing#error
+eval/rfc/0007.ion::bag::Example 2.3 — Union of Compatible Relations; Mismatch Column Names; Using OUTER UNION#coerce
+eval/rfc/0007.ion::bag::Example 2.3 — Union of Compatible Relations; Mismatch Column Names; Using OUTER UNION#error
+eval/rfc/0007.ion::bag::Example 3 — Outer union of Heterogenous Relations#coerce
+eval/rfc/0007.ion::bag::Example 3 — Outer union of Heterogenous Relations#error
+eval/rfc/0007.ion::bag::Example 6 — Value Coercion#coerce
+eval/rfc/0007.ion::bag::Example 6 — Value Coercion#error
+eval/rfc/0007.ion::bag::Example 6 — Value Coercion; Coercion of single value#coerce
+eval/rfc/0007.ion::bag::Example 6 — Value Coercion; Coercion of single value#error
+eval/rfc/0007.ion::bag::Example 7 — `SELECT * FROM engineering.employees OUTER EXCEPT << >>`#coerce
+eval/rfc/0007.ion::bag::Example 7 — `SELECT * FROM engineering.employees OUTER EXCEPT << >>`#error
+eval/rfc/0007.ion::bag::Example 7 — `engineering.employees OUTER UNION << MISSING >>`#coerce
+eval/rfc/0007.ion::bag::Example 7 — `engineering.employees OUTER UNION << MISSING >>`#error
+eval/rfc/0007.ion::bag::Example 7 — `engineering.employees UNION << MISSING >>`#coerce
+eval/rfc/0007.ion::bag::Example 7 — `engineering.employees UNION << MISSING >>`#error
+eval/rfc/0007.ion::bag::Example 7 — result is the empty bag#coerce
+eval/rfc/0007.ion::bag::Example 7 — result is the empty bag#error
+eval/rfc/0007.ion::set::Example 1 — Union of Compatible Relations#coerce
+eval/rfc/0007.ion::set::Example 1 — Union of Compatible Relations#error
+eval/rfc/0007.ion::set::Example 2.1 — Union of Compatible Relations; Mismatch Column Names; Without CORRESPONDING Clause#coerce
+eval/rfc/0007.ion::set::Example 2.1 — Union of Compatible Relations; Mismatch Column Names; Without CORRESPONDING Clause#error
+eval/rfc/0007.ion::set::Example 2.2 — Union of Compatible Relations; Mismatch Column Names; With CORRESPONDING Clause#coerce
+eval/rfc/0007.ion::set::Example 2.2 — Union of Compatible Relations; Mismatch Column Names; With CORRESPONDING Clause#error
+eval/rfc/0007.ion::set::Example 3 — Union of Heterogenous Relations#coerce
+eval/rfc/0007.ion::set::Example 3 — Union of Heterogenous Relations#error
+eval/rfc/0007.ion::set::Example 4 — Intersection of Compatible Relations#coerce
+eval/rfc/0007.ion::set::Example 4 — Intersection of Compatible Relations#error
+eval/rfc/0007.ion::set::Example 5 — Difference of Compatible Relations#coerce
+eval/rfc/0007.ion::set::Example 5 — Difference of Compatible Relations#error
+eval/rfc/0007.ion::set::Example 6 - Value Coercion not union-compatible#coerce
+eval/rfc/0007.ion::set::Example 6 - Value Coercion not union-compatible#error
+eval/spec-tests.ion::section-14::pivot to tuple from collection of tuples#coerce
+eval/spec-tests.ion::section-14::pivot to tuple from collection of tuples#error
 eval/spec-tests.ion::section-4::array navigation with wrongly typed array index#coerce
 eval/spec-tests.ion::section-4::array navigation with wrongly typed array index#error
 eval/spec-tests.ion::section-4::array navigation#coerce
@@ -3633,6 +3951,10 @@ eval/spec-tests.ion::section-6::bag element evaluates to MISSING#coerce
 eval/spec-tests.ion::section-6::bag element evaluates to MISSING#error
 eval/spec-tests.ion::section-6::duplicate attribute names#coerce
 eval/spec-tests.ion::section-6::duplicate attribute names#error
+eval/spec-tests.ion::section-6::pivot into a tuple with invalid attribute name#coerce
+eval/spec-tests.ion::section-6::pivot into a tuple with invalid attribute name#error
+eval/spec-tests.ion::section-6::pivot into a tuple#coerce
+eval/spec-tests.ion::section-6::pivot into a tuple#error
 eval/spec-tests.ion::section-6::select value with tuple constructor#coerce
 eval/spec-tests.ion::section-6::select value with tuple constructor#error
 eval/spec-tests.ion::section-6::select value#coerce
@@ -3641,6 +3963,8 @@ eval/spec-tests.ion::section-6::select variable star with non tuples#coerce
 eval/spec-tests.ion::section-6::select variable star with non tuples#error
 eval/spec-tests.ion::section-6::tuple constructor and mistyped attribute name#coerce
 eval/spec-tests.ion::section-6::tuple constructor and mistyped attribute name#error
+eval/spec-tests.ion::section-6::unpivot with pivot to analyze attribute names#coerce
+eval/spec-tests.ion::section-6::unpivot with pivot to analyze attribute names#error
 eval/spec-tests.ion::section-7::data type mismatch in comparison expression#coerce
 eval/spec-tests.ion::section-7::data type mismatch in comparison expression#error
 eval/spec-tests.ion::section-7::data type mismatch in logical expression#error

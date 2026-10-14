@@ -549,6 +549,15 @@ fn eval(
       select(rel, projection, distinct, env, ctx)
     Subquery(query, use_, span) =>
       subquery(eval(query, env, ctx), use_, ctx, span)
+    Query(_, order=_, limit=_, offset=_, aliases=_, _) => query(e, env, ctx)
+    SetOp(_, all=_, outer=_, corresponding=_, _, _, _) => set_op(e, env, ctx)
+    With(bindings, body, _) => {
+      let mut bound = env
+      for binding in bindings {
+        bound = Frame(binding.0, eval(binding.1, bound, ctx), bound)
+      }
+      eval(body, bound, ctx)
+    }
   }
 }
 
@@ -579,14 +588,23 @@ fn subquery(
 ) -> @value.Value raise @plan.EvalError {
   let items = match rows {
     Bag(b) => b.items()
+    List(items) => items[:]
     other => [other]
   }
   match use_ {
     Column => Bag(@value.Bag::new(items.map(column_value)))
-    Scalar =>
+    Scalar | Row =>
       match items {
         [] => Null
-        [row] => column_value(row)
+        [row] =>
+          if use_ is Row {
+            match row {
+              Tuple(t) => List(t.fields().map(f => f.1))
+              other => List([other])
+            }
+          } else {
+            column_value(row)
+          }
         _ =>
           match ctx.mode {
             Permissive => Missing

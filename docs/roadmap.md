@@ -108,9 +108,13 @@ Its parts, in this order:
   in the lowering. The `eval` conformance check passes 3719 of 9960
   assertions; 6195 are not applicable; 46 fail (see `conformance.md`). The
   conformance suite and the property laws cover the plan.
-- **M4b2: queries, part two** (bead `partiql-5se.10`). ORDER BY, LIMIT and
-  OFFSET, set operations, PIVOT, WITH, array coercion of a subquery, and the
-  `eval-equiv` cases.
+- **M4b2 (done): queries, part two** (bead `partiql-5se.10`). ORDER BY
+  (NULLS FIRST and LAST, stable), LIMIT and OFFSET, the set operations
+  UNION, INTERSECT and EXCEPT (ALL, DISTINCT, OUTER, CORRESPONDING), PIVOT,
+  `TABLE`, WITH, array coercion of a subquery, and the `eval-equiv` cases.
+  The `eval` conformance check passes 4043 of 9960 assertions; 5847 are not
+  applicable; 70 fail (see `conformance.md`). Property laws cover sorting,
+  LIMIT and OFFSET and the set operations.
 - **M4e: CLI `partiql query`** (bead `partiql-5se.3`). Bindings from Ion
   files or stdin; the result as Ion.
 - **M4c: grouping** (bead `partiql-5se.4`). GROUP BY, GROUP AS, HAVING, and the aggregates COUNT,
@@ -118,6 +122,8 @@ Its parts, in this order:
 - **M4d: functions and CAST** (bead `partiql-5se.5`). String, numeric and datetime functions,
   EXTRACT, DATE_ADD, DATE_DIFF, TRIM, SUBSTRING, POSITION, OVERLAY,
   OVERLAPS, and CAST in both modes.
+
+The next parts are M4e, then M4c, then M4d.
 
 Graph MATCH evaluation and `?` parameters come after M4. A REPL is not part
 of M4.

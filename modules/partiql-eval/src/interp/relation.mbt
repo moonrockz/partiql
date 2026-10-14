@@ -460,11 +460,74 @@ fn select(
   env : Env,
   ctx : Ctx,
 ) -> @value.Value raise @plan.EvalError {
-  let out = []
-  each(relation(rel, env, ctx), ctx, row => {
-    out.push(project(projection, row, ctx))
+  let values = select_pairs(rel, projection, distinct, env, ctx).map(pair => {
+    pair.1
   })
-  Bag(@value.Bag::new(if distinct { dedupe(out) } else { out }))
+  match projection {
+    Pivot(..) => pivoted(values)
+    _ => Bag(@value.Bag::new(values))
+  }
+}
+
+///|
+/// The result of a PIVOT: one tuple with the attributes of the one-attribute
+/// tuples of its rows, in row order. Duplicate names are kept
+/// (partiql-tests pivot.ion, `pivotLiteralFieldNameFrom`).
+fn pivoted(rows : Array[@value.Value]) -> @value.Value {
+  let fields = []
+  for row in rows {
+    if row is Tuple(t) {
+      t.fields().each(f => fields.push(f))
+    }
+  }
+  Tuple(@value.Tuple::new(fields))
+}
+
+///|
+/// Each binding tuple of a query block and its projection, in the order of
+/// the rows. DISTINCT keeps the first row of each value.
+fn select_pairs(
+  rel : @plan.Rel,
+  projection : @plan.Projection,
+  distinct : Bool,
+  env : Env,
+  ctx : Ctx,
+) -> Array[(Env, @value.Value)] raise @plan.EvalError {
+  select_pairs_upto(rel, projection, distinct, env, ctx, None)
+}
+
+///|
+/// The first `upto` pairs of `select_pairs` (all of them for `None`). The
+/// rows after the last pair are not read, so they are not evaluated.
+/// DISTINCT drops a repeat as the rows stream, so `upto` counts distinct
+/// values. Two values repeat if they are grouping equivalent (`eqg`: the
+/// test of GROUP BY, so `1`, `1.0` and `1e0` are one value, NULLs are one
+/// value, and bags and tuples compare as multisets); see `Counter`.
+fn select_pairs_upto(
+  rel : @plan.Rel,
+  projection : @plan.Projection,
+  distinct : Bool,
+  env : Env,
+  ctx : Ctx,
+  upto : Int64?,
+) -> Array[(Env, @value.Value)] raise @plan.EvalError {
+  let out = []
+  if upto is Some(n) && n <= 0L {
+    return out
+  }
+  let seen = Counter::new()
+  let it = relation(rel, env, ctx)
+  while pull(it, ctx) is Some(row) {
+    let v = project(projection, row, ctx)
+    if distinct && !seen.add(v) {
+      continue
+    }
+    out.push((row, v))
+    if upto is Some(n) && out.length().to_int64() >= n {
+      break
+    }
+  }
+  out
 }
 
 ///|
@@ -484,6 +547,25 @@ fn project(
         }
       }
       Tuple(@value.Tuple::new(fields))
+    }
+    Pivot(value~, key~) => {
+      // DISTINCT has no meaning for PIVOT: the parser does not take it, and
+      // `select_pairs_upto` would only drop repeated one-attribute tuples.
+      let k = unboxed(eval(key, row, ctx))
+      let v = eval(value, row, ctx)
+      // A MISSING value, and in permissive mode a key that is not text,
+      // leave the attribute out (the empty tuple).
+      match (k, v) {
+        (_, Missing) => Tuple(@value.Tuple::new([]))
+        (String(name), _) => Tuple(@value.Tuple::new([(name, v)]))
+        _ => {
+          typed(ctx.mode, key.span(), () => {
+            raise TypeFailure("a PIVOT key must be text")
+          })
+          |> ignore
+          Tuple(@value.Tuple::new([]))
+        }
+      }
     }
     Items(items) => {
       let fields = []
@@ -521,24 +603,4 @@ fn add_fields(
     Missing => ()
     _ => fields.push(("_\{position + 1}", v))
   }
-}
-
-///|
-/// The values of `items` without a repeat, in the order of their first
-/// occurrence. Two values repeat if they are grouping equivalent (`eqg`: the
-/// test of GROUP BY, so `1`, `1.0` and `1e0` are one value, NULLs are one
-/// value, and bags and tuples compare as multisets). Each value goes to a
-/// bucket of its `group_key`; only the values of one bucket are compared, so
-/// the cost is linear unless many values share a key.
-fn dedupe(items : Array[@value.Value]) -> Array[@value.Value] {
-  let buckets : Map[String, Array[@value.Value]] = Map([])
-  let out = []
-  for v in items {
-    let bucket = buckets.get_or_init(@value.group_key(v), () => [])
-    if !bucket.any(seen => @value.eqg(seen, v)) {
-      bucket.push(v)
-      out.push(v)
-    }
-  }
-  out
 }

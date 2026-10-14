@@ -37,7 +37,7 @@ test "SELECT VALUE over a collection" {
       description="TypeError",
     )
     soft
-    .expect_call(() => ev("SELECT VALUE x FROM [1] AS x ORDER BY x"))
+    .expect_call(() => ev("SELECT VALUE x FROM [1] AS x GROUP BY x"))
     .to_raise_matching(
       e => e is @eval.EvalError::Unsupported(..),
       description="Unsupported",

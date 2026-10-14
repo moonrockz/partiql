@@ -100,7 +100,7 @@ fn run_case(
 
 ///|
 /// Evaluates each statement under each mode of each evaluation assertion.
-/// Equivalence-class statements are not applicable in M4a.
+/// Every statement of an equivalence class is evaluated (`<case id>[<i>]`).
 fn record_eval(
   case : TestCase,
   statements : Array[String],
@@ -121,8 +121,7 @@ fn record_eval(
           Error => "error"
         }
         let outcome = match (case.statement, expected) {
-          (Text(_), Some(expected)) =>
-            check_eval(statement, case.env, mode, expected)
+          (_, Some(expected)) => check_eval(statement, case.env, mode, expected)
           _ => NotApplicable
         }
         eval.record("\{id}#\{name}", outcome)
@@ -263,6 +262,32 @@ test "a case with several evaluation assertions is checked once per statement" {
   )
   @expect.expect(eval_parse.records).to_equal(1)
   @expect.expect(syntax.records).to_equal(0)
+}
+
+///|
+test "an equivalence class is evaluated once per statement" {
+  let suite = decode_suite(
+    "f.ion",
+    @text.read_ion_datagram(
+      (
+        #|equiv_class::{ id: one, statements: ["1", "0 + 1", "2"] }
+        #|{ name: "n", statement: one,
+        #|  assert: [ { result: EvaluationSuccess, evalMode: EvalModeCoerce, output: 1 },
+        #|            { result: EvaluationFail, evalMode: EvalModeError } ] }
+      ),
+    ),
+  )
+  let case = suite.cases[0]
+  let eval = Tally::new("eval")
+  record_eval(case, suite.statements_of(case), eval)
+  @expect.expect_all(soft => {
+    soft.expect(eval.records).to_equal(6)
+    soft.expect(eval.not_applicable).to_equal(0)
+    soft.expect(eval.passed.contains("\{case.id}[0]#coerce")).to_be_true()
+    soft.expect(eval.passed.contains("\{case.id}[1]#coerce")).to_be_true()
+    soft.expect(eval.failed.contains("\{case.id}[2]#coerce")).to_be_true()
+    soft.expect(eval.failed.contains("\{case.id}[0]#error")).to_be_true()
+  })
 }
 
 ///|

@@ -70,7 +70,57 @@ pub(all) enum Expr {
   /// A single-column `SELECT` (the first operand, a `Select`) used where a
   /// value is needed: see `SubqueryUse`.
   Subquery(Expr, SubqueryUse, @ast.Span)
+  /// A query with ORDER BY, LIMIT or OFFSET over `body`: the elements of the
+  /// body sorted by `order`: a list with ORDER BY, else a bag (a tuple for a
+  /// PIVOT body). `aliases` are the output names that sort keys may use (a
+  /// SELECT list's names, in order).
+  Query(
+    Expr,
+    order~ : Array[SortKey],
+    limit~ : Expr?,
+    offset~ : Expr?,
+    aliases~ : Array[String],
+    @ast.Span
+  )
+  /// `left op right`, as a bag. `outer` is the PartiQL bag operator (OUTER);
+  /// otherwise SQL rules apply: both operands are relations, matched by
+  /// position or by `corresponding` (plan rulings 4-7). `all` keeps
+  /// duplicates.
+  SetOp(
+    @ast.SetOpKind,
+    all~ : Bool,
+    outer~ : Bool,
+    corresponding~ : @ast.Corresponding?,
+    Expr,
+    Expr,
+    @ast.Span
+  )
+  /// `WITH name AS (query), ... body`: each binding is evaluated once, in
+  /// order; later bindings and the body see the earlier ones as variables.
+  With(Array[(String, Expr)], Expr, @ast.Span)
 } derive(Debug)
+
+///|
+/// A key of ORDER BY. `nulls_first` is resolved: the explicit `NULLS FIRST`
+/// or `NULLS LAST`, else NULL and MISSING come last for ASC and first for
+/// DESC.
+pub(all) struct SortKey {
+  expr : Expr
+  desc : Bool
+  nulls_first : Bool
+} derive(Debug)
+
+///|
+/// The variable that holds an output element for the sort keys of a query
+/// whose body is not a SELECT. No identifier can name it.
+pub let row_variable : String = "\u{0}row"
+
+///|
+/// The name of the frame that holds the output name `name` of a SELECT list
+/// while ORDER BY runs: apart from every variable name.
+pub fn output_variable(name : String) -> String {
+  "\u{0}out:" + name
+}
 
 ///|
 pub(all) enum SubqueryUse {
@@ -79,6 +129,9 @@ pub(all) enum SubqueryUse {
   Scalar
   /// The bag of the value of the column of each row (`x IN (SELECT a ...)`).
   Column
+  /// The attribute values of the only row, as a list (array coercion): NULL
+  /// for no row; more rows as for `Scalar`.
+  Row
 } derive(Debug)
 
 ///|
@@ -120,6 +173,9 @@ pub(all) enum Projection {
   /// `SELECT *`: the attributes of the tuple of each FROM variable `names`,
   /// in order.
   Star(Array[String])
+  /// `PIVOT value AT key`: per row a one-attribute tuple (the empty tuple
+  /// for a row without an attribute); the query joins them into one tuple.
+  Pivot(value~ : Expr, key~ : Expr)
 } derive(Debug)
 
 ///|
@@ -161,7 +217,10 @@ pub fn Expr::span(self : Expr) -> @ast.Span {
     | GlobalOrLocal(_, variable=_, delimited=_, span)
     | Implicit(_, delimited=_, locals=_, span)
     | Select(_, _, distinct=_, span)
-    | Subquery(_, _, span) => span
+    | Subquery(_, _, span)
+    | Query(_, order=_, limit=_, offset=_, aliases=_, span)
+    | SetOp(_, all=_, outer=_, corresponding=_, _, _, span)
+    | With(_, _, span) => span
   }
 }
 

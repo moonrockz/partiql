@@ -25,6 +25,12 @@
 //   a WHERE: one wrapper over the input, each expression in a nested `eval`).
 // - A SELECT list: every item 2 below the query block, like SELECT VALUE;
 //   `*` evaluates nothing.
+// - A query with ORDER BY: 1, its body, each sort key, its LIMIT and its
+//   OFFSET 1 below it (they run in a nested `eval` from the query's loop).
+// - A chain of set operations: 1, every operand 1 below it (the chain runs
+//   in a loop down its left spine, like a chain of binary operators).
+// - A WITH: 1, each binding and the body 1 below it (they run in a nested
+//   `eval` from the WITH's loop).
 // - A join: one wrapper per right join, and one per run of cross, inner and
 //   left joins between them (`chain` runs a run as one flat loop). Each
 //   wrapper is 1; the wrappers nest in the order of the joins, the last one
@@ -165,7 +171,37 @@ fn push_operands(
               Named(_, x) | AllFields(x) => pending.push(ExprAt(x, below + 1))
             }
           }
+        Pivot(value~, key~) => {
+          pending.push(ExprAt(value, below + 1))
+          pending.push(ExprAt(key, below + 1))
+        }
         Star(_) => ()
+      }
+    }
+    With(bindings, body, _) => {
+      for binding in bindings {
+        push(binding.1)
+      }
+      push(body)
+    }
+    SetOp(_, all=_, outer=_, corresponding=_, _, _, _) => {
+      let mut leaf = e
+      while leaf is SetOp(_, all=_, outer=_, corresponding=_, l, r, _) {
+        push(r)
+        leaf = l
+      }
+      push(leaf)
+    }
+    Query(body, order~, limit~, offset~, aliases=_, _) => {
+      push(body)
+      for key in order {
+        push(key.expr)
+      }
+      if limit is Some(x) {
+        push(x)
+      }
+      if offset is Some(x) {
+        push(x)
       }
     }
   }

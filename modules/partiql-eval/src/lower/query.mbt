@@ -6,18 +6,56 @@ priv struct Scope {
   outer : Scope?
   /// Inside a FROM source, a plain name finds a global before a variable.
   globals_first : Bool
+  /// The names are the output names of a SELECT list (for ORDER BY): a name
+  /// finds them first, but they are not candidates for an implicit
+  /// attribute.
+  outputs : Bool
+  /// The names are WITH bindings: a name finds them as a `Local` also in a
+  /// FROM source, and they are not candidates for an implicit attribute
+  /// (plan ruling 10).
+  with_ : Bool
+  /// The names are output names that a variable hides: a name finds a
+  /// variable first and an output name only when no variable has that name
+  /// (a sort key that is not a bare name).
+  variables_first : Bool
 }
 
 ///|
 /// The scope outside every query: no variables.
 fn Scope::top() -> Scope {
-  { names: [], outer: None, globals_first: false, }
+  {
+    names: [],
+    outer: None,
+    globals_first: false,
+    outputs: false,
+    with_: false,
+    variables_first: false,
+  }
 }
 
 ///|
 /// A scope inside `self` that declares `names`.
 fn Scope::inner(self : Scope, names : Array[String]) -> Scope {
-  { names, outer: Some(self), globals_first: false, }
+  {
+    names,
+    outer: Some(self),
+    globals_first: false,
+    outputs: false,
+    with_: false,
+    variables_first: false,
+  }
+}
+
+///|
+/// A scope inside `self` with the output names of a SELECT list.
+fn Scope::with_outputs(self : Scope, names : Array[String]) -> Scope {
+  { ..self.inner(names), outputs: true, }
+}
+
+///|
+/// A scope inside `self` with the WITH names `names`.
+fn Scope::with_scope(self : Scope, names : Array[String]) -> Scope {
+  { ..self.inner(names), with_: true, }
 }
 
 ///|
@@ -28,30 +66,43 @@ fn Scope::for_source(self : Scope) -> Scope {
 
 ///|
 /// The declared name of the innermost variable that `id` names: a regular
-/// identifier ignores case, a delimited one does not.
-fn Scope::resolve(self : Scope, id : @ast.Identifier) -> String? {
+/// identifier ignores case, a delimited one does not. Also whether that
+/// variable is a WITH binding.
+fn Scope::resolve(self : Scope, id : @ast.Identifier) -> (String, Bool)? {
   let wanted = if id.delimited { id.text } else { id.text.to_lower() }
   let mut scope = Some(self)
+  let mut hidden = None
   while scope is Some(s) {
     for name in s.names.rev_iter() {
       let key = if id.delimited { name } else { name.to_lower() }
       if key == wanted {
-        return Some(name)
+        // An output name is a frame of its own, so it never hides a
+        // variable of the same name at run time.
+        let shown = if s.outputs { @plan.output_variable(name) } else { name }
+        if s.outputs && s.variables_first {
+          if hidden is None {
+            hidden = Some((shown, s.with_))
+          }
+          break
+        }
+        return Some((shown, s.with_))
       }
     }
     scope = s.outer
   }
-  None
+  hidden
 }
 
 ///|
 /// The names of every variable in scope, the innermost query first and each
-/// query in FROM order.
+/// query in FROM order. Output names are left out.
 fn Scope::locals(self : Scope) -> Array[String] {
   let all = []
   let mut scope = Some(self)
   while scope is Some(s) {
-    all.append(s.names)
+    if !s.outputs && !s.with_ {
+      all.append(s.names)
+    }
     scope = s.outer
   }
   all
@@ -71,32 +122,214 @@ fn query_at(
   scope : Scope,
   depth : Int32,
 ) -> @plan.Expr raise @plan.EvalError {
-  if q.with_ is [first, ..] {
-    return unsupported("WITH (M4b2)", first.span)
+  if !q.with_.is_empty() {
+    return with_at(q, scope, depth)
   }
-  if q.order_by is [first, ..] {
-    return unsupported("ORDER BY (M4b2)", first.span)
+  // LIMIT and OFFSET see the outer scope, not the variables of this query.
+  let limit = clause_at(q.limit, "LIMIT", scope, depth)
+  let offset = clause_at(q.offset, "OFFSET", scope, depth)
+  // The body, the output names a sort key may use, and the scope of the
+  // sort keys.
+  let (body, aliases, keys_scope) = match q.body {
+    Select(s) => {
+      let (body, aliases, inner) = select_parts(s, scope, depth)
+      (body, aliases, inner.with_outputs(aliases))
+    }
+    Expr(e) =>
+      (lower_at(e, scope, depth), [], scope.inner([@plan.row_variable]))
+    SetOp(op) =>
+      (set_op_at(op, scope, depth), [], scope.inner([@plan.row_variable]))
+    Table(parts) => {
+      let (body, inner) = table_at(parts, scope, depth, q.span)
+      (body, [], inner.with_outputs([]))
+    }
   }
-  if q.limit is Some(e) {
-    return unsupported("LIMIT (M4b2)", e.span)
+  // A key that is exactly a name finds an output name first; any other key
+  // finds a variable first and an output name only when no variable has it.
+  let expr_scope = { ..keys_scope, variables_first: true, }
+  if q.order_by.is_empty() && limit is None && offset is None {
+    return body
   }
-  if q.offset is Some(e) {
-    return unsupported("OFFSET (M4b2)", e.span)
+  let order = q.order_by.map(spec => {
+    let desc = spec.order is Some(Desc)
+    let nulls_first = match spec.nulls {
+      Some(First) => true
+      Some(Last) => false
+      None => desc
+    }
+    @plan.SortKey::{
+      expr: lower_at(
+        spec.expr,
+        if spec.expr.kind is VarRef(_, ..) {
+          keys_scope
+        } else {
+          expr_scope
+        },
+        depth,
+      ),
+      desc,
+      nulls_first,
+    }
+  })
+  Query(body, order~, limit~, offset~, aliases~, q.span)
+}
+
+///|
+/// Lowers a query with WITH: each binding is a query that sees the earlier
+/// names, the outer scope and not the later names; the rest of the query
+/// (body, ORDER BY, LIMIT, OFFSET) sees all of them. A repeated name is a
+/// `DataError`.
+fn with_at(
+  q : @ast.Query,
+  scope : Scope,
+  depth : Int32,
+) -> @plan.Expr raise @plan.EvalError {
+  if depth >= max_depth {
+    raise DataError(message="query is too deeply nested", span=q.span)
   }
-  match q.body {
-    Expr(e) => lower_at(e, scope, depth)
-    Select(s) => select_at(s, scope, depth)
-    SetOp(op) => unsupported("a set operation (M4b2)", op.span)
-    Table(_) => unsupported("TABLE (later)", q.span)
+  let names = []
+  let bindings = []
+  for b in q.with_ {
+    let expr = query_at(b.query, scope.with_scope(names.copy()), depth + 1)
+    if names.contains(b.name.text) {
+      raise DataError(
+        message="WITH name \{b.name.text} is declared twice",
+        span=b.name.span,
+      )
+    }
+    names.push(b.name.text)
+    bindings.push((b.name.text, expr))
+  }
+  let rest = query_at({ ..q, with_: [], }, scope.with_scope(names), depth + 1)
+  With(bindings, rest, q.span)
+}
+
+///|
+/// Lowers `TABLE a.b` as `SELECT * FROM a.b` (plan ruling 12): the plan and
+/// the scope inside it.
+fn table_at(
+  parts : Array[@ast.Identifier],
+  scope : Scope,
+  depth : Int32,
+  span : @ast.Span,
+) -> (@plan.Expr, Scope) raise @plan.EvalError {
+  guard parts is [first, .. rest] else {
+    raise DataError(message="TABLE needs a name", span~)
+  }
+  let base : @ast.Expr = {
+    kind: VarRef(first, qualified=false),
+    span: first.span,
+  }
+  let expr : @ast.Expr = if rest.is_empty() {
+    base
+  } else {
+    { kind: Path(base, rest.map(id => Field(id))), span, }
+  }
+  let source : @ast.FromSource = {
+    lateral: false,
+    expr,
+    as_: None,
+    at: None,
+    by: None,
+    span,
+  }
+  let names = []
+  let rel = from_leaf(Scan(source), scope, names, Ref(0), depth)
+  (
+    Select(rel, Star(from_variables(rel)), distinct=false, span),
+    scope.inner(names),
+  )
+}
+
+///|
+/// Lowers a chain of set operations. The chain is walked down its left
+/// spine in a loop, through every left operand that is a set operation
+/// without clauses of its own (`A UNION B UNION C` is `(A UNION B) UNION
+/// C`), so a long chain takes no recursion per link. The operands see the
+/// scope of the query.
+fn set_op_at(
+  op : @ast.SetOp,
+  scope : Scope,
+  depth : Int32,
+) -> @plan.Expr raise @plan.EvalError {
+  if depth >= max_depth {
+    raise DataError(message="query is too deeply nested", span=op.span)
+  }
+  let steps = [op]
+  let mut leaf = op.left
+  while leaf is { body: SetOp(inner), .. } && !has_clauses(leaf) {
+    steps.push(inner)
+    leaf = inner.left
+  }
+  let mut acc = query_at(leaf, scope, depth + 1)
+  for step in steps.rev_iter() {
+    let right = query_at(step.right, scope, depth + 1)
+    acc = SetOp(
+      step.op,
+      all=step.quantifier is Some(All),
+      outer=step.outer,
+      corresponding=step.corresponding,
+      acc,
+      right,
+      step.span,
+    )
+  }
+  acc
+}
+
+///|
+/// Whether a query has a clause of its own: WITH, ORDER BY, LIMIT or
+/// OFFSET.
+fn has_clauses(q : @ast.Query) -> Bool {
+  !q.with_.is_empty() ||
+  !q.order_by.is_empty() ||
+  q.limit is Some(_) ||
+  q.offset is Some(_)
+}
+
+///|
+/// Whether `e` is an integer literal below 0: a minus sign on a literal.
+fn negative_literal(e : @ast.Expr) -> Bool {
+  match e.kind {
+    Unary(Neg, { kind: Lit(Int(text)), .. }) =>
+      text.iter().any(c => c >= '1' && c <= '9')
+    _ => false
   }
 }
 
 ///|
-fn select_at(
+/// Lowers a LIMIT or OFFSET expression in `scope`. A negative literal is a
+/// `DataError` in both modes (plan ruling 3).
+fn clause_at(
+  clause : @ast.Expr?,
+  name : String,
+  scope : Scope,
+  depth : Int32,
+) -> @plan.Expr? raise @plan.EvalError {
+  guard clause is Some(e) else { return None }
+  if negative_literal(e) {
+    raise DataError(message="\{name} must not be negative", span=e.span)
+  }
+  match e.kind {
+    // A count beyond Int64 is valid (OFFSET skips all rows, LIMIT keeps
+    // them all), so this literal is not range-checked.
+    Lit(Int(text)) =>
+      Some(
+        Const(@value.Value::integer(@bigint.BigInt::from_string(text)), e.span),
+      )
+    _ => Some(lower_at(e, scope, depth))
+  }
+}
+
+///|
+/// Lowers a query block: the plan, the output names of its SELECT list (in
+/// order, none for `SELECT VALUE` and `*`), and the scope inside it (its FROM
+/// and LET variables).
+fn select_parts(
   s : @ast.Select,
   scope : Scope,
   depth : Int32,
-) -> @plan.Expr raise @plan.EvalError {
+) -> (@plan.Expr, Array[String], Scope) raise @plan.EvalError {
   if s.group_by is Some(g) {
     return unsupported("GROUP BY (M4c)", g.span)
   }
@@ -127,6 +360,7 @@ fn select_at(
     Some(w) => Filter(let_rel, lower_at(w, inner, depth), w.span)
     None => let_rel
   }
+  let aliases = []
   let projection : @plan.Projection = match s.projection {
     Value(e) => Value(lower_at(e, inner, depth))
     Star(_) => Star(variables)
@@ -135,23 +369,31 @@ fn select_at(
       for i, item in items {
         out.push(
           match item {
-            Expr(e, as_~, ..) =>
-              @plan.Item::Named(
-                match as_ {
-                  Some(id) => id.text
-                  None => implicit_name(e, i)
-                },
-                lower_at(e, inner, depth),
-              )
+            Expr(e, as_~, ..) => {
+              let name = match as_ {
+                Some(id) => id.text
+                None => implicit_name(e, i)
+              }
+              aliases.push(name)
+              @plan.Item::Named(name, lower_at(e, inner, depth))
+            }
             AllFields(e, ..) => @plan.Item::AllFields(lower_at(e, inner, depth))
           },
         )
       }
       Items(out)
     }
-    Pivot(..) => return unsupported("PIVOT (M4b2)", s.span)
+    Pivot(value~, key~) =>
+      Pivot(
+        value=lower_at(value, inner, depth),
+        key=lower_at(key, inner, depth),
+      )
   }
-  Select(rel, projection, distinct=s.quantifier is Some(Distinct), s.span)
+  (
+    Select(rel, projection, distinct=s.quantifier is Some(Distinct), s.span),
+    aliases,
+    inner,
+  )
 }
 
 ///|
@@ -355,4 +597,26 @@ fn column_at(
   } else {
     inner
   }
+}
+
+///|
+/// Whether `e` is a subquery whose body is a `SELECT` with a list of
+/// expression items (any number, not `SELECT VALUE`, `*` or `x.*`).
+fn is_select_items(e : @ast.Expr) -> Bool {
+  match e.kind {
+    Query({ body: Select({ projection: Items(items), .. }), .. }) =>
+      items.iter().all(item => item is Expr(_, ..))
+    _ => false
+  }
+}
+
+///|
+/// Lowers a subquery that is compared with an array literal: its row is
+/// coerced to a list (plan ruling 9).
+fn row_at(
+  e : @ast.Expr,
+  scope : Scope,
+  depth : Int32,
+) -> @plan.Expr raise @plan.EvalError {
+  Subquery(lower_plain(e, scope, depth), Row, e.span)
 }
