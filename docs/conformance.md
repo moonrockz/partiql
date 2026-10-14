@@ -218,7 +218,7 @@ reasons:
   expects a failure. Every `.*` step applies to a tuple, so the evaluator
   succeeds; the corpus expectation is taken as an artifact.
 
-M4b2 adds 24 failing ids in four groups:
+M4b2 adds 24 failing ids in three groups:
 
 - **Corpus defects (17 ids).**
   - `order-by.ion` "structs should be ordered by data types (DESC)": the
@@ -227,7 +227,7 @@ M4b2 adds 24 failing ids in four groups:
   - `eval-equiv/spec-tests.ion` has 15 ids with wrong or contradictory
     cases. Section 12 "explicit literals" expects `9 < '10'` to succeed in
     strict mode, and expects `SELECT * FROM foo` with a scalar `foo` to
-    succeed in strict mode (3 ids). Four statements cannot fail in strict
+    succeed in strict mode (3 ids). Three statements cannot fail in strict
     mode but share a class with a failing assertion: section 4 wildcard
     steps `[1]`, section 5 unpivot missing `[1]` and unpivot non-missing
     `[1]` (3 ids). Section 5 unpivot missing `[0]` has an env that leaves `x`
