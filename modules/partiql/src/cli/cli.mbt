@@ -54,6 +54,7 @@ pub fn run(args : ArrayView[String], io~ : Io = Io::unavailable()) -> Outcome {
     Some(("format", sub)) => format_command(sub, io, color)
     Some(("parse", sub)) => parse_command(sub, io, color)
     Some(("check", sub)) => check_command(sub, io, color)
+    Some(("query", sub)) => query_command(sub, io, color)
     Some((name, _)) => usage_error("partiql: command not handled: \{name}\n")
     None => usage_error(help_text([]).unwrap_or(""))
   }

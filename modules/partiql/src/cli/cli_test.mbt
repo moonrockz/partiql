@@ -91,6 +91,7 @@ test "root help snapshot" {
       #|  parse    Print the syntax tree of PartiQL as S-expressions; broken parts are (error).
       #|  check    Check that PartiQL parses; print every error.
       #|  format   Print PartiQL in a readable layout, keeping comments.
+      #|  query    Evaluate PartiQL against Ion data; print each result as Ion.
       #|  version  Print the version.
       #|  help     Print help for the command line or for one command.
       #|
@@ -103,6 +104,7 @@ test "root help snapshot" {
       #|  partiql check query.sql
       #|  partiql parse -e 'select a from t'
       #|  partiql format query.sql
+      #|  partiql query --data t=rows.ion -e 'select a from t'
       #|  partiql help format
       #|
     ),
