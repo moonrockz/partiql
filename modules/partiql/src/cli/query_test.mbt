@@ -150,3 +150,201 @@ test "query help and usage" {
     soft.expect(query(["-e"]).status).to_equal(2)
   })
 }
+
+///|
+/// The outcome of a run that fails with `stderr` and prints nothing.
+fn failed(stderr : String) -> @cli.Outcome {
+  { stdout: "", stderr, status: 1, }
+}
+
+///|
+test "query binds --data files: one value as is, other counts as a bag" {
+  let io = query_io({
+    "rows.ion": "{a: 1} {a: 2}",
+    "list.ion": "[1, 2]",
+    "one.ion": "{a: 1}",
+    "empty.ion": "",
+    "bag.ion": "$bag::[1]",
+    "missing.ion": "$missing::null",
+    "boxed.ion": "$ion::foo::1",
+    "annotated.ion": "foo::1",
+    "a=b.ion": "7",
+  })
+  let run = (data : String, statement : String) => {
+    query(["--compact", "--data", data, "-e", statement], io~)
+  }
+  @expect.expect_all(soft => {
+    soft
+    .expect(run("t=rows.ion", "t").stdout)
+    .to_equal("$bag::[{a: 1}, {a: 2}]\n")
+    soft.expect(run("t=list.ion", "t").stdout).to_equal("[1, 2]\n")
+    soft.expect(run("t=one.ion", "t").stdout).to_equal("{a: 1}\n")
+    soft.expect(run("t=empty.ion", "t").stdout).to_equal("$bag::[]\n")
+    soft.expect(run("t=bag.ion", "t").stdout).to_equal("$bag::[1]\n")
+    soft
+    .expect(
+      run("t=rows.ion", "SELECT VALUE r.a FROM t AS r WHERE r.a > 1").stdout,
+    )
+    .to_equal("$bag::[2]\n")
+    // A MISSING global stays bound (plan ruling 1).
+    soft.expect(run("t=missing.ion", "t").stdout).to_equal("$missing::null\n")
+    soft.expect(run("t=missing.ion", "t IS MISSING").stdout).to_equal("true\n")
+    // Review focus 5: boxed Ion prints back unchanged; a plain annotation is
+    // not PartiQL-encoded Ion, so it is an error.
+    soft.expect(run("t=boxed.ion", "t").stdout).to_equal("$ion::foo::1\n")
+    soft
+    .expect(run("t=annotated.ion", "t"))
+    .to_equal(failed("partiql query: annotated.ion: unknown annotation foo\n"))
+    // Review focus 4: the split is at the first '='.
+    soft.expect(run("t=a=b.ion", "t").stdout).to_equal("7\n")
+  })
+}
+
+///|
+test "query binds --env structs and merges the bindings" {
+  let io = query_io({
+    "env.ion": "{t: [1, 2], u: 3}",
+    "env2.ion": "{v: 4}",
+    "clash.ion": "{t: 9}",
+    "dup.ion": "{w: 1, w: 2}",
+    "list.ion": "[1]",
+    "two.ion": "{a: 1} {b: 2}",
+    "n.ion": "5",
+    "upper.ion": "6",
+  })
+  @expect.expect_all(soft => {
+    soft
+    .expect(
+      query(
+        [
+          "--compact", "--env", "env.ion", "--env", "env2.ion", "--data", "n=n.ion",
+          "-e", "[t, u, v, n]",
+        ],
+        io~,
+      ).stdout,
+    )
+    .to_equal("[[1, 2], 3, 4, 5]\n")
+    soft
+    .expect(query(["--env", "env.ion", "--env", "clash.ion", "-e", "1"], io~))
+    .to_equal(failed("partiql query: clash.ion: the global t is bound twice\n"))
+    soft
+    .expect(query(["--env", "env.ion", "--data", "t=n.ion", "-e", "1"], io~))
+    .to_equal(failed("partiql query: n.ion: the global t is bound twice\n"))
+    soft
+    .expect(query(["--env", "dup.ion", "-e", "1"], io~))
+    .to_equal(failed("partiql query: dup.ion: the global w is bound twice\n"))
+    soft
+    .expect(query(["--env", "list.ion", "-e", "1"], io~))
+    .to_equal(failed("partiql query: list.ion: --env needs one Ion struct\n"))
+    soft
+    .expect(query(["--env", "two.ion", "-e", "1"], io~))
+    .to_equal(failed("partiql query: two.ion: --env needs one Ion struct\n"))
+    // Review focus 1: names that differ only in case are both bound; an
+    // unquoted name finds the first.
+    soft
+    .expect(
+      query(
+        ["--compact", "--data", "T=upper.ion", "--data", "t=n.ion", "-e", "t"],
+        io~,
+      ).stdout,
+    )
+    .to_equal("6\n")
+  })
+}
+
+///|
+test "query reports unreadable and malformed binding files" {
+  let io = query_io({ "bad.ion": "{a:", "date.ion": "$date::\"x\"" })
+  @expect.expect_all(soft => {
+    soft
+    .expect(query(["--data", "t=nope.ion", "-e", "1"], io~))
+    .to_equal(failed("partiql query: nope.ion: no such file: nope.ion\n"))
+    soft
+    .expect(query(["--data", "t=bad.ion", "-e", "1"], io~))
+    .to_equal(
+      failed(
+        "partiql query: bad.ion: expected an Ion value, found end of input\n",
+      ),
+    )
+    soft
+    .expect(query(["--env", "date.ion", "-e", "1"], io~))
+    .to_equal(
+      failed("partiql query: date.ion: $date must be a struct, not String\n"),
+    )
+    soft
+    .expect(query(["--data", "t=-", "-e", "1"], io=query_io({}, stdin="{a:")))
+    .to_equal(
+      failed(
+        "partiql query: <stdin>: expected an Ion value, found end of input\n",
+      ),
+    )
+  })
+}
+
+///|
+test "query reads one binding or the statements from stdin" {
+  @expect.expect_all(soft => {
+    soft
+    .expect(
+      query(
+        ["--compact", "--data", "t=-", "-e", "t"],
+        io=query_io({}, stdin="[1]"),
+      ).stdout,
+    )
+    .to_equal("[1]\n")
+    soft
+    .expect(
+      query(
+        ["--compact", "--env", "-", "q.sql"],
+        io=query_io({ "q.sql": "t" }, stdin="{t: 1}"),
+      ).stdout,
+    )
+    .to_equal("1\n")
+    soft.expect(@cli.reads_stdin(["query"])).to_be_true()
+    soft.expect(@cli.reads_stdin(["query", "-"])).to_be_true()
+    soft
+    .expect(@cli.reads_stdin(["query", "--env", "-", "-e", "1"]))
+    .to_be_true()
+    soft
+    .expect(@cli.reads_stdin(["query", "--data", "t=-", "q.sql"]))
+    .to_be_true()
+    soft.expect(@cli.reads_stdin(["query", "-e", "1"])).to_be_false()
+    soft.expect(@cli.reads_stdin(["query", "q.sql"])).to_be_false()
+    soft
+    .expect(@cli.reads_stdin(["query", "--data", "t=a.ion", "-e", "1"]))
+    .to_be_false()
+  })
+}
+
+///|
+test "query usage errors" {
+  @expect.expect_all(soft => {
+    for
+      args in [
+        ["--data", "t", "-e", "1"],
+        ["--data", "=f.ion", "-e", "1"],
+        ["--data", "t=", "-e", "1"],
+        ["--data", "t=a.ion", "--data", "t=b.ion", "-e", "1"],
+        ["--data", "t=-"],
+        ["--env", "-", "--data", "t=-", "-e", "1"],
+        ["--env", "-", "--env", "-", "-e", "1"],
+        ["--env", "-", "-"],
+      ] {
+      let outcome = query(args)
+      soft.expect(outcome.status, label=args.join(" ")).to_equal(2)
+      soft.expect(outcome.stdout, label=args.join(" ")).to_equal("")
+      soft
+      .expect(outcome.stderr, label=args.join(" "))
+      .to_contain("Run 'partiql help query' for more information.")
+    }
+    soft
+    .expect(query(["--data", "t", "-e", "1"]).stderr)
+    .to_contain("--data needs NAME=FILE, found 't'")
+    soft
+    .expect(query(["--data", "t=a.ion", "--data", "t=b.ion", "-e", "1"]).stderr)
+    .to_contain("--data binds t twice")
+    soft
+    .expect(query(["--data", "t=-"]).stderr)
+    .to_contain("only one input can read stdin")
+  })
+}
