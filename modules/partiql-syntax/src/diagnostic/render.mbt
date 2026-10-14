@@ -85,6 +85,42 @@ pub fn render(
       (message, span, expected, found)
     Unsupported(message~, span~) => (message, span, [], "")
   }
+  let expected_kind = message.has_prefix("expected")
+  let header = if expected_kind && found != "" {
+    message + ", found " + found
+  } else {
+    message
+  }
+  let label = if expected_kind { " " + message } else { "" }
+  layout(header, label, span, expected, source, name, color)
+}
+
+///|
+/// The rendered diagnostic of `message` at `span` in `source`, in the layout
+/// of `render`, with no caret label and no `expected` note (for example an
+/// evaluation error). Ends with a line break.
+pub fn render_message(
+  message : String,
+  span : @ast.Span,
+  source : String,
+  name~ : String,
+  color~ : Bool = false,
+) -> String {
+  layout(message, "", span, [], source, name, color)
+}
+
+///|
+/// The shared layout: the `error:` line with `header`, the location line,
+/// the source line, the caret marks followed by `label`, and the notes.
+fn layout(
+  header : String,
+  label : String,
+  span : @ast.Span,
+  expected : Array[String],
+  source : String,
+  name : String,
+  color : Bool,
+) -> String {
   // An error at the end of a source that ends with a line break points at
   // the end of the last line.
   let start = if span.start >= source.length() && source.has_suffix("\r\n") {
@@ -112,12 +148,6 @@ pub fn render(
   let marks = if marks < 1 { 1 } else { marks }
   let gutter = "\{at.line}".length()
   let pad = " ".repeat(gutter)
-  let expected_kind = message.has_prefix("expected")
-  let header = if expected_kind && found != "" {
-    message + ", found " + found
-  } else {
-    message
-  }
   let buf = StringBuilder()
   buf.write_string(paint("error", red, color))
   buf.write_string(paint(": " + header, bold, color))
@@ -134,7 +164,6 @@ pub fn render(
     expand(text) +
     "\n",
   )
-  let label = if expected_kind { " " + message } else { "" }
   buf.write_string(
     pad +
     " " +

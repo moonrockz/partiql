@@ -24,7 +24,7 @@ fixed from the start (see [ADR 0001](adr/0001-workspace-monorepo.md)).
 | `moonrockz/partiql-value` | root (`Value`), `ion` (codec), `arbitrary` (generators) | `moonrockz/ion` | wasm, wasm-gc, js, native | yes |
 | `moonrockz/partiql-syntax` | root (`parse`), `ast`, `lexer`, `parser` | `moonrockz/ion` | wasm, wasm-gc, js, native | yes |
 | `moonrockz/partiql-eval` | root (`evaluate`), `plan`, `lower`, `ops`, `interp` | value, syntax, `moonrockz/ion` | wasm, wasm-gc, js, native | yes |
-| `moonrockz/partiql` | root (executable), `cli` | `moonbitlang/x` (later: value, syntax, eval) | native, wasm | yes |
+| `moonrockz/partiql` | root (executable), `cli` | value, syntax, eval, `moonrockz/ion`, `moonbitlang/x`, `moonbitlang/async` | native, wasm | yes |
 | `moonrockz/partiql-conformance` | root (test-only) | value, syntax, `moonrockz/ion`, `moonbitlang/x` | native, js | no |
 
 The `partiql` module has the CLI as its root package, so
@@ -35,8 +35,10 @@ logic; the root package only prints and exits.
 
 ```mermaid
 graph TD
-  partiql[moonrockz/partiql CLI] -.later.-> syntax[moonrockz/partiql-syntax]
-  partiql -.later.-> value[moonrockz/partiql-value]
+  partiql[moonrockz/partiql CLI] --> syntax[moonrockz/partiql-syntax]
+  partiql --> value[moonrockz/partiql-value]
+  partiql --> eval
+  partiql --> ion
   value --> ion[moonrockz/ion]
   conformance[moonrockz/partiql-conformance] --> value
   conformance --> syntax
@@ -215,10 +217,12 @@ graph TD
 - `partiql`
   - root: the executable.
   - `cli`: `run(args, io?) -> Outcome`, with the commands `parse`, `check`,
-    `format`, `version` and `help`, and the global `--color`. Errors print as
-    rendered diagnostics. File and stdin access comes in through the `Io`
-    record, which `main.mbt` provides (`moonbitlang/x/fs` and
-    `moonbitlang/async` stdin). See the CLI section of `AGENTS.md`.
+    `format`, `query`, `version` and `help`, and the global `--color`. Errors
+    print as rendered diagnostics (`@syntax.render`, and
+    `@syntax.render_message` for evaluation errors). `query` evaluates with
+    `partiql-eval` and reads and writes PartiQL-encoded Ion. File and stdin
+    access comes in through the `Io` record, which `main.mbt` provides
+    (`moonbitlang/x/fs` and `moonbitlang/async` stdin). See the CLI section of `AGENTS.md`.
 
 ## Rules
 

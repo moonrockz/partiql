@@ -11,6 +11,8 @@ pub fn position(String, Int) -> Position
 
 pub fn render(@ast.ParseError, String, name~ : String, color? : Bool) -> String
 
+pub fn render_message(String, @ast.Span, String, name~ : String, color? : Bool) -> String
+
 // Errors
 
 // Types and methods

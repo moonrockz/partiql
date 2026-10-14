@@ -79,3 +79,13 @@ test "sexp and row literals are lists" {
     soft.expect(ev("ROW(1, 2)")).to_equal(List([Int(1), Int(2)]))
   })
 }
+
+///|
+test "Bindings::of_pairs keeps a MISSING global bound" {
+  let env = @eval.Bindings::of_pairs([("t", Missing), ("u", Int(1))])
+  @expect.expect_all(soft => {
+    soft.expect(@eval.evaluate_text("t", env~)).to_equal(Missing)
+    soft.expect(@eval.evaluate_text("t IS MISSING", env~)).to_equal(Bool(true))
+    soft.expect(@eval.evaluate_text("u", env~)).to_equal(Int(1))
+  })
+}

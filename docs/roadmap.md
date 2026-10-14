@@ -115,15 +115,18 @@ Its parts, in this order:
   The `eval` conformance check passes 4043 of 9960 assertions; 5847 are not
   applicable; 70 fail (see `conformance.md`). Property laws cover sorting,
   LIMIT and OFFSET and the set operations.
-- **M4e: CLI `partiql query`** (bead `partiql-5se.3`). Bindings from Ion
-  files or stdin; the result as Ion.
+- **M4e: CLI `partiql query`** (bead `partiql-5se.3`). Done: `partiql
+  query` evaluates statements with bindings from `--env` (an Ion struct)
+  and `--data NAME=FILE`, from files or stdin, in permissive or `--strict`
+  mode, and prints each result as PartiQL-encoded Ion (pretty, or
+  `--compact`). Evaluation errors print as rendered diagnostics.
 - **M4c: grouping** (bead `partiql-5se.4`). GROUP BY, GROUP AS, HAVING, and the aggregates COUNT,
   SUM, AVG, MIN and MAX.
 - **M4d: functions and CAST** (bead `partiql-5se.5`). String, numeric and datetime functions,
   EXTRACT, DATE_ADD, DATE_DIFF, TRIM, SUBSTRING, POSITION, OVERLAY,
   OVERLAPS, and CAST in both modes.
 
-The next parts are M4e, then M4c, then M4d.
+M4e is done. The next parts are M4c, then M4d.
 
 Graph MATCH evaluation and `?` parameters come after M4. A REPL is not part
 of M4.

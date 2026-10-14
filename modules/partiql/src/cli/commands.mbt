@@ -7,7 +7,7 @@
 ///|
 /// The commands, in the order help lists them.
 let command_names : Array[String] = [
-  "parse", "check", "format", "version", "help",
+  "parse", "check", "format", "query", "version", "help",
 ]
 
 ///|
@@ -52,6 +52,33 @@ fn command(name : String, prefix : String) -> @argparse.Command {
         named,
         about="Check that PartiQL parses; print every error.",
         options=input_options(),
+        positionals=input_positionals(),
+      )
+    "query" =>
+      @argparse.Command(
+        named,
+        about="Evaluate PartiQL against Ion data; print each result as Ion.",
+        flags=[
+          @argparse.FlagArg(
+            "strict",
+            about="Evaluate in strict mode: a type error fails instead of giving MISSING.",
+          ),
+          @argparse.FlagArg("compact", about="Print each result on one line."),
+        ],
+        options=[
+          ..input_options(),
+          @argparse.OptionArg(
+            "env",
+            about="An Ion file that holds one struct; each field is a global. '-' reads stdin.",
+            action=Append,
+            allow_hyphen_values=true,
+          ),
+          @argparse.OptionArg(
+            "data",
+            about="NAME=FILE: bind the Ion values of FILE to the global NAME. '-' as FILE reads stdin.",
+            action=Append,
+          ),
+        ],
         positionals=input_positionals(),
       )
     "version" => @argparse.Command(named, about="Print the version.")
@@ -105,7 +132,7 @@ fn examples(path : ArrayView[String]) -> Array[String] {
     [] =>
       [
         "partiql check query.sql", "partiql parse -e 'select a from t'", "partiql format query.sql",
-        "partiql help format",
+        "partiql query --data t=rows.ion -e 'select a from t'", "partiql help format",
       ]
     ["parse"] =>
       [
@@ -120,6 +147,12 @@ fn examples(path : ArrayView[String]) -> Array[String] {
         "partiql format query.sql", "partiql format --write *.sql", "partiql format -e 'select a from t'",
         "partiql format --width 100 query.sql", "partiql format --compact query.sql",
         "cat query.sql | partiql format",
+      ]
+    ["query"] =>
+      [
+        "partiql query -e 'select value x * 2 from <<1, 2>> as x'", "partiql query --data t=rows.ion -e 'select a from t where b > 1'",
+        "partiql query --env env.ion query.sql", "cat rows.ion | partiql query --data t=- query.sql",
+        "partiql query --strict --compact query.sql",
       ]
     ["version"] => ["partiql version", "partiql --version"]
     ["help"] => ["partiql help", "partiql help version"]

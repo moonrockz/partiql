@@ -23,6 +23,8 @@ pub fn print_script(@ast.Script, width? : Int) -> String
 
 pub fn render(@ast.ParseError, String, name~ : String, color? : Bool) -> String
 
+pub fn render_message(String, @ast.Span, String, name~ : String, color? : Bool) -> String
+
 pub fn to_sexp(@ast.Statement, width? : Int) -> String
 
 // Errors

@@ -282,3 +282,79 @@ test "render: control characters in the source line do not reach the terminal" {
   )
   @expect.expect(text.contains("\u{1b}")).to_be_false()
 }
+
+///|
+test "render_message: the layout of render, without a label or notes" {
+  @expect.expect_all(soft => {
+    soft
+    .expect(
+      @diagnostic.render_message(
+        "type error: arithmetic on a value that is not a number",
+        { start: 0, end: 7, },
+        "1 + 'a'",
+        name="<expr>",
+      ),
+    )
+    .to_equal(
+      (
+        #|error: type error: arithmetic on a value that is not a number
+        #| --> <expr>:1:1
+        #|  |
+        #|1 | 1 + 'a'
+        #|  | ^^^^^^^
+        #|
+      ),
+    )
+    // A message that starts with "expected" gets no caret label.
+    soft
+    .expect(
+      @diagnostic.render_message(
+        "expected x",
+        { start: 0, end: 1, },
+        "a",
+        name="q",
+      ),
+    )
+    .to_equal("error: expected x\n --> q:1:1\n  |\n1 | a\n  | ^\n")
+    // A span over two lines gets the note.
+    soft
+    .expect(
+      @diagnostic.render_message(
+        "data error: division by zero",
+        { start: 2, end: 9, },
+        "1 +\n2 / 0",
+        name="q.sql",
+      ),
+    )
+    .to_contain("  = note: the span ends at line 2")
+    // An error at the end of a source that ends with a line break.
+    soft
+    .expect(
+      @diagnostic.render_message("m", { start: 4, end: 4, }, "abc\n", name="q"),
+    )
+    .to_equal("error: m\n --> q:1:4\n  |\n1 | abc\n  |    ^\n")
+    soft
+    .expect(
+      @diagnostic.render_message(
+        "m",
+        { start: 0, end: 1, },
+        "x",
+        name="q",
+        color=true,
+      ),
+    )
+    .to_contain("\u{1b}[1;31merror\u{1b}[0m")
+    // Without "expected", render of Unsupported has the same layout.
+    soft
+    .expect(
+      @diagnostic.render_message("m", { start: 0, end: 1, }, "x", name="q"),
+    )
+    .to_equal(
+      @diagnostic.render(
+        Unsupported(message="m", span={ start: 0, end: 1, }),
+        "x",
+        name="q",
+      ),
+    )
+  })
+}

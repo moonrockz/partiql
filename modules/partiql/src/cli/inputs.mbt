@@ -92,6 +92,7 @@ pub fn reads_stdin(args : ArrayView[String]) -> Bool {
     _ => return false
   }
   match matches.subcommand {
+    Some(("query", m)) => query_reads_stdin(m)
     Some(("format" | "parse" | "check", m)) => stdin_wanted(m)
     _ => false
   }

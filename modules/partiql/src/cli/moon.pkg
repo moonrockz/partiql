@@ -5,11 +5,19 @@ import {
   "moonbitlang/core/argparse",
   "moonbitlang/core/string",
   "moonrockz/partiql-syntax" @syntax,
+  "moonrockz/partiql-eval" @eval,
+  "moonrockz/partiql-value" @value,
+  "moonrockz/partiql-value/ion" @partiql_ion,
+  "moonrockz/ion/text",
 }
 
 import {
   "moonrockz/partiql/cli",
   "moonrockz/expect",
+  "moonrockz/partiql-value/arbitrary",
+  "moonrockz/partiql-value/ion" @partiql_ion,
+  "moonrockz/ion/text",
+  "moonbitlang/core/quickcheck",
 } for "test"
 
 import {

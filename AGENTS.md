@@ -215,7 +215,12 @@ Rules:
   follows `--color` and `Io.color_default`. Commands report every error of
   an input (`parse_script_recovering`); `format` prints or writes nothing
   for an input with errors.
-- Exit status 1 means the input was invalid or could not be read.
+- Exit status 1 means the input was invalid or could not be read, or (for
+  `query`) a statement failed to evaluate.
+- `query` reads `--env` and `--data` files through `Io` too. At most one
+  input of a run reads stdin; `reads_stdin` knows the rule for each command.
+- Evaluation errors print with `@syntax.render_message`, at the span of the
+  error.
 
 ## Mise Tasks
 
@@ -300,7 +305,8 @@ new ADR.
 - Prepare: `mise run release:bump`, `mise run release:changelog`, commit.
 - Trigger: push tag `v*`, or run the Release workflow (workflow_dispatch) on
   `main`.
-- Publish order: `partiql-value`, `partiql-syntax`, `partiql`.
+- Publish order: `partiql-value`, `partiql-syntax`, `partiql-eval`,
+  `partiql`.
   `partiql-conformance` is never published.
 - Requires the `MOONCAKES_USER_TOKEN` org secret.
 - Tags and releases are **immutable**. Publish to mooncakes.io first, then
