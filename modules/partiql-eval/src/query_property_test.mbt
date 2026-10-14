@@ -244,7 +244,7 @@ fn gen_query(rs : @splitmix.RandomState) -> String {
   let e = () => gen_expr(rs, 2)
   let src = query_sources[pick(rs, query_sources.length())]
   let src2 = query_sources[pick(rs, query_sources.length())]
-  match pick(rs, 13) {
+  match pick(rs, 17) {
     0 => "SELECT VALUE (\{e()}) FROM \{src} AS x"
     1 => "SELECT VALUE x FROM \{src} AS x WHERE \{e()}"
     2 => "SELECT (\{e()}) AS v, x FROM \{src} AS x"
@@ -260,6 +260,11 @@ fn gen_query(rs : @splitmix.RandomState) -> String {
     9 => "SELECT VALUE i FROM \{src} AS x AT i"
     10 => "SELECT VALUE a FROM \{src} AS x"
     11 => "SELECT * FROM \{src} AS x, \{src2} AS y"
+    // M4b2: ORDER BY, LIMIT, OUTER UNION and PIVOT
+    13 => "SELECT VALUE x FROM \{src} AS x ORDER BY \{e()}"
+    14 => "SELECT VALUE x FROM \{src} AS x LIMIT \{e()}"
+    15 => "\{src} OUTER UNION \{src2}"
+    16 => "PIVOT x AT \{e()} FROM \{src} AS x"
     // DataError branch: a FROM variable declared twice, or @ on an unknown name
     _ =>
       if pick(rs, 2) == 0 {
@@ -374,4 +379,387 @@ test "totality: subqueries nested as deep as the parser accepts" {
   }
   println("deepest nested subquery depth evaluated: \{deepest}")
   @expect.expect(deepest >= 25).to_be_true()
+}
+
+///|
+/// A bag literal of the elements of a `CollText`.
+fn bag_text(c : CollText) -> String {
+  "<<\{c.items.join(", ")}>>"
+}
+
+///|
+fn count_eqg(items : Array[@value.Value], v : @value.Value) -> Int32 {
+  let mut n = 0
+  for x in items {
+    if @value.eqg(x, v) {
+      n += 1
+    }
+  }
+  n
+}
+
+///|
+/// Equal as bags under grouping equivalence: the same length and, for every
+/// element of either side, the same count on both sides.
+fn bag_eqg(a : Array[@value.Value], b : Array[@value.Value]) -> Bool {
+  a.length() == b.length() &&
+  a.iter().all(v => count_eqg(a, v) == count_eqg(b, v)) &&
+  b.iter().all(v => count_eqg(a, v) == count_eqg(b, v))
+}
+
+///|
+test "law: ORDER BY is a permutation of its input" {
+  @quickcheck.check(
+    (c : CollText) => {
+      let sorted = items_of(
+        run("SELECT VALUE x FROM \{c.text()} AS x ORDER BY x"),
+      )
+      let plain = items_of(run("SELECT VALUE x FROM \{c.text()} AS x"))
+      match (sorted, plain) {
+        (Some(a), Some(b)) =>
+          @value.Value::Bag(@value.Bag::new(a)) ==
+          @value.Value::Bag(@value.Bag::new(b))
+        _ => false
+      }
+    },
+    count=1000,
+  )
+}
+
+///|
+test "law: ORDER BY output is sorted, ASC nulls last and DESC nulls first" {
+  @quickcheck.check(
+    (c : CollText) => {
+      let asc = match
+        items_of(run("SELECT VALUE x FROM \{c.text()} AS x ORDER BY x")) {
+        Some(a) => a
+        None => return false
+      }
+      let desc = match
+        items_of(run("SELECT VALUE x FROM \{c.text()} AS x ORDER BY x DESC")) {
+        Some(a) => a
+        None => return false
+      }
+      for i in 1..<asc.length() {
+        if @value.compare(asc[i - 1], asc[i], nulls=NullsLast) > 0 {
+          return false
+        }
+      }
+      for i in 1..<desc.length() {
+        // DESC reverses the whole ascending order, so NULL (greatest) comes first
+        if @value.compare(desc[i - 1], desc[i], nulls=NullsLast) < 0 {
+          return false
+        }
+      }
+      true
+    },
+    count=1000,
+  )
+}
+
+///|
+/// A list source: the stability law needs positions.
+struct ListText {
+  text : String
+} derive(Debug)
+
+///|
+impl @quickcheck.Arbitrary for ListText with fn arbitrary(_size, rs) {
+  // repeated atoms (and 1, 1.0 and 2e0 style ties) make equal keys likely
+  let n = pick(rs, 9)
+  let items = Array::makei(n, _ => coll_atoms[pick(rs, coll_atoms.length())])
+  { text: "[\{items.join(", ")}]", }
+}
+
+///|
+impl @quickcheck.Shrink for ListText
+
+///|
+test "law: ORDER BY is stable" {
+  @quickcheck.check(
+    (l : ListText) => {
+      let check_dir = (suffix : String) => {
+        let out = match
+          items_of(
+            run(
+              "SELECT VALUE [x, i] FROM \{l.text} AS x AT i ORDER BY x\{suffix}",
+            ),
+          ) {
+          Some(a) => a
+          None => return false
+        }
+        for k in 1..<out.length() {
+          match (out[k - 1], out[k]) {
+            (List([x1, Int(i1)]), List([x2, Int(i2)])) =>
+              if @value.compare(x1, x2, nulls=NullsLast) == 0 &&
+                @value.compare(x1, x2, nulls=NullsFirst) == 0 &&
+                i1 >= i2 {
+                return false
+              }
+            _ => return false
+          }
+        }
+        true
+      }
+      check_dir("") && check_dir(" DESC")
+    },
+    count=1000,
+  )
+}
+
+///|
+struct SliceCase {
+  c : CollText
+  n : Int32
+  m : Int32
+} derive(Debug)
+
+///|
+impl @quickcheck.Arbitrary for SliceCase with fn arbitrary(size, rs) {
+  {
+    c: @quickcheck.Arbitrary::arbitrary(size, rs),
+    n: pick(rs, 8),
+    m: pick(rs, 8),
+  }
+}
+
+///|
+impl @quickcheck.Shrink for SliceCase
+
+///|
+test "law: LIMIT and OFFSET take the slice of the ordered output" {
+  @quickcheck.check(
+    (s : SliceCase) => {
+      let base = "SELECT VALUE x FROM \{s.c.text()} AS x ORDER BY x"
+      let all = match items_of(run(base)) {
+        Some(a) => a
+        None => return false
+      }
+      let got = items_of(run("\{base} LIMIT \{s.n} OFFSET \{s.m}"))
+      let lo = if s.m > all.length() { all.length() } else { s.m }
+      let hi = if s.m + s.n > all.length() { all.length() } else { s.m + s.n }
+      match got {
+        Some(a) => a == all[lo:hi].to_owned()
+        None => false
+      }
+    },
+    count=1000,
+  )
+}
+
+///|
+test "law: OUTER operators obey the multiplicity rules" {
+  @quickcheck.check(
+    (p : (CollText, CollText)) => {
+      let (a, b) = p
+      let ia = match items_of(run(bag_text(a))) {
+        Some(x) => x
+        None => return false
+      }
+      let ib = match items_of(run(bag_text(b))) {
+        Some(x) => x
+        None => return false
+      }
+      let q = (op : String) => {
+        items_of(run("\{bag_text(a)} OUTER \{op} ALL \{bag_text(b)}"))
+      }
+      let union_all = match q("UNION") {
+        Some(x) => x
+        None => return false
+      }
+      let inter_all = match q("INTERSECT") {
+        Some(x) => x
+        None => return false
+      }
+      let except_all = match q("EXCEPT") {
+        Some(x) => x
+        None => return false
+      }
+      let universe = ia + ib
+      universe
+      .iter()
+      .all(v => {
+        let ca = count_eqg(ia, v)
+        let cb = count_eqg(ib, v)
+        count_eqg(union_all, v) == ca + cb &&
+        count_eqg(inter_all, v) == (if ca < cb { ca } else { cb }) &&
+        count_eqg(except_all, v) == (if ca > cb { ca - cb } else { 0 })
+      }) &&
+      union_all.length() == ia.length() + ib.length() &&
+      inter_all.iter().all(v => count_eqg(universe, v) > 0) &&
+      except_all.iter().all(v => count_eqg(ia, v) > 0)
+    },
+    count=1000,
+  )
+}
+
+///|
+/// UNION and INTERSECT DISTINCT are DISTINCT over the ALL form. EXCEPT is not:
+/// EXCEPT ALL keeps `count_a - count_b` copies, but EXCEPT DISTINCT keeps a
+/// distinct left value only when the right side has none of it.
+test "law: OUTER DISTINCT forms are DISTINCT over the ALL forms" {
+  @quickcheck.check(
+    (p : (CollText, CollText)) => {
+      let (a, b) = p
+      let ib = match items_of(run(bag_text(b))) {
+        Some(x) => x
+        None => return false
+      }
+      let distinct_a = match
+        items_of(run("SELECT DISTINCT VALUE x FROM \{bag_text(a)} AS x")) {
+        Some(x) => x
+        None => return false
+      }
+      let except_ok = match
+        items_of(run("\{bag_text(a)} OUTER EXCEPT \{bag_text(b)}")) {
+        Some(d) => bag_eqg(d, distinct_a.filter(v => count_eqg(ib, v) == 0))
+        None => false
+      }
+      except_ok &&
+      ["UNION", "INTERSECT"]
+      .iter()
+      .all(op => {
+        let distinct = items_of(
+          run("\{bag_text(a)} OUTER \{op} \{bag_text(b)}"),
+        )
+        let over = items_of(
+          run(
+            "WITH u AS (\{bag_text(a)} OUTER \{op} ALL \{bag_text(b)}) SELECT DISTINCT VALUE x FROM u AS x",
+          ),
+        )
+        match (distinct, over) {
+          (Some(d), Some(o)) => bag_eqg(d, o)
+          _ => false
+        }
+      })
+    },
+    count=1000,
+  )
+}
+
+///|
+/// Relations: bags of one-attribute tuples over one type class, so the SQL
+/// operators raise no DataError.
+struct RelText {
+  items : Array[String]
+} derive(Debug)
+
+///|
+let rel_atoms : Array[String] = ["0", "1", "-1", "7", "2e0", "1.5", "NULL"]
+
+///|
+impl @quickcheck.Arbitrary for RelText with fn arbitrary(_size, rs) {
+  let n = pick(rs, 7)
+  {
+    items: Array::makei(n, _ => {
+      "{'a': \{rel_atoms[pick(rs, rel_atoms.length())]}}"
+    }),
+  }
+}
+
+///|
+impl @quickcheck.Shrink for RelText
+
+///|
+fn RelText::text(self : RelText) -> String {
+  "<<\{self.items.join(", ")}>>"
+}
+
+///|
+test "law: OUTER operators equal the SQL operators on relations" {
+  @quickcheck.check(
+    (p : (RelText, RelText)) => {
+      let (a, b) = p
+      let mut compared = 0
+      for op in ["UNION", "INTERSECT", "EXCEPT"] {
+        for quant in ["", " ALL", " DISTINCT"] {
+          let outer = items_of(
+            run("\{a.text()} OUTER \{op}\{quant} \{b.text()}"),
+          )
+          let sql = items_of(run("\{a.text()} \{op}\{quant} \{b.text()}"))
+          match (outer, sql) {
+            (Some(o), Some(s)) => {
+              compared += 1
+              if !bag_eqg(o, s) {
+                return false
+              }
+            }
+            // the SQL form raised: nothing to compare
+            (Some(_), None) => ()
+            _ => return false
+          }
+        }
+      }
+      compared >= 0
+    },
+    count=1000,
+  )
+}
+
+///|
+test "totality: ORDER BY over a 100000-element bag" {
+  let n = 100000
+  let items : Array[@value.Value] = Array::makei(n, i => {
+    Int((i * 7919 % n).to_int64())
+  })
+  let env = @eval.Bindings::of_tuple(
+    @value.Tuple::new([("c", Bag(@value.Bag::new(items)))]),
+  )
+  let v = @eval.evaluate_text("SELECT VALUE x FROM c AS x ORDER BY x", env~)
+  let out = items_of(v).unwrap()
+  @expect.expect_all(soft => {
+    soft.expect(out.length()).to_equal(n)
+    soft.expect(out[0]).to_equal(Int(0L))
+    soft.expect(out[n - 1]).to_equal(Int((n - 1).to_int64()))
+  })
+}
+
+///|
+test "totality: OUTER and SQL set operations over two 100000-element bags" {
+  let n = 100000
+  let ints = (lo : Int32) => {
+    Array::makei(n, i => @value.Value::Int((lo + i).to_int64()))
+  }
+  let tuples = (lo : Int32) => {
+    Array::makei(n, i => {
+      @value.Value::Tuple(@value.Tuple::new([("a", Int((lo + i).to_int64()))]))
+    })
+  }
+  let env = @eval.Bindings::of_tuple(
+    @value.Tuple::new([
+      ("c", Bag(@value.Bag::new(ints(0)))),
+      ("d", Bag(@value.Bag::new(ints(n / 2)))),
+      ("t", Bag(@value.Bag::new(tuples(0)))),
+      ("u", Bag(@value.Bag::new(tuples(n / 2)))),
+    ]),
+  )
+  let q = (s : String) => @eval.evaluate_text(s, env~)
+  let outer_union_all = q("c OUTER UNION ALL d")
+  let outer_intersect = q("c OUTER INTERSECT d")
+  let sql_union = q("t UNION u")
+  @expect.expect_all(soft => {
+    soft.expect(count_of(outer_union_all)).to_equal(2 * n)
+    soft.expect(count_of(outer_intersect)).to_equal(n / 2)
+    soft.expect(count_of(sql_union)).to_equal(n + n / 2)
+  })
+}
+
+///|
+test "totality: a chain of 300 OUTER UNIONs" {
+  let chain = Array::makei(300, i => "<<\{i}>>").join(" OUTER UNION ")
+  let v = ev(chain)
+  @expect.expect(count_of(v)).to_equal(300)
+}
+
+///|
+test "totality: WITH with 50 chained bindings" {
+  let bindings = Array::makei(50, i => {
+    if i == 0 {
+      "w0 AS (SELECT VALUE 1 FROM [0] AS z)"
+    } else {
+      "w\{i} AS (SELECT VALUE x + 1 FROM w\{i - 1} AS x)"
+    }
+  }).join(", ")
+  let v = ev("WITH \{bindings} SELECT VALUE y FROM w49 AS y")
+  @expect.expect(v).to_equal(@value.Value::Bag(@value.Bag::new([Int(50L)])))
 }
