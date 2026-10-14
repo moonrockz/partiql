@@ -8,17 +8,9 @@ fn query_command(m : @argparse.Matches, io : Io, color : Bool) -> Outcome {
       "partiql query: \{text}\nRun 'partiql help query' for more information.\n",
     )
   }
-  let datas : Array[DataArg] = []
-  for text in m.values.get("data").unwrap_or([]) {
-    match data_arg(text) {
-      Some(d) => {
-        if datas.iter().any(seen => seen.name == d.name) {
-          return usage("--data binds \{d.name} twice")
-        }
-        datas.push(d)
-      }
-      None => return usage("--data needs NAME=FILE, found '\{text}'")
-    }
+  let datas = match data_args(m) {
+    Ok(datas) => datas
+    Err(text) => return usage(text)
   }
   if query_stdin_readers(m) > 1 {
     return usage("only one input can read stdin")
@@ -148,9 +140,30 @@ fn query_stdin_readers(m : @argparse.Matches) -> Int32 {
 }
 
 ///|
-/// Whether `query` reads stdin, so that `main` reads it first.
+/// Whether `query` reads stdin, so that `main` reads it first. A run that
+/// ends in a usage error (a bad `--data` value, two stdin readers) reads
+/// nothing, so it never waits for stdin.
 fn query_reads_stdin(m : @argparse.Matches) -> Bool {
-  query_stdin_readers(m) > 0
+  data_args(m) is Ok(_) && query_stdin_readers(m) == 1
+}
+
+///|
+/// The `--data` arguments, or the text of the usage error: a value that is
+/// not `NAME=FILE`, or a name given twice.
+fn data_args(m : @argparse.Matches) -> Result[Array[DataArg], String] {
+  let datas : Array[DataArg] = []
+  for text in m.values.get("data").unwrap_or([]) {
+    match data_arg(text) {
+      Some(d) => {
+        if datas.iter().any(seen => seen.name == d.name) {
+          return Err("--data binds \{d.name} twice")
+        }
+        datas.push(d)
+      }
+      None => return Err("--data needs NAME=FILE, found '\{text}'")
+    }
+  }
+  Ok(datas)
 }
 
 ///|

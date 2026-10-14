@@ -220,9 +220,9 @@ graph TD
     `format`, `query`, `version` and `help`, and the global `--color`. Errors
     print as rendered diagnostics (`@syntax.render`, and
     `@syntax.render_message` for evaluation errors). `query` evaluates with
-    `partiql-eval` and reads and writes PartiQL-encoded Ion. File and stdin access comes in through the `Io`
-    record, which `main.mbt` provides (`moonbitlang/x/fs` and
-    `moonbitlang/async` stdin). See the CLI section of `AGENTS.md`.
+    `partiql-eval` and reads and writes PartiQL-encoded Ion. File and stdin
+    access comes in through the `Io` record, which `main.mbt` provides
+    (`moonbitlang/x/fs` and `moonbitlang/async` stdin). See the CLI section of `AGENTS.md`.
 
 ## Rules
 

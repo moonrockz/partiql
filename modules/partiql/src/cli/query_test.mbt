@@ -313,6 +313,16 @@ test "query reads one binding or the statements from stdin" {
     soft
     .expect(@cli.reads_stdin(["query", "--data", "t=a.ion", "-e", "1"]))
     .to_be_false()
+    // A run that ends in a usage error reads no stdin, so it never waits.
+    for
+      args in [
+        ["query", "--env", "-", "--data", "t=-", "-e", "1"],
+        ["query", "--data", "t=-"],
+        ["query", "--data", "t"],
+        ["query", "--data", "t=-", "--data", "t=a.ion", "-e", "1"],
+      ] {
+      soft.expect(@cli.reads_stdin(args), label=args.join(" ")).to_be_false()
+    }
   })
 }
 
