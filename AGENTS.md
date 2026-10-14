@@ -216,6 +216,10 @@ Rules:
   an input (`parse_script_recovering`); `format` prints or writes nothing
   for an input with errors.
 - Exit status 1 means the input was invalid or could not be read.
+- `query` reads `--env` and `--data` files through `Io` too. At most one
+  input of a run reads stdin; `reads_stdin` knows the rule for each command.
+- Evaluation errors print with `@syntax.render_message`, at the span of the
+  error.
 
 ## Mise Tasks
 
