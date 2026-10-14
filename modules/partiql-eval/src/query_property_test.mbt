@@ -236,19 +236,39 @@ struct QueryText {
 ///|
 let query_sources : Array[String] = [
   "[1, 2, 3]", "<<1, 'a', NULL>>", "[{'a': 1}, {'a': 'b'}]", "[]", "[1.5, 2e0, 7]",
+  "<<{'a': 1, 'b': 2}, {'b': 'x'}>>", "{'a': 1}", "5",
 ]
 
 ///|
 fn gen_query(rs : @splitmix.RandomState) -> String {
   let e = () => gen_expr(rs, 2)
   let src = query_sources[pick(rs, query_sources.length())]
-  match pick(rs, 6) {
+  let src2 = query_sources[pick(rs, query_sources.length())]
+  match pick(rs, 13) {
     0 => "SELECT VALUE (\{e()}) FROM \{src} AS x"
     1 => "SELECT VALUE x FROM \{src} AS x WHERE \{e()}"
     2 => "SELECT (\{e()}) AS v, x FROM \{src} AS x"
     3 => "SELECT DISTINCT VALUE (\{e()}) FROM \{src} AS x"
-    4 => "SELECT VALUE y FROM \{src} AS x LEFT JOIN \{src} AS y ON \{e()}"
-    _ => "SELECT VALUE (\{e()}) FROM \{src} AS x LET (\{e()}) AS z"
+    4 => "SELECT VALUE y FROM \{src} AS x LEFT JOIN \{src2} AS y ON \{e()}"
+    5 => "SELECT VALUE (\{e()}) FROM \{src} AS x LET (\{e()}) AS z"
+    // the M4b1 gaps (partiql-7nl); COALESCE keeps a list literal off the
+    // right of the subquery comparison, which lowering rejects as Unsupported
+    // until array coercion lands
+    6 =>
+      "SELECT VALUE x FROM \{src} AS x WHERE (SELECT y FROM \{src2} AS y) = COALESCE(\{e()}, 0)"
+    7 =>
+      "SELECT VALUE [x, y] FROM \{src} AS x RIGHT JOIN \{src2} AS y ON \{e()}"
+    8 => "SELECT VALUE [k, v] FROM UNPIVOT \{src} AS v AT k"
+    9 => "SELECT VALUE i FROM \{src} AS x AT i"
+    10 => "SELECT VALUE a FROM \{src} AS x"
+    11 => "SELECT * FROM \{src} AS x, \{src2} AS y"
+    // DataError branch: a FROM variable declared twice, or @ on an unknown name
+    _ =>
+      if pick(rs, 2) == 0 {
+        "SELECT VALUE x FROM \{src} AS x, \{src2} AS x"
+      } else {
+        "SELECT VALUE @nope FROM \{src} AS x"
+      }
   }
 }
 
@@ -290,6 +310,7 @@ test "law: the query generator reaches every branch of the modes law" {
     soft.expect(other).to_equal(0)
     soft.expect(ok * 10 >= total).to_be_true()
     soft.expect(type_error * 20 >= total).to_be_true()
+    soft.expect(data_error * 20 >= total).to_be_true()
   })
 }
 
