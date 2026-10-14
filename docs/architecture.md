@@ -119,8 +119,11 @@ graph TD
     binding-tuple algebra: `Scan` (with AT), `Unpivot`, `Filter` (WHERE),
     `Join` (`JoinKind`: cross, inner, left, right) and `Let`. An `Expr`
     holds a query block with a `Rel` and a `Projection` (`Value`, `Items`,
-    `Star`), and a subquery with a `SubqueryUse` (`Scalar` or `Column`).
-    ADR 0006 has the rationale.
+    `Star`, `Pivot`), and a subquery with a `SubqueryUse` (`Scalar`,
+    `Column` or `Row`). Three more `Expr` nodes cover the rest of a query:
+    `Query` (a body with ORDER BY keys, LIMIT and OFFSET), `SetOp` (UNION,
+    INTERSECT and EXCEPT with their flags) and `With` (named bindings and a
+    body). ADR 0006 has the rationale.
   - `lower`: syntax tree to plan. It desugars the surface forms, converts
     literals (numbers, datetimes, intervals, Ion) to values, and raises
     `Unsupported` with a span for a form that is not evaluated yet, or for
@@ -137,6 +140,20 @@ graph TD
     A variable name that a FROM clause declares twice (AS, AT or an implicit
     name) is a `DataError` that suggests `AS`; names compare exactly, and a
     LET variable or an inner query may shadow an outer name.
+    `Query` wraps a body (a SELECT block, PIVOT, a set operation, `TABLE` or
+    any expression) when the query has ORDER BY, LIMIT or OFFSET. Sort keys
+    are lowered in a scope where the output names are exact-name variables
+    (they win over a FROM attribute, and they are not candidates for implicit
+    lookup). For a body that is not a SELECT block, each output element is
+    bound to a hidden variable that no identifier can name, so a plain name
+    in a key is an attribute of the output element. A set-operation chain is
+    lowered in a loop along its left spine. `TABLE a.b` lowers as
+    `SELECT * FROM a.b`. `WITH` lowers its bindings in order in a scope of
+    the earlier names; a WITH name hides a global everywhere and is not a
+    candidate for implicit lookup (a scope kind, not a FROM variable). A
+    SELECT subquery compared with a list, row or s-expression literal lowers
+    to `SubqueryUse::Row`. A negative integer literal in LIMIT or OFFSET is a
+    `DataError` at lowering.
     `depth.mbt` is the depth guard:
     it charges each part of a plan with the stack it uses when it runs and
     refuses a plan above 200 levels with a `DataError`, so the evaluator
@@ -161,6 +178,37 @@ graph TD
     a right join. The `Iter` of the core library cannot raise, so `rows`
     keeps the first error in the `Ctx` and ends the iteration, and `pull`
     and `each` raise it after the last good row.
+    - `relation.mbt` also has `select_pairs`: a query block yields
+      (binding tuple, projected value) pairs, so ORDER BY can read the row
+      that made each value. Without ORDER BY, a SELECT reads its source
+      lazily and stops after the rows that LIMIT and OFFSET need; DISTINCT
+      dedupes while it streams.
+    - `order.mbt` runs `Query`. It evaluates LIMIT and OFFSET once, in the
+      outer binding tuple. A value that is not an integer of 0 or more is
+      ignored in permissive mode and a `TypeError` in strict mode. Sorting
+      evaluates the keys once per row, then sorts an array of indices by the
+      key comparison (ASC `compare(a, b, nulls)`, DESC the reversal with
+      flipped NULLS) and, on a tie, by the input position, so the sort is
+      stable. ASC puts NULL and MISSING last and DESC puts them first, unless
+      NULLS FIRST or LAST says otherwise. A key that fails is a `TypeError`
+      in strict mode and sorts as MISSING in permissive mode. The result is
+      a list; without ORDER BY it is a bag. PIVOT joins the row tuples into
+      one tuple after the rows are sorted and windowed.
+    - `setop.mbt` runs `SetOp`. The interpreter collects the steps of a
+      left-spine chain in a loop. Equality is `eqg`, through a `Counter`
+      that keeps values in buckets by `group_key` (DISTINCT uses the same
+      `Counter`). The result is a bag: left elements, then right elements.
+      SQL operations are positional: each operand must be a list or bag of
+      tuples, every tuple takes the reference names by position, and a
+      degree or column-type mismatch is a `DataError`. OUTER operations take
+      any operand: a collection gives its elements, NULL and MISSING give
+      the empty bag, and another value is a one-element bag (a `TypeError`
+      in strict mode). CORRESPONDING keeps the shared or named attributes.
+    - Array coercion: `SubqueryUse::Row` gives NULL for no row, the list of
+      the attribute values for one row, and MISSING (permissive) or a
+      `TypeError` (strict) for more.
+    - Materializing nodes: sorting, set operations and DISTINCT hold their
+      input in memory. Everything else streams (ADR 0006).
 - `partiql`
   - root: the executable.
   - `cli`: `run(args, io?) -> Outcome`, with the commands `parse`, `check`,

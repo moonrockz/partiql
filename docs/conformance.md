@@ -61,7 +61,9 @@ per assertion and mode: `<id>#coerce` or `<id>#error`.
 - A result of `EvalError::Unsupported` is recorded as not applicable. It is
   never a pass and never an expected error. The not-applicable set shrinks
   as later parts of M4 add queries, functions and CAST.
-- `eval-equiv` cases are not applicable until M4b2.
+- `eval-equiv` cases are evaluated since M4b2. Each statement of the
+  equivalence class runs against the case's assertions. The ids are
+  `<case id>[<i>]#coerce` and `<case id>[<i>]#error`, with `i` from 0.
 
 Two cases (`eval/primitives/map.ion`, lines 850 and 1194) expect a DATE
 written as a plain Ion timestamp. Line 850 needs `map_keys` and is not
@@ -129,7 +131,8 @@ files, so the codec must accept both.
 
 After M1 (data model), M1b (MAP and graph), M2 (parser), M2b (graph
 MATCH), M3a (printer), M3b (pretty layout), M3d (error recovery), M4a
-(expression evaluation) and M4b1 (query evaluation core):
+(expression evaluation), M4b1 (query evaluation core) and M4b2 (queries,
+part two):
 
 | Check | Passed | Total | N/A |
 |---|---|---|---|
@@ -140,7 +143,7 @@ MATCH), M3a (printer), M3b (pretty layout), M3d (error recovery), M4a
 | `print-roundtrip` | 5310 | 5313 | 3 |
 | `pretty-roundtrip` | 5310 | 5313 | 3 |
 | `recovery` | 5410 | 5410 | 0 |
-| `eval` | 3719 | 9960 | 6195 |
+| `eval` | 4043 | 9960 | 5847 |
 
 The 3 `eval-parse` failures are corpus defects (bead `partiql-zhj.9`):
 
@@ -154,10 +157,10 @@ The 3 `eval-parse` failures are corpus defects (bead `partiql-zhj.9`):
 
 ### The `eval` check
 
-Of 9960 assertions, 3719 pass and 6195 are not applicable: they need ORDER BY,
-LIMIT, set operations, PIVOT, WITH, grouping, functions, CAST, graph MATCH or
-`?`, which later parts of M4 add. 46 fail. M4b1 raised the passes from 2952
-to 3719 (767 more) and cut the not-applicable set by 781. To list the
+Of 9960 assertions, 4043 pass and 5847 are not applicable: they need
+grouping, functions, CAST, FULL JOIN, graph MATCH or `?`, which later parts of
+M4 add. 70 fail. M4b1 raised the passes from 2952 to 3719 and M4b2 raised
+them to 4043 (324 more), with the `eval-equiv` cases now evaluated. To list the
 failures, run `PARTIQL_CONFORMANCE_SHOW=eval mise run test:conformance`. Each
 case fails in both modes, except where a reason below says otherwise. The
 reasons:
@@ -215,7 +218,34 @@ reasons:
   expects a failure. Every `.*` step applies to a tuple, so the evaluator
   succeeds; the corpus expectation is taken as an artifact.
 
-The groups add up to 46 ids (6 + 3 + 1 + 6 + 14 + 4 + 4 + 2 + 2 + 3 + 1).
+M4b2 adds 24 failing ids in four groups:
+
+- **Corpus defects (17 ids).**
+  - `order-by.ion` "structs should be ordered by data types (DESC)": the
+    statement has the empty struct `{}`, and the expected output has the
+    empty blob `{{}}` (2 ids).
+  - `eval-equiv/spec-tests.ion` has 15 ids with wrong or contradictory
+    cases. Section 12 "explicit literals" expects `9 < '10'` to succeed in
+    strict mode, and expects `SELECT * FROM foo` with a scalar `foo` to
+    succeed in strict mode (3 ids). Four statements cannot fail in strict
+    mode but share a class with a failing assertion: section 4 wildcard
+    steps `[1]`, section 5 unpivot missing `[1]` and unpivot non-missing
+    `[1]` (3 ids). Section 5 unpivot missing `[0]` has an env that leaves `x`
+    unbound (1 id). Section 9 "into a scalar" has no env and a missing comma
+    (4 ids). Section 9 "into an array" has no env and a row with 3 items
+    against 2 (4 ids).
+- **Conflict with RFC 0007 (5 ids).** `bag-operators.ion`
+  `outerUnionCoerceNullMissing`, `outerIntersectCoerceNullMissing` (both
+  modes) and `outerExceptCoerceNullMissing` (strict mode) expect `<<null>>`
+  or a failure for a NULL or MISSING OUTER operand. The `eval-equiv` classes
+  of RFC 0007 make such an operand the empty bag in both modes, and the
+  evaluator follows RFC 0007.
+- **Known gap (2 ids).** Section 5 "unpivot non-missing" `[0]#coerce` and
+  `[1]#coerce` expect `SELECT * FROM UNPIVOT x AS v AT n` to include the AT
+  variable. `SELECT *` lists FROM AS variables only (bead `partiql-kgh`).
+
+The groups add up to 70 ids (46 from M4b1: 6 + 3 + 1 + 6 + 14 + 4 + 4 + 2 +
+2 + 3 + 1; and 24 from M4b2: 17 + 5 + 2).
 
 Every corpus value passes `codec`, including the `$map` (M1b MAP) and
 `$graph` (M1b graph) values.

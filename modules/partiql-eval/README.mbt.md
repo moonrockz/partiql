@@ -19,6 +19,16 @@ let value = @eval.evaluate_text(
 guard value == @value.Value::Bag(@value.Bag::new([Int(20), Int(30)]))
 ```
 
+`ORDER BY` gives a list, and `LIMIT` and `OFFSET` take a window of it:
+
+```moonbit
+let value = @eval.evaluate_text(
+  "SELECT VALUE x FROM [3, 1, 2] AS x ORDER BY x DESC LIMIT 2",
+  env=@eval.Bindings::empty(),
+)
+guard value == @value.Value::List([Int(3), Int(2)])
+```
+
 Pass `mode=@eval.Mode::Strict` to make a type error raise instead of giving
 `MISSING`.
 
@@ -29,8 +39,10 @@ comparison, logic, `LIKE`, `BETWEEN`, `IN`, `IS`, `CASE`, `COALESCE`,
 `NULLIF`, and datetime and interval arithmetic. It evaluates the core of a
 query: `FROM` (collections, `AT`, `UNPIVOT`, joins), `LET`, `WHERE`,
 `SELECT VALUE`, `SELECT` lists, `SELECT *`, `DISTINCT`, subqueries and
-`VALUES`. `ORDER BY`, `LIMIT`, set operations, `PIVOT`, `WITH`, grouping,
-functions and `CAST` follow in later releases. A form that is not supported yet raises
+`VALUES`. It also evaluates `ORDER BY`, `LIMIT` and `OFFSET`, the set
+operations (`UNION`, `INTERSECT` and `EXCEPT`, with `ALL`, `OUTER` and
+`CORRESPONDING`), `PIVOT`, `TABLE` and `WITH`. Grouping, functions and `CAST`
+follow in later releases. A form that is not supported yet raises
 `EvalError::Unsupported`, never a wrong answer.
 
 ## Errors

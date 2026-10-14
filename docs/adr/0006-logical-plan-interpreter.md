@@ -54,6 +54,15 @@ without a copy. The interpreter holds no whole relation in memory, except for
 the right side of a right join. The core `Iter` cannot raise: the context
 keeps the error of an iterator, and the consumer raises it after the rows.
 
+## Note from M4b2
+
+Three nodes materialize their input: sorting (ORDER BY), the set operations
+and DISTINCT. A sort must see every row before it yields the first. A set
+operation and DISTINCT keep a `Counter` of the values they have seen. Every
+other node streams: a SELECT without ORDER BY reads its source lazily, so
+LIMIT stops the scan early. The memory use of a query therefore depends on
+these three nodes only.
+
 ## Consequences
 
 - Each stage has its own tests. The operator laws evaluate PartiQL text
