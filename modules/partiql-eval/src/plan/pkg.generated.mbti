@@ -49,6 +49,7 @@ pub(all) enum Expr {
   Subquery(Expr, SubqueryUse, @ast.Span)
   Query(Expr, order~ : Array[SortKey], limit~ : Expr?, offset~ : Expr?, aliases~ : Array[String], @ast.Span)
   SetOp(@ast.SetOpKind, all~ : Bool, outer~ : Bool, corresponding~ : @ast.Corresponding?, Expr, Expr, @ast.Span)
+  With(Array[(String, Expr)], Expr, @ast.Span)
 } derive(@debug.Debug)
 pub fn Expr::span(Self) -> @ast.Span
 

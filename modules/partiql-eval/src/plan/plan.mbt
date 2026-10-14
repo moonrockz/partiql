@@ -94,6 +94,9 @@ pub(all) enum Expr {
     Expr,
     @ast.Span
   )
+  /// `WITH name AS (query), ... body`: each binding is evaluated once, in
+  /// order; later bindings and the body see the earlier ones as variables.
+  With(Array[(String, Expr)], Expr, @ast.Span)
 } derive(Debug)
 
 ///|
@@ -205,7 +208,8 @@ pub fn Expr::span(self : Expr) -> @ast.Span {
     | Select(_, _, distinct=_, span)
     | Subquery(_, _, span)
     | Query(_, order=_, limit=_, offset=_, aliases=_, span)
-    | SetOp(_, all=_, outer=_, corresponding=_, _, _, span) => span
+    | SetOp(_, all=_, outer=_, corresponding=_, _, _, span)
+    | With(_, _, span) => span
   }
 }
 

@@ -551,6 +551,13 @@ fn eval(
       subquery(eval(query, env, ctx), use_, ctx, span)
     Query(_, order=_, limit=_, offset=_, aliases=_, _) => query(e, env, ctx)
     SetOp(_, all=_, outer=_, corresponding=_, _, _, _) => set_op(e, env, ctx)
+    With(bindings, body, _) => {
+      let mut bound = env
+      for binding in bindings {
+        bound = Frame(binding.0, eval(binding.1, bound, ctx), bound)
+      }
+      eval(body, bound, ctx)
+    }
   }
 }
 

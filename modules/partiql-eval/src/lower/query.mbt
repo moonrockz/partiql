@@ -10,24 +10,46 @@ priv struct Scope {
   /// finds them first, but they are not candidates for an implicit
   /// attribute.
   outputs : Bool
+  /// The names are WITH bindings: a name finds them as a `Local` also in a
+  /// FROM source, and they are not candidates for an implicit attribute
+  /// (plan ruling 10).
+  with_ : Bool
 }
 
 ///|
 /// The scope outside every query: no variables.
 fn Scope::top() -> Scope {
-  { names: [], outer: None, globals_first: false, outputs: false, }
+  {
+    names: [],
+    outer: None,
+    globals_first: false,
+    outputs: false,
+    with_: false,
+  }
 }
 
 ///|
 /// A scope inside `self` that declares `names`.
 fn Scope::inner(self : Scope, names : Array[String]) -> Scope {
-  { names, outer: Some(self), globals_first: false, outputs: false, }
+  {
+    names,
+    outer: Some(self),
+    globals_first: false,
+    outputs: false,
+    with_: false,
+  }
 }
 
 ///|
 /// A scope inside `self` with the output names of a SELECT list.
 fn Scope::with_outputs(self : Scope, names : Array[String]) -> Scope {
   { ..self.inner(names), outputs: true, }
+}
+
+///|
+/// A scope inside `self` with the WITH names `names`.
+fn Scope::with_scope(self : Scope, names : Array[String]) -> Scope {
+  { ..self.inner(names), with_: true, }
 }
 
 ///|
@@ -38,15 +60,16 @@ fn Scope::for_source(self : Scope) -> Scope {
 
 ///|
 /// The declared name of the innermost variable that `id` names: a regular
-/// identifier ignores case, a delimited one does not.
-fn Scope::resolve(self : Scope, id : @ast.Identifier) -> String? {
+/// identifier ignores case, a delimited one does not. Also whether that
+/// variable is a WITH binding.
+fn Scope::resolve(self : Scope, id : @ast.Identifier) -> (String, Bool)? {
   let wanted = if id.delimited { id.text } else { id.text.to_lower() }
   let mut scope = Some(self)
   while scope is Some(s) {
     for name in s.names.rev_iter() {
       let key = if id.delimited { name } else { name.to_lower() }
       if key == wanted {
-        return Some(name)
+        return Some((name, s.with_))
       }
     }
     scope = s.outer
@@ -61,7 +84,7 @@ fn Scope::locals(self : Scope) -> Array[String] {
   let all = []
   let mut scope = Some(self)
   while scope is Some(s) {
-    if !s.outputs {
+    if !s.outputs && !s.with_ {
       all.append(s.names)
     }
     scope = s.outer
@@ -83,8 +106,8 @@ fn query_at(
   scope : Scope,
   depth : Int32,
 ) -> @plan.Expr raise @plan.EvalError {
-  if q.with_ is [first, ..] {
-    return unsupported("WITH (M4b2)", first.span)
+  if !q.with_.is_empty() {
+    return with_at(q, scope, depth)
   }
   // LIMIT and OFFSET see the outer scope, not the variables of this query.
   let limit = clause_at(q.limit, "LIMIT", scope, depth)
@@ -100,7 +123,10 @@ fn query_at(
       (lower_at(e, scope, depth), [], scope.inner([@plan.row_variable]))
     SetOp(op) =>
       (set_op_at(op, scope, depth), [], scope.inner([@plan.row_variable]))
-    Table(_) => return unsupported("TABLE (later)", q.span)
+    Table(parts) => {
+      let (body, inner) = table_at(parts, scope, depth, q.span)
+      (body, [], inner.with_outputs([]))
+    }
   }
   if q.order_by.is_empty() && limit is None && offset is None {
     return body
@@ -119,6 +145,73 @@ fn query_at(
     }
   })
   Query(body, order~, limit~, offset~, aliases~, q.span)
+}
+
+///|
+/// Lowers a query with WITH: each binding is a query that sees the earlier
+/// names, the outer scope and not the later names; the rest of the query
+/// (body, ORDER BY, LIMIT, OFFSET) sees all of them. A repeated name is a
+/// `DataError`.
+fn with_at(
+  q : @ast.Query,
+  scope : Scope,
+  depth : Int32,
+) -> @plan.Expr raise @plan.EvalError {
+  if depth >= max_depth {
+    raise DataError(message="query is too deeply nested", span=q.span)
+  }
+  let names = []
+  let bindings = []
+  for b in q.with_ {
+    let expr = query_at(b.query, scope.with_scope(names.copy()), depth + 1)
+    if names.contains(b.name.text) {
+      raise DataError(
+        message="WITH name \{b.name.text} is declared twice",
+        span=b.name.span,
+      )
+    }
+    names.push(b.name.text)
+    bindings.push((b.name.text, expr))
+  }
+  let rest = query_at({ ..q, with_: [], }, scope.with_scope(names), depth + 1)
+  With(bindings, rest, q.span)
+}
+
+///|
+/// Lowers `TABLE a.b` as `SELECT * FROM a.b` (plan ruling 12): the plan and
+/// the scope inside it.
+fn table_at(
+  parts : Array[@ast.Identifier],
+  scope : Scope,
+  depth : Int32,
+  span : @ast.Span,
+) -> (@plan.Expr, Scope) raise @plan.EvalError {
+  guard parts is [first, .. rest] else {
+    raise DataError(message="TABLE needs a name", span~)
+  }
+  let base : @ast.Expr = {
+    kind: VarRef(first, qualified=false),
+    span: first.span,
+  }
+  let expr : @ast.Expr = if rest.is_empty() {
+    base
+  } else {
+    { kind: Path(base, rest.map(id => Field(id))), span, }
+  }
+  let source : @ast.FromSource = {
+    lateral: false,
+    expr,
+    as_: None,
+    at: None,
+    by: None,
+    span,
+  }
+  let names = []
+  let rel = from_leaf(Scan(source), scope, names, Ref(0), depth)
+  (
+    Select(rel, Star(from_variables(rel)), distinct=false, span),
+    scope.inner(names),
+  )
 }
 
 ///|

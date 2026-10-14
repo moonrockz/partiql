@@ -277,8 +277,8 @@ fn lower_at(
     Lit(l) => Const(literal(l, span), span)
     VarRef(id, qualified~) =>
       match scope.resolve(id) {
-        Some(name) =>
-          if scope.globals_first && !qualified {
+        Some((name, is_with)) =>
+          if scope.globals_first && !qualified && !is_with {
             GlobalOrLocal(id.text, variable=name, delimited=id.delimited, span)
           } else {
             Local(name, span)

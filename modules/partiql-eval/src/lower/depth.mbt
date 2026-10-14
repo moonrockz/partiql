@@ -29,6 +29,8 @@
 //   OFFSET 1 below it (they run in a nested `eval` from the query's loop).
 // - A chain of set operations: 1, every operand 1 below it (the chain runs
 //   in a loop down its left spine, like a chain of binary operators).
+// - A WITH: 1, each binding and the body 1 below it (they run in a nested
+//   `eval` from the WITH's loop).
 // - A join: one wrapper per right join, and one per run of cross, inner and
 //   left joins between them (`chain` runs a run as one flat loop). Each
 //   wrapper is 1; the wrappers nest in the order of the joins, the last one
@@ -175,6 +177,12 @@ fn push_operands(
         }
         Star(_) => ()
       }
+    }
+    With(bindings, body, _) => {
+      for binding in bindings {
+        push(binding.1)
+      }
+      push(body)
     }
     SetOp(_, all=_, outer=_, corresponding=_, _, _, _) => {
       let mut leaf = e
