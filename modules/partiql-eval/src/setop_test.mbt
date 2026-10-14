@@ -115,6 +115,51 @@ test "SQL set operations" {
       )
     }
     // Review Focus 5: an empty side
+    // CORRESPONDING with an empty side takes the columns of the other side
+    let bob = tuple([("name", String("Bob")), ("title", String("C"))])
+    let sue = tuple([("name", String("Sue")), ("title", String("M"))])
+    let paul = tuple([("name", String("Paul")), ("title", String("M"))])
+    soft
+    .expect(
+      q("SELECT * FROM hr UNION CORRESPONDING SELECT * FROM eng WHERE false"),
+    )
+    .to_equal(bag_of([bob, sue]))
+    soft
+    .expect(
+      q("SELECT * FROM hr WHERE false UNION CORRESPONDING SELECT * FROM eng"),
+    )
+    .to_equal(bag_of([paul]))
+    soft
+    .expect(
+      q(
+        "SELECT * FROM hr OUTER UNION CORRESPONDING SELECT * FROM eng WHERE false",
+      ),
+    )
+    .to_equal(bag_of([bob, sue]))
+    soft
+    .expect(
+      q(
+        "SELECT * FROM hr WHERE false OUTER UNION ALL CORRESPONDING SELECT * FROM eng",
+      ),
+    )
+    .to_equal(bag_of([paul]))
+    // SQL CORRESPONDING without a common column: DataError in both modes
+    for mode in [@eval.Mode::Permissive, Strict] {
+      soft
+      .expect_call(() => {
+        q("SELECT * FROM hr UNION CORRESPONDING SELECT 1 AS z FROM eng", mode~)
+      })
+      .to_raise_matching(
+        e => {
+          e
+          is @eval.EvalError::DataError(
+            message="CORRESPONDING finds no common column",
+            ..
+          )
+        },
+        description="DataError: no common column",
+      )
+    }
     soft
     .expect(q("SELECT title FROM [] AS x UNION SELECT title FROM eng"))
     .to_equal(bag_of([tuple([("title", String("M"))])]))

@@ -251,7 +251,8 @@ fn column_of(t : @value.Tuple, column : Column) -> @value.Value? {
 ///|
 /// The columns of CORRESPONDING (plan ruling 7): the BY names in order, or
 /// the names that the first left and the first right tuple share, in left
-/// order. Without a tuple on one side, none are shared.
+/// order. With a tuple on one side only, the names of that tuple: an empty
+/// side does not change the other side.
 fn corresponding_columns(
   c : @ast.Corresponding,
   first_left : @value.Tuple?,
@@ -261,20 +262,26 @@ fn corresponding_columns(
     By(ids) => ids.map(id => { name: id.text, delimited: id.delimited, })
     All =>
       match (first_left, first_right) {
-        (Some(l), Some(r)) => {
-          let shared : Array[Column] = []
-          for field in l.fields() {
-            let column = { name: field.0, delimited: true, }
-            if column_of(r, column) is Some(_) &&
-              !shared.iter().any(seen => seen.name == field.0) {
-              shared.push(column)
-            }
-          }
-          shared
-        }
-        _ => []
+        (Some(l), Some(r)) => shared_columns(l, r)
+        (Some(t), None) | (None, Some(t)) => shared_columns(t, t)
+        (None, None) => []
       }
   }
+}
+
+///|
+/// The attribute names of `l` that `r` has too, each once, in `l` order.
+/// Names from tuples match exactly.
+fn shared_columns(l : @value.Tuple, r : @value.Tuple) -> Array[Column] {
+  let shared : Array[Column] = []
+  for field in l.fields() {
+    let column = { name: field.0, delimited: true, }
+    if column_of(r, column) is Some(_) &&
+      !shared.iter().any(seen => seen.name == field.0) {
+      shared.push(column)
+    }
+  }
+  shared
 }
 
 ///|
@@ -319,7 +326,8 @@ fn outer_projected(
 ///|
 /// The two operands of a SQL set operation as rows with the same names
 /// (plan rulings 4 and 7). With CORRESPONDING, each tuple is cut to the
-/// corresponding columns, and a tuple without one of them is a `DataError`.
+/// corresponding columns, and a tuple without one of them is a `DataError`,
+/// as is plain CORRESPONDING when both sides have tuples but no common name.
 /// Otherwise the columns match by position: every tuple takes the names of
 /// the first left tuple (of the first right one if the left is empty), and
 /// a tuple with another number of attributes is a `DataError`. Last, the
@@ -334,6 +342,11 @@ fn conform(
   let (names, l, r) = match corresponding {
     Some(c) => {
       let columns = corresponding_columns(c, left.get(0), right.get(0))
+      // Plain CORRESPONDING over two sides that share no name would make
+      // every row the empty tuple.
+      if c is All && columns.is_empty() && !left.is_empty() && !right.is_empty() {
+        raise DataError(message="CORRESPONDING finds no common column", span~)
+      }
       (
         columns.map(column => column.name),
         corresponding_rows(left, columns, span),
