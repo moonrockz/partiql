@@ -1,8 +1,8 @@
 ///|
 fn syntax(
   message : String,
-  start : Int,
-  end : Int,
+  start : Int32,
+  end : Int32,
   expected : Array[String],
   found : String,
 ) -> @ast.ParseError {

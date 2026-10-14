@@ -147,6 +147,6 @@ pub fn MapValue::entries(self : MapValue) -> ArrayView[(Value, Value)] {
 }
 
 ///|
-pub fn MapValue::length(self : MapValue) -> Int {
+pub fn MapValue::length(self : MapValue) -> Int32 {
   self.entries.length()
 }

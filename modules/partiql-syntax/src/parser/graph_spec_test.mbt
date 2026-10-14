@@ -56,14 +56,14 @@ struct GElem {
 enum GQuant {
   QPlus
   QStar
-  QRange(Int, Int?)
+  QRange(Int32, Int32?)
 } derive(Debug)
 
 ///|
 enum GPart {
   GNode(GElem)
   /// direction index into `gen_directions`, filler, quantifier
-  GEdge(Int, GElem?, GQuant?)
+  GEdge(Int32, GElem?, GQuant?)
   /// bracket delimiter, path, WHERE, quantifier
   GGroup(Bool, GPath, String?, GQuant?)
 } derive(Debug)
@@ -80,8 +80,8 @@ enum GSel {
   SAnyShortest
   SAllShortest
   SShortest
-  SAny(Int?)
-  SShortestK(Int, Bool)
+  SAny(Int32?)
+  SShortestK(Int32, Bool)
 } derive(Debug)
 
 ///|
@@ -89,10 +89,10 @@ enum GSel {
 /// gaps (from `noise`); `case_` 0 upper, 1 lower, 2 capitalized keywords;
 /// `full_labels` puts every label in parentheses.
 struct Style {
-  spacing : Int
-  case_ : Int
+  spacing : Int32
+  case_ : Int32
   full_labels : Bool
-  noise : Array[Int]
+  noise : Array[Int32]
 } derive(Debug)
 
 ///|
@@ -105,13 +105,13 @@ struct GraphSpec {
 } derive(Debug)
 
 ///|
-fn pick(rs : @splitmix.RandomState, n : Int) -> Int {
+fn pick(rs : @splitmix.RandomState, n : Int32) -> Int32 {
   rs.next_uint(limit=n.reinterpret_as_uint()).reinterpret_as_int()
 }
 
 ///|
 /// True one time in `n`.
-fn chance(rs : @splitmix.RandomState, n : Int) -> Bool {
+fn chance(rs : @splitmix.RandomState, n : Int32) -> Bool {
   pick(rs, n) == 0
 }
 
@@ -130,7 +130,7 @@ fn gen_where(rs : @splitmix.RandomState) -> String? {
 }
 
 ///|
-fn gen_label(rs : @splitmix.RandomState, depth : Int) -> GLabel {
+fn gen_label(rs : @splitmix.RandomState, depth : Int32) -> GLabel {
   let k = if depth <= 0 { pick(rs, 2) } else { pick(rs, 5) }
   match k {
     0 => LName(gen_name(rs))
@@ -173,7 +173,7 @@ fn gen_quant(rs : @splitmix.RandomState) -> GQuant? {
 }
 
 ///|
-fn gen_part(rs : @splitmix.RandomState, depth : Int) -> GPart {
+fn gen_part(rs : @splitmix.RandomState, depth : Int32) -> GPart {
   let k = if depth <= 0 { pick(rs, 2) } else { pick(rs, 3) }
   match k {
     0 => GNode(gen_elem(rs))
@@ -198,7 +198,7 @@ fn gen_part(rs : @splitmix.RandomState, depth : Int) -> GPart {
 }
 
 ///|
-fn gen_path(rs : @splitmix.RandomState, depth : Int) -> GPath {
+fn gen_path(rs : @splitmix.RandomState, depth : Int32) -> GPath {
   let parts : Array[GPart] = []
   for _ in 0..<(1 + pick(rs, 4)) {
     let part = gen_part(rs, depth)
@@ -266,7 +266,7 @@ fn kw(style : Style, word : String) -> String {
 }
 
 ///|
-fn label_prec(l : GLabel) -> Int {
+fn label_prec(l : GLabel) -> Int32 {
   match l {
     LOr(_, _) => 1
     LAnd(_, _) => 2
@@ -281,7 +281,7 @@ fn label_prec(l : GLabel) -> Int {
 /// `!` on a primary (3).
 fn label_tokens(
   l : GLabel,
-  need : Int,
+  need : Int32,
   full : Bool,
   out : Array[String],
 ) -> Unit {
@@ -525,7 +525,7 @@ fn match_tokens(spec : GraphSpec, style : Style) -> Array[String] {
 }
 
 ///|
-fn is_word_unit(c : Int) -> Bool {
+fn is_word_unit(c : Int32) -> Bool {
   (c >= 'a'.to_int() && c <= 'z'.to_int()) ||
   (c >= 'A'.to_int() && c <= 'Z'.to_int()) ||
   (c >= '0'.to_int() && c <= '9'.to_int()) ||

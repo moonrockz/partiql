@@ -4,9 +4,9 @@ priv struct Tally {
   check : String
   passed : Array[String]
   failed : Map[String, String]
-  mut not_applicable : Int
+  mut not_applicable : Int32
   /// How many outcomes were recorded. Each id is recorded once.
-  mut records : Int
+  mut records : Int32
 }
 
 ///|
@@ -270,10 +270,10 @@ test "a case with several evaluation assertions is checked once per statement" {
 /// ratchet never drops baseline ids unless `allow_drop` is set (for example
 /// after a pin bump removes tests).
 fn ratchet_outcome(
-  regressions : Int,
+  regressions : Int32,
   ratchet : Bool,
   allow_drop : Bool,
-) -> (Bool, Int) {
+) -> (Bool, Int32) {
   if ratchet && (regressions == 0 || allow_drop) {
     (true, 0)
   } else {

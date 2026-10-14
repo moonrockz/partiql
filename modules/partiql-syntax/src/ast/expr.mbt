@@ -117,9 +117,9 @@ pub(all) enum PathStep {
 ///|
 pub(all) struct IntervalQualifier {
   start : DatetimeField
-  start_precision : Int?
+  start_precision : Int32?
   end : DatetimeField?
-  fractional_precision : Int?
+  fractional_precision : Int32?
 } derive(Debug, Eq)
 
 ///|
@@ -135,8 +135,8 @@ pub(all) enum Literal {
   String(String)
   Ion(String, @ion_core.IonValue)
   Date(String)
-  Time(String, precision~ : Int?, with_tz~ : Bool)
-  Timestamp(String, precision~ : Int?, with_tz~ : Bool)
+  Time(String, precision~ : Int32?, with_tz~ : Bool)
+  Timestamp(String, precision~ : Int32?, with_tz~ : Bool)
   Interval(String, negative~ : Bool, qualifier~ : IntervalQualifier)
 } derive(Debug)
 

@@ -112,7 +112,7 @@ fn path_spans_ok(p : @ast.PathPattern) -> Bool {
 
 ///|
 /// Spec 10.2 law 4.
-fn graph_spans_ok(m : @ast.GraphMatch, length : Int) -> Bool {
+fn graph_spans_ok(m : @ast.GraphMatch, length : Int32) -> Bool {
   let pattern = m.pattern
   let inner : Array[@ast.Span] = []
   if pattern.selector is Some(s) {

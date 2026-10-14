@@ -37,7 +37,7 @@ fn is_sync_word(t : @lexer.Token) -> Bool {
 
 ///|
 /// Whether the tokens `k` and `k + 1` ahead are `c` `c`, touching.
-fn Parser::pair_at(self : Parser, k : Int, c : Char) -> Bool {
+fn Parser::pair_at(self : Parser, k : Int32, c : Char) -> Bool {
   let a = self.peek_at(k)
   let b = self.peek_at(k + 1)
   a.kind is Punct(x) &&
@@ -87,7 +87,7 @@ fn Parser::record(
 /// Skips tokens up to the synchronizing token of `sync` (not consumed).
 /// Brackets opened while skipping are skipped whole; `depth` brackets are
 /// already open (opened by the failed body).
-fn Parser::skip_to(self : Parser, sync : Sync, depth? : Int = 0) -> Unit {
+fn Parser::skip_to(self : Parser, sync : Sync, depth~ : Int32 = 0) -> Unit {
   let mut depth = depth
   while true {
     let t = self.peek()
@@ -127,7 +127,7 @@ fn Parser::skip_to(self : Parser, sync : Sync, depth? : Int = 0) -> Unit {
 ///|
 /// The number of brackets opened in the tokens from index `start` up to the
 /// cursor and not closed there.
-fn Parser::unclosed_since(self : Parser, start : Int) -> Int {
+fn Parser::unclosed_since(self : Parser, start : Int32) -> Int32 {
   let mut depth = 0
   let mut i = start
   while i < self.pos {
@@ -156,7 +156,7 @@ fn Parser::unclosed_since(self : Parser, start : Int) -> Int {
 ///|
 /// The span of the tokens from index `start` to the last consumed one;
 /// empty at the token `start` when none was consumed.
-fn Parser::covered(self : Parser, start : Int) -> @ast.Span {
+fn Parser::covered(self : Parser, start : Int32) -> @ast.Span {
   if self.pos > start {
     self.span_from(start)
   } else {

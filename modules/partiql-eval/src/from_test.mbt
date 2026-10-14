@@ -183,7 +183,7 @@ test "a plain name in a FROM source finds a global before a variable" {
 }
 
 ///|
-fn long_from(n : Int, sep : String, on? : String = "") -> String {
+fn long_from(n : Int32, sep : String, on~ : String = "") -> String {
   let items = Array::makei(n, i => {
     "[" + i.to_string() + "] AS v" + i.to_string()
   })
@@ -279,7 +279,7 @@ test "UNPIVOT of MISSING and of a map" {
 ///|
 /// Level `d` is `[1] AS a_d RIGHT JOIN (level d+1) ON TRUE`, then `198 - d`
 /// more RIGHT JOINs: the nesting of right joins at run time is the sum.
-fn nested_rights(levels : Int) -> String {
+fn nested_rights(levels : Int32) -> String {
   let mut text = "[1] AS z CROSS JOIN [1] AS y"
   for d = levels - 1; d >= 0; d = d - 1 {
     let mut level = "[1] AS a" +
@@ -320,7 +320,7 @@ test "nested right joins are bounded in total" {
 ///|
 /// `levels` nested levels; each is `[1] AS a_d RIGHT JOIN (level d+1) ON TRUE`
 /// followed by `r` more RIGHT JOINs.
-fn nested_rights_each(levels : Int, r : Int) -> String {
+fn nested_rights_each(levels : Int32, r : Int32) -> String {
   let mut text = "[1] AS z CROSS JOIN [1] AS y"
   for d = levels - 1; d >= 0; d = d - 1 {
     let mut level = "[1] AS a" +
@@ -353,7 +353,7 @@ test "right joins after a nested item count against it" {
 ///|
 /// Level `d + 1` has level `d` as a subquery in the ON of its first join,
 /// then `r` RIGHT JOINs: that ON runs inside all of them.
-fn subquery_in_on(levels : Int, r : Int) -> String {
+fn subquery_in_on(levels : Int32, r : Int32) -> String {
   let mut text = "SELECT VALUE 1 FROM [1] AS z"
   for _ in 0..<levels {
     let rights = Array::makei(r, i => " RIGHT JOIN [1] AS w\{i} ON TRUE")

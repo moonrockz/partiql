@@ -55,7 +55,7 @@ fn field_text(f : @ast.DatetimeField) -> String {
 }
 
 ///|
-fn opt_int(n : Int?) -> String {
+fn opt_int(n : Int32?) -> String {
   match n {
     Some(v) => "(\{v})"
     None => ""
@@ -730,7 +730,7 @@ fn graph_sx(m : @ast.GraphMatch) -> Sx {
 
 ///|
 /// The S-expression of a statement, laid out to `width` (spec M3c §7).
-pub fn to_sexp(statement : @ast.Statement, width? : Int = 80) -> String {
+pub fn to_sexp(statement : @ast.Statement, width~ : Int32 = 80) -> String {
   match statement {
     Query(q) => layout(query_sx(q), width)
     Error(_) => layout(list("error", []), width)
@@ -739,12 +739,12 @@ pub fn to_sexp(statement : @ast.Statement, width? : Int = 80) -> String {
 
 ///|
 /// The S-expression of a query.
-pub fn query_to_sexp(query : @ast.Query, width? : Int = 80) -> String {
+pub fn query_to_sexp(query : @ast.Query, width~ : Int32 = 80) -> String {
   layout(query_sx(query), width)
 }
 
 ///|
 /// The S-expression of an expression.
-pub fn expr_to_sexp(expr : @ast.Expr, width? : Int = 80) -> String {
+pub fn expr_to_sexp(expr : @ast.Expr, width~ : Int32 = 80) -> String {
   layout(expr_sx(expr), width)
 }

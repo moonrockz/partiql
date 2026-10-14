@@ -30,8 +30,8 @@ fn dedup_labels(labels : Array[String]) -> Array[String] {
 ///|
 pub fn GraphNode::new(
   id~ : String,
-  labels? : Array[String] = [],
-  payload? : Value? = None,
+  labels~ : Array[String] = [],
+  payload~ : Value? = None,
 ) -> GraphNode {
   { id, labels: dedup_labels(labels), payload, }
 }
@@ -49,8 +49,8 @@ pub struct GraphEdge {
 pub fn GraphEdge::new(
   id~ : String,
   ends~ : Ends,
-  labels? : Array[String] = [],
-  payload? : Value? = None,
+  labels~ : Array[String] = [],
+  payload~ : Value? = None,
 ) -> GraphEdge {
   { id, labels: dedup_labels(labels), ends, payload, }
 }

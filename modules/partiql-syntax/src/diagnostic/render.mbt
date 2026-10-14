@@ -48,7 +48,7 @@ fn expand(text : String) -> String {
 
 ///|
 /// Spaces that cover the first `count` code points of `text` (a tab takes 4).
-fn padding(text : String, count : Int) -> String {
+fn padding(text : String, count : Int32) -> String {
   let buf = StringBuilder()
   let mut seen = 0
   for c in text {
@@ -63,7 +63,7 @@ fn padding(text : String, count : Int) -> String {
 
 ///|
 /// The number of code points of `text`.
-fn code_points(text : String) -> Int {
+fn code_points(text : String) -> Int32 {
   let mut n = 0
   for _ in text {
     n += 1
@@ -78,7 +78,7 @@ pub fn render(
   error : @ast.ParseError,
   source : String,
   name~ : String,
-  color? : Bool = false,
+  color~ : Bool = false,
 ) -> String {
   let (message, span, expected, found) = match error {
     Syntax(message~, span~, expected~, found~) =>

@@ -69,7 +69,7 @@ pub fn lower_query(q : @ast.Query) -> @plan.Expr raise @plan.EvalError {
 fn query_at(
   q : @ast.Query,
   scope : Scope,
-  depth : Int,
+  depth : Int32,
 ) -> @plan.Expr raise @plan.EvalError {
   if q.with_ is [first, ..] {
     return unsupported("WITH (M4b2)", first.span)
@@ -95,7 +95,7 @@ fn query_at(
 fn select_at(
   s : @ast.Select,
   scope : Scope,
-  depth : Int,
+  depth : Int32,
 ) -> @plan.Expr raise @plan.EvalError {
   if s.group_by is Some(g) {
     return unsupported("GROUP BY (M4c)", g.span)
@@ -159,7 +159,7 @@ fn select_at(
 /// variable or of the last field of the path it scans, else `_` and its
 /// position among the sources of the query block, from 1 (partiql-lang-kotlin's
 /// rule; `SELECT * FROM <<{'a': 1}>>, <<{'b': 2}>>` needs two names).
-fn from_name(source : @ast.FromSource, position : Int) -> String {
+fn from_name(source : @ast.FromSource, position : Int32) -> String {
   match source.as_ {
     Some(id) => id.text
     None => implicit_name(source.expr, position)
@@ -170,7 +170,7 @@ fn from_name(source : @ast.FromSource, position : Int) -> String {
 /// The name of an expression without `AS`: the name of the variable or of the
 /// last field of the path, else `_` and the position `index` (from 0) in its
 /// list plus 1.
-fn implicit_name(e : @ast.Expr, index : Int) -> String {
+fn implicit_name(e : @ast.Expr, index : Int32) -> String {
   match e.kind {
     VarRef(id, ..) => id.text
     Path(_, [.., Field(id)]) => id.text
@@ -208,8 +208,8 @@ fn from_item(
   item : @ast.FromItem,
   scope : Scope,
   names : Array[String],
-  sources : Ref[Int],
-  depth : Int,
+  sources : Ref[Int32],
+  depth : Int32,
 ) -> @plan.Rel raise @plan.EvalError {
   if depth >= max_depth {
     raise DataError(
@@ -276,8 +276,8 @@ fn from_leaf(
   item : @ast.FromItem,
   scope : Scope,
   names : Array[String],
-  sources : Ref[Int],
-  depth : Int,
+  sources : Ref[Int32],
+  depth : Int32,
 ) -> @plan.Rel raise @plan.EvalError {
   let (source, unpivot) = match item {
     Scan(source) => (source, false)
@@ -328,7 +328,7 @@ fn is_single_column(e : @ast.Expr) -> Bool {
 fn lower_plain(
   e : @ast.Expr,
   scope : Scope,
-  depth : Int,
+  depth : Int32,
 ) -> @plan.Expr raise @plan.EvalError {
   match e.kind {
     Query(q) => {
@@ -347,7 +347,7 @@ fn lower_plain(
 fn column_at(
   e : @ast.Expr,
   scope : Scope,
-  depth : Int,
+  depth : Int32,
 ) -> @plan.Expr raise @plan.EvalError {
   let inner = lower_plain(e, scope, depth)
   if is_single_column(e) {

@@ -1,5 +1,5 @@
 ///|
-fn i(n : Int) -> @value.Value {
+fn i(n : Int32) -> @value.Value {
   @value.Value::Int(n.to_int64())
 }
 
@@ -154,7 +154,7 @@ test "eqg" {
 
 ///|
 test "group_key is shared by values that are eqg" {
-  let dec = (c : BigInt, e : Int) => {
+  let dec = (c : BigInt, e : Int32) => {
     @value.Value::Decimal(@ion_core.Decimal::new(c, e))
   }
   let one = @value.Value::Int(1)

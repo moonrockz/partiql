@@ -514,7 +514,7 @@ fn project(
 fn add_fields(
   fields : Array[(String, @value.Value)],
   v : @value.Value,
-  position : Int,
+  position : Int32,
 ) -> Unit {
   match unboxed(v) {
     Tuple(t) => t.fields().each(f => fields.push(f))

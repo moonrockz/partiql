@@ -12,7 +12,7 @@ test "civil day round trip at known points" {
 ///|
 test "civil days and days are inverse (property)" {
   @quickcheck.check(
-    (n : Int) => {
+    (n : Int32) => {
       let days = (n % 3000000).to_int64() // about ±8,000 years
       let (y, m, d) = civil_from_days(days)
       days_from_civil(y, m, d) == days
@@ -43,7 +43,7 @@ test "time with zone keys wrap at midnight" {
 
 ///|
 /// The inverse of `days_from_civil` (test support).
-fn civil_from_days(days : Int64) -> (Int, Int, Int) {
+fn civil_from_days(days : Int64) -> (Int32, Int32, Int32) {
   let z = days + 719468L
   let era = (if z >= 0L { z } else { z - 146096L }) / 146097L
   let doe = z - era * 146097L

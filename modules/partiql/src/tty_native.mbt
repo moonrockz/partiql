@@ -1,5 +1,5 @@
 ///|
-extern "C" fn c_isatty(fd : Int) -> Int = "isatty"
+extern "C" fn c_isatty(fd : Int32) -> Int32 = "isatty"
 
 ///|
 /// Whether stderr is a terminal.

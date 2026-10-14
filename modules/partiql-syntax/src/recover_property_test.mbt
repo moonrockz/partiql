@@ -25,7 +25,7 @@ let broken_bases : Array[String] = [
 
 ///|
 impl @quickcheck.Arbitrary for BrokenText with fn arbitrary(size, rs) {
-  let pick = (n : Int) => {
+  let pick = (n : Int32) => {
     rs.next_uint(limit=n.reinterpret_as_uint()).reinterpret_as_int()
   }
   let base = () => {
@@ -62,14 +62,14 @@ impl @quickcheck.Arbitrary for BrokenText with fn arbitrary(size, rs) {
 impl @quickcheck.Shrink for BrokenText
 
 ///|
-fn start_of(e : @syntax.ParseError) -> Int {
+fn start_of(e : @syntax.ParseError) -> Int32 {
   match e {
     Syntax(span~, ..) | Unsupported(span~, ..) => span.start
   }
 }
 
 ///|
-fn span_ok(e : @syntax.ParseError, length : Int) -> Bool {
+fn span_ok(e : @syntax.ParseError, length : Int32) -> Bool {
   match e {
     Syntax(span~, ..) | Unsupported(span~, ..) =>
       span.start >= 0 && span.start <= span.end && span.end <= length

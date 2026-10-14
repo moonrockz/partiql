@@ -15,6 +15,6 @@ pub fn Bag::items(self : Bag) -> ArrayView[Value] {
 }
 
 ///|
-pub fn Bag::length(self : Bag) -> Int {
+pub fn Bag::length(self : Bag) -> Int32 {
   self.items.length()
 }

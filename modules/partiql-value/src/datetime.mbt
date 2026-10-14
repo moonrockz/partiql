@@ -8,18 +8,18 @@ pub(all) suberror DateTimeError {
 ///|
 /// A calendar date (proleptic Gregorian).
 pub struct Date {
-  year : Int
-  month : Int
-  day : Int
+  year : Int32
+  month : Int32
+  day : Int32
 } derive(Debug)
 
 ///|
-fn is_leap_year(year : Int) -> Bool {
+fn is_leap_year(year : Int32) -> Bool {
   (year % 4 == 0 && year % 100 != 0) || year % 400 == 0
 }
 
 ///|
-fn days_in_month(year : Int, month : Int) -> Int {
+fn days_in_month(year : Int32, month : Int32) -> Int32 {
   match month {
     2 => if is_leap_year(year) { 29 } else { 28 }
     4 | 6 | 9 | 11 => 30
@@ -29,9 +29,9 @@ fn days_in_month(year : Int, month : Int) -> Int {
 
 ///|
 pub fn Date::new(
-  year~ : Int,
-  month~ : Int,
-  day~ : Int,
+  year~ : Int32,
+  month~ : Int32,
+  day~ : Int32,
 ) -> Date raise DateTimeError {
   // The range of Java's LocalDate, which partiql-lang-kotlin uses; the
   // extended conformance tests have years such as -1 and 19998.
@@ -51,16 +51,16 @@ pub fn Date::new(
 /// A time of day. `offset` is minutes east of UTC; `None` means WITHOUT TIME
 /// ZONE. `precision` is the number of fractional-second digits (TIME(p)).
 pub struct Time {
-  hour : Int
-  minute : Int
-  second : Int
-  nanos : Int
-  precision : Int
-  offset : Int?
+  hour : Int32
+  minute : Int32
+  second : Int32
+  nanos : Int32
+  precision : Int32
+  offset : Int32?
 } derive(Debug)
 
 ///|
-fn pow10(n : Int) -> Int {
+fn pow10(n : Int32) -> Int32 {
   let mut result = 1
   for _ in 0..<n {
     result *= 10
@@ -70,12 +70,12 @@ fn pow10(n : Int) -> Int {
 
 ///|
 pub fn Time::new(
-  hour~ : Int,
-  minute~ : Int,
-  second~ : Int,
-  nanos? : Int = 0,
-  precision? : Int = 0,
-  offset? : Int? = None,
+  hour~ : Int32,
+  minute~ : Int32,
+  second~ : Int32,
+  nanos~ : Int32 = 0,
+  precision~ : Int32 = 0,
+  offset~ : Int32? = None,
 ) -> Time raise DateTimeError {
   if hour < 0 || hour > 23 {
     raise InvalidTime("hour \{hour} is not in 0..23")
@@ -115,7 +115,7 @@ pub fn Timestamp::new(date : Date, time : Time) -> Timestamp {
 
 ///|
 /// Days since 1970-01-01 (Howard Hinnant's days_from_civil).
-fn days_from_civil(year : Int, month : Int, day : Int) -> Int64 {
+fn days_from_civil(year : Int32, month : Int32, day : Int32) -> Int64 {
   let y = (if month <= 2 { year - 1 } else { year }).to_int64()
   let era = (if y >= 0L { y } else { y - 399L }) / 400L
   let yoe = y - era * 400L
@@ -142,26 +142,26 @@ fn Time::offset_seconds(self : Time) -> Int64 {
 
 ///|
 /// Fields as written, ignoring the offset.
-fn Time::local_key(self : Time) -> (Int64, Int) {
+fn Time::local_key(self : Time) -> (Int64, Int32) {
   (self.seconds_of_day(), self.nanos)
 }
 
 ///|
 /// UTC seconds of day, modulo 86,400.
-fn Time::utc_key(self : Time) -> (Int64, Int) {
+fn Time::utc_key(self : Time) -> (Int64, Int32) {
   let s = (self.seconds_of_day() - self.offset_seconds()) % 86400L
   (if s < 0L { s + 86400L } else { s }, self.nanos)
 }
 
 ///|
-fn Timestamp::local_key(self : Timestamp) -> (Int64, Int) {
+fn Timestamp::local_key(self : Timestamp) -> (Int64, Int32) {
   let days = days_from_civil(self.date.year, self.date.month, self.date.day)
   (days * 86400L + self.time.seconds_of_day(), self.time.nanos)
 }
 
 ///|
 /// Seconds since 1970-01-01T00:00:00Z and nanos.
-fn Timestamp::utc_key(self : Timestamp) -> (Int64, Int) {
+fn Timestamp::utc_key(self : Timestamp) -> (Int64, Int32) {
   let (seconds, nanos) = self.local_key()
   (seconds - self.time.offset_seconds(), nanos)
 }

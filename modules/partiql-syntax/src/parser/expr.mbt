@@ -50,7 +50,7 @@ fn Parser::not_expr(self : Parser) -> @ast.Expr raise @ast.ParseError {
 
 ///|
 /// The truth value after `IS [NOT]`, when the IS starts a boolean test.
-fn Parser::bool_test_value(self : Parser, offset : Int) -> Bool?? {
+fn Parser::bool_test_value(self : Parser, offset : Int32) -> Bool?? {
   let t = self.peek_at(offset)
   if word_is(t, "TRUE") {
     Some(Some(true))

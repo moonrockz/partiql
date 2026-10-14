@@ -6,7 +6,7 @@ pub(all) enum NullOrder {
 } derive(Debug, Eq)
 
 ///|
-fn rank(v : Value) -> Int {
+fn rank(v : Value) -> Int32 {
   match v {
     Null | Missing => 0
     Bool(_) => 1
@@ -30,7 +30,7 @@ fn rank(v : Value) -> Int {
 }
 
 ///|
-fn sign(n : Int) -> Int {
+fn sign(n : Int32) -> Int32 {
   if n < 0 {
     -1
   } else if n > 0 {
@@ -41,7 +41,7 @@ fn sign(n : Int) -> Int {
 }
 
 ///|
-fn compare_keys(a : (Int64, Int), b : (Int64, Int)) -> Int {
+fn compare_keys(a : (Int64, Int32), b : (Int64, Int32)) -> Int32 {
   let c = a.0.compare(b.0)
   if c != 0 {
     sign(c)
@@ -55,11 +55,11 @@ fn compare_keys(a : (Int64, Int), b : (Int64, Int)) -> Int {
 /// fields for an unzoned one; at equal keys, an unzoned value sorts first.
 /// (A tie-break on raw fields would not be transitive.)
 fn compare_zoned(
-  a_key : (Int64, Int),
+  a_key : (Int64, Int32),
   a_zoned : Bool,
-  b_key : (Int64, Int),
+  b_key : (Int64, Int32),
   b_zoned : Bool,
-) -> Int {
+) -> Int32 {
   let c = compare_keys(a_key, b_key)
   if c != 0 {
     c
@@ -73,7 +73,7 @@ fn compare_lists(
   xs : ArrayView[Value],
   ys : ArrayView[Value],
   nulls : NullOrder,
-) -> Int {
+) -> Int32 {
   let n = if xs.length() < ys.length() { xs.length() } else { ys.length() }
   for k in 0..<n {
     let c = compare(xs[k], ys[k], nulls~)
@@ -96,7 +96,7 @@ fn compare_pair(
   p : (String, Value),
   q : (String, Value),
   nulls : NullOrder,
-) -> Int {
+) -> Int32 {
   let c = compare_text(p.0, q.0)
   if c != 0 {
     c
@@ -106,7 +106,7 @@ fn compare_pair(
 }
 
 ///|
-fn compare_tuples(a : Tuple, b : Tuple, nulls : NullOrder) -> Int {
+fn compare_tuples(a : Tuple, b : Tuple, nulls : NullOrder) -> Int32 {
   let xs = a.fields().to_owned()
   let ys = b.fields().to_owned()
   xs.sort_by((p, q) => compare_pair(p, q, nulls))
@@ -126,7 +126,7 @@ fn compare_entry(
   p : (Value, Value),
   q : (Value, Value),
   nulls : NullOrder,
-) -> Int {
+) -> Int32 {
   let c = compare(p.0, q.0, nulls~)
   if c != 0 {
     c
@@ -138,7 +138,7 @@ fn compare_entry(
 ///|
 /// RFC 0104: sort each map's entries by key then value, then compare
 /// lexicographically (a shorter prefix first).
-fn compare_maps(a : MapValue, b : MapValue, nulls : NullOrder) -> Int {
+fn compare_maps(a : MapValue, b : MapValue, nulls : NullOrder) -> Int32 {
   let xs = a.entries().to_owned()
   let ys = b.entries().to_owned()
   xs.sort_by((p, q) => compare_entry(p, q, nulls))
@@ -154,7 +154,7 @@ fn compare_maps(a : MapValue, b : MapValue, nulls : NullOrder) -> Int {
 }
 
 ///|
-fn compare_text_lists(a : Array[String], b : Array[String]) -> Int {
+fn compare_text_lists(a : Array[String], b : Array[String]) -> Int32 {
   let n = if a.length() < b.length() { a.length() } else { b.length() }
   for k in 0..<n {
     let c = compare_text(a[k], b[k])
@@ -174,7 +174,7 @@ fn sorted_labels(labels : Array[String]) -> Array[String] {
 
 ///|
 /// An absent payload sorts before any payload.
-fn compare_payloads(a : Value?, b : Value?, nulls : NullOrder) -> Int {
+fn compare_payloads(a : Value?, b : Value?, nulls : NullOrder) -> Int32 {
   match (a, b) {
     (None, None) => 0
     (None, Some(_)) => -1
@@ -186,7 +186,7 @@ fn compare_payloads(a : Value?, b : Value?, nulls : NullOrder) -> Int {
 ///|
 /// Directed before undirected; directed by (from, to), undirected by its
 /// sorted pair of node ids.
-fn compare_ends(a : Ends, b : Ends) -> Int {
+fn compare_ends(a : Ends, b : Ends) -> Int32 {
   let key = (e : Ends) => {
     match e {
       Directed(from~, to~) => (0, from, to)
@@ -212,7 +212,7 @@ fn compare_ends(a : Ends, b : Ends) -> Int {
 }
 
 ///|
-fn compare_nodes(a : GraphNode, b : GraphNode, nulls : NullOrder) -> Int {
+fn compare_nodes(a : GraphNode, b : GraphNode, nulls : NullOrder) -> Int32 {
   let c = compare_text(a.id, b.id)
   if c != 0 {
     return c
@@ -225,7 +225,7 @@ fn compare_nodes(a : GraphNode, b : GraphNode, nulls : NullOrder) -> Int {
 }
 
 ///|
-fn compare_edges(a : GraphEdge, b : GraphEdge, nulls : NullOrder) -> Int {
+fn compare_edges(a : GraphEdge, b : GraphEdge, nulls : NullOrder) -> Int32 {
   let c = compare_text(a.id, b.id)
   if c != 0 {
     return c
@@ -244,7 +244,7 @@ fn compare_edges(a : GraphEdge, b : GraphEdge, nulls : NullOrder) -> Int {
 ///|
 /// Compares canonical forms: nodes sorted by id, then edges sorted by id,
 /// each list lexicographic with a shorter prefix first.
-fn compare_graphs(a : GraphValue, b : GraphValue, nulls : NullOrder) -> Int {
+fn compare_graphs(a : GraphValue, b : GraphValue, nulls : NullOrder) -> Int32 {
   let by_id_n = (x : GraphNode, y : GraphNode) => compare_text(x.id, y.id)
   let by_id_e = (x : GraphEdge, y : GraphEdge) => compare_text(x.id, y.id)
   let an = a.nodes().to_owned()
@@ -287,7 +287,7 @@ fn lowered_or_self(v : Value) -> Value {
 
 ///|
 /// The ORDER BY total order (spec section 4.4). Returns -1, 0 or 1.
-pub fn compare(a : Value, b : Value, nulls~ : NullOrder) -> Int {
+pub fn compare(a : Value, b : Value, nulls~ : NullOrder) -> Int32 {
   let x = lowered_or_self(a)
   let y = lowered_or_self(b)
   let (rx, ry) = (rank(x), rank(y))

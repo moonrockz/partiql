@@ -40,13 +40,13 @@
 /// A part of a plan and the level at which it runs: the number of levels on
 /// the stack, itself included.
 priv enum Pending {
-  ExprAt(@plan.Expr, Int)
-  RelAt(@plan.Rel, Int)
+  ExprAt(@plan.Expr, Int32)
+  RelAt(@plan.Rel, Int32)
 }
 
 ///|
 /// The nesting depth of a value (a scalar is 1), counted in a loop.
-fn value_depth(v : @value.Value) -> Int {
+fn value_depth(v : @value.Value) -> Int32 {
   let mut deepest = 0
   let pending = [(v, 1)]
   while pending.pop() is Some((x, d)) {
@@ -80,7 +80,11 @@ fn value_depth(v : @value.Value) -> Int {
 /// Pushes the operands of a scalar expression at `level`, one level down.
 /// A chain of binary operators, AND and OR is walked down its left spine:
 /// it runs in a loop, so all its operands are one level down.
-fn push_operands(e : @plan.Expr, level : Int, pending : Array[Pending]) -> Unit {
+fn push_operands(
+  e : @plan.Expr,
+  level : Int32,
+  pending : Array[Pending],
+) -> Unit {
   let below = level + 1
   let push = (x : @plan.Expr) => pending.push(ExprAt(x, below))
   match e {
@@ -172,7 +176,7 @@ fn push_operands(e : @plan.Expr, level : Int, pending : Array[Pending]) -> Unit 
 /// and one per run of other joins, nest from the last join (at `level`) to
 /// the first; a right side and an ON run one level below their wrapper, the
 /// first source below all the wrappers.
-fn push_join(rel : @plan.Rel, level : Int, pending : Array[Pending]) -> Unit {
+fn push_join(rel : @plan.Rel, level : Int32, pending : Array[Pending]) -> Unit {
   let steps = []
   let mut leaf = rel
   while leaf is Join(kind, l, r, on~, _) {

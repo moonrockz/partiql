@@ -49,7 +49,7 @@ fn int_of(x : @ion_core.IonValue, what : String) -> Int64 raise CodecError {
 }
 
 ///|
-fn small_int(x : @ion_core.IonValue, what : String) -> Int raise CodecError {
+fn small_int(x : @ion_core.IonValue, what : String) -> Int32 raise CodecError {
   let n = int_of(x, what)
   if n < -2147483648L || n > 2147483647L {
     raise Malformed("\{what} is out of range")
@@ -89,7 +89,7 @@ fn optional_int(
 
 ///|
 /// An offset field: an int (minutes) or a null (no time zone).
-fn offset_of(x : @ion_core.IonValue?, what : String) -> Int? raise CodecError {
+fn offset_of(x : @ion_core.IonValue?, what : String) -> Int32? raise CodecError {
   match x {
     None => None
     Some(v) if v.is_null() => None
@@ -103,7 +103,7 @@ fn offset_of(x : @ion_core.IonValue?, what : String) -> Int? raise CodecError {
 fn seconds_of(
   x : @ion_core.IonValue,
   what : String,
-) -> (Int, Int, Int) raise CodecError {
+) -> (Int32, Int32, Int32) raise CodecError {
   match x.kind() {
     Int(_) => (small_int(x, what), 0, 0)
     Decimal(d) => {
@@ -144,10 +144,10 @@ fn seconds_of(
 
 ///|
 fn make_time(
-  hour : Int,
-  minute : Int,
-  sec : (Int, Int, Int),
-  offset : Int?,
+  hour : Int32,
+  minute : Int32,
+  sec : (Int32, Int32, Int32),
+  offset : Int32?,
 ) -> @value.Time raise CodecError {
   @value.Time::new(
     hour~,
@@ -163,9 +163,9 @@ fn make_time(
 
 ///|
 fn make_date(
-  year : Int,
-  month : Int,
-  day : Int,
+  year : Int32,
+  month : Int32,
+  day : Int32,
 ) -> @value.Date raise CodecError {
   @value.Date::new(year~, month~, day~) catch {
     error => raise Malformed(@debug.to_string(error))
@@ -198,7 +198,7 @@ fn decode_date(x : @ion_core.IonValue) -> @value.Value raise CodecError {
 fn parse_time_text(text : String) -> @value.Time raise CodecError {
   let chars : Array[Char] = text.iter().collect()
   let mut pos = 0
-  fn digits(count : Int) -> Int raise CodecError {
+  fn digits(count : Int32) -> Int32 raise CodecError {
     let mut n = 0
     for _ in 0..<count {
       if pos >= chars.length() || chars[pos] < '0' || chars[pos] > '9' {

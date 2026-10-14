@@ -240,7 +240,7 @@ priv struct Decoder {
   file : String
   cases : Array[TestCase]
   equiv_classes : Map[String, Array[String]]
-  seen : Map[String, Int]
+  seen : Map[String, Int32]
 }
 
 ///|

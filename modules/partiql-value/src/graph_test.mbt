@@ -1,8 +1,8 @@
 ///|
 fn node(
   id : String,
-  labels? : Array[String] = [],
-  payload? : @value.Value? = None,
+  labels~ : Array[String] = [],
+  payload~ : @value.Value? = None,
 ) -> @value.GraphNode {
   @value.GraphNode::new(id~, labels~, payload~)
 }
@@ -11,8 +11,8 @@ fn node(
 fn edge(
   id : String,
   ends : @value.Ends,
-  labels? : Array[String] = [],
-  payload? : @value.Value? = None,
+  labels~ : Array[String] = [],
+  payload~ : @value.Value? = None,
 ) -> @value.GraphEdge {
   @value.GraphEdge::new(id~, ends~, labels~, payload~)
 }

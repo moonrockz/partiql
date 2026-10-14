@@ -1,7 +1,7 @@
 // Graph MATCH: always the parenthesized form (spec M3a section 6).
 
 ///|
-fn label_level(l : @ast.Label) -> Int {
+fn label_level(l : @ast.Label) -> Int32 {
   match l.kind {
     Or(_, _) => 1
     And(_, _) => 2
@@ -13,7 +13,7 @@ fn label_level(l : @ast.Label) -> Int {
 ///|
 /// `!` binds tighter than `&`, `&` tighter than `|`; both binary operators
 /// are left associative; `!` applies to a primary.
-fn label_doc(l : @ast.Label, min : Int) -> Doc {
+fn label_doc(l : @ast.Label, min : Int32) -> Doc {
   let body = match l.kind {
     Name(i) => ident_doc(i)
     Wildcard => Text("%")

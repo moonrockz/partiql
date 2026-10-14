@@ -55,7 +55,7 @@ test "an expression at the depth limit evaluates on every target" {
 
 ///|
 test "a deep Ion literal is a data error, not a stack overflow" {
-  let ion = (n : Int) => "`" + "[".repeat(n) + "]".repeat(n) + "`"
+  let ion = (n : Int32) => "`" + "[".repeat(n) + "]".repeat(n) + "`"
   @expect.expect_all(soft => {
     soft
     .expect_call(() => ev("\{ion(1000)} = \{ion(1000)}"))

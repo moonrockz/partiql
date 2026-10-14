@@ -1,5 +1,5 @@
 ///|
-fn date(year : Int, month : Int, day : Int) -> @value.Value raise Error {
+fn date(year : Int32, month : Int32, day : Int32) -> @value.Value raise Error {
   Date(@value.Date::new(year~, month~, day~))
 }
 
@@ -408,11 +408,11 @@ test "scaling an interval has no fixed cap" {
 
 ///|
 fn time_at(
-  h : Int,
-  m : Int,
-  s : Int,
-  nanos : Int,
-  p : Int,
+  h : Int32,
+  m : Int32,
+  s : Int32,
+  nanos : Int32,
+  p : Int32,
 ) -> @value.Value raise Error {
   Time(@value.Time::new(hour=h, minute=m, second=s, nanos~, precision=p))
 }

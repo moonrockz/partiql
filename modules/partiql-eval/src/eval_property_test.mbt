@@ -24,12 +24,12 @@ let expr_binary : Array[String] = [
 ]
 
 ///|
-fn pick(rs : @splitmix.RandomState, n : Int) -> Int {
+fn pick(rs : @splitmix.RandomState, n : Int32) -> Int32 {
   rs.next_uint(limit=n.reinterpret_as_uint()).reinterpret_as_int()
 }
 
 ///|
-fn gen_expr(rs : @splitmix.RandomState, depth : Int) -> String {
+fn gen_expr(rs : @splitmix.RandomState, depth : Int32) -> String {
   if depth == 0 || pick(rs, 4) == 0 {
     return expr_atoms[pick(rs, expr_atoms.length())]
   }
@@ -137,7 +137,7 @@ test "law: a single failing operation gives MISSING in permissive" {
 
 ///|
 test "law: the generator reaches every branch of the modes law" {
-  let rs = @splitmix.new(seed=7UL)
+  let rs = @splitmix.RandomState(seed=7UL)
   let mut ok = 0
   let mut type_error = 0
   let mut data_error = 0

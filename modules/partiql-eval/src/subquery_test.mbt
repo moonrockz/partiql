@@ -70,7 +70,7 @@ test "IN with a subquery and VALUES" {
 }
 
 ///|
-fn nested_subqueries(levels : Int) -> String {
+fn nested_subqueries(levels : Int32) -> String {
   let mut s = "1"
   for _ in 0..<levels {
     s = "(SELECT x FROM [" + s + "] AS x) + 0"

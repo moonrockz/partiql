@@ -47,7 +47,7 @@ let special_forms : Array[String] = [
 
 ///|
 /// Words that start a query.
-fn Parser::at_query_start(self : Parser, offset : Int) -> Bool {
+fn Parser::at_query_start(self : Parser, offset : Int32) -> Bool {
   // `((SELECT ...) UNION ...)`: look through opening parentheses.
   let mut k = offset
   while self.peek_at(k).kind is Punct('(') {
@@ -368,7 +368,7 @@ fn Parser::call(self : Parser) -> @ast.Expr raise @ast.ParseError {
 ///|
 /// Whether the tokens from `from` up to `to` (exclusive) are one
 /// parenthesized group: a `(` whose matching `)` is the last token.
-fn Parser::one_group(self : Parser, from : Int, to : Int) -> Bool {
+fn Parser::one_group(self : Parser, from : Int32, to : Int32) -> Bool {
   guard to - from >= 2 && self.tokens[from].kind is Punct('(') else {
     return false
   }

@@ -1,10 +1,10 @@
 ///|
-fn pick(rs : @splitmix.RandomState, n : Int) -> Int {
+fn pick(rs : @splitmix.RandomState, n : Int32) -> Int32 {
   rs.next_uint(limit=n.reinterpret_as_uint()).reinterpret_as_int()
 }
 
 ///|
-fn chance(rs : @splitmix.RandomState, percent : Int) -> Bool {
+fn chance(rs : @splitmix.RandomState, percent : Int32) -> Bool {
   pick(rs, 100) < percent
 }
 
@@ -162,7 +162,7 @@ let ion_texts : Array[String] = [
 ]
 
 ///|
-pub fn gen_ion(size : Int, rs : @splitmix.RandomState) -> @ion_core.IonValue {
+pub fn gen_ion(size : Int32, rs : @splitmix.RandomState) -> @ion_core.IonValue {
   ignore(size)
   @text.read_ion(ion_texts[pick(rs, ion_texts.length())]) catch {
     _ => abort("unreachable: ion_texts holds valid Ion")
@@ -170,7 +170,7 @@ pub fn gen_ion(size : Int, rs : @splitmix.RandomState) -> @ion_core.IonValue {
 }
 
 ///|
-pub fn gen_value(size : Int, rs : @splitmix.RandomState) -> @value.Value {
+pub fn gen_value(size : Int32, rs : @splitmix.RandomState) -> @value.Value {
   let leaf = size <= 0 || chance(rs, 40)
   if leaf {
     match pick(rs, 12) {
@@ -219,7 +219,7 @@ pub fn gen_value(size : Int, rs : @splitmix.RandomState) -> @value.Value {
 ///|
 /// A MAP with keys of one scalar kind, no duplicate keys, and values of any
 /// kind except MISSING.
-pub fn gen_map(size : Int, rs : @splitmix.RandomState) -> @value.MapValue {
+pub fn gen_map(size : Int32, rs : @splitmix.RandomState) -> @value.MapValue {
   let kinds : Array[(@value.MapType, (@splitmix.RandomState) -> @value.Value)] = [
     (String, r => String(gen_string(r))),
     (Integer, r => Int((pick(r, 7) - 3).to_int64())),
@@ -255,7 +255,7 @@ pub fn gen_map(size : Int, rs : @splitmix.RandomState) -> @value.MapValue {
 }
 
 ///|
-fn gen_payload(size : Int, rs : @splitmix.RandomState) -> @value.Value? {
+fn gen_payload(size : Int32, rs : @splitmix.RandomState) -> @value.Value? {
   if chance(rs, 30) {
     None
   } else {
@@ -270,7 +270,7 @@ fn gen_payload(size : Int, rs : @splitmix.RandomState) -> @value.Value? {
 /// A small graph: 1-3 nodes, 0-3 edges between them, random directions,
 /// labels from a small pool (with repeats, to exercise de-duplication) and
 /// optional payloads.
-pub fn gen_graph(size : Int, rs : @splitmix.RandomState) -> @value.GraphValue {
+pub fn gen_graph(size : Int32, rs : @splitmix.RandomState) -> @value.GraphValue {
   let pool = ["a", "b", "c", "a"]
   let gen_labels = (r : @splitmix.RandomState) => {
     Array::makei(pick(r, 3), _ => pool[pick(r, pool.length())])

@@ -9,7 +9,7 @@ fn int64(n : Int64) -> @ion_core.IonValue {
 }
 
 ///|
-fn small(n : Int) -> @ion_core.IonValue {
+fn small(n : Int32) -> @ion_core.IonValue {
   @ion_core.IonValue::int(n)
 }
 
@@ -23,7 +23,7 @@ fn seconds_decimal(t : @value.Time) -> @ion_core.IonValue {
 }
 
 ///|
-fn offset_value(offset : Int?) -> @ion_core.IonValue {
+fn offset_value(offset : Int32?) -> @ion_core.IonValue {
   match offset {
     Some(minutes) => small(minutes)
     None => @ion_core.IonValue::untyped_null()

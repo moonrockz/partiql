@@ -70,7 +70,7 @@ fn Printer::body(self : Printer, b : @ast.QueryBody) -> Doc {
 
 ///|
 /// INTERSECT binds tighter than UNION and EXCEPT.
-fn set_level(k : @ast.SetOpKind) -> Int {
+fn set_level(k : @ast.SetOpKind) -> Int32 {
   match k {
     Intersect => 2
     Union | Except => 1
@@ -78,7 +78,7 @@ fn set_level(k : @ast.SetOpKind) -> Int {
 }
 
 ///|
-fn Printer::set_operand(self : Printer, q : @ast.Query, min : Int) -> Doc {
+fn Printer::set_operand(self : Printer, q : @ast.Query, min : Int32) -> Doc {
   let needs = has_clauses(q) ||
     (match q.body {
       SetOp(op) => set_level(op.op) < min

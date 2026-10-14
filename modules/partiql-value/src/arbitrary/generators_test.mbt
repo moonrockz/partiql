@@ -27,7 +27,7 @@ fn all_values(v : @value.Value) -> Array[@value.Value] {
 
 ///|
 test "generators cover the edge cases" {
-  let rs = @splitmix.new(seed=42UL)
+  let rs = @splitmix.RandomState(seed=42UL)
   let mut nan = false
   let mut big = false
   let mut missing_in_bag = false

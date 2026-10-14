@@ -40,7 +40,7 @@ fn CollText::as_bag(self : CollText) -> @value.Value raise @eval.EvalError {
 ///|
 /// Run a query, in permissive mode, as a value; a failure is a String that no
 /// expected value equals.
-fn run(source : String, mode? : @eval.Mode = Permissive) -> @value.Value {
+fn run(source : String, mode~ : @eval.Mode = Permissive) -> @value.Value {
   ev(source, mode~) catch {
     e => String("error: \{@debug.to_string(e)}")
   }
@@ -269,7 +269,7 @@ test "law: modes agree on generated queries" {
 
 ///|
 test "law: the query generator reaches every branch of the modes law" {
-  let rs = @splitmix.new(seed=11UL)
+  let rs = @splitmix.RandomState(seed=11UL)
   let mut ok = 0
   let mut type_error = 0
   let mut data_error = 0
@@ -294,7 +294,7 @@ test "law: the query generator reaches every branch of the modes law" {
 }
 
 ///|
-fn count_of(v : @value.Value) -> Int {
+fn count_of(v : @value.Value) -> Int32 {
   match v {
     Bag(b) => b.length()
     _ => -1
@@ -334,7 +334,7 @@ test "totality: a 300-item comma FROM list" {
 ///|
 /// The parser accepts about 30 nested subqueries; the evaluator must run the
 /// deepest one it accepts without a stack overflow.
-fn nested_subquery(depth : Int) -> String {
+fn nested_subquery(depth : Int32) -> String {
   let mut s = "1"
   for _ in 0..<depth {
     s = "(SELECT VALUE x FROM [\{s}] AS x)"

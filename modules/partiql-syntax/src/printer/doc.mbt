@@ -14,7 +14,7 @@ priv enum Doc {
   HardLine
   Concat(Doc, Doc)
   /// Indents the broken lines of the document by `n` more.
-  Nest(Int, Doc)
+  Nest(Int32, Doc)
   /// Flat when it fits the width, else broken (pretty layout only).
   Group(Doc)
 } derive(Debug)
@@ -98,7 +98,7 @@ fn render_flat(doc : Doc) -> String {
 priv enum Step {
   Visit(Doc)
   Join
-  WrapNest(Int)
+  WrapNest(Int32)
   WrapGroup
 }
 
@@ -144,7 +144,7 @@ fn to_pretty(root : Doc) -> @pretty.Doc {
 /// The pretty layout at `width` (a width below 1 counts as 1). The whole
 /// document is one group, so a line break outside every group breaks only
 /// when the document does not fit.
-fn render(doc : Doc, width : Int) -> String {
+fn render(doc : Doc, width : Int32) -> String {
   @pretty.render(
     @pretty.group(to_pretty(doc)),
     width=if width < 1 { 1 } else { width },

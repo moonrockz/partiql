@@ -1,5 +1,5 @@
 ///|
-fn span(start : Int, end : Int) -> @ast.Span {
+fn span(start : Int32, end : Int32) -> @ast.Span {
   { start, end, }
 }
 

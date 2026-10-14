@@ -19,7 +19,7 @@ fn fits_int64(n : @bigint.BigInt) -> Bool {
 
 ///|
 /// Days since 1970-01-01 (Howard Hinnant's days_from_civil).
-fn days_from_civil(year : Int, month : Int, day : Int) -> Int64 {
+fn days_from_civil(year : Int32, month : Int32, day : Int32) -> Int64 {
   let y = (if month <= 2 { year - 1 } else { year }).to_int64()
   let era = (if y >= 0L { y } else { y - 399L }) / 400L
   let yoe = y - era * 400L
@@ -34,7 +34,7 @@ fn days_from_civil(year : Int, month : Int, day : Int) -> Int64 {
 ///|
 /// The year, month and day of a day number (Hinnant's civil_from_days). The
 /// day number is within ±4e11, so that the year fits in an Int.
-fn civil_from_days(days : Int64) -> (Int, Int, Int) {
+fn civil_from_days(days : Int64) -> (Int32, Int32, Int32) {
   let z = days + 719468L
   let era = (if z >= 0L { z } else { z - 146096L }) / 146097L
   let doe = z - era * 146097L
@@ -48,12 +48,12 @@ fn civil_from_days(days : Int64) -> (Int, Int, Int) {
 }
 
 ///|
-fn leap_year(year : Int) -> Bool {
+fn leap_year(year : Int32) -> Bool {
   (year % 4 == 0 && year % 100 != 0) || year % 400 == 0
 }
 
 ///|
-fn month_length(year : Int, month : Int) -> Int {
+fn month_length(year : Int32, month : Int32) -> Int32 {
   match month {
     2 => if leap_year(year) { 29 } else { 28 }
     4 | 6 | 9 | 11 => 30
@@ -142,7 +142,7 @@ fn ym_value(months : @bigint.BigInt) -> @value.Value raise OpFailure {
 
 ///|
 /// The fewest fraction digits that show `nanos`.
-fn needed_precision(nanos : Int) -> Int {
+fn needed_precision(nanos : Int32) -> Int32 {
   let mut p = 9
   let mut rest = nanos
   while p > 0 && rest % 10 == 0 {
@@ -156,8 +156,8 @@ fn needed_precision(nanos : Int) -> Int {
 /// The time of day at `rest` nanoseconds into the day.
 fn time_at(
   rest : @bigint.BigInt,
-  precision : Int,
-  offset : Int?,
+  precision : Int32,
+  offset : Int32?,
 ) -> @value.Time raise OpFailure {
   let seconds = (rest / nanos_per_second).to_int()
   let nanos = (rest % nanos_per_second).to_int()
@@ -266,7 +266,7 @@ fn is_point_in_time(v : @value.Value) -> Bool {
 ///|
 /// The order of two datetimes of one kind (a date counts as a timestamp) or
 /// two intervals of one kind; `None` for any other pair.
-fn datetime_order(x : @value.Value, y : @value.Value) -> Int? {
+fn datetime_order(x : @value.Value, y : @value.Value) -> Int32? {
   match (x, y) {
     (IntervalYM(p), IntervalYM(q)) => Some(p.months.compare(q.months))
     (IntervalDT(p), IntervalDT(q)) => Some(dt_nanos(p).compare(dt_nanos(q)))

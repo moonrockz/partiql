@@ -68,7 +68,7 @@ enum Outcome {
 fn check_syntax(
   expect_success : Bool,
   statement : String,
-  parse? : (String) -> @syntax.Statement raise @syntax.ParseError = @syntax.parse,
+  parse~ : (String) -> @syntax.Statement raise @syntax.ParseError = @syntax.parse,
 ) -> Outcome {
   try parse(statement) catch {
     Unsupported(message~, ..) => Fail("unsupported: \{message}")

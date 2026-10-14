@@ -127,7 +127,7 @@ test "eqg is transitive" {
 ///|
 test "numbers of different kinds are eqg-equal when equal in value" {
   @quickcheck.check(
-    (n : Int) => {
+    (n : Int32) => {
       let big = @bigint.BigInt::from_int(n)
       let values : Array[@value.Value] = [
         @value.Value::Int(n.to_int64()),
@@ -192,7 +192,7 @@ test "moving clock and offset together keeps a timestamp equal" {
 ///|
 test "interval normalization is idempotent and in range" {
   @quickcheck.check(
-    (p : (Int, Int)) => {
+    (p : (Int32, Int32)) => {
       let i = @value.IntervalDT::new(
         p.0.to_int64() * 1000L,
         p.1.to_int64() * 1000L,
@@ -233,7 +233,7 @@ test "legacy and new $time forms decode alike" {
 }
 
 ///|
-fn pad2(n : Int) -> String {
+fn pad2(n : Int32) -> String {
   if n < 10 {
     "0\{n}"
   } else {
@@ -246,7 +246,7 @@ test "time zone presence breaks ties: without time zone sorts first" {
   @quickcheck.check(
     (a : @arbitrary.ArbTimestamp) => {
       let t = a.value.time
-      let with_zone = (offset : Int?) => {
+      let with_zone = (offset : Int32?) => {
         @value.Value::Timestamp(
           @value.Timestamp::new(
             a.value.date,
@@ -296,7 +296,7 @@ test "a value is eqg-equal to its lowered form" {
 ///|
 test "big integers equal their decimal and float forms" {
   @quickcheck.check(
-    (m : Int) => {
+    (m : Int32) => {
       let k = (m % 1000 + 1000) % 1000 + 1
       let two64 = @bigint.BigInt::from_string("18446744073709551616")
       let big = two64 * @bigint.BigInt::from_int(k)
@@ -315,7 +315,7 @@ test "big integers equal their decimal and float forms" {
 ///|
 test "Value::integer returns Int exactly when the value fits in Int64" {
   @quickcheck.check(
-    (p : (Int64, Int)) => {
+    (p : (Int64, Int32)) => {
       let n = p.0
       let fits = @value.Value::integer(@bigint.BigInt::from_int64(n)) ==
         @value.Value::Int(n)
@@ -332,7 +332,7 @@ test "Value::integer returns Int exactly when the value fits in Int64" {
 }
 
 ///|
-fn leap(year : Int) -> Bool {
+fn leap(year : Int32) -> Bool {
   if year % 400 == 0 {
     true
   } else if year % 100 == 0 {
@@ -343,7 +343,7 @@ fn leap(year : Int) -> Bool {
 }
 
 ///|
-fn month_days(year : Int, month : Int) -> Int {
+fn month_days(year : Int32, month : Int32) -> Int32 {
   [31, if leap(year) { 29 } else { 28 }, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31][month -
   1]
 }
@@ -351,7 +351,7 @@ fn month_days(year : Int, month : Int) -> Int {
 ///|
 test "Date::new accepts exactly the valid dates" {
   @quickcheck.check(
-    (p : (Int, Int, Int)) => {
+    (p : (Int32, Int32, Int32)) => {
       let year = p.0 % 3000
       let month = p.1 % 15
       let day = p.2 % 33
@@ -373,7 +373,7 @@ test "Date::new accepts exactly the valid dates" {
 ///|
 test "Time::new accepts exactly the valid times" {
   @quickcheck.check(
-    (p : (Int, Int, Int, Int)) => {
+    (p : (Int32, Int32, Int32, Int32)) => {
       let hour = p.0 % 26
       let minute = p.1 % 62
       let second = p.2 % 62
@@ -402,8 +402,8 @@ test "Time::new accepts exactly the valid times" {
 ///|
 test "a decoded non-normalized interval equals the normalized value" {
   @quickcheck.check(
-    (p : (Int, Int, Int, Int)) => {
-      let pos = (n : Int) => (n % 200 + 200) % 200
+    (p : (Int32, Int32, Int32, Int32)) => {
+      let pos = (n : Int32) => (n % 200 + 200) % 200
       let (d, h, m, s) = (pos(p.0), pos(p.1), pos(p.2), pos(p.3))
       let text = "$interval_dt::{days: \{d}, hours: \{h}, minutes: \{m}, seconds: \{s}, nanos: 1500000000}"
       let decoded = @partiql_ion.from_ion(@text.read_ion(text))
@@ -442,7 +442,7 @@ test "maps never hold MISSING and ignore entry order" {
 ///|
 test "MapValue::new drops MISSING values" {
   @quickcheck.check(
-    (p : (@arbitrary.ArbValue, Int)) => {
+    (p : (@arbitrary.ArbValue, Int32)) => {
       let key = @value.Value::Int(p.1.to_int64())
       let m = @value.MapValue::new(key_type=Integer, value_type=Dynamic, [
         (key, @value.Value::Missing),

@@ -5,11 +5,11 @@ let punctuation : String = "()[]{},.;:*/%+-<>=!|~?@&^"
 /// A cursor over the UTF-16 code units of the source.
 priv struct Scanner {
   source : String
-  mut pos : Int
+  mut pos : Int32
 }
 
 ///|
-fn Scanner::at(self : Scanner, ahead : Int) -> Int {
+fn Scanner::at(self : Scanner, ahead : Int32) -> Int32 {
   let i = self.pos + ahead
   if i < self.source.length() {
     self.source.at(i).to_int()
@@ -19,17 +19,17 @@ fn Scanner::at(self : Scanner, ahead : Int) -> Int {
 }
 
 ///|
-fn Scanner::text(self : Scanner, start : Int, end : Int) -> String {
+fn Scanner::text(self : Scanner, start : Int32, end : Int32) -> String {
   self.source.view(start_offset=start, end_offset=end).to_owned()
 }
 
 ///|
-fn is_digit(c : Int) -> Bool {
+fn is_digit(c : Int32) -> Bool {
   c >= '0'.to_int() && c <= '9'.to_int()
 }
 
 ///|
-fn is_word_start(c : Int) -> Bool {
+fn is_word_start(c : Int32) -> Bool {
   (c >= 'a'.to_int() && c <= 'z'.to_int()) ||
   (c >= 'A'.to_int() && c <= 'Z'.to_int()) ||
   c == '_'.to_int() ||
@@ -37,12 +37,12 @@ fn is_word_start(c : Int) -> Bool {
 }
 
 ///|
-fn is_word_char(c : Int) -> Bool {
+fn is_word_char(c : Int32) -> Bool {
   is_word_start(c) || is_digit(c)
 }
 
 ///|
-fn is_space(c : Int) -> Bool {
+fn is_space(c : Int32) -> Bool {
   c == ' '.to_int() ||
   c == '\t'.to_int() ||
   c == '\n'.to_int() ||
@@ -52,7 +52,7 @@ fn is_space(c : Int) -> Bool {
 }
 
 ///|
-fn error(message : String, start : Int, end : Int) -> @ast.ParseError {
+fn error(message : String, start : Int32, end : Int32) -> @ast.ParseError {
   @ast.ParseError::Syntax(message~, span={ start, end, }, expected=[], found="")
 }
 
@@ -123,7 +123,10 @@ fn Scanner::skip_trivia(
 
 ///|
 /// A quoted run (`'...'` or `"..."`) where a doubled quote is an escape.
-fn Scanner::quoted(self : Scanner, quote : Int) -> String raise @ast.ParseError {
+fn Scanner::quoted(
+  self : Scanner,
+  quote : Int32,
+) -> String raise @ast.ParseError {
   let start = self.pos
   self.pos += 1
   let buf = StringBuilder()
@@ -195,7 +198,7 @@ fn Scanner::number(self : Scanner) -> TokenKind {
 ///|
 /// Whether a `.` here continues a path (after a name or a closing bracket)
 /// rather than starting a number such as `.5`.
-fn continues_path(previous : Token?, pos : Int) -> Bool {
+fn continues_path(previous : Token?, pos : Int32) -> Bool {
   match previous {
     Some({ kind: Word(_) | QuotedIdent(_) | Punct(')' | ']' | '}'), span, }) =>
       span.end == pos
@@ -313,7 +316,7 @@ pub fn lex_with_comments(
 
 ///|
 /// `U+XXXX` for a code point.
-fn u_plus(c : Int) -> String {
+fn u_plus(c : Int32) -> String {
   let hex = c.to_string(radix=16).to_upper()
   "U+" + "0".repeat(if hex.length() < 4 { 4 - hex.length() } else { 0 }) + hex
 }
@@ -323,7 +326,7 @@ fn u_plus(c : Int) -> String {
 /// backquotes, a surrogate pair as one character, and a control character or
 /// a lone surrogate as `U+XXXX`, so that no message carries raw control
 /// codes.
-fn char_text(c : Int, next : Int) -> (String, Int) {
+fn char_text(c : Int32, next : Int32) -> (String, Int32) {
   if c >= 0xD800 && c <= 0xDBFF && next >= 0xDC00 && next <= 0xDFFF {
     let code = 0x10000 + ((c - 0xD800) << 10) + (next - 0xDC00)
     ("`\{code.unsafe_to_char()}`", 2)

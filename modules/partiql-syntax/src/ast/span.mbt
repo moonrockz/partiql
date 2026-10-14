@@ -1,8 +1,8 @@
 ///|
 /// A range of source text: UTF-16 code unit offsets, `end` exclusive.
 pub(all) struct Span {
-  start : Int
-  end : Int
+  start : Int32
+  end : Int32
 } derive(Debug, Eq)
 
 ///|
@@ -29,12 +29,12 @@ pub fn Span::merge(self : Span, other : Span) -> Span {
 pub fn Span::line_column(
   self : Span,
   source : String,
-) -> ((Int, Int), (Int, Int)) {
+) -> ((Int32, Int32), (Int32, Int32)) {
   (position(source, self.start), position(source, self.end))
 }
 
 ///|
-fn position(source : String, offset : Int) -> (Int, Int) {
+fn position(source : String, offset : Int32) -> (Int32, Int32) {
   let mut line = 1
   let mut line_start = 0
   let limit = if offset < source.length() { offset } else { source.length() }

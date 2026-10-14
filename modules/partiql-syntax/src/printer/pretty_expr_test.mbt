@@ -1,5 +1,5 @@
 ///|
-fn pretty_expr(source : String, width : Int) -> String raise {
+fn pretty_expr(source : String, width : Int32) -> String raise {
   @printer.print(@parser.parse_statement(source), width~)
 }
 
