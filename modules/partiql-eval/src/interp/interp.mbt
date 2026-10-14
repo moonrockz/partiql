@@ -593,10 +593,18 @@ fn subquery(
   }
   match use_ {
     Column => Bag(@value.Bag::new(items.map(column_value)))
-    Scalar =>
+    Scalar | Row =>
       match items {
         [] => Null
-        [row] => column_value(row)
+        [row] =>
+          if use_ is Row {
+            match row {
+              Tuple(t) => List(t.fields().map(f => f.1))
+              other => List([other])
+            }
+          } else {
+            column_value(row)
+          }
         _ =>
           match ctx.mode {
             Permissive => Missing

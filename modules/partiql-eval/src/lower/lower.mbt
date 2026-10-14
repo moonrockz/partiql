@@ -209,18 +209,29 @@ fn lower_chain(
       _ => break
     }
   }
-  let mut result = lower_at(leaf, scope, depth)
+  // Only the innermost link has a query as its left operand; one that is
+  // compared with an array literal is coerced (plan ruling 9).
+  let leaf_is_row = match links.last() {
+    Some(BinaryLink(op, l, r, _)) =>
+      is_comparison(op) && is_select_items(l) && is_array_literal(r)
+    _ => false
+  }
+  let mut result = if leaf_is_row {
+    row_at(leaf, scope, depth)
+  } else {
+    lower_at(leaf, scope, depth)
+  }
   for link in links.rev_iter() {
     result = match link {
       BinaryLink(op, l, r, span) => {
-        if is_comparison(op) &&
-          (
-            (is_single_column(l) && is_array_literal(r)) ||
-            (is_array_literal(l) && is_single_column(r))
-          ) {
-          return unsupported("array coercion of a subquery (M4b2)", span)
+        let right = if is_comparison(op) &&
+          is_array_literal(l) &&
+          is_select_items(r) {
+          row_at(r, scope, depth)
+        } else {
+          lower_at(r, scope, depth)
         }
-        Binary(op, result, lower_at(r, scope, depth), span)
+        Binary(op, result, right, span)
       }
       AndLink(r, span) => And(result, lower_at(r, scope, depth), span)
       OrLink(r, span) => Or(result, lower_at(r, scope, depth), span)
@@ -392,7 +403,7 @@ fn is_comparison(op : @ast.BinaryOp) -> Bool {
 ///|
 fn is_array_literal(e : @ast.Expr) -> Bool {
   match e.kind {
-    List(_) | Row(_) => true
+    List(_) | Sexp(_) | Row(_) => true
     _ => false
   }
 }

@@ -121,6 +121,9 @@ pub(all) enum SubqueryUse {
   Scalar
   /// The bag of the value of the column of each row (`x IN (SELECT a ...)`).
   Column
+  /// The attribute values of the only row, as a list (array coercion): NULL
+  /// for no row; more rows as for `Scalar`.
+  Row
 } derive(Debug)
 
 ///|

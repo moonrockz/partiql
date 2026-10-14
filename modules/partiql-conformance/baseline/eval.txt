@@ -1,3 +1,82 @@
+eval-equiv/rfc/0007.ion::bag::Example 6 — Value Coercion OUTER UNION[0]#coerce
+eval-equiv/rfc/0007.ion::bag::Example 6 — Value Coercion OUTER UNION[1]#coerce
+eval-equiv/rfc/0007.ion::bag::Example 7 — NULL and MISSING Coercion - 1[0]#coerce
+eval-equiv/rfc/0007.ion::bag::Example 7 — NULL and MISSING Coercion - 1[0]#error
+eval-equiv/rfc/0007.ion::bag::Example 7 — NULL and MISSING Coercion - 1[1]#coerce
+eval-equiv/rfc/0007.ion::bag::Example 7 — NULL and MISSING Coercion - 1[1]#error
+eval-equiv/rfc/0007.ion::bag::Example 7 — NULL and MISSING Coercion - 1[2]#coerce
+eval-equiv/rfc/0007.ion::bag::Example 7 — NULL and MISSING Coercion - 1[2]#error
+eval-equiv/rfc/0007.ion::bag::Example 7 — NULL and MISSING Coercion - 1[3]#coerce
+eval-equiv/rfc/0007.ion::bag::Example 7 — NULL and MISSING Coercion - 1[3]#error
+eval-equiv/rfc/0007.ion::bag::Example 7 — NULL and MISSING Coercion - 2[0]#coerce
+eval-equiv/rfc/0007.ion::bag::Example 7 — NULL and MISSING Coercion - 2[0]#error
+eval-equiv/rfc/0007.ion::bag::Example 7 — NULL and MISSING Coercion - 2[1]#coerce
+eval-equiv/rfc/0007.ion::bag::Example 7 — NULL and MISSING Coercion - 2[1]#error
+eval-equiv/rfc/0007.ion::bag::Example 7 — NULL and MISSING Coercion - 2[2]#coerce
+eval-equiv/rfc/0007.ion::bag::Example 7 — NULL and MISSING Coercion - 2[2]#error
+eval-equiv/rfc/0007.ion::set::Example 2.2 — With CORRESPONDING Clause[0]#coerce
+eval-equiv/rfc/0007.ion::set::Example 2.2 — With CORRESPONDING Clause[0]#error
+eval-equiv/rfc/0007.ion::set::Example 2.2 — With CORRESPONDING Clause[1]#coerce
+eval-equiv/rfc/0007.ion::set::Example 2.2 — With CORRESPONDING Clause[1]#error
+eval-equiv/rfc/0007.ion::set::Example 2.2 — With CORRESPONDING Clause[2]#coerce
+eval-equiv/rfc/0007.ion::set::Example 2.2 — With CORRESPONDING Clause[2]#error
+eval-equiv/spec-tests.ion::section-12::equiv coercions with explicit literals[1]#coerce
+eval-equiv/spec-tests.ion::section-4::equiv path collection expression with wildcard steps[0]#coerce
+eval-equiv/spec-tests.ion::section-4::equiv path collection expression with wildcard steps[0]#error
+eval-equiv/spec-tests.ion::section-4::equiv path collection expression with wildcard steps[1]#coerce
+eval-equiv/spec-tests.ion::section-4::equiv path expression with wildcard steps[0]#coerce
+eval-equiv/spec-tests.ion::section-4::equiv path expression with wildcard steps[0]#error
+eval-equiv/spec-tests.ion::section-4::equiv path expression with wildcard steps[1]#coerce
+eval-equiv/spec-tests.ion::section-4::equiv path expression with wildcard steps[1]#error
+eval-equiv/spec-tests.ion::section-4::equiv path expression with wildcard steps[2]#coerce
+eval-equiv/spec-tests.ion::section-4::equiv path expression with wildcard steps[2]#error
+eval-equiv/spec-tests.ion::section-4::equiv tuple path navigation with array notation[0]#coerce
+eval-equiv/spec-tests.ion::section-4::equiv tuple path navigation with array notation[0]#error
+eval-equiv/spec-tests.ion::section-4::equiv tuple path navigation with array notation[1]#coerce
+eval-equiv/spec-tests.ion::section-4::equiv tuple path navigation with array notation[1]#error
+eval-equiv/spec-tests.ion::section-4::equiv tuple path navigation[0]#coerce
+eval-equiv/spec-tests.ion::section-4::equiv tuple path navigation[0]#error
+eval-equiv/spec-tests.ion::section-4::equiv tuple path navigation[1]#coerce
+eval-equiv/spec-tests.ion::section-4::equiv tuple path navigation[1]#error
+eval-equiv/spec-tests.ion::section-4::equiv wildcard steps collection[0]#coerce
+eval-equiv/spec-tests.ion::section-4::equiv wildcard steps collection[0]#error
+eval-equiv/spec-tests.ion::section-4::equiv wildcard steps collection[1]#coerce
+eval-equiv/spec-tests.ion::section-4::equiv wildcard steps collection[1]#error
+eval-equiv/spec-tests.ion::section-4::equiv wildcard steps struct[0]#coerce
+eval-equiv/spec-tests.ion::section-4::equiv wildcard steps struct[0]#error
+eval-equiv/spec-tests.ion::section-4::equiv wildcard steps struct[1]#coerce
+eval-equiv/spec-tests.ion::section-4::equiv wildcard steps struct[1]#error
+eval-equiv/spec-tests.ion::section-5::equiv attribute value pair unpivot missing[0]#error
+eval-equiv/spec-tests.ion::section-5::equiv attribute value pair unpivot missing[1]#coerce
+eval-equiv/spec-tests.ion::section-5::equiv attribute value pair unpivot non-missing[0]#error
+eval-equiv/spec-tests.ion::section-5::equiv left join[0]#coerce
+eval-equiv/spec-tests.ion::section-5::equiv left join[0]#error
+eval-equiv/spec-tests.ion::section-5::equiv left join[1]#coerce
+eval-equiv/spec-tests.ion::section-5::equiv left join[1]#error
+eval-equiv/spec-tests.ion::section-5::equiv of comma, cross join, and join[0]#coerce
+eval-equiv/spec-tests.ion::section-5::equiv of comma, cross join, and join[0]#error
+eval-equiv/spec-tests.ion::section-5::equiv of comma, cross join, and join[1]#coerce
+eval-equiv/spec-tests.ion::section-5::equiv of comma, cross join, and join[1]#error
+eval-equiv/spec-tests.ion::section-5::equiv of comma, cross join, and join[2]#coerce
+eval-equiv/spec-tests.ion::section-5::equiv of comma, cross join, and join[2]#error
+eval-equiv/spec-tests.ion::section-5::equiv of comma, cross join, and join[3]#coerce
+eval-equiv/spec-tests.ion::section-5::equiv of comma, cross join, and join[3]#error
+eval-equiv/spec-tests.ion::section-5::equiv unnesting tuple in from source[0]#coerce
+eval-equiv/spec-tests.ion::section-5::equiv unnesting tuple in from source[0]#error
+eval-equiv/spec-tests.ion::section-5::equiv unnesting tuple in from source[1]#coerce
+eval-equiv/spec-tests.ion::section-5::equiv unnesting tuple in from source[1]#error
+eval-equiv/spec-tests.ion::section-5::equiv unnesting tuple in from source[2]#coerce
+eval-equiv/spec-tests.ion::section-5::equiv unnesting tuple in from source[2]#error
+eval-equiv/spec-tests.ion::section-6::equiv array constructor[0]#coerce
+eval-equiv/spec-tests.ion::section-6::equiv array constructor[0]#error
+eval-equiv/spec-tests.ion::section-6::equiv array constructor[1]#coerce
+eval-equiv/spec-tests.ion::section-6::equiv array constructor[1]#error
+eval-equiv/spec-tests.ion::section-6::equiv nested subquery in select value[0]#coerce
+eval-equiv/spec-tests.ion::section-6::equiv nested subquery in select value[0]#error
+eval-equiv/spec-tests.ion::section-6::equiv nested subquery in select value[1]#coerce
+eval-equiv/spec-tests.ion::section-6::equiv nested subquery in select value[1]#error
+eval-equiv/spec-tests.ion::section-6::equiv tupleunion with select list[0]#coerce
+eval-equiv/spec-tests.ion::section-6::equiv tupleunion with select list[0]#error
 eval/ion/primitives/null.ion::null::null comparison{sql:"`null.blob` = MISSING",result:null}#coerce
 eval/ion/primitives/null.ion::null::null comparison{sql:"`null.blob` = MISSING",result:null}#error
 eval/ion/primitives/null.ion::null::null comparison{sql:"`null.blob` = NULL",result:null}#coerce

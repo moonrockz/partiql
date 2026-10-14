@@ -571,3 +571,25 @@ fn column_at(
     inner
   }
 }
+
+///|
+/// Whether `e` is a subquery whose body is a `SELECT` with a list of
+/// expression items (any number, not `SELECT VALUE`, `*` or `x.*`).
+fn is_select_items(e : @ast.Expr) -> Bool {
+  match e.kind {
+    Query({ body: Select({ projection: Items(items), .. }), .. }) =>
+      items.iter().all(item => item is Expr(_, ..))
+    _ => false
+  }
+}
+
+///|
+/// Lowers a subquery that is compared with an array literal: its row is
+/// coerced to a list (plan ruling 9).
+fn row_at(
+  e : @ast.Expr,
+  scope : Scope,
+  depth : Int32,
+) -> @plan.Expr raise @plan.EvalError {
+  Subquery(lower_plain(e, scope, depth), Row, e.span)
+}

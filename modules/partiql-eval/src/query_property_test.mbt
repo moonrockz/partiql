@@ -251,11 +251,9 @@ fn gen_query(rs : @splitmix.RandomState) -> String {
     3 => "SELECT DISTINCT VALUE (\{e()}) FROM \{src} AS x"
     4 => "SELECT VALUE y FROM \{src} AS x LEFT JOIN \{src2} AS y ON \{e()}"
     5 => "SELECT VALUE (\{e()}) FROM \{src} AS x LET (\{e()}) AS z"
-    // the M4b1 gaps (partiql-7nl); COALESCE keeps a list literal off the
-    // right of the subquery comparison, which lowering rejects as Unsupported
-    // until array coercion lands
+    // the M4b1 gaps (partiql-7nl)
     6 =>
-      "SELECT VALUE x FROM \{src} AS x WHERE (SELECT y FROM \{src2} AS y) = COALESCE(\{e()}, 0)"
+      "SELECT VALUE x FROM \{src} AS x WHERE (SELECT y FROM \{src2} AS y) = \{e()}"
     7 =>
       "SELECT VALUE [x, y] FROM \{src} AS x RIGHT JOIN \{src2} AS y ON \{e()}"
     8 => "SELECT VALUE [k, v] FROM UNPIVOT \{src} AS v AT k"

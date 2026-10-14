@@ -123,19 +123,30 @@ test "a single-column SELECT is coerced in every position but FROM, IN and the t
 }
 
 ///|
-test "array coercion of a subquery is unsupported" {
+test "array coercion of a SELECT subquery (plan ruling 9)" {
   @expect.expect_all(soft => {
     soft
-    .expect_call(() => ev("[1] = (SELECT x FROM [1] AS x)"))
-    .to_raise_matching(
-      e => e is @eval.EvalError::Unsupported(..),
-      description="Unsupported",
-    )
+    .expect(ev("[1, 2] = (SELECT x.a, x.b FROM [{'a': 1, 'b': 2}] AS x)"))
+    .to_equal(Bool(true))
     soft
-    .expect_call(() => ev("(SELECT x FROM [1] AS x) <> [1]"))
+    .expect(ev("(1, 2) = (SELECT x.a, x.b FROM [{'a': 1, 'b': 2}] AS x)"))
+    .to_equal(Bool(true))
+    soft
+    .expect(ev("(SELECT x.a, x.b FROM [{'a': 1, 'b': 3}] AS x) = (1, 2)"))
+    .to_equal(Bool(false))
+    soft.expect(ev("[1] = (SELECT x FROM [1] AS x)")).to_equal(Bool(true))
+    // no row: NULL; two rows: MISSING (permissive), TypeError (strict)
+    soft.expect(ev("[1] = (SELECT x FROM [] AS x)")).to_equal(Null)
+    soft.expect(ev("[1] = (SELECT x FROM [1, 2] AS x)")).to_equal(Missing)
+    soft
+    .expect_call(() => ev("[1] = (SELECT x FROM [1, 2] AS x)", mode=Strict))
     .to_raise_matching(
-      e => e is @eval.EvalError::Unsupported(..),
-      description="Unsupported",
+      e => e is @eval.EvalError::TypeError(..),
+      description="TypeError",
     )
+    // SELECT VALUE is not coerced
+    soft
+    .expect(ev("[1] = (SELECT VALUE x FROM [1] AS x)"))
+    .to_equal(Bool(false))
   })
 }
