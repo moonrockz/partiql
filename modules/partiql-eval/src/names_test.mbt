@@ -14,7 +14,7 @@ fn names_env() -> @eval.Bindings {
 ///|
 fn names_ev(
   source : String,
-  mode? : @eval.Mode = Permissive,
+  mode~ : @eval.Mode = Permissive,
 ) -> @value.Value raise @eval.EvalError {
   @eval.evaluate_text(source, env=names_env(), mode~)
 }

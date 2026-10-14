@@ -1,18 +1,18 @@
 ///|
 /// A 1-based line and a 1-based column counted in code points.
 pub(all) struct Position {
-  line : Int
-  column : Int
+  line : Int32
+  column : Int32
 } derive(Debug, Eq)
 
 ///|
-fn is_high_surrogate(c : Int) -> Bool {
+fn is_high_surrogate(c : Int32) -> Bool {
   c >= 0xD800 && c <= 0xDBFF
 }
 
 ///|
 /// The position of UTF-16 `offset` in `source`. `\r\n` ends one line.
-pub fn position(source : String, offset : Int) -> Position {
+pub fn position(source : String, offset : Int32) -> Position {
   let end = if offset < source.length() { offset } else { source.length() }
   let mut line = 1
   let mut column = 1
@@ -37,7 +37,7 @@ pub fn position(source : String, offset : Int) -> Position {
 
 ///|
 /// The text of 1-based `line`, without its line break.
-fn line_text(source : String, line : Int) -> String {
+fn line_text(source : String, line : Int32) -> String {
   let lines = source.split("\n").map(v => v.to_owned()).collect()
   if line - 1 < lines.length() {
     let text = lines[line - 1]

@@ -46,7 +46,7 @@ fn field_text(f : @ast.DatetimeField) -> String {
 }
 
 ///|
-fn precision_text(p : Int?) -> String {
+fn precision_text(p : Int32?) -> String {
   match p {
     Some(n) => "(\{n})"
     None => ""
@@ -154,7 +154,7 @@ fn type_text(t : @ast.DataType) -> String {
 }
 
 ///|
-fn scale_text(p : Int?, s : Int?) -> String {
+fn scale_text(p : Int32?, s : Int32?) -> String {
   match (p, s) {
     (Some(a), Some(b)) => "(\{a}, \{b})"
     (a, _) => precision_text(a)

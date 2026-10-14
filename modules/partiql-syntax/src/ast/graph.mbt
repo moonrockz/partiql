@@ -36,9 +36,9 @@ pub(all) enum SelectorKind {
   /// `SHORTEST`
   Shortest
   /// `ANY [k]`
-  Any(k~ : Int?)
+  Any(k~ : Int32?)
   /// `SHORTEST k [GROUP]`
-  ShortestK(k~ : Int, group~ : Bool)
+  ShortestK(k~ : Int32, group~ : Bool)
 } derive(Debug, Eq)
 
 ///|
@@ -142,7 +142,7 @@ pub(all) enum QuantifierKind {
   /// `*`
   Star
   /// `{lower,upper}` or `{lower,}`
-  Range(lower~ : Int, upper~ : Int?)
+  Range(lower~ : Int32, upper~ : Int32?)
 } derive(Debug, Eq)
 
 ///|

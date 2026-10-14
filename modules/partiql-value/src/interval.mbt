@@ -78,7 +78,7 @@ pub fn IntervalYM::months_part(self : IntervalYM) -> Int64 {
 /// 0..999,999,999 (floor form).
 pub struct IntervalDT {
   seconds : Int64
-  nanos : Int
+  nanos : Int32
 } derive(Debug)
 
 ///|

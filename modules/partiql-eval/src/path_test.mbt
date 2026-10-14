@@ -2,7 +2,7 @@
 fn ev_env(
   source : String,
   env : String,
-  mode? : @eval.Mode = Permissive,
+  mode~ : @eval.Mode = Permissive,
 ) -> @value.Value raise {
   @eval.evaluate_text(
     source,

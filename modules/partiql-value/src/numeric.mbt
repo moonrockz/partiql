@@ -4,11 +4,11 @@ priv enum Num {
   NaN
   NegInf
   PosInf
-  Finite(@bigint.BigInt, Int)
+  Finite(@bigint.BigInt, Int32)
 }
 
 ///|
-fn finite(coefficient : @bigint.BigInt, exponent : Int) -> Num {
+fn finite(coefficient : @bigint.BigInt, exponent : Int32) -> Num {
   if coefficient.is_zero() {
     Finite(0N, 0)
   } else {
@@ -64,7 +64,7 @@ fn num_of_double(d : Double) -> Num {
 ///|
 /// -1, 0 or 1. `compare` results are only negative, zero or positive (on
 /// wasm-gc, `BigInt::compare` returns other magnitudes), so normalize them.
-fn unit(c : Int) -> Int {
+fn unit(c : Int32) -> Int32 {
   if c < 0 {
     -1
   } else if c > 0 {
@@ -75,12 +75,12 @@ fn unit(c : Int) -> Int {
 }
 
 ///|
-fn sign_of(n : @bigint.BigInt) -> Int {
+fn sign_of(n : @bigint.BigInt) -> Int32 {
   unit(n.compare(0N))
 }
 
 ///|
-fn digit_count(n : @bigint.BigInt) -> Int {
+fn digit_count(n : @bigint.BigInt) -> Int32 {
   let text = n.to_string()
   if text.has_prefix("-") {
     text.length() - 1
@@ -94,10 +94,10 @@ fn digit_count(n : @bigint.BigInt) -> Int {
 /// counts.
 fn compare_finite(
   c1 : @bigint.BigInt,
-  e1 : Int,
+  e1 : Int32,
   c2 : @bigint.BigInt,
-  e2 : Int,
-) -> Int {
+  e2 : Int32,
+) -> Int32 {
   let s1 = sign_of(c1)
   let s2 = sign_of(c2)
   if s1 != s2 {
@@ -135,7 +135,7 @@ fn compare_finite(
 }
 
 ///|
-fn rank_of_num(n : Num) -> Int {
+fn rank_of_num(n : Num) -> Int32 {
   match n {
     NaN => 0
     NegInf => 1
@@ -146,7 +146,7 @@ fn rank_of_num(n : Num) -> Int {
 
 ///|
 /// A total order: NaN < -inf < finite < +inf. NaN equals NaN; -0 equals 0.
-fn compare_num(a : Num, b : Num) -> Int {
+fn compare_num(a : Num, b : Num) -> Int32 {
   match (a, b) {
     (Finite(c1, e1), Finite(c2, e2)) => compare_finite(c1, e1, c2, e2)
     _ => unit(rank_of_num(a).compare(rank_of_num(b)))

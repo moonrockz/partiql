@@ -3,7 +3,7 @@
 /// or `'...'` with backslash escapes, or a `'''...'''` long string.
 fn Scanner::skip_ion_quoted(
   self : Scanner,
-  start : Int,
+  start : Int32,
 ) -> Unit raise @ast.ParseError {
   let q = self.at(0)
   if q == '\''.to_int() && self.at(1) == q && self.at(2) == q {

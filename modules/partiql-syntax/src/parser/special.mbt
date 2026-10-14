@@ -128,7 +128,7 @@ fn Parser::trim_args(self : Parser) -> @ast.ExprKind raise @ast.ParseError {
 /// CASE word is consumed.
 fn Parser::case_expr(
   self : Parser,
-  start : Int,
+  start : Int32,
 ) -> @ast.Expr raise @ast.ParseError {
   let operand = if self.at_word("WHEN") { None } else { Some(self.expr()) }
   let branches : Array[(@ast.Expr, @ast.Expr)] = []

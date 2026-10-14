@@ -34,21 +34,21 @@ pub fn parse_script(source : String) -> Script raise ParseError {
 ///|
 /// The text of a statement (no comments, no final `;`): canonical without
 /// `width`, the pretty layout at `width` with it.
-pub fn print(statement : Statement, width? : Int) -> String {
+pub fn print(statement : Statement, width? : Int32) -> String {
   @printer.print(statement, width?)
 }
 
 ///|
 /// The text of a script, with its comments: canonical without `width`, the
 /// pretty layout at `width` with it.
-pub fn print_script(script : Script, width? : Int) -> String {
+pub fn print_script(script : Script, width? : Int32) -> String {
   @printer.print_script(script, width?)
 }
 
 ///|
 /// Parses `source` as a script and prints it, keeping the comments:
 /// canonical without `width`, the pretty layout at `width` with it.
-pub fn format(source : String, width? : Int) -> String raise ParseError {
+pub fn format(source : String, width? : Int32) -> String raise ParseError {
   @printer.print_script(@parser.parse_script(source), width?)
 }
 
@@ -61,19 +61,19 @@ pub fn render(
   error : ParseError,
   source : String,
   name~ : String,
-  color? : Bool = false,
+  color~ : Bool = false,
 ) -> String {
   @diagnostic.render(error, source, name~, color~)
 }
 
 ///|
 /// The 1-based line and code-point column of a UTF-16 offset.
-pub fn position(source : String, offset : Int) -> Position {
+pub fn position(source : String, offset : Int32) -> Position {
   @diagnostic.position(source, offset)
 }
 
 ///|
 /// The S-expression of a statement (spec M3c §7).
-pub fn to_sexp(statement : Statement, width? : Int = 80) -> String {
+pub fn to_sexp(statement : Statement, width~ : Int32 = 80) -> String {
   @sexp.to_sexp(statement, width~)
 }

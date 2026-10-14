@@ -74,7 +74,7 @@ test "identifiers reject reserved words, except path words after a dot" {
 test "depth guard" {
   let p = parser_of("x")
   @expect.expect_call(() => {
-    fn go(n : Int) -> Unit raise @ast.ParseError {
+    fn go(n : Int32) -> Unit raise @ast.ParseError {
       p.nested(() => if n > 0 { go(n - 1) })
     }
 

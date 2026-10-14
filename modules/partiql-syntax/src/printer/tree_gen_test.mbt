@@ -20,12 +20,12 @@ fn quoted(text : String) -> @ast.Identifier {
 }
 
 ///|
-fn pick(rs : @splitmix.RandomState, n : Int) -> Int {
+fn pick(rs : @splitmix.RandomState, n : Int32) -> Int32 {
   rs.next_uint(limit=n.reinterpret_as_uint()).reinterpret_as_int()
 }
 
 ///|
-fn chance(rs : @splitmix.RandomState, n : Int) -> Bool {
+fn chance(rs : @splitmix.RandomState, n : Int32) -> Bool {
   pick(rs, n) == 0
 }
 
@@ -93,7 +93,7 @@ fn gen_literal(rs : @splitmix.RandomState) -> @ast.Literal raise {
 }
 
 ///|
-fn gen_type(rs : @splitmix.RandomState, depth : Int) -> @ast.DataType {
+fn gen_type(rs : @splitmix.RandomState, depth : Int32) -> @ast.DataType {
   match pick(rs, if depth > 0 { 12 } else { 10 }) {
     0 => Int
     1 => Decimal(Some(5), Some(2))
@@ -122,9 +122,9 @@ fn gen_atom(rs : @splitmix.RandomState) -> @ast.Expr raise {
 ///|
 fn gen_list(
   rs : @splitmix.RandomState,
-  depth : Int,
-  min : Int,
-  max : Int,
+  depth : Int32,
+  min : Int32,
+  max : Int32,
 ) -> Array[@ast.Expr] raise {
   let out : Array[@ast.Expr] = []
   for _ in 0..<(min + pick(rs, max - min + 1)) {
@@ -162,7 +162,7 @@ let fields : Array[@ast.DatetimeField] = [
 ///|
 /// The right side of IN: a row, a subquery, a name or a list (an expression
 /// that prints starting with `(` and is not a row cannot be written there).
-fn gen_in_rhs(rs : @splitmix.RandomState, depth : Int) -> @ast.Expr raise {
+fn gen_in_rhs(rs : @splitmix.RandomState, depth : Int32) -> @ast.Expr raise {
   match pick(rs, 4) {
     0 => mk(Row(gen_list(rs, depth, 1, 3)))
     1 => mk(Query(gen_query(rs, depth - 1)))
@@ -174,7 +174,7 @@ fn gen_in_rhs(rs : @splitmix.RandomState, depth : Int) -> @ast.Expr raise {
 ///|
 fn gen_steps(
   rs : @splitmix.RandomState,
-  depth : Int,
+  depth : Int32,
 ) -> Array[@ast.PathStep] raise {
   let out : Array[@ast.PathStep] = []
   for _ in 0..<(1 + pick(rs, 3)) {
@@ -192,7 +192,7 @@ fn gen_steps(
 }
 
 ///|
-fn gen_expr(rs : @splitmix.RandomState, depth : Int) -> @ast.Expr raise {
+fn gen_expr(rs : @splitmix.RandomState, depth : Int32) -> @ast.Expr raise {
   if depth <= 0 {
     return gen_atom(rs)
   }
@@ -337,7 +337,7 @@ fn gen_expr(rs : @splitmix.RandomState, depth : Int) -> @ast.Expr raise {
 
 ///|
 /// A select item; a path ending in `.*` would read back as an `e.*` item.
-fn gen_item(rs : @splitmix.RandomState, depth : Int) -> @ast.SelectItem raise {
+fn gen_item(rs : @splitmix.RandomState, depth : Int32) -> @ast.SelectItem raise {
   let e = gen_expr(rs, depth)
   let ends_all = e.kind is Path(_, steps) && steps.last() is Some(AllFields(_))
   if chance(rs, 5) {
@@ -354,7 +354,7 @@ fn gen_item(rs : @splitmix.RandomState, depth : Int) -> @ast.SelectItem raise {
 }
 
 ///|
-fn gen_source(rs : @splitmix.RandomState, depth : Int) -> @ast.FromItem raise {
+fn gen_source(rs : @splitmix.RandomState, depth : Int32) -> @ast.FromItem raise {
   // Rows print as ROW(..) in FROM; other sources avoid a leading `(`,
   // which would start a parenthesized-join attempt.
   let expr = match pick(rs, 4) {
@@ -396,7 +396,7 @@ fn gen_source(rs : @splitmix.RandomState, depth : Int) -> @ast.FromItem raise {
 }
 
 ///|
-fn gen_from(rs : @splitmix.RandomState, depth : Int) -> @ast.FromItem raise {
+fn gen_from(rs : @splitmix.RandomState, depth : Int32) -> @ast.FromItem raise {
   if depth <= 0 || chance(rs, 2) {
     return gen_source(rs, depth)
   }
@@ -420,7 +420,7 @@ fn gen_from(rs : @splitmix.RandomState, depth : Int) -> @ast.FromItem raise {
 }
 
 ///|
-fn gen_select(rs : @splitmix.RandomState, depth : Int) -> @ast.Select raise {
+fn gen_select(rs : @splitmix.RandomState, depth : Int32) -> @ast.Select raise {
   let d = depth - 1
   let from = if chance(rs, 4) { None } else { Some(gen_from(rs, 2)) }
   let projection : @ast.Projection = match pick(rs, 5) {
@@ -508,7 +508,7 @@ fn simple_query(body : @ast.QueryBody) -> @ast.Query {
 ///|
 /// A query whose body is a SELECT, a set operation of SELECTs, or TABLE
 /// (an expression body would print as a bare expression in subqueries).
-fn gen_query(rs : @splitmix.RandomState, depth : Int) -> @ast.Query raise {
+fn gen_query(rs : @splitmix.RandomState, depth : Int32) -> @ast.Query raise {
   let d = if depth > 0 { depth - 1 } else { 0 }
   let body : @ast.QueryBody = match pick(rs, 5) {
     0 =>

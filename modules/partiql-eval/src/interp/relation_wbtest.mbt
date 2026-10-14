@@ -1,10 +1,10 @@
 ///|
-fn at(start : Int) -> @ast.Span {
+fn at(start : Int32) -> @ast.Span {
   { start, end: start + 1, }
 }
 
 ///|
-fn fail_at(start : Int) -> @plan.EvalError {
+fn fail_at(start : Int32) -> @plan.EvalError {
   DataError(message="failure \{start}", span=at(start))
 }
 
@@ -20,7 +20,7 @@ fn raised(f : () -> Unit raise @plan.EvalError) -> @plan.EvalError? {
 
 ///|
 /// The number of rows of `rel`, read to the end.
-fn count(rel : @plan.Rel, ctx : Ctx) -> Int raise @plan.EvalError {
+fn count(rel : @plan.Rel, ctx : Ctx) -> Int32 raise @plan.EvalError {
   let mut n = 0
   each(relation(rel, Top, ctx), ctx, _ => n = n + 1)
   n

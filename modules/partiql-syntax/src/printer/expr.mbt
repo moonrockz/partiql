@@ -5,7 +5,7 @@
 /// 1 OR, 2 AND, 3 NOT, 4 IS TRUE/FALSE/UNKNOWN, 5 predicates, 6 ||, 7 + -,
 /// 8 * / %, 9 unary signs, 10 primaries. VALUES is 0: it always takes
 /// parentheses as an operand.
-fn level(e : @ast.Expr) -> Int {
+fn level(e : @ast.Expr) -> Int32 {
   match e.kind {
     Values(_) => 0
     Or(_, _) => 1
@@ -29,7 +29,7 @@ fn level(e : @ast.Expr) -> Int {
 }
 
 ///|
-fn binary_info(op : @ast.BinaryOp) -> (Int, String) {
+fn binary_info(op : @ast.BinaryOp) -> (Int32, String) {
   match op {
     Eq => (5, "=")
     Ne => (5, "<>")
@@ -59,7 +59,7 @@ fn Printer::expr(self : Printer, e : @ast.Expr) -> Doc {
 
 ///|
 /// `e` in a position that needs at least `min`; in parentheses below it.
-fn Printer::operand(self : Printer, e : @ast.Expr, min : Int) -> Doc {
+fn Printer::operand(self : Printer, e : @ast.Expr, min : Int32) -> Doc {
   if level(e) < min {
     let lead = self.leading(e.span)
     cat([lead, parens(self.expr_body(e))])
@@ -292,7 +292,7 @@ fn Printer::expr_body(self : Printer, e : @ast.Expr) -> Doc {
 
 ///|
 /// The left operand of a left-recursive form, and the level it needs.
-fn left_operand(e : @ast.Expr) -> (@ast.Expr, Int)? {
+fn left_operand(e : @ast.Expr) -> (@ast.Expr, Int32)? {
   match e.kind {
     Or(a, _) => Some((a, 1))
     And(a, _) => Some((a, 2))
@@ -311,7 +311,7 @@ fn left_operand(e : @ast.Expr) -> (@ast.Expr, Int)? {
 
 ///|
 /// Whether the left operand `a` of `parent` prints in parentheses.
-fn left_needs_parens(a : @ast.Expr, min : Int, parent : @ast.Expr) -> Bool {
+fn left_needs_parens(a : @ast.Expr, min : Int32, parent : @ast.Expr) -> Bool {
   // `x IS ARRAY < y` would read `ARRAY<` as an element type.
   let bare_array_before_lt = match parent.kind {
     Binary(Lt | Le | Ne, _, _) => a.kind is IsType(_, Array(None), ..)

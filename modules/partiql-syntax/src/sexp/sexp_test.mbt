@@ -1,5 +1,5 @@
 ///|
-fn sx(source : String, width? : Int = 1_000_000_000) -> String raise {
+fn sx(source : String, width~ : Int32 = 1_000_000_000) -> String raise {
   @sexp.to_sexp(@parser.parse_statement(source), width~)
 }
 

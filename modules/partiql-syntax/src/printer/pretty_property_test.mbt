@@ -4,7 +4,7 @@
 /// A random statement and a random width from 1 to 120.
 struct WideTree {
   statement : @ast.Statement
-  width : Int
+  width : Int32
 } derive(Debug)
 
 ///|
@@ -36,7 +36,7 @@ impl @quickcheck.Arbitrary for WideTree with fn arbitrary(size, rs) {
 impl @quickcheck.Shrink for WideTree
 
 ///|
-fn code_points(s : String) -> Int {
+fn code_points(s : String) -> Int32 {
   let mut n = 0
   for _ in s {
     n += 1

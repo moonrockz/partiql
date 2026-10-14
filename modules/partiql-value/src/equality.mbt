@@ -134,7 +134,7 @@ fn clock_key(t : Time) -> String {
 }
 
 ///|
-fn group_key_at(v : Value, depth : Int) -> String {
+fn group_key_at(v : Value, depth : Int32) -> String {
   let sub = (x : Value) => group_key_at(x, depth - 1)
   match lowered(v) {
     None => "x"

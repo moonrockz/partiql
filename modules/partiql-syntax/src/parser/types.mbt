@@ -1,7 +1,7 @@
 // Data types (CAST targets, IS types) and interval qualifiers.
 
 ///|
-fn Parser::int_literal(self : Parser) -> Int raise @ast.ParseError {
+fn Parser::int_literal(self : Parser) -> Int32 raise @ast.ParseError {
   match self.peek().kind {
     IntLit(n) => {
       ignore(self.advance())
@@ -18,7 +18,7 @@ fn Parser::int_literal(self : Parser) -> Int raise @ast.ParseError {
 
 ///|
 /// `( n )` when present.
-fn Parser::precision(self : Parser) -> Int? raise @ast.ParseError {
+fn Parser::precision(self : Parser) -> Int32? raise @ast.ParseError {
   if self.eat_punct('(') {
     let n = self.int_literal()
     self.expect_punct(')')
@@ -30,7 +30,9 @@ fn Parser::precision(self : Parser) -> Int? raise @ast.ParseError {
 
 ///|
 /// `( p [, s] )` when present.
-fn Parser::precision_scale(self : Parser) -> (Int?, Int?) raise @ast.ParseError {
+fn Parser::precision_scale(
+  self : Parser,
+) -> (Int32?, Int32?) raise @ast.ParseError {
   if self.eat_punct('(') {
     let p = self.int_literal()
     let s = if self.eat_punct(',') { Some(self.int_literal()) } else { None }

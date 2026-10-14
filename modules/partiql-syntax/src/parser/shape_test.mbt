@@ -1,7 +1,7 @@
 // Test support: syntax tree shapes, now the public S-expression format.
 
 ///|
-let flat : Int = 1_000_000_000
+let flat : Int32 = 1_000_000_000
 
 ///|
 fn shape(e : @ast.Expr) -> String {

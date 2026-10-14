@@ -18,13 +18,13 @@ fn list(head : String, items : Array[Sx]) -> Sx {
 ///|
 priv enum Task {
   Visit(Sx)
-  MakeSeq(String, Int, String)
-  MakeCat(Int)
+  MakeSeq(String, Int32, String)
+  MakeCat(Int32)
 }
 
 ///|
 /// The last `n` docs of `out`, in order, removed from `out`.
-fn take(out : Array[@pretty.Doc], n : Int) -> Array[@pretty.Doc] {
+fn take(out : Array[@pretty.Doc], n : Int32) -> Array[@pretty.Doc] {
   let items = out[out.length() - n:].to_owned()
   for _ in 0..<n {
     ignore(out.pop())
@@ -76,6 +76,6 @@ fn doc(root : Sx) -> @pretty.Doc {
 }
 
 ///|
-fn layout(x : Sx, width : Int) -> String {
+fn layout(x : Sx, width : Int32) -> String {
   @pretty.render(doc(x), width~)
 }

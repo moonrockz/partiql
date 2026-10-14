@@ -9,7 +9,7 @@ fn decode(text : String) -> @value.Value raise {
 }
 
 ///|
-fn i(n : Int) -> @value.Value {
+fn i(n : Int32) -> @value.Value {
   @value.Value::Int(n.to_int64())
 }
 

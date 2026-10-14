@@ -18,7 +18,7 @@ fn digits_value(digits : String) -> Int64 raise Malformed {
 ///|
 priv struct Cursor {
   chars : Array[Char]
-  mut pos : Int
+  mut pos : Int32
 }
 
 ///|
@@ -70,7 +70,7 @@ fn Cursor::run(self : Cursor) -> String {
 
 ///|
 /// A number of at most 9 digits.
-fn Cursor::number(self : Cursor) -> (Int, Int) raise Malformed {
+fn Cursor::number(self : Cursor) -> (Int32, Int32) raise Malformed {
   let digits = self.run()
   if digits.length() == 0 || digits.length() > 9 {
     raise Reason("expected a number of 1 to 9 digits")
@@ -80,7 +80,7 @@ fn Cursor::number(self : Cursor) -> (Int, Int) raise Malformed {
 
 ///|
 /// Exactly `n` digits.
-fn Cursor::fixed(self : Cursor, n : Int) -> Int raise Malformed {
+fn Cursor::fixed(self : Cursor, n : Int32) -> Int32 raise Malformed {
   let (value, length) = self.number()
   if length != n {
     raise Reason("expected \{n} digits")
@@ -144,9 +144,9 @@ pub fn date_literal(
 /// partiql-tests extract.ion, `TIME (2) '01:23:45.678'`).
 fn time_part(
   c : Cursor,
-  precision : Int?,
+  precision : Int32?,
   with_tz : Bool,
-) -> (@value.Time, Int) raise Error {
+) -> (@value.Time, Int32) raise Error {
   let hour = c.fixed(2)
   c.expect(':')
   let minute = c.fixed(2)
@@ -161,7 +161,7 @@ fn time_part(
   } else {
     ""
   }
-  let offset : Int? = if c.eat('Z') {
+  let offset : Int32? = if c.eat('Z') {
     Some(0)
   } else if c.peek() is Some('+' | '-') {
     let negative = c.eat('-')
@@ -202,7 +202,7 @@ fn time_part(
 ///|
 pub fn time_literal(
   text : String,
-  precision : Int?,
+  precision : Int32?,
   with_tz : Bool,
   span~ : @ast.Span,
 ) -> @value.Time raise @plan.EvalError {
@@ -225,7 +225,7 @@ pub fn time_literal(
 /// `YYYY-MM-DD HH:MM:SS[.f*][(+|-)HH:MM]`; `T` may stand for the space.
 pub fn timestamp_literal(
   text : String,
-  precision : Int?,
+  precision : Int32?,
   with_tz : Bool,
   span~ : @ast.Span,
 ) -> @value.Timestamp raise @plan.EvalError {
@@ -250,7 +250,7 @@ pub fn timestamp_literal(
 }
 
 ///|
-fn field_rank(f : @ast.DatetimeField) -> Int raise Malformed {
+fn field_rank(f : @ast.DatetimeField) -> Int32 raise Malformed {
   match f {
     Year => 0
     Month => 1
@@ -264,7 +264,7 @@ fn field_rank(f : @ast.DatetimeField) -> Int raise Malformed {
 }
 
 ///|
-fn rank_field(rank : Int) -> @ast.DatetimeField {
+fn rank_field(rank : Int32) -> @ast.DatetimeField {
   match rank {
     0 => Year
     1 => Month
@@ -308,7 +308,7 @@ fn interval_fields(
 
 ///|
 /// The largest value of a field that is not the first.
-fn field_limit(f : @ast.DatetimeField) -> Int {
+fn field_limit(f : @ast.DatetimeField) -> Int32 {
   match f {
     Month => 11
     Hour => 23

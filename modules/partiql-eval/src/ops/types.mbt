@@ -23,7 +23,11 @@ fn decimal_shape(d : @ion_core.Decimal) -> (Int64, Int64) {
 ///|
 /// Whether a decimal fits DECIMAL(p, s): no more fraction digits than `s` and
 /// no more integer digits than `p - s`. A bare DECIMAL takes any decimal.
-fn decimal_fits(d : @ion_core.Decimal, precision : Int?, scale : Int?) -> Bool {
+fn decimal_fits(
+  d : @ion_core.Decimal,
+  precision : Int32?,
+  scale : Int32?,
+) -> Bool {
   match precision {
     None => true
     Some(p) => {
@@ -39,7 +43,7 @@ fn decimal_fits(d : @ion_core.Decimal, precision : Int?, scale : Int?) -> Bool {
 /// significant digits are no more than `p`. The declared precision of a value
 /// is not used: a literal without a fraction declares one digit (see
 /// `time_literal`).
-fn fraction_fits(nanos : Int, precision : Int?) -> Bool {
+fn fraction_fits(nanos : Int32, precision : Int32?) -> Bool {
   match precision {
     None => true
     Some(p) => needed_precision(nanos) <= p
@@ -59,7 +63,7 @@ fn field_nanos(f : @ast.DatetimeField) -> @bigint.BigInt {
 
 ///|
 /// Whether `n` has no more than `p` digits.
-fn within_digits(n : @bigint.BigInt, p : Int) -> Bool {
+fn within_digits(n : @bigint.BigInt, p : Int32) -> Bool {
   n.is_zero() || digit_count(n) <= p
 }
 

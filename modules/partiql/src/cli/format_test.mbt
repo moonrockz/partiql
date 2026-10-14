@@ -2,7 +2,7 @@
 /// A fake file system and stdin.
 fn fake_io(
   files : Map[String, String],
-  stdin? : String = "",
+  stdin~ : String = "",
 ) -> (@cli.Io, Map[String, String]) {
   let written : Map[String, String] = Map([])
   let io : @cli.Io = {

@@ -8,20 +8,20 @@ pub(all) enum DataType {
   SmallInt
   Int
   BigInt
-  Decimal(Int?, Int?)
-  Numeric(Int?, Int?)
+  Decimal(Int32?, Int32?)
+  Numeric(Int32?, Int32?)
   Real
   /// `DOUBLE PRECISION`, or `FLOAT(p)` with its precision.
-  Double(Int?)
-  Char(Int?)
-  Varchar(Int?)
+  Double(Int32?)
+  Char(Int32?)
+  Varchar(Int32?)
   String
   Symbol
   Blob
   Clob
   Date
-  Time(Int?, with_tz~ : Bool)
-  Timestamp(Int?, with_tz~ : Bool)
+  Time(Int32?, with_tz~ : Bool)
+  Timestamp(Int32?, with_tz~ : Bool)
   Interval(IntervalQualifier)
   Struct
   Tuple

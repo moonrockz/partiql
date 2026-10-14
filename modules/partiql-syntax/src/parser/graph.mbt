@@ -24,7 +24,7 @@ fn starts_part(token : @lexer.Token) -> Bool {
 fn Parser::graph_match_rest(
   self : Parser,
   graph : @ast.Expr,
-  start : Int,
+  start : Int32,
 ) -> @ast.Expr raise @ast.ParseError {
   self.expect_word("MATCH")
   // No recovery inside patterns (spec M3d §4).
@@ -197,7 +197,7 @@ fn restrictor_of(token : @lexer.Token) -> @ast.Restrictor? {
 
 ///|
 /// Whether the tokens `k` places ahead are `name =` (a path variable).
-fn Parser::at_path_variable(self : Parser, k : Int) -> Bool {
+fn Parser::at_path_variable(self : Parser, k : Int32) -> Bool {
   is_name(self.peek_at(k)) && self.peek_at(k + 1).kind is Punct('=')
 }
 

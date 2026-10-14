@@ -136,13 +136,13 @@ fn type_test(
 /// of the stack; `within_depth` (depth.mbt) then bounds the nesting of the
 /// plan when it runs. Left-associative operator chains do not count: they
 /// are lowered and run in a loop.
-let max_depth : Int = 200
+let max_depth : Int32 = 200
 
 ///|
 fn lower_all(
   items : Array[@ast.Expr],
   scope : Scope,
-  depth : Int,
+  depth : Int32,
 ) -> Array[@plan.Expr] raise @plan.EvalError {
   items.map(item => lower_at(item, scope, depth))
 }
@@ -151,7 +151,7 @@ fn lower_all(
 fn lower_pairs(
   pairs : Array[(@ast.Expr, @ast.Expr)],
   scope : Scope,
-  depth : Int,
+  depth : Int32,
 ) -> Array[(@plan.Expr, @plan.Expr)] raise @plan.EvalError {
   pairs.map(pair => {
     (lower_at(pair.0, scope, depth), lower_at(pair.1, scope, depth))
@@ -162,7 +162,7 @@ fn lower_pairs(
 fn lower_step(
   s : @ast.PathStep,
   scope : Scope,
-  depth : Int,
+  depth : Int32,
 ) -> @plan.Step raise @plan.EvalError {
   match s {
     Field(id) => Field(id.text, delimited=id.delimited)
@@ -188,7 +188,7 @@ priv enum Link {
 fn lower_chain(
   e : @ast.Expr,
   scope : Scope,
-  depth : Int,
+  depth : Int32,
 ) -> @plan.Expr raise @plan.EvalError {
   let links : Array[Link] = []
   let mut leaf = e
@@ -232,7 +232,7 @@ fn lower_chain(
 ///|
 /// The nesting depth of an Ion value (a scalar is 1), counted in a loop: the
 /// parser does not limit the depth of an Ion literal.
-fn ion_depth(v : @ion_core.IonValue) -> Int {
+fn ion_depth(v : @ion_core.IonValue) -> Int32 {
   let mut deepest = 0
   let pending = [(v, 1)]
   while pending.pop() is Some((x, d)) {
@@ -264,7 +264,7 @@ pub fn lower(e : @ast.Expr) -> @plan.Expr raise @plan.EvalError {
 fn lower_at(
   e : @ast.Expr,
   scope : Scope,
-  depth : Int,
+  depth : Int32,
 ) -> @plan.Expr raise @plan.EvalError {
   let span = e.span
   if depth >= max_depth {

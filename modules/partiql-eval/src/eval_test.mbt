@@ -1,7 +1,7 @@
 ///|
 fn ev(
   source : String,
-  mode? : @eval.Mode = Permissive,
+  mode~ : @eval.Mode = Permissive,
 ) -> @value.Value raise @eval.EvalError {
   @eval.evaluate_text(source, env=@eval.Bindings::empty(), mode~)
 }

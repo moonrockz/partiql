@@ -1,10 +1,10 @@
 ///|
 /// The most digits a PartiQL decimal keeps (partiql-tests basic.ion,
 /// `decimalRoundUp` and `decimalRoundDown`).
-let max_decimal_digits : Int = 38
+let max_decimal_digits : Int32 = 38
 
 ///|
-fn pow10(n : Int) -> @bigint.BigInt {
+fn pow10(n : Int32) -> @bigint.BigInt {
   @bigint.BigInt::from_int(10).pow(@bigint.BigInt::from_int(n))
 }
 
@@ -23,14 +23,14 @@ fn abs_int(n : @bigint.BigInt) -> @bigint.BigInt {
 }
 
 ///|
-fn digit_count(n : @bigint.BigInt) -> Int {
+fn digit_count(n : @bigint.BigInt) -> Int32 {
   abs_int(n).to_string().length()
 }
 
 ///|
 /// An exponent computed in Int64 as an Int, or a `DataFailure` when it leaves
 /// the Int range.
-fn checked_exponent(e : Int64) -> Int raise OpFailure {
+fn checked_exponent(e : Int64) -> Int32 raise OpFailure {
   if e > 2147483647L || e < -2147483648L {
     raise DataFailure("decimal exponent out of range")
   }
@@ -80,14 +80,14 @@ pub fn round_decimal(
 ///|
 /// The widest gap between the exponents of two decimals that `+` and `-`
 /// align (a bigger one would need a coefficient of that many digits).
-let max_exponent_gap : Int = 100000
+let max_exponent_gap : Int32 = 100000
 
 ///|
 /// Both coefficients at the smaller exponent, and that exponent.
 fn aligned(
   a : @ion_core.Decimal,
   b : @ion_core.Decimal,
-) -> (@bigint.BigInt, @bigint.BigInt, Int) raise OpFailure {
+) -> (@bigint.BigInt, @bigint.BigInt, Int32) raise OpFailure {
   let gap = a.exponent().to_int64() - b.exponent().to_int64()
   if gap.abs() > max_exponent_gap.to_int64() {
     raise DataFailure("decimals with exponents too far apart")

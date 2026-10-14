@@ -4,7 +4,7 @@
 ///|
 priv struct Printer {
   comments : Array[@ast.Comment]
-  mut next : Int
+  mut next : Int32
   /// Print every row as `ROW(..)`: set inside a FROM source, where a
   /// leading `(` would start a parenthesized join.
   mut row_calls : Bool
@@ -53,7 +53,7 @@ fn Printer::statement(self : Printer, s : @ast.Statement) -> Doc {
 ///|
 /// The text of a statement, without comments: the canonical one-line form
 /// without `width`, the pretty layout at `width` with it (spec M3b).
-pub fn print(statement : @ast.Statement, width? : Int) -> String {
+pub fn print(statement : @ast.Statement, width? : Int32) -> String {
   let doc = Printer::new([]).statement(statement)
   match width {
     None => render_flat(doc)
@@ -85,7 +85,7 @@ fn Printer::own_lines(self : Printer, span : @ast.Span) -> Doc {
 /// The canonical text of a script: each statement on its own line followed by
 /// `;`, with the script's comments (spec M3a section 7). With `width`, each
 /// statement has the pretty layout at that width (spec M3b).
-pub fn print_script(script : @ast.Script, width? : Int) -> String {
+pub fn print_script(script : @ast.Script, width? : Int32) -> String {
   if width is Some(w) {
     return pretty_script(script, w)
   }
@@ -106,7 +106,7 @@ pub fn print_script(script : @ast.Script, width? : Int) -> String {
 ///|
 /// The pretty text of a script: each statement laid out on its own, with a
 /// blank line between two statements when either spans several lines.
-fn pretty_script(script : @ast.Script, width : Int) -> String {
+fn pretty_script(script : @ast.Script, width : Int32) -> String {
   let p = Printer::new(script.comments)
   let out = StringBuilder()
   let mut previous_multi = false

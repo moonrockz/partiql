@@ -1,5 +1,5 @@
 ///|
-fn lex_error(source : String) -> (String, Int, Int, String) raise {
+fn lex_error(source : String) -> (String, Int32, Int32, String) raise {
   try @lexer.lex(source) catch {
     Syntax(message~, span~, found~, ..) =>
       (message, span.start, span.end, found)

@@ -27,7 +27,7 @@ fn is_nan(v : @value.Value) -> Bool {
 fn ordered(
   a : @value.Value,
   b : @value.Value,
-  holds : (Int) -> Bool,
+  holds : (Int32) -> Bool,
 ) -> @value.Value raise OpFailure {
   let x = boxed(a)
   let y = boxed(b)

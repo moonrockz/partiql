@@ -1,8 +1,8 @@
 ///|
 fn map_of(
   pairs : Array[(@value.Value, @value.Value)],
-  key_type? : @value.MapType = String,
-  value_type? : @value.MapType = Dynamic,
+  key_type~ : @value.MapType = String,
+  value_type~ : @value.MapType = Dynamic,
 ) -> @value.MapValue raise {
   @value.MapValue::new(key_type~, value_type~, pairs)
 }
@@ -117,7 +117,7 @@ test "map identity sees type parameters and ignores entry order" {
 ///|
 fn mv(
   pairs : Array[(@value.Value, @value.Value)],
-  value_type? : @value.MapType = Integer,
+  value_type~ : @value.MapType = Integer,
 ) -> @value.Value raise {
   @value.Value::Map(map_of(pairs, value_type~))
 }

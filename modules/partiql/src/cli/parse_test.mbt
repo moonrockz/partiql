@@ -1,8 +1,8 @@
 ///|
 fn io_with(
   files : Map[String, String],
-  stdin? : String = "",
-  color? : Bool = false,
+  stdin~ : String = "",
+  color~ : Bool = false,
 ) -> @cli.Io {
   {
     read_file: path => {
@@ -130,7 +130,7 @@ test "parse and check usage, help and stdin" {
 
 ///|
 /// The number of rendered diagnostics in `stderr`.
-fn diagnostics(stderr : String) -> Int {
+fn diagnostics(stderr : String) -> Int32 {
   stderr.split("\n").filter(line => line.has_prefix("error:")).count()
 }
 

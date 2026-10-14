@@ -39,7 +39,7 @@ pub fn Bindings::of_ion(value : @ion_core.IonValue) -> Bindings raise EvalError 
 pub fn evaluate(
   statement : @syntax.Statement,
   env~ : Bindings,
-  mode? : Mode = Permissive,
+  mode~ : Mode = Permissive,
 ) -> @value.Value raise EvalError {
   match statement {
     Query(q) =>
@@ -54,7 +54,7 @@ pub fn evaluate(
 pub fn evaluate_text(
   source : String,
   env~ : Bindings,
-  mode? : Mode = Permissive,
+  mode~ : Mode = Permissive,
 ) -> @value.Value raise EvalError {
   let statement = try @syntax.parse(source) catch {
     err => raise Syntax(err)

@@ -10,27 +10,27 @@ let too_deep : String = "nesting is too deep"
 /// the parser tried at the current position (for error messages).
 priv struct Parser {
   tokens : Array[@lexer.Token]
-  mut pos : Int
-  mut depth : Int
+  mut pos : Int32
+  mut depth : Int32
   expected : Array[String]
   /// Token positions where a parenthesized join was tried and failed; the
   /// attempt is never repeated there, so parsing stays linear.
-  failed_joins : @hashset.HashSet[Int]
+  failed_joins : @hashset.HashSet[Int32]
   /// Notes taken now are operator continuations (spec M3c §4.3).
   mut continuation : Bool
   /// An operator could have continued the expression at this position.
   mut saw_operator : Bool
   /// Token positions where a parenthesized join was read, with the join and
   /// the position after it; a second visit reuses them (spec M2b 7.3).
-  joins : Map[Int, (@ast.FromItem, Int)]
+  joins : Map[Int32, (@ast.FromItem, Int32)]
   /// Recovery mode (spec M3d §4): recovery points record errors.
   mut recovering : Bool
   /// The parser's recorded errors.
   errors : Array[@ast.ParseError]
   /// Span starts of recorded errors, lexer errors included (no cascades).
-  error_starts : @hashset.HashSet[Int]
+  error_starts : @hashset.HashSet[Int32]
   /// The number of lexer errors, counted against the limit.
-  mut lex_errors : Int
+  mut lex_errors : Int32
   /// The error limit was reached: recovery points re-raise.
   mut stopped : Bool
 }
@@ -61,7 +61,7 @@ fn Parser::peek(self : Parser) -> @lexer.Token {
 
 ///|
 /// The token `k` places ahead (the final `End` token repeats).
-fn Parser::peek_at(self : Parser, k : Int) -> @lexer.Token {
+fn Parser::peek_at(self : Parser, k : Int32) -> @lexer.Token {
   let i = self.pos + k
   if i < self.tokens.length() {
     self.tokens[i]
@@ -165,7 +165,7 @@ fn Parser::at_word(self : Parser, word : String) -> Bool {
 }
 
 ///|
-fn Parser::at_word_at(self : Parser, k : Int, word : String) -> Bool {
+fn Parser::at_word_at(self : Parser, k : Int32, word : String) -> Bool {
   word_is(self.peek_at(k), word)
 }
 
@@ -276,7 +276,7 @@ fn[T] Parser::nested(
 /// when `allow_path_words` (after `.`).
 fn Parser::identifier(
   self : Parser,
-  allow_path_words? : Bool = false,
+  allow_path_words~ : Bool = false,
 ) -> @ast.Identifier raise @ast.ParseError {
   let t = self.peek()
   match t.kind {
@@ -298,7 +298,7 @@ fn Parser::identifier(
 
 ///|
 /// The span from token index `start` to the last consumed token.
-fn Parser::span_from(self : Parser, start : Int) -> @ast.Span {
+fn Parser::span_from(self : Parser, start : Int32) -> @ast.Span {
   let first = self.tokens[start].span
   if self.pos == 0 || self.pos <= start {
     return first

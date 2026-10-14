@@ -51,7 +51,7 @@ fn format_command(m : @argparse.Matches, io : Io, color : Bool) -> Outcome {
 ///|
 /// The layout width: 80 by default, `--width N`, or none (the canonical
 /// one-line form) for `--compact`.
-fn format_width(m : @argparse.Matches) -> Result[Int?, String] {
+fn format_width(m : @argparse.Matches) -> Result[Int32?, String] {
   let compact = m.flags.get("compact") == Some(true)
   match m.values.get("width") {
     Some([text, ..]) => {

@@ -17,7 +17,7 @@ pub fn Tuple::fields(self : Tuple) -> ArrayView[(String, Value)] {
 }
 
 ///|
-pub fn Tuple::length(self : Tuple) -> Int {
+pub fn Tuple::length(self : Tuple) -> Int32 {
   self.fields.length()
 }
 

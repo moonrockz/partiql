@@ -1,6 +1,6 @@
 ///|
 /// Code-point lexicographic order. (`String::compare` is length-first.)
-fn compare_text(a : String, b : String) -> Int {
+fn compare_text(a : String, b : String) -> Int32 {
   let ia = a.iter()
   let ib = b.iter()
   while true {
@@ -16,7 +16,7 @@ fn compare_text(a : String, b : String) -> Int {
 
 ///|
 /// Octet lexicographic order. (`Bytes::compare` is length-first.)
-fn compare_octets(a : Bytes, b : Bytes) -> Int {
+fn compare_octets(a : Bytes, b : Bytes) -> Int32 {
   let n = if a.length() < b.length() { a.length() } else { b.length() }
   for i in 0..<n {
     if a[i] != b[i] {
