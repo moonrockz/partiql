@@ -70,7 +70,33 @@ pub(all) enum Expr {
   /// A single-column `SELECT` (the first operand, a `Select`) used where a
   /// value is needed: see `SubqueryUse`.
   Subquery(Expr, SubqueryUse, @ast.Span)
+  /// A query with ORDER BY, LIMIT or OFFSET over `body`: the elements of the
+  /// body sorted by `order`, as a list. `aliases` are the output names that
+  /// sort keys may use (a SELECT list's names, in order).
+  Query(
+    Expr,
+    order~ : Array[SortKey],
+    limit~ : Expr?,
+    offset~ : Expr?,
+    aliases~ : Array[String],
+    @ast.Span
+  )
 } derive(Debug)
+
+///|
+/// A key of ORDER BY. `nulls_first` is resolved: the explicit `NULLS FIRST`
+/// or `NULLS LAST`, else NULL and MISSING come last for ASC and first for
+/// DESC.
+pub(all) struct SortKey {
+  expr : Expr
+  desc : Bool
+  nulls_first : Bool
+} derive(Debug)
+
+///|
+/// The variable that holds an output element for the sort keys of a query
+/// whose body is not a SELECT. No identifier can name it.
+pub let row_variable : String = "\u{0}row"
 
 ///|
 pub(all) enum SubqueryUse {
@@ -161,7 +187,8 @@ pub fn Expr::span(self : Expr) -> @ast.Span {
     | GlobalOrLocal(_, variable=_, delimited=_, span)
     | Implicit(_, delimited=_, locals=_, span)
     | Select(_, _, distinct=_, span)
-    | Subquery(_, _, span) => span
+    | Subquery(_, _, span)
+    | Query(_, order=_, limit=_, offset=_, aliases=_, span) => span
   }
 }
 

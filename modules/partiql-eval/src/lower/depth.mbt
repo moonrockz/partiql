@@ -25,6 +25,8 @@
 //   a WHERE: one wrapper over the input, each expression in a nested `eval`).
 // - A SELECT list: every item 2 below the query block, like SELECT VALUE;
 //   `*` evaluates nothing.
+// - A query with ORDER BY: 1, its body, each sort key, its LIMIT and its
+//   OFFSET 1 below it (they run in a nested `eval` from the query's loop).
 // - A join: one wrapper per right join, and one per run of cross, inner and
 //   left joins between them (`chain` runs a run as one flat loop). Each
 //   wrapper is 1; the wrappers nest in the order of the joins, the last one
@@ -166,6 +168,18 @@ fn push_operands(
             }
           }
         Star(_) => ()
+      }
+    }
+    Query(body, order~, limit~, offset~, aliases=_, _) => {
+      push(body)
+      for key in order {
+        push(key.expr)
+      }
+      if limit is Some(x) {
+        push(x)
+      }
+      if offset is Some(x) {
+        push(x)
       }
     }
   }

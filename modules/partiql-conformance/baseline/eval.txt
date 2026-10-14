@@ -104,6 +104,26 @@ eval/ion/primitives/operators/nary-operators.ion::nary::listDifferentTypesDiffer
 eval/ion/primitives/operators/nary-operators.ion::nary::listDifferentTypesDifferentOrderFalse#error
 eval/ion/primitives/symbol.ion::empty-symbol::Empty Symbol in table (with Ion data)#coerce
 eval/ion/primitives/symbol.ion::empty-symbol::Empty Symbol in table (with Ion data)#error
+eval/ion/query/order-by.ion::edge_cases::+inf before numeric values then -inf then nan (DESC)#coerce
+eval/ion/query/order-by.ion::edge_cases::+inf before numeric values then -inf then nan (DESC)#error
+eval/ion/query/order-by.ion::edge_cases::LOB types follow their lexicographical ordering by octet (ASC)#coerce
+eval/ion/query/order-by.ion::edge_cases::LOB types follow their lexicographical ordering by octet (ASC)#error
+eval/ion/query/order-by.ion::edge_cases::LOB types should ordered (DESC)#coerce
+eval/ion/query/order-by.ion::edge_cases::LOB types should ordered (DESC)#error
+eval/ion/query/order-by.ion::edge_cases::lists items should be ordered by data types (ASC) (nulls last as default for asc) (including ion data)#coerce
+eval/ion/query/order-by.ion::edge_cases::lists items should be ordered by data types (ASC) (nulls last as default for asc) (including ion data)#error
+eval/ion/query/order-by.ion::edge_cases::lists items should be ordered by data types (DESC) (nulls first as default for desc) (including ion data)#coerce
+eval/ion/query/order-by.ion::edge_cases::lists items should be ordered by data types (DESC) (nulls first as default for desc) (including ion data)#error
+eval/ion/query/order-by.ion::edge_cases::nan before -inf, then numeric values then +inf (ASC)#coerce
+eval/ion/query/order-by.ion::edge_cases::nan before -inf, then numeric values then +inf (ASC)#error
+eval/ion/query/order-by.ion::edge_cases::structs should be ordered by data types (ASC) (nulls last as default for asc) (including ion data)#coerce
+eval/ion/query/order-by.ion::edge_cases::structs should be ordered by data types (ASC) (nulls last as default for asc) (including ion data)#error
+eval/ion/query/order-by.ion::edge_cases::structs should be ordered by data types (DESC) (nulls first as default for desc) (including ion data)#coerce
+eval/ion/query/order-by.ion::edge_cases::structs should be ordered by data types (DESC) (nulls first as default for desc) (including ion data)#error
+eval/ion/query/order-by.ion::edge_cases::text types compared by lexicographical ordering of Unicode scalar (ASC)#coerce
+eval/ion/query/order-by.ion::edge_cases::text types compared by lexicographical ordering of Unicode scalar (ASC)#error
+eval/ion/query/order-by.ion::edge_cases::text types compared by lexicographical ordering of Unicode scalar (DESC)#coerce
+eval/ion/query/order-by.ion::edge_cases::text types compared by lexicographical ordering of Unicode scalar (DESC)#error
 eval/ion/query/select/from-clause.ion::various types in from clause::rangeOverSexp#coerce
 eval/ion/query/select/from-clause.ion::various types in from clause::rangeOverSexp#error
 eval/ion/query/select/projection.ion::project various container types::projectOfSexp#coerce
@@ -939,6 +959,12 @@ eval/primitives/map.ion::map::maps with different sizes are not equal#coerce
 eval/primitives/map.ion::map::maps with different sizes are not equal#error
 eval/primitives/map.ion::map::maps with different values are not equal#coerce
 eval/primitives/map.ion::map::maps with different values are not equal#error
+eval/primitives/map.ion::map::order by map access value#coerce
+eval/primitives/map.ion::map::order by map access value#error
+eval/primitives/map.ion::map::order by map column sorts by entries#coerce
+eval/primitives/map.ion::map::order by map column sorts by entries#error
+eval/primitives/map.ion::map::order unpivoted entries by key#coerce
+eval/primitives/map.ion::map::order unpivoted entries by key#error
 eval/primitives/map.ion::map::select values from environment map#coerce
 eval/primitives/map.ion::map::select values from environment map#error
 eval/primitives/map.ion::map::struct IS MAP returns false#coerce
@@ -3327,8 +3353,82 @@ eval/query/join/joins.ion::join::PG_JOIN_10#coerce
 eval/query/join/joins.ion::join::PG_JOIN_10#error
 eval/query/join/joins.ion::joins::selectCrossProduct#coerce
 eval/query/join/joins.ion::joins::selectCrossProduct#error
+eval/query/order-by.ion::alias::order by alias in nested sfw#coerce
+eval/query/order-by.ion::alias::order by alias in nested sfw#error
+eval/query/order-by.ion::alias::order by expression alias#coerce
+eval/query/order-by.ion::alias::order by expression alias#error
+eval/query/order-by.ion::alias::order by multiple aliases#coerce
+eval/query/order-by.ion::alias::order by multiple aliases#error
+eval/query/order-by.ion::alias::order by select alias#coerce
+eval/query/order-by.ion::alias::order by select alias#error
+eval/query/order-by.ion::data_types::should order data types by the specifications (NULLS FIRST default for desc)#coerce
+eval/query/order-by.ion::data_types::should order data types by the specifications (NULLS FIRST default for desc)#error
+eval/query/order-by.ion::data_types::should order data types by the specifications (NULLS LAST default for asc)#coerce
+eval/query/order-by.ion::data_types::should order data types by the specifications (NULLS LAST default for asc)#error
+eval/query/order-by.ion::data_types::should order data types by the specifications (nulls should be first due to nulls spec)#coerce
+eval/query/order-by.ion::data_types::should order data types by the specifications (nulls should be first due to nulls spec)#error
+eval/query/order-by.ion::data_types::should order data types by the specifications (nulls should be last due to nulls spec)#coerce
+eval/query/order-by.ion::data_types::should order data types by the specifications (nulls should be last due to nulls spec)#error
+eval/query/order-by.ion::edge_cases::Empty Output (ordered)#coerce
+eval/query/order-by.ion::edge_cases::Empty Output (ordered)#error
+eval/query/order-by.ion::edge_cases::Empty Projection item (ordered) -- Output (ordered)#coerce
+eval/query/order-by.ion::edge_cases::Empty Projection item (ordered) -- Output (ordered)#error
+eval/query/order-by.ion::edge_cases::Empty Projection item (ordered) -- Output (unordered)#coerce
+eval/query/order-by.ion::edge_cases::Empty Projection item (ordered) -- Output (unordered)#error
+eval/query/order-by.ion::edge_cases::Empty Projection item (unordered) -- Output (ordered)#coerce
+eval/query/order-by.ion::edge_cases::Empty Projection item (unordered) -- Output (ordered)#error
 eval/query/order-by.ion::edge_cases::Empty Projection item (unordered) -- Output (unordered)#coerce
 eval/query/order-by.ion::edge_cases::Empty Projection item (unordered) -- Output (unordered)#error
+eval/query/order-by.ion::edge_cases::bags compared as sorted lists (ASC)#coerce
+eval/query/order-by.ion::edge_cases::bags compared as sorted lists (ASC)#error
+eval/query/order-by.ion::edge_cases::bags compared as sorted lists (DESC)#coerce
+eval/query/order-by.ion::edge_cases::bags compared as sorted lists (DESC)#error
+eval/query/order-by.ion::edge_cases::false before true (ASC)#coerce
+eval/query/order-by.ion::edge_cases::false before true (ASC)#error
+eval/query/order-by.ion::edge_cases::lists compared lexicographically based on comparison of elements (ASC)#coerce
+eval/query/order-by.ion::edge_cases::lists compared lexicographically based on comparison of elements (ASC)#error
+eval/query/order-by.ion::edge_cases::lists compared lexicographically based on comparison of elements (DESC)#coerce
+eval/query/order-by.ion::edge_cases::lists compared lexicographically based on comparison of elements (DESC)#error
+eval/query/order-by.ion::edge_cases::lists items should be ordered by data types (ASC) (nulls last as default for asc)#coerce
+eval/query/order-by.ion::edge_cases::lists items should be ordered by data types (ASC) (nulls last as default for asc)#error
+eval/query/order-by.ion::edge_cases::lists items should be ordered by data types (DESC) (nulls first as default for desc)#coerce
+eval/query/order-by.ion::edge_cases::lists items should be ordered by data types (DESC) (nulls first as default for desc)#error
+eval/query/order-by.ion::edge_cases::longer array comes first (DESC)#coerce
+eval/query/order-by.ion::edge_cases::longer array comes first (DESC)#error
+eval/query/order-by.ion::edge_cases::shorter array comes first (ASC)#coerce
+eval/query/order-by.ion::edge_cases::shorter array comes first (ASC)#error
+eval/query/order-by.ion::edge_cases::structs compared lexicographically first by key then by value (ASC)#coerce
+eval/query/order-by.ion::edge_cases::structs compared lexicographically first by key then by value (ASC)#error
+eval/query/order-by.ion::edge_cases::structs compared lexicographically first by key then by value (DESC)#coerce
+eval/query/order-by.ion::edge_cases::structs compared lexicographically first by key then by value (DESC)#error
+eval/query/order-by.ion::edge_cases::structs should be ordered by data types (ASC) (nulls last as default for asc)#coerce
+eval/query/order-by.ion::edge_cases::structs should be ordered by data types (ASC) (nulls last as default for asc)#error
+eval/query/order-by.ion::edge_cases::testing alias support#coerce
+eval/query/order-by.ion::edge_cases::testing alias support#error
+eval/query/order-by.ion::edge_cases::testing nested alias support#coerce
+eval/query/order-by.ion::edge_cases::testing nested alias support#error
+eval/query/order-by.ion::edge_cases::true before false (DESC)#coerce
+eval/query/order-by.ion::edge_cases::true before false (DESC)#error
+eval/query/order-by.ion::simple::col1 asc#coerce
+eval/query/order-by.ion::simple::col1 asc#error
+eval/query/order-by.ion::simple::col1 asc, col2 asc#coerce
+eval/query/order-by.ion::simple::col1 asc, col2 asc#error
+eval/query/order-by.ion::simple::col1 desc#coerce
+eval/query/order-by.ion::simple::col1 desc#error
+eval/query/order-by.ion::simple::nulls first as default for supplierId_nulls desc#coerce
+eval/query/order-by.ion::simple::nulls first as default for supplierId_nulls desc#error
+eval/query/order-by.ion::simple::nulls first for supplierId_nulls desc#coerce
+eval/query/order-by.ion::simple::nulls first for supplierId_nulls desc#error
+eval/query/order-by.ion::simple::nulls last for supplierId_nulls desc#coerce
+eval/query/order-by.ion::simple::nulls last for supplierId_nulls desc#error
+eval/query/order-by.ion::simple::price desc, productId asc#coerce
+eval/query/order-by.ion::simple::price desc, productId asc#error
+eval/query/order-by.ion::simple::supplierId_nulls asc nulls last, productId asc#coerce
+eval/query/order-by.ion::simple::supplierId_nulls asc nulls last, productId asc#error
+eval/query/order-by.ion::simple::supplierId_nulls nulls first#coerce
+eval/query/order-by.ion::simple::supplierId_nulls nulls first#error
+eval/query/order-by.ion::simple::supplierId_nulls nulls last#coerce
+eval/query/order-by.ion::simple::supplierId_nulls nulls last#error
 eval/query/select/from-clause.ion::auto-generated aliases::comma-join-auto-alias#coerce
 eval/query/select/from-clause.ion::auto-generated aliases::comma-join-auto-alias#error
 eval/query/select/from-clause.ion::auto-generated aliases::comma-join-multiple-records-auto-alias#coerce

@@ -8,6 +8,7 @@ import {
 }
 
 // Values
+pub let row_variable : String
 
 // Errors
 pub(all) suberror EvalError {
@@ -46,6 +47,7 @@ pub(all) enum Expr {
   Implicit(String, delimited~ : Bool, locals~ : Array[String], @ast.Span)
   Select(Rel, Projection, distinct~ : Bool, @ast.Span)
   Subquery(Expr, SubqueryUse, @ast.Span)
+  Query(Expr, order~ : Array[SortKey], limit~ : Expr?, offset~ : Expr?, aliases~ : Array[String], @ast.Span)
 } derive(@debug.Debug)
 pub fn Expr::span(Self) -> @ast.Span
 
@@ -80,6 +82,12 @@ pub(all) enum Rel {
   Let(Rel, Array[(String, Expr)], @ast.Span)
 } derive(@debug.Debug)
 pub fn Rel::span(Self) -> @ast.Span
+
+pub(all) struct SortKey {
+  expr : Expr
+  desc : Bool
+  nulls_first : Bool
+} derive(@debug.Debug)
 
 pub(all) enum Step {
   Field(String, delimited~ : Bool)

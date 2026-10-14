@@ -6,18 +6,28 @@ priv struct Scope {
   outer : Scope?
   /// Inside a FROM source, a plain name finds a global before a variable.
   globals_first : Bool
+  /// The names are the output names of a SELECT list (for ORDER BY): a name
+  /// finds them first, but they are not candidates for an implicit
+  /// attribute.
+  outputs : Bool
 }
 
 ///|
 /// The scope outside every query: no variables.
 fn Scope::top() -> Scope {
-  { names: [], outer: None, globals_first: false, }
+  { names: [], outer: None, globals_first: false, outputs: false, }
 }
 
 ///|
 /// A scope inside `self` that declares `names`.
 fn Scope::inner(self : Scope, names : Array[String]) -> Scope {
-  { names, outer: Some(self), globals_first: false, }
+  { names, outer: Some(self), globals_first: false, outputs: false, }
+}
+
+///|
+/// A scope inside `self` with the output names of a SELECT list.
+fn Scope::with_outputs(self : Scope, names : Array[String]) -> Scope {
+  { ..self.inner(names), outputs: true, }
 }
 
 ///|
@@ -46,12 +56,14 @@ fn Scope::resolve(self : Scope, id : @ast.Identifier) -> String? {
 
 ///|
 /// The names of every variable in scope, the innermost query first and each
-/// query in FROM order.
+/// query in FROM order. Output names are left out.
 fn Scope::locals(self : Scope) -> Array[String] {
   let all = []
   let mut scope = Some(self)
   while scope is Some(s) {
-    all.append(s.names)
+    if !s.outputs {
+      all.append(s.names)
+    }
     scope = s.outer
   }
   all
@@ -74,29 +86,52 @@ fn query_at(
   if q.with_ is [first, ..] {
     return unsupported("WITH (M4b2)", first.span)
   }
-  if q.order_by is [first, ..] {
-    return unsupported("ORDER BY (M4b2)", first.span)
-  }
   if q.limit is Some(e) {
     return unsupported("LIMIT (M4b2)", e.span)
   }
   if q.offset is Some(e) {
     return unsupported("OFFSET (M4b2)", e.span)
   }
-  match q.body {
-    Expr(e) => lower_at(e, scope, depth)
-    Select(s) => select_at(s, scope, depth)
-    SetOp(op) => unsupported("a set operation (M4b2)", op.span)
-    Table(_) => unsupported("TABLE (later)", q.span)
+  // The body, the output names a sort key may use, and the scope of the
+  // sort keys.
+  let (body, aliases, keys_scope) = match q.body {
+    Select(s) => {
+      let (body, aliases, inner) = select_parts(s, scope, depth)
+      (body, aliases, inner.with_outputs(aliases))
+    }
+    Expr(e) =>
+      (lower_at(e, scope, depth), [], scope.inner([@plan.row_variable]))
+    SetOp(op) => return unsupported("a set operation (M4b2)", op.span)
+    Table(_) => return unsupported("TABLE (later)", q.span)
   }
+  if q.order_by.is_empty() {
+    return body
+  }
+  let order = q.order_by.map(spec => {
+    let desc = spec.order is Some(Desc)
+    let nulls_first = match spec.nulls {
+      Some(First) => true
+      Some(Last) => false
+      None => desc
+    }
+    @plan.SortKey::{
+      expr: lower_at(spec.expr, keys_scope, depth),
+      desc,
+      nulls_first,
+    }
+  })
+  Query(body, order~, limit=None, offset=None, aliases~, q.span)
 }
 
 ///|
-fn select_at(
+/// Lowers a query block: the plan, the output names of its SELECT list (in
+/// order, none for `SELECT VALUE` and `*`), and the scope inside it (its FROM
+/// and LET variables).
+fn select_parts(
   s : @ast.Select,
   scope : Scope,
   depth : Int32,
-) -> @plan.Expr raise @plan.EvalError {
+) -> (@plan.Expr, Array[String], Scope) raise @plan.EvalError {
   if s.group_by is Some(g) {
     return unsupported("GROUP BY (M4c)", g.span)
   }
@@ -127,6 +162,7 @@ fn select_at(
     Some(w) => Filter(let_rel, lower_at(w, inner, depth), w.span)
     None => let_rel
   }
+  let aliases = []
   let projection : @plan.Projection = match s.projection {
     Value(e) => Value(lower_at(e, inner, depth))
     Star(_) => Star(variables)
@@ -135,14 +171,14 @@ fn select_at(
       for i, item in items {
         out.push(
           match item {
-            Expr(e, as_~, ..) =>
-              @plan.Item::Named(
-                match as_ {
-                  Some(id) => id.text
-                  None => implicit_name(e, i)
-                },
-                lower_at(e, inner, depth),
-              )
+            Expr(e, as_~, ..) => {
+              let name = match as_ {
+                Some(id) => id.text
+                None => implicit_name(e, i)
+              }
+              aliases.push(name)
+              @plan.Item::Named(name, lower_at(e, inner, depth))
+            }
             AllFields(e, ..) => @plan.Item::AllFields(lower_at(e, inner, depth))
           },
         )
@@ -151,7 +187,11 @@ fn select_at(
     }
     Pivot(..) => return unsupported("PIVOT (M4b2)", s.span)
   }
-  Select(rel, projection, distinct=s.quantifier is Some(Distinct), s.span)
+  (
+    Select(rel, projection, distinct=s.quantifier is Some(Distinct), s.span),
+    aliases,
+    inner,
+  )
 }
 
 ///|

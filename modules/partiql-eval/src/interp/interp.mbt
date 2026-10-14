@@ -549,6 +549,7 @@ fn eval(
       select(rel, projection, distinct, env, ctx)
     Subquery(query, use_, span) =>
       subquery(eval(query, env, ctx), use_, ctx, span)
+    Query(_, order=_, limit=_, offset=_, aliases=_, _) => query(e, env, ctx)
   }
 }
 
@@ -579,6 +580,7 @@ fn subquery(
 ) -> @value.Value raise @plan.EvalError {
   let items = match rows {
     Bag(b) => b.items()
+    List(items) => items[:]
     other => [other]
   }
   match use_ {

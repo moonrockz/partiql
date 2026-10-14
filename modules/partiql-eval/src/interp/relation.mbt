@@ -460,11 +460,32 @@ fn select(
   env : Env,
   ctx : Ctx,
 ) -> @value.Value raise @plan.EvalError {
+  Bag(
+    @value.Bag::new(
+      select_pairs(rel, projection, distinct, env, ctx).map(pair => pair.1),
+    ),
+  )
+}
+
+///|
+/// Each binding tuple of a query block and its projection, in the order of
+/// the rows. DISTINCT keeps the first row of each value.
+fn select_pairs(
+  rel : @plan.Rel,
+  projection : @plan.Projection,
+  distinct : Bool,
+  env : Env,
+  ctx : Ctx,
+) -> Array[(Env, @value.Value)] raise @plan.EvalError {
   let out = []
   each(relation(rel, env, ctx), ctx, row => {
-    out.push(project(projection, row, ctx))
+    out.push((row, project(projection, row, ctx)))
   })
-  Bag(@value.Bag::new(if distinct { dedupe(out) } else { out }))
+  if distinct {
+    dedupe(out)
+  } else {
+    out
+  }
 }
 
 ///|
@@ -524,20 +545,22 @@ fn add_fields(
 }
 
 ///|
-/// The values of `items` without a repeat, in the order of their first
-/// occurrence. Two values repeat if they are grouping equivalent (`eqg`: the
+/// The pairs of `items` without a repeat of their value, in the order of
+/// their first occurrence (each value keeps the first pair). Two values
+/// repeat if they are grouping equivalent (`eqg`: the
 /// test of GROUP BY, so `1`, `1.0` and `1e0` are one value, NULLs are one
 /// value, and bags and tuples compare as multisets). Each value goes to a
 /// bucket of its `group_key`; only the values of one bucket are compared, so
 /// the cost is linear unless many values share a key.
-fn dedupe(items : Array[@value.Value]) -> Array[@value.Value] {
+fn[T] dedupe(items : Array[(T, @value.Value)]) -> Array[(T, @value.Value)] {
   let buckets : Map[String, Array[@value.Value]] = Map([])
   let out = []
-  for v in items {
+  for item in items {
+    let v = item.1
     let bucket = buckets.get_or_init(@value.group_key(v), () => [])
     if !bucket.any(seen => @value.eqg(seen, v)) {
       bucket.push(v)
-      out.push(v)
+      out.push(item)
     }
   }
   out
