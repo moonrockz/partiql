@@ -143,8 +143,10 @@ graph TD
     `Query` wraps a body (a SELECT block, PIVOT, a set operation, `TABLE` or
     any expression) when the query has ORDER BY, LIMIT or OFFSET. Sort keys
     are lowered in a scope where the output names are exact-name variables
-    (they win over a FROM attribute, and they are not candidates for implicit
-    lookup). For a body that is not a SELECT block, each output element is
+    (they are not candidates for implicit lookup). A key that is exactly a
+    name finds an output name first; in any other key expression a FROM, LET
+    or outer variable wins, and an output name is visible when no variable
+    has that name. For a body that is not a SELECT block, each output element is
     bound to a hidden variable that no identifier can name, so a plain name
     in a key is an attribute of the output element. A set-operation chain is
     lowered in a loop along its left spine. `TABLE a.b` lowers as
@@ -181,7 +183,8 @@ graph TD
     - `relation.mbt` also has `select_pairs`: a query block yields
       (binding tuple, projected value) pairs, so ORDER BY can read the row
       that made each value. Without ORDER BY, a SELECT reads its source
-      lazily and stops after the rows that LIMIT and OFFSET need; DISTINCT
+      lazily (`select_pairs_upto`) and stops after the rows that LIMIT and
+      OFFSET need; DISTINCT
       dedupes while it streams.
     - `order.mbt` runs `Query`. It evaluates LIMIT and OFFSET once, in the
       outer binding tuple. A value that is not an integer of 0 or more is

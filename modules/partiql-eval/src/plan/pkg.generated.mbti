@@ -8,6 +8,8 @@ import {
 }
 
 // Values
+pub fn output_variable(String) -> String
+
 pub let row_variable : String
 
 // Errors

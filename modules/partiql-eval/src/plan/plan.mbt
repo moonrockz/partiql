@@ -71,8 +71,9 @@ pub(all) enum Expr {
   /// value is needed: see `SubqueryUse`.
   Subquery(Expr, SubqueryUse, @ast.Span)
   /// A query with ORDER BY, LIMIT or OFFSET over `body`: the elements of the
-  /// body sorted by `order`, as a list. `aliases` are the output names that
-  /// sort keys may use (a SELECT list's names, in order).
+  /// body sorted by `order`: a list with ORDER BY, else a bag (a tuple for a
+  /// PIVOT body). `aliases` are the output names that sort keys may use (a
+  /// SELECT list's names, in order).
   Query(
     Expr,
     order~ : Array[SortKey],
@@ -113,6 +114,13 @@ pub(all) struct SortKey {
 /// The variable that holds an output element for the sort keys of a query
 /// whose body is not a SELECT. No identifier can name it.
 pub let row_variable : String = "\u{0}row"
+
+///|
+/// The name of the frame that holds the output name `name` of a SELECT list
+/// while ORDER BY runs: apart from every variable name.
+pub fn output_variable(name : String) -> String {
+  "\u{0}out:" + name
+}
 
 ///|
 pub(all) enum SubqueryUse {

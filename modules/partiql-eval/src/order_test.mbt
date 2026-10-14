@@ -183,3 +183,38 @@ test "nested subqueries with ORDER BY evaluate on every target" {
     .to_equal(List([tuple([("x", Int(1))])]))
   })
 }
+
+///|
+test "ORDER BY: a variable beats an alias inside a non-bare key" {
+  @expect.expect_all(soft => {
+    for mode in [@eval.Mode::Permissive, @eval.Mode::Strict] {
+      // `x.b` is the FROM variable, not the alias `x`
+      soft
+      .expect(
+        ev(
+          "SELECT x.a AS x FROM [{'a': 2, 'b': 1}, {'a': 1, 'b': 2}] AS x ORDER BY x.b",
+          mode~,
+        ),
+      )
+      .to_equal(List([tuple([("x", Int(2))]), tuple([("x", Int(1))])]))
+      // a bare name still finds the alias first
+      soft
+      .expect(
+        ev(
+          "SELECT r.y AS x FROM [{'x': 1, 'y': 2}, {'x': 2, 'y': 1}] AS r ORDER BY x",
+          mode~,
+        ),
+      )
+      .to_equal(List([tuple([("x", Int(1))]), tuple([("x", Int(2))])]))
+      // an alias that no variable hides is visible in a larger key
+      soft
+      .expect(
+        ev(
+          "SELECT r.a AS k FROM [{'a': 2}, {'a': 1}] AS r ORDER BY k * 1",
+          mode~,
+        ),
+      )
+      .to_equal(List([tuple([("k", Int(1))]), tuple([("k", Int(2))])]))
+    }
+  })
+}

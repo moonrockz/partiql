@@ -14,6 +14,10 @@ priv struct Scope {
   /// FROM source, and they are not candidates for an implicit attribute
   /// (plan ruling 10).
   with_ : Bool
+  /// The names are output names that a variable hides: a name finds a
+  /// variable first and an output name only when no variable has that name
+  /// (a sort key that is not a bare name).
+  variables_first : Bool
 }
 
 ///|
@@ -25,6 +29,7 @@ fn Scope::top() -> Scope {
     globals_first: false,
     outputs: false,
     with_: false,
+    variables_first: false,
   }
 }
 
@@ -37,6 +42,7 @@ fn Scope::inner(self : Scope, names : Array[String]) -> Scope {
     globals_first: false,
     outputs: false,
     with_: false,
+    variables_first: false,
   }
 }
 
@@ -65,16 +71,26 @@ fn Scope::for_source(self : Scope) -> Scope {
 fn Scope::resolve(self : Scope, id : @ast.Identifier) -> (String, Bool)? {
   let wanted = if id.delimited { id.text } else { id.text.to_lower() }
   let mut scope = Some(self)
+  let mut hidden = None
   while scope is Some(s) {
     for name in s.names.rev_iter() {
       let key = if id.delimited { name } else { name.to_lower() }
       if key == wanted {
-        return Some((name, s.with_))
+        // An output name is a frame of its own, so it never hides a
+        // variable of the same name at run time.
+        let shown = if s.outputs { @plan.output_variable(name) } else { name }
+        if s.outputs && s.variables_first {
+          if hidden is None {
+            hidden = Some((shown, s.with_))
+          }
+          break
+        }
+        return Some((shown, s.with_))
       }
     }
     scope = s.outer
   }
-  None
+  hidden
 }
 
 ///|
@@ -128,6 +144,9 @@ fn query_at(
       (body, [], inner.with_outputs([]))
     }
   }
+  // A key that is exactly a name finds an output name first; any other key
+  // finds a variable first and an output name only when no variable has it.
+  let expr_scope = { ..keys_scope, variables_first: true, }
   if q.order_by.is_empty() && limit is None && offset is None {
     return body
   }
@@ -139,7 +158,15 @@ fn query_at(
       None => desc
     }
     @plan.SortKey::{
-      expr: lower_at(spec.expr, keys_scope, depth),
+      expr: lower_at(
+        spec.expr,
+        if spec.expr.kind is VarRef(_, ..) {
+          keys_scope
+        } else {
+          expr_scope
+        },
+        depth,
+      ),
       desc,
       nulls_first,
     }
