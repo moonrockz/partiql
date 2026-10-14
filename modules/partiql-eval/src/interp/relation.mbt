@@ -460,11 +460,27 @@ fn select(
   env : Env,
   ctx : Ctx,
 ) -> @value.Value raise @plan.EvalError {
-  Bag(
-    @value.Bag::new(
-      select_pairs(rel, projection, distinct, env, ctx).map(pair => pair.1),
-    ),
-  )
+  let values = select_pairs(rel, projection, distinct, env, ctx).map(pair => {
+    pair.1
+  })
+  match projection {
+    Pivot(..) => pivoted(values)
+    _ => Bag(@value.Bag::new(values))
+  }
+}
+
+///|
+/// The result of a PIVOT: one tuple with the attributes of the one-attribute
+/// tuples of its rows, in row order. Duplicate names are kept
+/// (partiql-tests pivot.ion, `pivotLiteralFieldNameFrom`).
+fn pivoted(rows : Array[@value.Value]) -> @value.Value {
+  let fields = []
+  for row in rows {
+    if row is Tuple(t) {
+      t.fields().each(f => fields.push(f))
+    }
+  }
+  Tuple(@value.Tuple::new(fields))
 }
 
 ///|
@@ -537,6 +553,25 @@ fn project(
         }
       }
       Tuple(@value.Tuple::new(fields))
+    }
+    Pivot(value~, key~) => {
+      // DISTINCT has no meaning for PIVOT: the parser does not take it, and
+      // `select_pairs_upto` would only drop repeated one-attribute tuples.
+      let k = unboxed(eval(key, row, ctx))
+      let v = eval(value, row, ctx)
+      // A MISSING value, and in permissive mode a key that is not text,
+      // leave the attribute out (the empty tuple).
+      match (k, v) {
+        (_, Missing) => Tuple(@value.Tuple::new([]))
+        (String(name), _) => Tuple(@value.Tuple::new([(name, v)]))
+        _ => {
+          typed(ctx.mode, key.span(), () => {
+            raise TypeFailure("a PIVOT key must be text")
+          })
+          |> ignore
+          Tuple(@value.Tuple::new([]))
+        }
+      }
     }
     Items(items) => {
       let fields = []

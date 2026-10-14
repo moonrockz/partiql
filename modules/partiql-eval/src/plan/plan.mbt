@@ -146,6 +146,9 @@ pub(all) enum Projection {
   /// `SELECT *`: the attributes of the tuple of each FROM variable `names`,
   /// in order.
   Star(Array[String])
+  /// `PIVOT value AT key`: per row a one-attribute tuple (the empty tuple
+  /// for a row without an attribute); the query joins them into one tuple.
+  Pivot(value~ : Expr, key~ : Expr)
 } derive(Debug)
 
 ///|

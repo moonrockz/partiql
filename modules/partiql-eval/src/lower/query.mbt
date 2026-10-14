@@ -216,7 +216,11 @@ fn select_parts(
       }
       Items(out)
     }
-    Pivot(..) => return unsupported("PIVOT (M4b2)", s.span)
+    Pivot(value~, key~) =>
+      Pivot(
+        value=lower_at(value, inner, depth),
+        key=lower_at(key, inner, depth),
+      )
   }
   (
     Select(rel, projection, distinct=s.quantifier is Some(Distinct), s.span),

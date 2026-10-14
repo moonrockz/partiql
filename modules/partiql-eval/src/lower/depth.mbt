@@ -167,6 +167,10 @@ fn push_operands(
               Named(_, x) | AllFields(x) => pending.push(ExprAt(x, below + 1))
             }
           }
+        Pivot(value~, key~) => {
+          pending.push(ExprAt(value, below + 1))
+          pending.push(ExprAt(key, below + 1))
+        }
         Star(_) => ()
       }
     }

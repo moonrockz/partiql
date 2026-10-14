@@ -3385,6 +3385,8 @@ eval/query/limitoffset.ion::limit_offset::offset <decimal>>#coerce
 eval/query/limitoffset.ion::limit_offset::offset <decimal>>#error
 eval/query/limitoffset.ion::limit_offset::offset <str>#coerce
 eval/query/limitoffset.ion::limit_offset::offset <str>#error
+eval/query/limitoffset.ion::limit_offset::offset with pivot#coerce
+eval/query/limitoffset.ion::limit_offset::offset with pivot#error
 eval/query/order-by.ion::alias::order by alias in nested sfw#coerce
 eval/query/order-by.ion::alias::order by alias in nested sfw#error
 eval/query/order-by.ion::alias::order by expression alias#coerce
@@ -3461,6 +3463,14 @@ eval/query/order-by.ion::simple::supplierId_nulls nulls first#coerce
 eval/query/order-by.ion::simple::supplierId_nulls nulls first#error
 eval/query/order-by.ion::simple::supplierId_nulls nulls last#coerce
 eval/query/order-by.ion::simple::supplierId_nulls nulls last#error
+eval/query/pivot.ion::pivot::pivotBadFieldType#coerce
+eval/query/pivot.ion::pivot::pivotBadFieldType#error
+eval/query/pivot.ion::pivot::pivotFrom#coerce
+eval/query/pivot.ion::pivot::pivotFrom#error
+eval/query/pivot.ion::pivot::pivotLiteralFieldNameFrom#coerce
+eval/query/pivot.ion::pivot::pivotLiteralFieldNameFrom#error
+eval/query/pivot.ion::pivot::pivotUnpivotWithWhereOrderByLimit#coerce
+eval/query/pivot.ion::pivot::pivotUnpivotWithWhereOrderByLimit#error
 eval/query/select/from-clause.ion::auto-generated aliases::comma-join-auto-alias#coerce
 eval/query/select/from-clause.ion::auto-generated aliases::comma-join-auto-alias#error
 eval/query/select/from-clause.ion::auto-generated aliases::comma-join-multiple-records-auto-alias#coerce
@@ -3725,6 +3735,8 @@ eval/query/undefined-variable-behavior.ion::undefined_variable_behavior::undefin
 eval/query/undefined-variable-behavior.ion::undefined_variable_behavior::undefinedUnqualifiedVariableIsNullExprWithUndefinedVariableBehaviorMissing#error
 eval/query/undefined-variable-behavior.ion::undefined_variable_behavior::undefinedUnqualifiedVariableWithUndefinedVariableBehaviorMissing#coerce
 eval/query/undefined-variable-behavior.ion::undefined_variable_behavior::undefinedUnqualifiedVariableWithUndefinedVariableBehaviorMissing#error
+eval/spec-tests.ion::section-14::pivot to tuple from collection of tuples#coerce
+eval/spec-tests.ion::section-14::pivot to tuple from collection of tuples#error
 eval/spec-tests.ion::section-4::array navigation with wrongly typed array index#coerce
 eval/spec-tests.ion::section-4::array navigation with wrongly typed array index#error
 eval/spec-tests.ion::section-4::array navigation#coerce
@@ -3773,6 +3785,10 @@ eval/spec-tests.ion::section-6::bag element evaluates to MISSING#coerce
 eval/spec-tests.ion::section-6::bag element evaluates to MISSING#error
 eval/spec-tests.ion::section-6::duplicate attribute names#coerce
 eval/spec-tests.ion::section-6::duplicate attribute names#error
+eval/spec-tests.ion::section-6::pivot into a tuple with invalid attribute name#coerce
+eval/spec-tests.ion::section-6::pivot into a tuple with invalid attribute name#error
+eval/spec-tests.ion::section-6::pivot into a tuple#coerce
+eval/spec-tests.ion::section-6::pivot into a tuple#error
 eval/spec-tests.ion::section-6::select value with tuple constructor#coerce
 eval/spec-tests.ion::section-6::select value with tuple constructor#error
 eval/spec-tests.ion::section-6::select value#coerce
@@ -3781,6 +3797,8 @@ eval/spec-tests.ion::section-6::select variable star with non tuples#coerce
 eval/spec-tests.ion::section-6::select variable star with non tuples#error
 eval/spec-tests.ion::section-6::tuple constructor and mistyped attribute name#coerce
 eval/spec-tests.ion::section-6::tuple constructor and mistyped attribute name#error
+eval/spec-tests.ion::section-6::unpivot with pivot to analyze attribute names#coerce
+eval/spec-tests.ion::section-6::unpivot with pivot to analyze attribute names#error
 eval/spec-tests.ion::section-7::data type mismatch in comparison expression#coerce
 eval/spec-tests.ion::section-7::data type mismatch in comparison expression#error
 eval/spec-tests.ion::section-7::data type mismatch in logical expression#error

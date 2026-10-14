@@ -107,6 +107,15 @@ fn query(
         (Frame(@plan.row_variable, v, env), v)
       })
   }
+  if body is Select(_, Pivot(..), distinct=_, _) {
+    // ORDER BY, LIMIT and OFFSET cut the rows; PIVOT then joins what is left.
+    let rows = if order.is_empty() {
+      window(pairs.map(pair => pair.1), offset, limit)
+    } else {
+      window(sorted(pairs, order, ctx), offset, limit)
+    }
+    return pivoted(rows)
+  }
   if order.is_empty() {
     Bag(@value.Bag::new(window(pairs.map(pair => pair.1), offset, limit)))
   } else {
