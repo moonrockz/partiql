@@ -150,3 +150,15 @@ test "array coercion of a SELECT subquery (plan ruling 9)" {
     .to_equal(Bool(false))
   })
 }
+
+///|
+test "array coercion with an Ion list or s-expression literal" {
+  @expect.expect_all(soft => {
+    soft
+    .expect(ev("(SELECT x.a, x.b FROM [{'a': 1, 'b': 2}] AS x) = `[1, 2]`"))
+    .to_equal(Bool(true))
+    soft
+    .expect(ev("`(1 2)` = (SELECT x.a, x.b FROM [{'a': 1, 'b': 2}] AS x)"))
+    .to_equal(Bool(true))
+  })
+}

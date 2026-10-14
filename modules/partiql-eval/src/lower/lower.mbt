@@ -404,6 +404,9 @@ fn is_comparison(op : @ast.BinaryOp) -> Bool {
 fn is_array_literal(e : @ast.Expr) -> Bool {
   match e.kind {
     List(_) | Sexp(_) | Row(_) => true
+    // A backtick Ion list or s-expression without annotations (an annotation
+    // such as `$bag` changes the kind of the value).
+    Lit(Ion(_, v)) => !v.has_annotations() && v.kind() is (List(_) | Sexp(_))
     _ => false
   }
 }

@@ -96,10 +96,15 @@ fn query(
       }
       select_pairs_upto(rel, projection, distinct, env, ctx, upto).map(pair => {
         let (row, v) = pair
-        let keys_env = aliases.fold(init=row, (acc, name) => {
-          Frame(name, output_attribute(v, name), acc)
-        })
-        (keys_env, v)
+        // Only a sort key reads the output names.
+        if order.is_empty() {
+          (row, v)
+        } else {
+          let keys_env = aliases.fold(init=row, (acc, name) => {
+            Frame(@plan.output_variable(name), output_attribute(v, name), acc)
+          })
+          (keys_env, v)
+        }
       })
     }
     _ =>
