@@ -477,15 +477,47 @@ fn select_pairs(
   env : Env,
   ctx : Ctx,
 ) -> Array[(Env, @value.Value)] raise @plan.EvalError {
+  select_pairs_upto(rel, projection, distinct, env, ctx, None)
+}
+
+///|
+/// The first `upto` pairs of `select_pairs` (all of them for `None`). The
+/// rows after the last pair are not read, so they are not evaluated.
+/// DISTINCT drops a repeat as the rows stream, so `upto` counts distinct
+/// values. Two values repeat if they are grouping equivalent (`eqg`: the
+/// test of GROUP BY, so `1`, `1.0` and `1e0` are one value, NULLs are one
+/// value, and bags and tuples compare as multisets). Each value goes to a
+/// bucket of its `group_key`; only the values of one bucket are compared, so
+/// the cost is linear unless many values share a key.
+fn select_pairs_upto(
+  rel : @plan.Rel,
+  projection : @plan.Projection,
+  distinct : Bool,
+  env : Env,
+  ctx : Ctx,
+  upto : Int64?,
+) -> Array[(Env, @value.Value)] raise @plan.EvalError {
   let out = []
-  each(relation(rel, env, ctx), ctx, row => {
-    out.push((row, project(projection, row, ctx)))
-  })
-  if distinct {
-    dedupe(out)
-  } else {
-    out
+  if upto is Some(n) && n <= 0L {
+    return out
   }
+  let buckets : Map[String, Array[@value.Value]] = Map([])
+  let it = relation(rel, env, ctx)
+  while pull(it, ctx) is Some(row) {
+    let v = project(projection, row, ctx)
+    if distinct {
+      let bucket = buckets.get_or_init(@value.group_key(v), () => [])
+      if bucket.any(seen => @value.eqg(seen, v)) {
+        continue
+      }
+      bucket.push(v)
+    }
+    out.push((row, v))
+    if upto is Some(n) && out.length().to_int64() >= n {
+      break
+    }
+  }
+  out
 }
 
 ///|
@@ -542,26 +574,4 @@ fn add_fields(
     Missing => ()
     _ => fields.push(("_\{position + 1}", v))
   }
-}
-
-///|
-/// The pairs of `items` without a repeat of their value, in the order of
-/// their first occurrence (each value keeps the first pair). Two values
-/// repeat if they are grouping equivalent (`eqg`: the
-/// test of GROUP BY, so `1`, `1.0` and `1e0` are one value, NULLs are one
-/// value, and bags and tuples compare as multisets). Each value goes to a
-/// bucket of its `group_key`; only the values of one bucket are compared, so
-/// the cost is linear unless many values share a key.
-fn[T] dedupe(items : Array[(T, @value.Value)]) -> Array[(T, @value.Value)] {
-  let buckets : Map[String, Array[@value.Value]] = Map([])
-  let out = []
-  for item in items {
-    let v = item.1
-    let bucket = buckets.get_or_init(@value.group_key(v), () => [])
-    if !bucket.any(seen => @value.eqg(seen, v)) {
-      bucket.push(v)
-      out.push(item)
-    }
-  }
-  out
 }

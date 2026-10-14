@@ -3353,6 +3353,38 @@ eval/query/join/joins.ion::join::PG_JOIN_10#coerce
 eval/query/join/joins.ion::join::PG_JOIN_10#error
 eval/query/join/joins.ion::joins::selectCrossProduct#coerce
 eval/query/join/joins.ion::joins::selectCrossProduct#error
+eval/query/limitoffset.ion::limit_offset::limit 1 offset 1#coerce
+eval/query/limitoffset.ion::limit_offset::limit 1 offset 1#error
+eval/query/limitoffset.ion::limit_offset::limit 10 offset 1#coerce
+eval/query/limitoffset.ion::limit_offset::limit 10 offset 1#error
+eval/query/limitoffset.ion::limit_offset::limit 10 offset 10#coerce
+eval/query/limitoffset.ion::limit_offset::limit 10 offset 10#error
+eval/query/limitoffset.ion::limit_offset::offset -1#coerce
+eval/query/limitoffset.ion::limit_offset::offset -1#error
+eval/query/limitoffset.ion::limit_offset::offset 0#coerce
+eval/query/limitoffset.ion::limit_offset::offset 0#error
+eval/query/limitoffset.ion::limit_offset::offset 1#coerce
+eval/query/limitoffset.ion::limit_offset::offset 1#error
+eval/query/limitoffset.ion::limit_offset::offset 1-2#coerce
+eval/query/limitoffset.ion::limit_offset::offset 1-2#error
+eval/query/limitoffset.ion::limit_offset::offset 2#coerce
+eval/query/limitoffset.ion::limit_offset::offset 2#error
+eval/query/limitoffset.ion::limit_offset::offset 2*1#coerce
+eval/query/limitoffset.ion::limit_offset::offset 2*1#error
+eval/query/limitoffset.ion::limit_offset::offset 2+1#coerce
+eval/query/limitoffset.ion::limit_offset::offset 2+1#error
+eval/query/limitoffset.ion::limit_offset::offset 2-1#coerce
+eval/query/limitoffset.ion::limit_offset::offset 2-1#error
+eval/query/limitoffset.ion::limit_offset::offset 2/1#coerce
+eval/query/limitoffset.ion::limit_offset::offset 2/1#error
+eval/query/limitoffset.ion::limit_offset::offset 2^31#coerce
+eval/query/limitoffset.ion::limit_offset::offset 2^31#error
+eval/query/limitoffset.ion::limit_offset::offset 2^63#coerce
+eval/query/limitoffset.ion::limit_offset::offset 2^63#error
+eval/query/limitoffset.ion::limit_offset::offset <decimal>>#coerce
+eval/query/limitoffset.ion::limit_offset::offset <decimal>>#error
+eval/query/limitoffset.ion::limit_offset::offset <str>#coerce
+eval/query/limitoffset.ion::limit_offset::offset <str>#error
 eval/query/order-by.ion::alias::order by alias in nested sfw#coerce
 eval/query/order-by.ion::alias::order by alias in nested sfw#error
 eval/query/order-by.ion::alias::order by expression alias#coerce
@@ -3557,6 +3589,12 @@ eval/query/select/select-mysql.ion::select::MYSQL_SELECT_30#coerce
 eval/query/select/select-mysql.ion::select::MYSQL_SELECT_30#error
 eval/query/select/select-mysql.ion::select::MYSQL_SELECT_31#coerce
 eval/query/select/select-mysql.ion::select::MYSQL_SELECT_31#error
+eval/query/select/select-mysql.ion::select::MYSQL_SELECT_32#coerce
+eval/query/select/select-mysql.ion::select::MYSQL_SELECT_32#error
+eval/query/select/select-mysql.ion::select::MYSQL_SELECT_33#coerce
+eval/query/select/select-mysql.ion::select::MYSQL_SELECT_33#error
+eval/query/select/select-mysql.ion::select::MYSQL_SELECT_34#coerce
+eval/query/select/select-mysql.ion::select::MYSQL_SELECT_34#error
 eval/query/select/select-postgresql.ion::select::PG_SELECT_01#coerce
 eval/query/select/select-postgresql.ion::select::PG_SELECT_01#error
 eval/query/select/select-postgresql.ion::select::PG_SELECT_02#coerce
@@ -3661,6 +3699,8 @@ eval/query/select/select.ion::select_join::correlatedJoinWithoutLexicalScope#coe
 eval/query/select/select.ion::select_join::correlatedJoinWithoutLexicalScope#error
 eval/query/select/select.ion::select_join::joinWithShadowedGlobal#coerce
 eval/query/select/select.ion::select_join::joinWithShadowedGlobal#error
+eval/query/select/select.ion::select_join::nestedSelectJoinLimit#coerce
+eval/query/select/select.ion::select_join::nestedSelectJoinLimit#error
 eval/query/select/select.ion::select_join::nestedSelectJoinWithUnpivot#coerce
 eval/query/select/select.ion::select_join::nestedSelectJoinWithUnpivot#error
 eval/query/select/select.ion::select_join::selectCorrelatedJoin#coerce

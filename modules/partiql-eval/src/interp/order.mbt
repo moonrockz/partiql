@@ -4,30 +4,114 @@
 // body, the outer binding tuple with the element in `@plan.row_variable`.
 
 ///|
-/// A query with ORDER BY: the elements of its body, sorted, as a list.
+/// How many rows a LIMIT or OFFSET clause names. A value beyond Int64 is
+/// `Unbounded`: as an OFFSET it skips every row, as a LIMIT it keeps all.
+priv enum Count {
+  Upto(Int64)
+  Unbounded
+}
+
+///|
+/// The count of a LIMIT or OFFSET clause, evaluated once in `env` (plan
+/// ruling 3). No clause, and in permissive mode a value that is not an
+/// integer of at least 0, put no restriction (`None`); in strict mode such a
+/// value is a `TypeError`.
+fn clause_count(
+  clause : @plan.Expr?,
+  name : String,
+  env : Env,
+  ctx : Ctx,
+) -> Count? raise @plan.EvalError {
+  guard clause is Some(e) else { return None }
+  match unboxed(eval(e, env, ctx)) {
+    Int(n) if n >= 0L => Some(Upto(n))
+    BigInt(n) if n >= 0N => Some(Unbounded)
+    _ =>
+      match ctx.mode {
+        Permissive => None
+        Strict =>
+          raise TypeError(
+            message="\{name} must be a non-negative integer",
+            span=e.span(),
+          )
+      }
+  }
+}
+
+///|
+/// How many rows of a SELECT body a reader needs to pull to fill the window
+/// of `offset` and `limit`: all (`None`) if the limit is unbounded or absent.
+fn rows_needed(offset : Count?, limit : Count?) -> Int64? {
+  match (offset, limit) {
+    (_, Some(Upto(n))) =>
+      match offset {
+        None => Some(n)
+        Some(Upto(k)) if k <= 9223372036854775807L - n => Some(k + n)
+        _ => None
+      }
+    _ => None
+  }
+}
+
+///|
+/// The window of `items` after `offset` rows and up to `limit` rows.
+fn[T] window(items : Array[T], offset : Count?, limit : Count?) -> Array[T] {
+  let len = items.length().to_int64()
+  let start = match offset {
+    None => 0L
+    Some(Upto(n)) => if n < len { n } else { len }
+    Some(Unbounded) => len
+  }
+  let take = match limit {
+    Some(Upto(n)) => if n < len - start { n } else { len - start }
+    _ => len - start
+  }
+  if start == 0L && take == len {
+    return items
+  }
+  items[start.to_int():(start + take).to_int()].to_owned()
+}
+
+///|
+/// A query with ORDER BY, LIMIT or OFFSET: the elements of its body, sorted
+/// (a list), or only cut to the window (a bag). LIMIT and OFFSET are
+/// evaluated once, in the outer binding tuple, before the body. Without
+/// ORDER BY a SELECT body is read only as far as the window needs.
 fn query(
   e : @plan.Expr,
   env : Env,
   ctx : Ctx,
 ) -> @value.Value raise @plan.EvalError {
-  guard e is Query(body, order~, limit=_, offset=_, aliases~, _) else {
+  guard e is Query(body, order~, limit~, offset~, aliases~, _) else {
     return eval(e, env, ctx)
   }
+  let offset = clause_count(offset, "OFFSET", env, ctx)
+  let limit = clause_count(limit, "LIMIT", env, ctx)
   let pairs = match body {
-    Select(rel, projection, distinct~, _) =>
-      select_pairs(rel, projection, distinct, env, ctx).map(pair => {
+    Select(rel, projection, distinct~, _) => {
+      let upto = if order.is_empty() {
+        rows_needed(offset, limit)
+      } else {
+        None
+      }
+      select_pairs_upto(rel, projection, distinct, env, ctx, upto).map(pair => {
         let (row, v) = pair
         let keys_env = aliases.fold(init=row, (acc, name) => {
           Frame(name, output_attribute(v, name), acc)
         })
         (keys_env, v)
       })
+    }
     _ =>
       elements(eval(body, env, ctx)).map(v => {
         (Frame(@plan.row_variable, v, env), v)
       })
   }
-  List(sorted(pairs, order, ctx))
+  if order.is_empty() {
+    Bag(@value.Bag::new(window(pairs.map(pair => pair.1), offset, limit)))
+  } else {
+    List(window(sorted(pairs, order, ctx), offset, limit))
+  }
 }
 
 ///|

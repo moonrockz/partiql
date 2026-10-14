@@ -86,12 +86,9 @@ fn query_at(
   if q.with_ is [first, ..] {
     return unsupported("WITH (M4b2)", first.span)
   }
-  if q.limit is Some(e) {
-    return unsupported("LIMIT (M4b2)", e.span)
-  }
-  if q.offset is Some(e) {
-    return unsupported("OFFSET (M4b2)", e.span)
-  }
+  // LIMIT and OFFSET see the outer scope, not the variables of this query.
+  let limit = clause_at(q.limit, "LIMIT", scope, depth)
+  let offset = clause_at(q.offset, "OFFSET", scope, depth)
   // The body, the output names a sort key may use, and the scope of the
   // sort keys.
   let (body, aliases, keys_scope) = match q.body {
@@ -104,7 +101,7 @@ fn query_at(
     SetOp(op) => return unsupported("a set operation (M4b2)", op.span)
     Table(_) => return unsupported("TABLE (later)", q.span)
   }
-  if q.order_by.is_empty() {
+  if q.order_by.is_empty() && limit is None && offset is None {
     return body
   }
   let order = q.order_by.map(spec => {
@@ -120,7 +117,41 @@ fn query_at(
       nulls_first,
     }
   })
-  Query(body, order~, limit=None, offset=None, aliases~, q.span)
+  Query(body, order~, limit~, offset~, aliases~, q.span)
+}
+
+///|
+/// Whether `e` is an integer literal below 0: a minus sign on a literal.
+fn negative_literal(e : @ast.Expr) -> Bool {
+  match e.kind {
+    Unary(Neg, { kind: Lit(Int(text)), .. }) =>
+      text.iter().any(c => c >= '1' && c <= '9')
+    _ => false
+  }
+}
+
+///|
+/// Lowers a LIMIT or OFFSET expression in `scope`. A negative literal is a
+/// `DataError` in both modes (plan ruling 3).
+fn clause_at(
+  clause : @ast.Expr?,
+  name : String,
+  scope : Scope,
+  depth : Int32,
+) -> @plan.Expr? raise @plan.EvalError {
+  guard clause is Some(e) else { return None }
+  if negative_literal(e) {
+    raise DataError(message="\{name} must not be negative", span=e.span)
+  }
+  match e.kind {
+    // A count beyond Int64 is valid (OFFSET skips all rows, LIMIT keeps
+    // them all), so this literal is not range-checked.
+    Lit(Int(text)) =>
+      Some(
+        Const(@value.Value::integer(@bigint.BigInt::from_string(text)), e.span),
+      )
+    _ => Some(lower_at(e, scope, depth))
+  }
 }
 
 ///|
