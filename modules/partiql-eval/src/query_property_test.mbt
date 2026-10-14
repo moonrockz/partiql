@@ -670,27 +670,20 @@ test "law: OUTER operators equal the SQL operators on relations" {
   @quickcheck.check(
     (p : (RelText, RelText)) => {
       let (a, b) = p
-      let mut compared = 0
       for op in ["UNION", "INTERSECT", "EXCEPT"] {
         for quant in ["", " ALL", " DISTINCT"] {
           let outer = items_of(
             run("\{a.text()} OUTER \{op}\{quant} \{b.text()}"),
           )
           let sql = items_of(run("\{a.text()} \{op}\{quant} \{b.text()}"))
+          // the atoms share one type class, so neither form may raise
           match (outer, sql) {
-            (Some(o), Some(s)) => {
-              compared += 1
-              if !bag_eqg(o, s) {
-                return false
-              }
-            }
-            // the SQL form raised: nothing to compare
-            (Some(_), None) => ()
+            (Some(o), Some(s)) => if !bag_eqg(o, s) { return false }
             _ => return false
           }
         }
       }
-      compared >= 0
+      true
     },
     count=1000,
   )
