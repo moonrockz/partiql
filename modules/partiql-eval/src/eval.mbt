@@ -18,6 +18,13 @@ pub fn Bindings::of_tuple(tuple : @value.Tuple) -> Bindings {
 }
 
 ///|
+/// The bindings `entries`, in order. Unlike `of_tuple`, a global whose value
+/// is MISSING stays bound.
+pub fn Bindings::of_pairs(entries : Array[(String, @value.Value)]) -> Bindings {
+  { entries: entries.copy(), }
+}
+
+///|
 /// The bindings of an Ion struct, read as PartiQL-encoded Ion. A value that is
 /// not a struct is a `DataError`.
 pub fn Bindings::of_ion(value : @ion_core.IonValue) -> Bindings raise EvalError {

@@ -67,6 +67,19 @@ pub fn render(
 }
 
 ///|
+/// The rendered diagnostic of `message` at `span` (for example an evaluation
+/// error), in the layout of `render`.
+pub fn render_message(
+  message : String,
+  span : Span,
+  source : String,
+  name~ : String,
+  color~ : Bool = false,
+) -> String {
+  @diagnostic.render_message(message, span, source, name~, color~)
+}
+
+///|
 /// The 1-based line and code-point column of a UTF-16 offset.
 pub fn position(source : String, offset : Int32) -> Position {
   @diagnostic.position(source, offset)

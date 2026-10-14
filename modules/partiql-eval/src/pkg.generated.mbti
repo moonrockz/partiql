@@ -21,6 +21,7 @@ pub struct Bindings {
 }
 pub fn Bindings::empty() -> Self
 pub fn Bindings::of_ion(@ion.IonValue) -> Self raise @plan.EvalError
+pub fn Bindings::of_pairs(Array[(String, @partiql-value.Value)]) -> Self
 pub fn Bindings::of_tuple(@partiql-value.Tuple) -> Self
 
 // Type aliases
