@@ -119,7 +119,8 @@ fn push_operands(
     | Not(x, _)
     | Subquery(x, _, _)
     | BoolTest(x, _, negated=_, _)
-    | IsType(x, _, negated=_, _) => push(x)
+    | IsType(x, _, negated=_, _)
+    | CollAggregate(_, distinct=_, x, _) => push(x)
     Binary(_, _, _, _) | And(_, _, _) | Or(_, _, _) => {
       let mut leaf = e
       while true {

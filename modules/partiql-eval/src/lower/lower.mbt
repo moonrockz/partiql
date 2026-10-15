@@ -386,9 +386,21 @@ fn lower_at(
     | Position(_, _)
     | Overlay(_, ..)
     | DateAdd(_, _, _)
-    | DateDiff(_, _, _)
-    | Call(_, _, ..)
-    | CallStar(_) => unsupported("a function call (M4d)", span)
+    | DateDiff(_, _, _) => unsupported("a function call (M4d)", span)
+    Call(id, args, quantifier~) =>
+      match aggregate_function(id) {
+        Some((kind, true)) =>
+          coll_call(kind, id, args, quantifier, scope, depth, span)
+        Some((_, false)) => sql_aggregate_call(e, scope, depth)
+        None => unsupported("a function call (M4d)", span)
+      }
+    CallStar(id) =>
+      match aggregate_function(id) {
+        Some((_, true)) =>
+          raise DataError(message="\{id.text} does not take *", span~)
+        Some((_, false)) => sql_aggregate_call(e, scope, depth)
+        None => unsupported("a function call (M4d)", span)
+      }
   }
 }
 

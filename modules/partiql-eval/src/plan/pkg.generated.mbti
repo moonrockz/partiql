@@ -21,6 +21,16 @@ pub(all) suberror EvalError {
 } derive(Eq, @debug.Debug)
 
 // Types and methods
+pub(all) enum AggregateKind {
+  Count
+  Sum
+  Avg
+  Min
+  Max
+  Any
+  Every
+} derive(Eq, @debug.Debug)
+
 pub(all) enum Expr {
   Const(@partiql-value.Value, @ast.Span)
   Global(String, delimited~ : Bool, @ast.Span)
@@ -52,6 +62,7 @@ pub(all) enum Expr {
   Query(Expr, order~ : Array[SortKey], limit~ : Expr?, offset~ : Expr?, aliases~ : Array[String], @ast.Span)
   SetOp(@ast.SetOpKind, all~ : Bool, outer~ : Bool, corresponding~ : @ast.Corresponding?, Expr, Expr, @ast.Span)
   With(Array[(String, Expr)], Expr, @ast.Span)
+  CollAggregate(AggregateKind, distinct~ : Bool, Expr, @ast.Span)
 } derive(@debug.Debug)
 pub fn Expr::span(Self) -> @ast.Span
 

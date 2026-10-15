@@ -98,6 +98,9 @@ pub(all) enum Expr {
   /// `WITH name AS (query), ... body`: each binding is evaluated once, in
   /// order; later bindings and the body see the earlier ones as variables.
   With(Array[(String, Expr)], Expr, @ast.Span)
+  /// `COLL_f(e)`: the aggregate of the elements of the collection `e`; NULL
+  /// for NULL, MISSING for MISSING, a type failure for any other value.
+  CollAggregate(AggregateKind, distinct~ : Bool, Expr, @ast.Span)
 } derive(Debug)
 
 ///|
@@ -220,7 +223,8 @@ pub fn Expr::span(self : Expr) -> @ast.Span {
     | Subquery(_, _, span)
     | Query(_, order=_, limit=_, offset=_, aliases=_, span)
     | SetOp(_, all=_, outer=_, corresponding=_, _, _, span)
-    | With(_, _, span) => span
+    | With(_, _, span)
+    | CollAggregate(_, distinct=_, _, span) => span
   }
 }
 
@@ -235,3 +239,15 @@ pub fn Rel::span(self : Rel) -> @ast.Span {
     | Let(_, _, span) => span
   }
 }
+
+///|
+/// An aggregate function (spec M4c §3.3). SOME is `Any`.
+pub(all) enum AggregateKind {
+  Count
+  Sum
+  Avg
+  Min
+  Max
+  Any
+  Every
+} derive(Debug, Eq)
