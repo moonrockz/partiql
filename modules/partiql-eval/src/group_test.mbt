@@ -545,3 +545,49 @@ test "key expressions inside subqueries and as path prefixes" {
     .to_equal(bag_of([tuple([("x", Int(5))])]))
   })
 }
+
+///|
+test "a key expression in a FROM source finds a global first" {
+  let globals = @eval.Bindings::of_tuple(
+    @value.Tuple::new([
+      ("x", List([Int(7)])),
+      ("t", Tuple(@value.Tuple::new([("a", List([Int(9)]))]))),
+    ]),
+  )
+  let with_globals = (source : String) => {
+    @eval.evaluate_text(source, env=globals)
+  }
+  @expect.expect_all(soft => {
+    // A FROM source name finds a global before a variable (partiql-tests
+    // select.ion joinWithShadowedGlobal); a key stands for a variable.
+    soft
+    .expect(
+      with_globals(
+        "SELECT VALUE (SELECT VALUE y FROM x AS y) FROM [1] AS x GROUP BY x AS k",
+      ),
+    )
+    .to_equal(bag_of([bag_of([Int(7)])]))
+    soft
+    .expect(
+      with_globals(
+        "SELECT VALUE (SELECT VALUE y FROM t.a AS y) FROM [{'a': [1]}] AS t GROUP BY t.a",
+      ),
+    )
+    .to_equal(bag_of([bag_of([Int(9)])]))
+    // Without such a global, the source is the key value.
+    soft
+    .expect(
+      ev(
+        "SELECT VALUE (SELECT VALUE y FROM x AS y) FROM [[1, 2]] AS x GROUP BY x AS k",
+      ),
+    )
+    .to_equal(bag_of([bag_of([Int(1), Int(2)])]))
+    soft
+    .expect(
+      ev(
+        "SELECT VALUE (SELECT VALUE y FROM t.a AS y) FROM [{'a': [1]}] AS t GROUP BY t.a",
+      ),
+    )
+    .to_equal(bag_of([bag_of([Int(1)])]))
+  })
+}

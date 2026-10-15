@@ -113,6 +113,10 @@ pub(all) enum Expr {
     group~ : String,
     @ast.Span
   )
+  /// A key expression in a FROM source: a name there finds a global before
+  /// a variable, so `otherwise` (the expression without key variables) when
+  /// one of the names `globals` (name, delimited) is a global, else `key`.
+  GlobalsFirst(Array[(String, Bool)], key~ : Expr, otherwise~ : Expr, @ast.Span)
 } derive(Debug)
 
 ///|
@@ -243,7 +247,8 @@ pub fn Expr::span(self : Expr) -> @ast.Span {
     | SetOp(_, all=_, outer=_, corresponding=_, _, _, span)
     | With(_, _, span)
     | CollAggregate(_, distinct=_, _, span)
-    | Aggregate(_, distinct=_, _, members=_, group=_, span) => span
+    | Aggregate(_, distinct=_, _, members=_, group=_, span)
+    | GlobalsFirst(_, key=_, otherwise=_, span) => span
   }
 }
 

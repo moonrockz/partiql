@@ -240,7 +240,10 @@ fn lower_chain(
     _ => false
   }
   let mut result = match key {
-    Some(name) => @plan.Expr::Local(name, nodes[links.length()].span)
+    Some(name) => {
+      let node = nodes[links.length()]
+      keyed(node, Local(name, node.span), scope, depth)
+    }
     None =>
       if leaf_is_row {
         row_at(leaf, scope, depth)
@@ -312,7 +315,7 @@ fn lower_at(
   // A chain is matched in `lower_chain`, link by link.
   if !(e.kind is (Binary(_, _, _) | And(_, _) | Or(_, _))) &&
     key_variable(e, scope) is Some(name) {
-    return Local(name, span)
+    return keyed(e, Local(name, span), scope, depth)
   }
   match e.kind {
     Lit(Ion(_, v)) if depth + ion_depth(v) > max_depth =>
@@ -377,7 +380,12 @@ fn lower_at(
       match key_prefix(base, steps, span, scope) {
         Some((name, n)) =>
           Path(
-            Local(name, span),
+            keyed(
+              { kind: Path(base, Array::from_iter(steps[0:n].iter())), span, },
+              Local(name, span),
+              scope,
+              depth,
+            ),
             Array::from_iter(steps[n:].iter()).map(s => {
               lower_step(s, scope, depth)
             }),

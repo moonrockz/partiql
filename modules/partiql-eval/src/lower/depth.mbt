@@ -147,7 +147,9 @@ fn push_operands(
       push(low)
       push(high)
     }
-    In(x, c, negated=_, _) | NullIf(x, c, _) => {
+    In(x, c, negated=_, _)
+    | NullIf(x, c, _)
+    | GlobalsFirst(_, key=x, otherwise=c, _) => {
       push(x)
       push(c)
     }

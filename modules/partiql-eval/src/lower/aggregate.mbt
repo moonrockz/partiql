@@ -491,3 +491,28 @@ fn attribute_forms(id : @ast.Identifier, variable : String) -> Array[@ast.Expr] 
     @ast.Expr::{ kind: Path(base, [Field(id)]), span: id.span, }
   })
 }
+
+///|
+/// The plan for `e` when it repeats a key: `key`. In a FROM source a name
+/// finds a global before a variable (`GlobalOrLocal`), so there it is `e`
+/// without key variables when one of its names is a global.
+fn keyed(
+  e : @ast.Expr,
+  key : @plan.Expr,
+  scope : Scope,
+  depth : Int32,
+) -> @plan.Expr raise @plan.EvalError {
+  if !scope.globals_first {
+    return key
+  }
+  let globals = []
+  let pending = [e]
+  while pending.pop() is Some(x) {
+    if x.kind is VarRef(id, qualified=false) {
+      globals.push((id.text, id.delimited))
+    }
+    pending.append(ast_operands(x))
+  }
+  let plain = { ..scope, grouped: false, under_group: false, }
+  GlobalsFirst(globals, key~, otherwise=lower_at(e, plain, depth), e.span)
+}
