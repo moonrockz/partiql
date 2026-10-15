@@ -237,3 +237,44 @@ pub fn concat(
     _ => raise TypeFailure("|| on a value that is not a string")
   }
 }
+
+///|
+/// `ABS(x)`: `+x` when x >= 0, else `-x`, so an integer result outside Int64
+/// is an overflow as for `-x`. A decimal keeps its exponent; a negative zero
+/// becomes positive (partiql-tests ion/abs.ion). An interval gets sign `+`.
+pub fn abs(args : Array[@value.Value]) -> @value.Value raise OpFailure {
+  apply("ABS", [Numeric], args, xs => {
+    let v = xs[0]
+    match v {
+      Int(n) =>
+        if n < 0L {
+          whole_value(-@bigint.BigInt::from_int64(n))
+        } else {
+          v
+        }
+      BigInt(n) => if is_negative_int(n) { whole_value(-n) } else { v }
+      Decimal(x) =>
+        Decimal(@ion_core.Decimal::new(abs_int(x.coefficient()), x.exponent()))
+      Float(f) => Float(f.abs())
+      IntervalYM(i) if i.is_negative() => interval_abs(v)
+      IntervalDT(i) if i.is_negative() => interval_abs(v)
+      IntervalYM(_) | IntervalDT(_) => v
+      _ => raise TypeFailure("ABS of a value that is not a number")
+    }
+  })
+}
+
+///|
+fn interval_abs(v : @value.Value) -> @value.Value raise OpFailure {
+  match interval_neg(v) {
+    Some(x) => x
+    None => raise TypeFailure("ABS of a value that is not an interval")
+  }
+}
+
+///|
+/// `MOD(a, b)`: the remainder with the sign of the dividend, for integers and
+/// scale-0 decimals (SQL 6.28). A zero divisor is a `DataFailure`.
+pub fn modulo(args : Array[@value.Value]) -> @value.Value raise OpFailure {
+  apply("MOD", [Exact, Exact], args, xs => rem(xs[0], xs[1]))
+}

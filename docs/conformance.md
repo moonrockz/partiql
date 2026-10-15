@@ -66,9 +66,9 @@ per assertion and mode: `<id>#coerce` or `<id>#error`.
   `<case id>[<i>]#coerce` and `<case id>[<i>]#error`, with `i` from 0.
 
 Two cases (`eval/primitives/map.ion`, lines 850 and 1194) expect a DATE
-written as a plain Ion timestamp. Line 850 needs `map_keys` and is not
-applicable. Line 1194 ("unpivot map with date keys") runs since M4b1 and
-fails in both modes, because the comparison does not treat a DATE and a
+written as a plain Ion timestamp. Line 1194 ("unpivot map with date keys")
+runs since M4b1 and line 850 ("map_keys with date keys") since M4d1. Both
+fail in both modes, because the comparison does not treat a DATE and a
 midnight UTC TIMESTAMP as equal yet.
 
 A test case whose `statement` names an `equiv_class` is checked once per
@@ -132,7 +132,7 @@ files, so the codec must accept both.
 After M1 (data model), M1b (MAP and graph), M2 (parser), M2b (graph
 MATCH), M3a (printer), M3b (pretty layout), M3d (error recovery), M4a
 (expression evaluation), M4b1 (query evaluation core), M4b2 (queries,
-part two) and M4c (grouping and aggregates):
+part two), M4c (grouping and aggregates) and M4d1 (built-in functions):
 
 | Check | Passed | Total | N/A |
 |---|---|---|---|
@@ -143,7 +143,7 @@ part two) and M4c (grouping and aggregates):
 | `print-roundtrip` | 5310 | 5313 | 3 |
 | `pretty-roundtrip` | 5310 | 5313 | 3 |
 | `recovery` | 5410 | 5410 | 0 |
-| `eval` | 5211 | 9960 | 4649 |
+| `eval` | 7287 | 9960 | 2567 |
 
 The 3 `eval-parse` failures are corpus defects (bead `partiql-zhj.9`):
 
@@ -157,11 +157,11 @@ The 3 `eval-parse` failures are corpus defects (bead `partiql-zhj.9`):
 
 ### The `eval` check
 
-Of 9960 assertions, 5211 pass and 4649 are not applicable: they need
-functions, CAST, FULL JOIN, graph MATCH or `?`, which later parts of M4 add.
-100 fail. M4b1 raised the passes from 2952 to 3719, M4b2 raised them to 4043
-(324 more), with the `eval-equiv` cases now evaluated, and M4c raised them to
-5211 (1168 more). To list the
+Of 9960 assertions, 7287 pass and 2567 are not applicable: they need CAST,
+the datetime functions, FULL JOIN, graph MATCH or `?`, which later parts of
+M4 add. 106 fail. M4b1 raised the passes from 2952 to 3719, M4b2 raised them
+to 4043 (324 more), with the `eval-equiv` cases now evaluated, M4c raised
+them to 5211 (1168 more), and M4d1 raised them to 7287 (2076 more). To list the
 failures, run `PARTIQL_CONFORMANCE_SHOW=eval mise run test:conformance`. Each
 case fails in both modes, except where a reason below says otherwise. The
 reasons:
@@ -204,13 +204,11 @@ reasons:
 - **DECIMAL(p,s) IS-type (4 ids).** `1.000 IS DECIMAL(3,3)` and
   `123.456 IS DECIMAL(7,3)` expect results that do not agree with the rules for
   precision and scale that the other cases of the corpus follow.
-- **Map key match across numeric types (2 ids).** "access map with
-  cross-type cast integer to decimal key" is `MAP { 1.0: 'one', 2.0: 'two' }[1]`
-  and expects `'one'`. The evaluator does not match map keys across numeric
-  types yet.
 - **DATE against Ion timestamp (2 ids).** "unpivot map with date keys" gives
   DATE keys, and the corpus writes them as Ion timestamps. The comparison of
   the harness does not treat a DATE and a midnight UTC TIMESTAMP as equal.
+  "map_keys with date keys" fails for the same reason since M4d1 (counted
+  under M4d1).
 - **Ambiguous names in strict mode (3 ids).** "repeated field on Ion struct is
   ambiguous" (2 ids) and "path expression with ambiguous table alias
   (lowercase, unquoted)" expect a failure when two names differ only in case.
@@ -299,8 +297,39 @@ M4c adds 30 failing ids in five groups:
   above). The same cases in the main `group-by.ion` expect the failure and
   pass.
 
-The groups add up to 100 ids (46 from M4b1: 6 + 3 + 1 + 6 + 14 + 4 + 4 + 2 +
-2 + 3 + 1; 24 from M4b2: 17 + 5 + 2; and 30 from M4c: 8 + 4 + 2 + 12 + 4).
+### Built-in functions
+
+M4d1 evaluates the built-in scalar functions CHAR_LENGTH (CHARACTER_LENGTH),
+OCTET_LENGTH, BIT_LENGTH, UPPER, LOWER, TRIM, SUBSTRING, POSITION, OVERLAY,
+TEXT_REPLACE, ABS, MOD, SIZE, CARDINALITY, EXISTS, TUPLEUNION and the RFC 0104
+map functions MAP_GET, MAP_CONTAINS_KEY, MAP_KEYS, MAP_VALUES and
+MAP_ENTRIES. Map keys now match by value within a type family, also for
+`m[k]` (`MAP { 1.0: 'one' }[1]` is `'one'`). Every assertion of
+`char_length.ion`, `octet_length.ion`, `bit_length.ion`, `lower.ion`,
+`trim.ion`, `substring.ion`, `position.ion`, `overlay.ion`, `abs.ion`,
+`ion/abs.ion`, `mod.ion`, `ion/exists.ion` and the extended `size.ion` and
+`text_replace.ion` passes. The map cases that stay not applicable need CAST
+(M4d2).
+
+M4d1 adds 8 failing ids in three groups, and the 2 ids of "Map key match
+across numeric types" (M4b1) now pass:
+
+- **Undefined name in a struct key (4 ids).** `exists.ion` "exists valid
+  cases" with `exists({a: 1})` and `exists({a: null})` write an Ion struct as
+  PartiQL. A struct key is an expression, so `a` is an undefined variable,
+  as in "coll_count without group by" (M4c).
+- **Unicode version (2 ids).** `upper.ion` "upper valid cases{Latin
+  Extended-B and IPA Extensions}" expects U+019B (LATIN SMALL LETTER LAMBDA
+  WITH STROKE) to stay unchanged. Unicode 16.0 gave it the uppercase U+A7DC,
+  and the evaluator uses the Unicode 18.0 case mappings
+  (`moonbit-community/unicode-data`). The other 286 UPPER and 288 LOWER
+  assertions pass.
+- **DATE against Ion timestamp (2 ids).** `map.ion` "map_keys with date keys"
+  (line 850): see "DATE against Ion timestamp" above.
+
+The groups add up to 106 ids (44 from M4b1: 6 + 3 + 1 + 6 + 14 + 4 + 4 + 2 +
+3 + 1; 24 from M4b2: 17 + 5 + 2; 30 from M4c: 8 + 4 + 2 + 12 + 4; and 8 from
+M4d1: 4 + 2 + 2).
 
 Every corpus value passes `codec`, including the `$map` (M1b MAP) and
 `$graph` (M1b graph) values.

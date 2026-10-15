@@ -9,6 +9,8 @@ import {
 }
 
 // Values
+pub fn abs(Array[@partiql-value.Value]) -> @partiql-value.Value raise OpFailure
+
 pub fn add(@partiql-value.Value, @partiql-value.Value) -> @partiql-value.Value raise OpFailure
 
 pub fn all_elements(@partiql-value.Value) -> Array[@partiql-value.Value] raise OpFailure
@@ -23,7 +25,13 @@ pub fn avg_values(Iter[@partiql-value.Value], distinct~ : Bool) -> @partiql-valu
 
 pub fn binary(@ast.BinaryOp, @partiql-value.Value, @partiql-value.Value) -> @partiql-value.Value raise OpFailure
 
+pub fn bit_length(Array[@partiql-value.Value]) -> @partiql-value.Value raise OpFailure
+
 pub fn bool_test(@partiql-value.Value, Bool?, negated~ : Bool) -> Bool
+
+pub fn cardinality(Array[@partiql-value.Value]) -> @partiql-value.Value raise OpFailure
+
+pub fn char_length(Array[@partiql-value.Value]) -> @partiql-value.Value raise OpFailure
 
 pub fn concat(@partiql-value.Value, @partiql-value.Value) -> @partiql-value.Value raise OpFailure
 
@@ -34,6 +42,8 @@ pub fn div(@partiql-value.Value, @partiql-value.Value) -> @partiql-value.Value r
 pub fn equal(@partiql-value.Value, @partiql-value.Value) -> @partiql-value.Value
 
 pub fn every_values(Iter[@partiql-value.Value], distinct~ : Bool) -> @partiql-value.Value raise OpFailure
+
+pub fn exists(Array[@partiql-value.Value]) -> @partiql-value.Value raise OpFailure
 
 pub fn field(@partiql-value.Value, String, delimited~ : Bool) -> @partiql-value.Value raise OpFailure
 
@@ -53,9 +63,23 @@ pub fn less_eq(@partiql-value.Value, @partiql-value.Value) -> @partiql-value.Val
 
 pub fn like(@partiql-value.Value, @partiql-value.Value, @partiql-value.Value?) -> @partiql-value.Value raise OpFailure
 
+pub fn lower(Array[@partiql-value.Value]) -> @partiql-value.Value raise OpFailure
+
+pub fn map_contains_key(Array[@partiql-value.Value]) -> @partiql-value.Value raise OpFailure
+
+pub fn map_entries(Array[@partiql-value.Value]) -> @partiql-value.Value raise OpFailure
+
+pub fn map_get(Array[@partiql-value.Value]) -> @partiql-value.Value raise OpFailure
+
+pub fn map_keys(Array[@partiql-value.Value]) -> @partiql-value.Value raise OpFailure
+
+pub fn map_values(Array[@partiql-value.Value]) -> @partiql-value.Value raise OpFailure
+
 pub fn max_values(Iter[@partiql-value.Value], distinct~ : Bool) -> @partiql-value.Value raise OpFailure
 
 pub fn min_values(Iter[@partiql-value.Value], distinct~ : Bool) -> @partiql-value.Value raise OpFailure
+
+pub fn modulo(Array[@partiql-value.Value]) -> @partiql-value.Value raise OpFailure
 
 pub fn mul(@partiql-value.Value, @partiql-value.Value) -> @partiql-value.Value raise OpFailure
 
@@ -65,9 +89,15 @@ pub fn not_(@partiql-value.Value) -> @partiql-value.Value raise OpFailure
 
 pub fn not_equal(@partiql-value.Value, @partiql-value.Value) -> @partiql-value.Value
 
+pub fn octet_length(Array[@partiql-value.Value]) -> @partiql-value.Value raise OpFailure
+
 pub fn or_(@partiql-value.Value, @partiql-value.Value) -> @partiql-value.Value raise OpFailure
 
+pub fn overlay(Array[@partiql-value.Value]) -> @partiql-value.Value raise OpFailure
+
 pub fn parse_decimal(String) -> @ion.Decimal?
+
+pub fn position(Array[@partiql-value.Value]) -> @partiql-value.Value raise OpFailure
 
 pub fn rem(@partiql-value.Value, @partiql-value.Value) -> @partiql-value.Value raise OpFailure
 
@@ -77,9 +107,21 @@ pub fn shift_time(@partiql-value.Time, Int64) -> @partiql-value.Time raise OpFai
 
 pub fn shift_timestamp(@partiql-value.Timestamp, Int64) -> @partiql-value.Timestamp raise OpFailure
 
+pub fn size(Array[@partiql-value.Value]) -> @partiql-value.Value raise OpFailure
+
 pub fn sub(@partiql-value.Value, @partiql-value.Value) -> @partiql-value.Value raise OpFailure
 
+pub fn substring(Array[@partiql-value.Value]) -> @partiql-value.Value raise OpFailure
+
 pub fn sum_values(Iter[@partiql-value.Value], distinct~ : Bool) -> @partiql-value.Value raise OpFailure
+
+pub fn text_replace(Array[@partiql-value.Value]) -> @partiql-value.Value raise OpFailure
+
+pub fn trim(@ast.TrimSpec, Array[@partiql-value.Value]) -> @partiql-value.Value raise OpFailure
+
+pub fn tuple_union(Array[@partiql-value.Value]) -> @partiql-value.Value raise OpFailure
+
+pub fn upper(Array[@partiql-value.Value]) -> @partiql-value.Value raise OpFailure
 
 // Errors
 pub(all) suberror OpFailure {

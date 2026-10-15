@@ -56,6 +56,7 @@ pub(all) enum Expr {
   Case(operand~ : Expr?, branches~ : Array[(Expr, Expr)], default~ : Expr?, @ast.Span)
   Coalesce(Array[Expr], @ast.Span)
   NullIf(Expr, Expr, @ast.Span)
+  Call(Function, Array[Expr], @ast.Span)
   Local(String, @ast.Span)
   GlobalOrLocal(String, variable~ : String, delimited~ : Bool, @ast.Span)
   Implicit(String, delimited~ : Bool, locals~ : Array[String], @ast.Span)
@@ -69,6 +70,31 @@ pub(all) enum Expr {
   GlobalsFirst(Array[(String, Bool)], key~ : Expr, otherwise~ : Expr, @ast.Span)
 } derive(@debug.Debug)
 pub fn Expr::span(Self) -> @ast.Span
+
+pub(all) enum Function {
+  CharLength
+  OctetLength
+  BitLength
+  Size
+  Cardinality
+  Exists
+  TupleUnion
+  MapGet
+  MapContainsKey
+  MapKeys
+  MapValues
+  MapEntries
+  Abs
+  Mod
+  Trim(@ast.TrimSpec)
+  Substring
+  Position
+  Overlay
+  TextReplace
+  Upper
+  Lower
+} derive(Eq, @debug.Debug)
+pub fn Function::name(Self) -> String
 
 pub(all) enum Grouping {
   All

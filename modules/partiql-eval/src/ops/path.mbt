@@ -60,14 +60,11 @@ pub fn index(
     (Tuple(_) as t, String(name)) if named => field(t, name, delimited=true)
     (Map(_), Null) => Null
     (Map(_), Missing) => Missing
-    (Map(m), key) => {
-      for entry in m.entries() {
-        if entry.0 == key {
-          return entry.1
-        }
+    (Map(m), key) =>
+      match map_lookup(m, key) {
+        Some(v) => v
+        None => raise TypeFailure("no such key in the map")
       }
-      raise TypeFailure("no such key in the map")
-    }
     _ => raise TypeFailure("a value that cannot be indexed that way")
   }
 }

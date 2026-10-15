@@ -53,6 +53,9 @@ pub(all) enum Expr {
   )
   Coalesce(Array[Expr], @ast.Span)
   NullIf(Expr, Expr, @ast.Span)
+  /// A built-in scalar function (spec M4d1 §2), with its arguments in the
+  /// positions `Function` documents.
+  Call(Function, Array[Expr], @ast.Span)
   /// A FROM variable, by the name it was declared with.
   Local(String, @ast.Span)
   /// A name in a FROM source: the global of that name if there is one, else
@@ -238,6 +241,7 @@ pub fn Expr::span(self : Expr) -> @ast.Span {
     | Case(operand=_, branches=_, default=_, span)
     | Coalesce(_, span)
     | NullIf(_, _, span)
+    | Call(_, _, span)
     | Local(_, span)
     | GlobalOrLocal(_, variable=_, delimited=_, span)
     | Implicit(_, delimited=_, locals=_, span)
@@ -291,3 +295,67 @@ pub(all) enum Grouping {
 /// The group variable of a grouped query without GROUP AS. No identifier
 /// can name it.
 pub let group_variable : String = "\u{0}group"
+
+///|
+/// A built-in scalar function (spec M4d1). One argument unless a variant
+/// says otherwise.
+pub(all) enum Function {
+  CharLength
+  OctetLength
+  BitLength
+  Size
+  Cardinality
+  Exists
+  /// Zero or more tuples.
+  TupleUnion
+  /// [map, key]
+  MapGet
+  /// [map, key]
+  MapContainsKey
+  MapKeys
+  MapValues
+  MapEntries
+  Abs
+  /// [dividend, divisor]
+  Mod
+  /// [target] or [characters, target] (source order)
+  Trim(@ast.TrimSpec)
+  /// [value, start] or [value, start, length]
+  Substring
+  /// [needle, haystack]
+  Position
+  /// [value, placing, from] or [value, placing, from, for]
+  Overlay
+  /// [value, pattern, replacement]
+  TextReplace
+  Upper
+  Lower
+} derive(Debug, Eq)
+
+///|
+/// The SQL name, for messages.
+pub fn Function::name(self : Function) -> String {
+  match self {
+    CharLength => "CHAR_LENGTH"
+    OctetLength => "OCTET_LENGTH"
+    BitLength => "BIT_LENGTH"
+    Size => "SIZE"
+    Cardinality => "CARDINALITY"
+    Exists => "EXISTS"
+    TupleUnion => "TUPLEUNION"
+    MapGet => "MAP_GET"
+    MapContainsKey => "MAP_CONTAINS_KEY"
+    MapKeys => "MAP_KEYS"
+    MapValues => "MAP_VALUES"
+    MapEntries => "MAP_ENTRIES"
+    Abs => "ABS"
+    Mod => "MOD"
+    Trim(_) => "TRIM"
+    Substring => "SUBSTRING"
+    Position => "POSITION"
+    Overlay => "OVERLAY"
+    TextReplace => "TEXT_REPLACE"
+    Upper => "UPPER"
+    Lower => "LOWER"
+  }
+}

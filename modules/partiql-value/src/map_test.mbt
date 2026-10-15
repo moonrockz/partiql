@@ -185,3 +185,40 @@ test "maps order by sorted entries, after bags" {
     .to_equal(0)
   })
 }
+
+///|
+test "map constructor rejects keys outside the key type family" {
+  let blob = @value.Value::Blob(b"hi")
+  @expect.expect_all(soft => {
+    soft
+    .expect_call(() => map_of([(i(1), i(2))], key_type=String))
+    .to_raise_matching(invalid_key, description="InvalidKey")
+    soft
+    .expect_call(() => map_of([(blob, i(3))], key_type=String))
+    .to_raise_matching(invalid_key, description="InvalidKey")
+    soft
+    .expect_call(() => map_of([(s("1"), i(1))], key_type=Integer))
+    .to_raise_matching(invalid_key, description="InvalidKey")
+    // Numbers of any kind share the numeric key types.
+    soft.expect(map_of([(i(1), s("x"))], key_type=Decimal).length()).to_equal(1)
+    soft
+    .expect(
+      map_of([(@value.Value::Float(1.5), s("x"))], key_type=Integer).length(),
+    )
+    .to_equal(1)
+  })
+}
+
+///|
+test "MapType::admits groups the key types into families" {
+  @expect.expect_all(soft => {
+    soft.expect(@value.MapType::Varchar.admits(s("a"))).to_be_true()
+    soft.expect(@value.MapType::TinyInt.admits(i(1))).to_be_true()
+    soft.expect(@value.MapType::Double.admits(i(1))).to_be_true()
+    soft.expect(@value.MapType::Bool.admits(i(1))).to_be_false()
+    soft
+    .expect(@value.MapType::String.admits(@value.Value::Blob(b"")))
+    .to_be_false()
+    soft.expect(@value.MapType::Dynamic.admits(s("a"))).to_be_false()
+  })
+}
