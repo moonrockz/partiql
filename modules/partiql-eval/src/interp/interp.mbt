@@ -551,6 +551,16 @@ fn eval(
       subquery(eval(query, env, ctx), use_, ctx, span)
     Query(_, order=_, limit=_, offset=_, aliases=_, _) => query(e, env, ctx)
     SetOp(_, all=_, outer=_, corresponding=_, _, _, _) => set_op(e, env, ctx)
+    Aggregate(kind, distinct~, arg, members~, group~, span) =>
+      aggregate(kind, distinct, arg, members, group, env, ctx, span)
+    GlobalsFirst(globals, key~, otherwise~, _) =>
+      if globals.iter().any(g => find_global(ctx.globals, g.0, g.1) is Some(_)) {
+        eval(otherwise, env, ctx)
+      } else {
+        eval(key, env, ctx)
+      }
+    CollAggregate(kind, distinct~, arg, span) =>
+      coll_aggregate(kind, distinct, eval(arg, env, ctx), ctx, span)
     With(bindings, body, _) => {
       let mut bound = env
       for binding in bindings {

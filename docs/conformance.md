@@ -131,8 +131,8 @@ files, so the codec must accept both.
 
 After M1 (data model), M1b (MAP and graph), M2 (parser), M2b (graph
 MATCH), M3a (printer), M3b (pretty layout), M3d (error recovery), M4a
-(expression evaluation), M4b1 (query evaluation core) and M4b2 (queries,
-part two):
+(expression evaluation), M4b1 (query evaluation core), M4b2 (queries,
+part two) and M4c (grouping and aggregates):
 
 | Check | Passed | Total | N/A |
 |---|---|---|---|
@@ -143,7 +143,7 @@ part two):
 | `print-roundtrip` | 5310 | 5313 | 3 |
 | `pretty-roundtrip` | 5310 | 5313 | 3 |
 | `recovery` | 5410 | 5410 | 0 |
-| `eval` | 4043 | 9960 | 5847 |
+| `eval` | 5211 | 9960 | 4649 |
 
 The 3 `eval-parse` failures are corpus defects (bead `partiql-zhj.9`):
 
@@ -157,10 +157,11 @@ The 3 `eval-parse` failures are corpus defects (bead `partiql-zhj.9`):
 
 ### The `eval` check
 
-Of 9960 assertions, 4043 pass and 5847 are not applicable: they need
-grouping, functions, CAST, FULL JOIN, graph MATCH or `?`, which later parts of
-M4 add. 70 fail. M4b1 raised the passes from 2952 to 3719 and M4b2 raised
-them to 4043 (324 more), with the `eval-equiv` cases now evaluated. To list the
+Of 9960 assertions, 5211 pass and 4649 are not applicable: they need
+functions, CAST, FULL JOIN, graph MATCH or `?`, which later parts of M4 add.
+100 fail. M4b1 raised the passes from 2952 to 3719, M4b2 raised them to 4043
+(324 more), with the `eval-equiv` cases now evaluated, and M4c raised them to
+5211 (1168 more). To list the
 failures, run `PARTIQL_CONFORMANCE_SHOW=eval mise run test:conformance`. Each
 case fails in both modes, except where a reason below says otherwise. The
 reasons:
@@ -244,8 +245,62 @@ M4b2 adds 24 failing ids in three groups:
   `[1]#coerce` expect `SELECT * FROM UNPIVOT x AS v AT n` to include the AT
   variable. `SELECT *` lists FROM AS variables only (bead `partiql-kgh`).
 
-The groups add up to 70 ids (46 from M4b1: 6 + 3 + 1 + 6 + 14 + 4 + 4 + 2 +
-2 + 3 + 1; and 24 from M4b2: 17 + 5 + 2).
+### Grouping and aggregates
+
+M4c evaluates GROUP BY, GROUP AS, GROUP ALL, HAVING, the SQL aggregates
+(COUNT, SUM, AVG, MIN, MAX, ANY, SOME, EVERY) and the COLL_ functions. Every
+assertion of `coll-aggregate-function.ion`, `select/sql-aggregate.ion` and
+`ion/query/group-by/group-by.ion` passes. In `query/group-by/group-by.ion`
+726 assertions pass, and in the extended `group-by.ion` 50 pass. The
+grouping cases that stay not applicable need CAST (M4d).
+
+M4c adds 30 failing ids in five groups:
+
+- **Corpus defects (8 ids).**
+  - `query/group-by/group-by.ion` "group by with group as
+    (sales_report.fiscal_year)" (line 637) and "group by with group as and
+    where fiscal_year >= DATE literal" (line 753): the expected member
+    tuples of `g` leave out `created_date`, `last_modified_time` and
+    `last_read_time`, which the `sales_report` rows of the env hold
+    (partiql-tests #165 added those attributes and did not update these
+    outputs) (4 ids).
+  - `query/group-by/group-by.ion` "max and min last_read_time grouped by
+    fiscal_year" (line 1076) expects 2002-06-09 as the 2002 minimum; the
+    rows hold 2002-05-13, 2002-06-09 and 2002-07-23 (2 ids).
+  - `spec-tests.ion` section 11 "windowing simplified with grouping" (line
+    818) reads `v.timestamp` from the GROUP AS members, which are tuples
+    `{l: row}` (spec section 11.1), and its expected jump (0.4) does not
+    satisfy its own `WHERE r.co > 2*orderedReadings[p-1].co` (2 ids).
+  (`group-by.ion` line 1026, "max and min of rep grouped by fiscal_year",
+  does not parse; it is counted with the M4b1 corpus defects above.)
+- **Integer AVG (4 ids).** The `eval-equiv/spec-tests.ion` class
+  `aliases_from_select_clause` (line 534) expects `AVG` of integers to be an
+  integer. The rest of the corpus (`sql-aggregate.ion`,
+  `coll-aggregate-function.ion`, `group-by.ion`) expects a decimal, and the
+  evaluator follows the majority.
+- **Undefined name in a struct key (2 ids).** `spec-tests.ion` section 11
+  "coll_count without group by" is `COLL_COUNT([5, {a:2, b:3}])`. A struct
+  key is an expression, so `a` is an undefined variable; this is the same
+  class as "data type mismatch in logical expression" above.
+- **Extended: Kotlin behaviour of absent keys (12 ids).** The extended
+  `group-by.ion` `SELECT *` cases "GROUP BY MISSING AS groupExp" and
+  "... AS someMissing" (line 463) and the four `products_sparse` cases with
+  `supplierId_missings` and `supplierId_mixed` keep a MISSING key as MISSING,
+  so `SELECT *` leaves the key out, and expect `p.supplierId_missings` on a
+  row without that attribute to succeed in strict mode. Spec section 11.1
+  turns a MISSING key into NULL, and a path to an absent attribute fails in
+  strict mode, so the evaluator gives `{'groupExp': NULL}` and a `TypeError`.
+  The same cases in the main `group-by.ion` follow the spec and pass.
+- **Extended: a GROUP BY or GROUP AS name in FROM or WHERE (4 ids).** The
+  four "binding referenced in FROM clause - Extended" and "... WHERE clause
+  - Extended" cases (line 183) expect permissive mode to succeed with an
+  unbound global name (`non_included_sales_report`). With no FROM variable in
+  scope an undefined name is a `DataError` (see "Undefined variable"
+  above). The same cases in the main `group-by.ion` expect the failure and
+  pass.
+
+The groups add up to 100 ids (46 from M4b1: 6 + 3 + 1 + 6 + 14 + 4 + 4 + 2 +
+2 + 3 + 1; 24 from M4b2: 17 + 5 + 2; and 30 from M4c: 8 + 4 + 2 + 12 + 4).
 
 Every corpus value passes `codec`, including the `$map` (M1b MAP) and
 `$graph` (M1b graph) values.

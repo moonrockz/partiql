@@ -29,6 +29,21 @@ let value = @eval.evaluate_text(
 guard value == @value.Value::List([Int(3), Int(2)])
 ```
 
+`GROUP BY` makes one row per group, and the aggregates fold each group:
+
+```moonbit
+let value = @eval.evaluate_text(
+  "SELECT r, SUM(s.n) AS total FROM [{'r': 'a', 'n': 1}, {'r': 'a', 'n': 2}] AS s GROUP BY s.r AS r",
+  env=@eval.Bindings::empty(),
+)
+guard value ==
+  @value.Value::Bag(
+    @value.Bag::new([
+      Tuple(@value.Tuple::new([("r", String("a")), ("total", Int(3))])),
+    ]),
+  )
+```
+
 Pass `mode=@eval.Mode::Strict` to make a type error raise instead of giving
 `MISSING`.
 
@@ -41,8 +56,10 @@ query: `FROM` (collections, `AT`, `UNPIVOT`, joins), `LET`, `WHERE`,
 `SELECT VALUE`, `SELECT` lists, `SELECT *`, `DISTINCT`, subqueries and
 `VALUES`. It also evaluates `ORDER BY`, `LIMIT` and `OFFSET`, the set
 operations (`UNION`, `INTERSECT` and `EXCEPT`, with `ALL`, `OUTER` and
-`CORRESPONDING`), `PIVOT`, `TABLE` and `WITH`. Grouping, functions and `CAST`
-follow in later releases. A form that is not supported yet raises
+`CORRESPONDING`), `PIVOT`, `TABLE` and `WITH`, and grouping: `GROUP BY`,
+`GROUP AS`, `GROUP ALL`, `HAVING`, the SQL aggregates (`COUNT`, `SUM`, `AVG`,
+`MIN`, `MAX`, `ANY`, `SOME`, `EVERY`) and the `COLL_` functions. Functions
+and `CAST` follow in later releases. A form that is not supported yet raises
 `EvalError::Unsupported`, never a wrong answer.
 
 ## Errors

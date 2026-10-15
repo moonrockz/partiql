@@ -18,6 +18,44 @@ priv struct Scope {
   /// variable first and an output name only when no variable has that name
   /// (a sort key that is not a bare name).
   variables_first : Bool
+  /// The names are grouping variables (keys and GROUP AS): they are not
+  /// candidates for an implicit attribute.
+  grouped : Bool
+  /// Whether a SQL aggregate may stand here.
+  aggregates : Aggregates
+  /// A scope out from this one is grouped (a subquery of a grouped query).
+  under_group : Bool
+}
+
+///|
+/// Whether a SQL aggregate may stand where a scope is (spec M4c §7).
+priv enum Aggregates {
+  /// Not here: FROM, LET, WHERE, GROUP BY, outside a query.
+  Forbidden
+  /// SELECT, HAVING and ORDER BY of a grouped query.
+  Allowed(Grouped)
+  /// The argument of an aggregate: a nested aggregate is an error.
+  Inside
+}
+
+///|
+/// The grouped context of a query.
+priv struct Grouped {
+  /// The forms of the keys that a repeated expression matches.
+  keys : Array[KeyForm]
+  /// The FROM and LET variables that are not keys: an aggregate argument
+  /// binds them per member (the `p.` of spec section 11.2.2).
+  members : Array[String]
+  /// The group variable: GROUP AS, else `@plan.group_variable`.
+  group : String
+  /// The grouped scope (keys and GROUP AS) without the grouped context.
+  base : Scope
+  /// The only FROM or LET variable of the query, if there is one: then a
+  /// name `a` that no variable declares is the attribute `v.a`.
+  single : String?
+  /// The FROM and LET variables that grouping hides: outside an aggregate,
+  /// naming one is a static error.
+  hidden : Array[String]
 }
 
 ///|
@@ -30,6 +68,9 @@ fn Scope::top() -> Scope {
     outputs: false,
     with_: false,
     variables_first: false,
+    grouped: false,
+    aggregates: Forbidden,
+    under_group: false,
   }
 }
 
@@ -43,13 +84,16 @@ fn Scope::inner(self : Scope, names : Array[String]) -> Scope {
     outputs: false,
     with_: false,
     variables_first: false,
+    grouped: false,
+    aggregates: Forbidden,
+    under_group: self.grouped || self.under_group,
   }
 }
 
 ///|
 /// A scope inside `self` with the output names of a SELECT list.
 fn Scope::with_outputs(self : Scope, names : Array[String]) -> Scope {
-  { ..self.inner(names), outputs: true, }
+  { ..self.inner(names), outputs: true, aggregates: self.aggregates, }
 }
 
 ///|
@@ -100,7 +144,7 @@ fn Scope::locals(self : Scope) -> Array[String] {
   let all = []
   let mut scope = Some(self)
   while scope is Some(s) {
-    if !s.outputs && !s.with_ {
+    if !s.outputs && !s.with_ && !s.grouped {
       all.append(s.names)
     }
     scope = s.outer
@@ -132,7 +176,7 @@ fn query_at(
   // sort keys.
   let (body, aliases, keys_scope) = match q.body {
     Select(s) => {
-      let (body, aliases, inner) = select_parts(s, scope, depth)
+      let (body, aliases, inner) = select_parts(s, q.order_by, scope, depth)
       (body, aliases, inner.with_outputs(aliases))
     }
     Expr(e) =>
@@ -327,15 +371,10 @@ fn clause_at(
 /// and LET variables).
 fn select_parts(
   s : @ast.Select,
+  order_by : Array[@ast.SortSpec],
   scope : Scope,
   depth : Int32,
 ) -> (@plan.Expr, Array[String], Scope) raise @plan.EvalError {
-  if s.group_by is Some(g) {
-    return unsupported("GROUP BY (M4c)", g.span)
-  }
-  if s.having is Some(e) {
-    return unsupported("HAVING (M4c)", e.span)
-  }
   let names = []
   let sources = Ref(0)
   let from = match s.from {
@@ -360,24 +399,74 @@ fn select_parts(
     Some(w) => Filter(let_rel, lower_at(w, inner, depth), w.span)
     None => let_rel
   }
+  let roots = projection_exprs(s.projection)
+  if s.having is Some(h) {
+    roots.push(h)
+  }
+  order_by.each(spec => roots.push(spec.expr))
+  let is_grouped = s.group_by is Some(_) ||
+    s.having is Some(_) ||
+    contains_aggregate(roots)
+  if !is_grouped {
+    let (projection, aliases) = projection_at(
+      s.projection,
+      Star(variables),
+      inner,
+      depth,
+    )
+    return (
+      Select(rel, projection, distinct=s.quantifier is Some(Distinct), s.span),
+      aliases,
+      inner,
+    )
+  }
+  let (grouped_rel, gscope, visible) = group_at(
+    s, rel, names, scope, inner, depth,
+  )
+  let star : @plan.Projection = Items(
+    visible.map(name => @plan.Item::Named(name, Local(name, s.span))),
+  )
+  let (projection, aliases) = projection_at(s.projection, star, gscope, depth)
+  (
+    Select(
+      grouped_rel,
+      projection,
+      distinct=s.quantifier is Some(Distinct),
+      s.span,
+    ),
+    aliases,
+    gscope,
+  )
+}
+
+///|
+/// Lowers a SELECT clause in `scope`: the projection and its output names.
+/// `star` is what `SELECT *` means here.
+fn projection_at(
+  p : @ast.Projection,
+  star : @plan.Projection,
+  scope : Scope,
+  depth : Int32,
+) -> (@plan.Projection, Array[String]) raise @plan.EvalError {
   let aliases = []
-  let projection : @plan.Projection = match s.projection {
-    Value(e) => Value(lower_at(e, inner, depth))
-    Star(_) => Star(variables)
+  let projection : @plan.Projection = match p {
+    Value(e) => Value(lower_at(e, scope, depth))
+    Star(_) => star
     Items(items) => {
+      let unnamed = Ref(0)
       let out : Array[@plan.Item] = []
-      for i, item in items {
+      for item in items {
         out.push(
           match item {
             Expr(e, as_~, ..) => {
               let name = match as_ {
                 Some(id) => id.text
-                None => implicit_name(e, i)
+                None => item_name(e, unnamed)
               }
               aliases.push(name)
-              @plan.Item::Named(name, lower_at(e, inner, depth))
+              @plan.Item::Named(name, lower_at(e, scope, depth))
             }
-            AllFields(e, ..) => @plan.Item::AllFields(lower_at(e, inner, depth))
+            AllFields(e, ..) => @plan.Item::AllFields(lower_at(e, scope, depth))
           },
         )
       }
@@ -385,15 +474,189 @@ fn select_parts(
     }
     Pivot(value~, key~) =>
       Pivot(
-        value=lower_at(value, inner, depth),
-        key=lower_at(key, inner, depth),
+        value=lower_at(value, scope, depth),
+        key=lower_at(key, scope, depth),
       )
   }
-  (
-    Select(rel, projection, distinct=s.quantifier is Some(Distinct), s.span),
-    aliases,
-    inner,
+  (projection, aliases)
+}
+
+///|
+/// The expressions of a SELECT clause.
+fn projection_exprs(p : @ast.Projection) -> Array[@ast.Expr] {
+  match p {
+    Value(e) => [e]
+    Star(_) => []
+    Items(items) =>
+      items.map(item => {
+        match item {
+          Expr(e, ..) | AllFields(e, ..) => e
+        }
+      })
+    Pivot(value~, key~) => [value, key]
+  }
+}
+
+///|
+/// The expression of the SELECT item called `id`, when `id` names no FROM or
+/// LET variable of the query (spec section 11.2.4: GROUP BY may name a
+/// SELECT alias; a variable comes first).
+fn select_alias(
+  id : @ast.Identifier,
+  projection : @ast.Projection,
+  names : Array[String],
+) -> @ast.Expr? {
+  let same = (name : String) => {
+    if id.delimited {
+      name == id.text
+    } else {
+      name.to_lower() == id.text.to_lower()
+    }
+  }
+  if names.iter().any(same) {
+    return None
+  }
+  guard projection is Items(items) else { return None }
+  for item in items {
+    if item is Expr(e, as_=Some(item_as), ..) && same(item_as.text) {
+      return Some(e)
+    }
+  }
+  None
+}
+
+///|
+/// The GROUP BY and HAVING of a grouped query over `rel`: the relation, the
+/// grouped scope (keys and GROUP AS over the outer `scope`, spec section
+/// 11.2), and the names `SELECT *` outputs. `names` are the FROM and LET
+/// variables; `inner` is their scope, where the keys are lowered.
+fn group_at(
+  s : @ast.Select,
+  rel : @plan.Rel,
+  names : Array[String],
+  scope : Scope,
+  inner : Scope,
+  depth : Int32,
+) -> (@plan.Rel, Scope, Array[String]) raise @plan.EvalError {
+  let key_items = match s.group_by {
+    Some({ keys: By(keys, ..), .. }) => keys
+    _ => []
+  }
+  let keys : Array[(String, @plan.Expr)] = []
+  let visible = []
+  let forms : Array[KeyForm] = []
+  let group_as : @ast.Identifier? = match s.group_by {
+    Some(g) => g.group_as
+    None => None
+  }
+  // The names that the query gives: an implied key name gives way to them.
+  let given = key_items.filter_map(k => k.as_.map(id => id.text))
+  if group_as is Some(id) {
+    if given.contains(id.text) {
+      raise DataError(
+        message="GROUP AS name \{id.text} is also a GROUP BY name",
+        span=id.span,
+      )
+    }
+    given.push(id.text)
+  }
+  for i, k in key_items {
+    let (expr, select_name) = match k.expr.kind {
+      VarRef(id, qualified=false) =>
+        match select_alias(id, s.projection, names) {
+          Some(e) => (e, Some(id.text))
+          None => (k.expr, None)
+        }
+      _ => (k.expr, None)
+    }
+    let name = match k.as_ {
+      Some(id) => {
+        if visible.contains(id.text) {
+          raise DataError(
+            message="GROUP BY name \{id.text} is declared twice",
+            span=id.span,
+          )
+        }
+        id.text
+      }
+      // Spec section 11.2.1 gives a key without AS a fresh name. The name
+      // it implies is used when it is free, else its position.
+      None => {
+        let implied = select_name.unwrap_or(implicit_name(k.expr, i))
+        let positional = "_\{i + 1}"
+        if !visible.contains(implied) && !given.contains(implied) {
+          implied
+        } else if !visible.contains(positional) && !given.contains(positional) {
+          positional
+        } else {
+          hidden_key(i)
+        }
+      }
+    }
+    visible.push(name)
+    keys.push((name, lower_at(expr, inner, depth)))
+    forms.push(key_form(expr, name, own_only=false))
+    if expr.kind is VarRef(id, qualified=false) &&
+      inner.resolve(id) is None &&
+      names is [variable] {
+      for form in attribute_forms(id, variable) {
+        forms.push(key_form(form, name, own_only=true))
+      }
+    }
+  }
+  if group_as is Some(id) {
+    visible.push(id.text)
+  }
+  let grouping : @plan.Grouping = match s.group_by {
+    Some({ keys: By(_, ..), .. }) => By(keys)
+    _ => All
+  }
+  let group = match group_as {
+    Some(id) => id.text
+    None => @plan.group_variable
+  }
+  let free = names.filter(name => {
+    !visible.contains(name) || (group_as is Some(id) && id.text == name)
+  })
+  let base = { ..scope.inner(visible), grouped: true, }
+  let gscope = {
+    ..base,
+    aggregates: Allowed({
+      keys: forms,
+      members: free,
+      group,
+      base,
+      single: if names is [variable] {
+        Some(variable)
+      } else {
+        None
+      },
+      hidden: names.filter(name => !visible.contains(name)),
+    }),
+  }
+  let span = match s.group_by {
+    Some(g) => g.span
+    None => s.span
+  }
+  let grouped : @plan.Rel = Group(
+    rel,
+    grouping,
+    group_as=group,
+    members=names.copy(),
+    span,
   )
+  let filtered : @plan.Rel = match s.having {
+    Some(h) => Filter(grouped, lower_at(h, gscope, depth), h.span)
+    None => grouped
+  }
+  (filtered, gscope, visible.filter(name => !name.has_prefix("\u{0}")))
+}
+
+///|
+/// The name of the key at `position` when its implied name and its position
+/// are both taken: no identifier can name it, and `SELECT *` leaves it out.
+fn hidden_key(position : Int32) -> String {
+  "\u{0}key\{position + 1}"
 }
 
 ///|
@@ -409,15 +672,36 @@ fn from_name(source : @ast.FromSource, position : Int32) -> String {
 }
 
 ///|
-/// The name of an expression without `AS`: the name of the variable or of the
-/// last field of the path, else `_` and the position `index` (from 0) in its
-/// list plus 1.
-fn implicit_name(e : @ast.Expr, index : Int32) -> String {
+/// The name an expression implies: the name of the variable or of the last
+/// field of the path.
+fn implied_name(e : @ast.Expr) -> String? {
   match e.kind {
-    VarRef(id, ..) => id.text
-    Path(_, [.., Field(id)]) => id.text
-    Path(_, [.., FieldString(name, ..)]) => name
-    _ => "_\{index + 1}"
+    VarRef(id, ..) => Some(id.text)
+    Path(_, [.., Field(id)]) => Some(id.text)
+    Path(_, [.., FieldString(name, ..)]) => Some(name)
+    _ => None
+  }
+}
+
+///|
+/// The name of an expression without `AS` in a list where position counts
+/// (FROM sources, GROUP BY keys): the implied name, else `_` and the
+/// position `index` (from 0) plus 1.
+fn implicit_name(e : @ast.Expr, index : Int32) -> String {
+  implied_name(e).unwrap_or("_\{index + 1}")
+}
+
+///|
+/// The name of a SELECT item without `AS`: the implied name, else `_` and the
+/// count of unnamed items so far (partiql-lang-kotlin and partiql-tests;
+/// the specification leaves it open, partiql-lang #85).
+fn item_name(e : @ast.Expr, unnamed : Ref[Int32]) -> String {
+  match implied_name(e) {
+    Some(name) => name
+    None => {
+      unnamed.val += 1
+      "_\{unnamed.val}"
+    }
   }
 }
 
@@ -436,6 +720,8 @@ fn from_variables(rel : @plan.Rel) -> Array[String] {
         pending.push(r)
         pending.push(l)
       }
+      // A FROM never holds a group.
+      Group(_, _, group_as=_, members=_, _) => ()
     }
   }
   names

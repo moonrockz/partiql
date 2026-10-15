@@ -120,13 +120,18 @@ Its parts, in this order:
   and `--data NAME=FILE`, from files or stdin, in permissive or `--strict`
   mode, and prints each result as PartiQL-encoded Ion (pretty, or
   `--compact`). Evaluation errors print as rendered diagnostics.
-- **M4c: grouping** (bead `partiql-5se.4`). GROUP BY, GROUP AS, HAVING, and the aggregates COUNT,
-  SUM, AVG, MIN and MAX.
+- **M4c (done): grouping** (bead `partiql-5se.4`). GROUP BY, GROUP AS,
+  GROUP ALL and HAVING with the semantics of spec section 11; the SQL
+  aggregates COUNT, SUM, AVG, MIN, MAX, ANY, SOME and EVERY (with DISTINCT),
+  and the COLL_ functions. A property law checks each SQL aggregate against
+  its section 11.2.2 rewrite onto COLL_ over the group. The `eval`
+  conformance check passes 5211 of 9960 assertions; 4649 are not
+  applicable; 100 fail (see `conformance.md`).
 - **M4d: functions and CAST** (bead `partiql-5se.5`). String, numeric and datetime functions,
   EXTRACT, DATE_ADD, DATE_DIFF, TRIM, SUBSTRING, POSITION, OVERLAY,
   OVERLAPS, and CAST in both modes.
 
-M4e is done. The next parts are M4c, then M4d.
+M4e and M4c are done. The next part is M4d.
 
 Graph MATCH evaluation and `?` parameters come after M4. A REPL is not part
 of M4.

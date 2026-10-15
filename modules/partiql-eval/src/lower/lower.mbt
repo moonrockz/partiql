@@ -191,8 +191,13 @@ fn lower_chain(
   depth : Int32,
 ) -> @plan.Expr raise @plan.EvalError {
   let links : Array[Link] = []
+  let nodes : Array[@ast.Expr] = []
   let mut leaf = e
   while true {
+    match leaf.kind {
+      Binary(_, _, _) | And(_, _) | Or(_, _) => nodes.push(leaf)
+      _ => ()
+    }
     match leaf.kind {
       Binary(op, l, r) => {
         links.push(BinaryLink(op, l, r, leaf.span))
@@ -209,17 +214,42 @@ fn lower_chain(
       _ => break
     }
   }
+  // The outermost link that is a key ends the chain (`t.a + 1 + 1` finds
+  // the key `t.a + 1`). A link is compared only with a key whose spine has
+  // as many links, so the search is linear.
+  let mut key : String? = None
+  if key_context(scope) is Some(context) {
+    for j, node in nodes {
+      let length = nodes.length() - j
+      if context.grouped.keys.iter().any(k => k.links == length) &&
+        context.find(node, length) is Some(name) {
+        key = Some(name)
+        links.truncate(j)
+        break
+      }
+    }
+  }
   // Only the innermost link has a query as its left operand; one that is
   // compared with an array literal is coerced (plan ruling 9).
   let leaf_is_row = match links.last() {
     Some(BinaryLink(op, l, r, _)) =>
-      is_comparison(op) && is_select_items(l) && is_array_literal(r)
+      key is None &&
+      is_comparison(op) &&
+      is_select_items(l) &&
+      is_array_literal(r)
     _ => false
   }
-  let mut result = if leaf_is_row {
-    row_at(leaf, scope, depth)
-  } else {
-    lower_at(leaf, scope, depth)
+  let mut result = match key {
+    Some(name) => {
+      let node = nodes[links.length()]
+      keyed(node, Local(name, node.span), scope, depth)
+    }
+    None =>
+      if leaf_is_row {
+        row_at(leaf, scope, depth)
+      } else {
+        lower_at(leaf, scope, depth)
+      }
   }
   for link in links.rev_iter() {
     result = match link {
@@ -282,6 +312,11 @@ fn lower_at(
     raise DataError(message="expression is too deep", span~)
   }
   let depth = depth + 1
+  // A chain is matched in `lower_chain`, link by link.
+  if !(e.kind is (Binary(_, _, _) | And(_, _) | Or(_, _))) &&
+    key_variable(e, scope) is Some(name) {
+    return keyed(e, Local(name, span), scope, depth)
+  }
   match e.kind {
     Lit(Ion(_, v)) if depth + ion_depth(v) > max_depth =>
       raise DataError(message="expression is too deep", span~)
@@ -295,14 +330,26 @@ fn lower_at(
             Local(name, span)
           }
         None =>
-          if scope.outer is None {
+          if scope.aggregates is Allowed(g) &&
+            g.hidden.iter().any(name => names_variable(id, name)) {
+            // Spec section 11.2: after grouping, a FROM or LET variable that
+            // is not a key is out of scope outside an aggregate.
+            raise DataError(
+              message="\{id.text} is not a GROUP BY key; use it inside an aggregate function or group by it",
+              span~,
+            )
+          } else if scope.outer is None {
             Global(id.text, delimited=id.delimited, span)
           } else if qualified {
             // Inside a query `@x` names a FROM variable only.
             raise DataError(message="undefined variable @\{id.text}", span~)
-          } else if scope.locals() is [] {
+          } else if scope.locals() is [] && !(scope.aggregates is Allowed(_)) {
             Global(id.text, delimited=id.delimited, span)
           } else {
+            // After grouping, a name that is not a key or GROUP AS (a FROM
+            // variable outside an aggregate, or no variable at all) is
+            // undefined like any other: MISSING in permissive mode, a
+            // TypeError in strict mode (partiql-tests group-by.ion).
             Implicit(
               id.text,
               delimited=id.delimited,
@@ -330,11 +377,27 @@ fn lower_at(
     Parameter => unsupported("a parameter (later)", span)
     Error => raise DataError(message="a broken expression", span~)
     Path(base, steps) =>
-      Path(
-        lower_at(base, scope, depth),
-        steps.map(s => lower_step(s, scope, depth)),
-        span,
-      )
+      match key_prefix(base, steps, span, scope) {
+        Some((name, n)) =>
+          Path(
+            keyed(
+              { kind: Path(base, Array::from_iter(steps[0:n].iter())), span, },
+              Local(name, span),
+              scope,
+              depth,
+            ),
+            Array::from_iter(steps[n:].iter()).map(s => {
+              lower_step(s, scope, depth)
+            }),
+            span,
+          )
+        None =>
+          Path(
+            lower_at(base, scope, depth),
+            steps.map(s => lower_step(s, scope, depth)),
+            span,
+          )
+      }
     // `-9223372036854775808` is a literal: its magnitude is out of range.
     Unary(Neg, { kind: Lit(Int(text)), .. }) =>
       Const(integer_value("-" + text, span), span)
@@ -386,9 +449,21 @@ fn lower_at(
     | Position(_, _)
     | Overlay(_, ..)
     | DateAdd(_, _, _)
-    | DateDiff(_, _, _)
-    | Call(_, _, ..)
-    | CallStar(_) => unsupported("a function call (M4d)", span)
+    | DateDiff(_, _, _) => unsupported("a function call (M4d)", span)
+    Call(id, args, quantifier~) =>
+      match aggregate_function(id) {
+        Some((kind, true)) =>
+          coll_call(kind, id, args, quantifier, scope, depth, span)
+        Some((_, false)) => sql_aggregate_call(e, scope, depth)
+        None => unsupported("a function call (M4d)", span)
+      }
+    CallStar(id) =>
+      match aggregate_function(id) {
+        Some((_, true)) =>
+          raise DataError(message="\{id.text} does not take *", span~)
+        Some((_, false)) => sql_aggregate_call(e, scope, depth)
+        None => unsupported("a function call (M4d)", span)
+      }
   }
 }
 
