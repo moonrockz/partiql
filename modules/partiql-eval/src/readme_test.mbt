@@ -19,3 +19,19 @@ test "README ORDER BY example" {
   )
   @expect.expect(value).to_equal(@value.Value::List([Int(3), Int(2)]))
 }
+
+///|
+/// Mirrors the GROUP BY example of README.mbt.md. Keep the two in step.
+test "README GROUP BY example" {
+  let value = @eval.evaluate_text(
+    "SELECT r, SUM(s.n) AS total FROM [{'r': 'a', 'n': 1}, {'r': 'a', 'n': 2}] AS s GROUP BY s.r AS r",
+    env=@eval.Bindings::empty(),
+  )
+  @expect.expect(value).to_equal(
+    @value.Value::Bag(
+      @value.Bag::new([
+        Tuple(@value.Tuple::new([("r", String("a")), ("total", Int(3))])),
+      ]),
+    ),
+  )
+}
