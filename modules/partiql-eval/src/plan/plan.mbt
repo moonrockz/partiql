@@ -318,6 +318,16 @@ pub(all) enum Function {
   Abs
   /// [dividend, divisor]
   Mod
+  /// [target] or [target, characters]
+  Trim(@ast.TrimSpec)
+  /// [value, start] or [value, start, length]
+  Substring
+  /// [needle, haystack]
+  Position
+  /// [value, placing, from] or [value, placing, from, for]
+  Overlay
+  /// [value, pattern, replacement]
+  TextReplace
 } derive(Debug, Eq)
 
 ///|
@@ -338,5 +348,10 @@ pub fn Function::name(self : Function) -> String {
     MapEntries => "MAP_ENTRIES"
     Abs => "ABS"
     Mod => "MOD"
+    Trim(_) => "TRIM"
+    Substring => "SUBSTRING"
+    Position => "POSITION"
+    Overlay => "OVERLAY"
+    TextReplace => "TEXT_REPLACE"
   }
 }

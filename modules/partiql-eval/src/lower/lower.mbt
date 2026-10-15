@@ -441,13 +441,29 @@ fn lower_at(
     Coalesce(items) => Coalesce(items.map(x => lower_at(x, scope, depth)), span)
     NullIf(a, b) =>
       NullIf(lower_at(a, scope, depth), lower_at(b, scope, depth), span)
+    Trim(spec~, chars~, x) =>
+      special_call(
+        Trim(spec.unwrap_or(Both)),
+        [x] + optional(chars),
+        scope,
+        depth,
+        span,
+      )
+    Substring(x, start~, length~) =>
+      special_call(Substring, [x, start] + optional(length), scope, depth, span)
+    Position(needle, hay) =>
+      special_call(Position, [needle, hay], scope, depth, span)
+    Overlay(x, placing~, from~, for_~) =>
+      special_call(
+        Overlay,
+        [x, placing, from] + optional(for_),
+        scope,
+        depth,
+        span,
+      )
     Overlaps(_, _)
     | Cast(_, _)
     | Extract(_, _)
-    | Trim(_, ..)
-    | Substring(_, ..)
-    | Position(_, _)
-    | Overlay(_, ..)
     | DateAdd(_, _, _)
     | DateDiff(_, _, _) => unsupported("a function call (M4d)", span)
     Call(id, args, quantifier~) =>

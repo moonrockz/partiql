@@ -1421,6 +1421,440 @@ eval/primitives/functions/octet_length.ion::octet_length::OCTET_LENGTH special c
 eval/primitives/functions/octet_length.ion::octet_length::OCTET_LENGTH special character#error
 eval/primitives/functions/octet_length.ion::octet_length::OCTET_LENGTH string#coerce
 eval/primitives/functions/octet_length.ion::octet_length::OCTET_LENGTH string#error
+eval/primitives/functions/overlay.ion::overlay::OVERLAY 'hello' PLACING '' FROM 1#coerce
+eval/primitives/functions/overlay.ion::overlay::OVERLAY 'hello' PLACING '' FROM 1#error
+eval/primitives/functions/overlay.ion::overlay::OVERLAY 'hello' PLACING '' FROM 2 FOR 3#coerce
+eval/primitives/functions/overlay.ion::overlay::OVERLAY 'hello' PLACING '' FROM 2 FOR 3#error
+eval/primitives/functions/overlay.ion::overlay::OVERLAY 'hello' PLACING '' FROM 2 FOR 4#coerce
+eval/primitives/functions/overlay.ion::overlay::OVERLAY 'hello' PLACING '' FROM 2 FOR 4#error
+eval/primitives/functions/overlay.ion::overlay::OVERLAY 'hello' PLACING 'XX' FROM 1 FOR 0#coerce
+eval/primitives/functions/overlay.ion::overlay::OVERLAY 'hello' PLACING 'XX' FROM 1 FOR 0#error
+eval/primitives/functions/overlay.ion::overlay::OVERLAY 'hello' PLACING 'XX' FROM 1 FOR 1#coerce
+eval/primitives/functions/overlay.ion::overlay::OVERLAY 'hello' PLACING 'XX' FROM 1 FOR 1#error
+eval/primitives/functions/overlay.ion::overlay::OVERLAY 'hello' PLACING 'XX' FROM 1 FOR 100#coerce
+eval/primitives/functions/overlay.ion::overlay::OVERLAY 'hello' PLACING 'XX' FROM 1 FOR 100#error
+eval/primitives/functions/overlay.ion::overlay::OVERLAY 'hello' PLACING 'XX' FROM 1 FOR 3#coerce
+eval/primitives/functions/overlay.ion::overlay::OVERLAY 'hello' PLACING 'XX' FROM 1 FOR 3#error
+eval/primitives/functions/overlay.ion::overlay::OVERLAY 'hello' PLACING 'XX' FROM 1#coerce
+eval/primitives/functions/overlay.ion::overlay::OVERLAY 'hello' PLACING 'XX' FROM 1#error
+eval/primitives/functions/overlay.ion::overlay::OVERLAY 'hello' PLACING 'XX' FROM 100 FOR 100#coerce
+eval/primitives/functions/overlay.ion::overlay::OVERLAY 'hello' PLACING 'XX' FROM 100 FOR 100#error
+eval/primitives/functions/overlay.ion::overlay::OVERLAY 'hello' PLACING 'XX' FROM 2 FOR 1#coerce
+eval/primitives/functions/overlay.ion::overlay::OVERLAY 'hello' PLACING 'XX' FROM 2 FOR 1#error
+eval/primitives/functions/overlay.ion::overlay::OVERLAY 'hello' PLACING 'XX' FROM 2 FOR 3#coerce
+eval/primitives/functions/overlay.ion::overlay::OVERLAY 'hello' PLACING 'XX' FROM 2 FOR 3#error
+eval/primitives/functions/overlay.ion::overlay::OVERLAY 'hello' PLACING 'XX' FROM 7#coerce
+eval/primitives/functions/overlay.ion::overlay::OVERLAY 'hello' PLACING 'XX' FROM 7#error
+eval/primitives/functions/overlay.ion::overlay::OVERLAY FOR MISSING#coerce
+eval/primitives/functions/overlay.ion::overlay::OVERLAY FOR MISSING#error
+eval/primitives/functions/overlay.ion::overlay::OVERLAY FOR NULL#coerce
+eval/primitives/functions/overlay.ion::overlay::OVERLAY FOR NULL#error
+eval/primitives/functions/overlay.ion::overlay::OVERLAY FOR mismatched type#coerce
+eval/primitives/functions/overlay.ion::overlay::OVERLAY FOR mismatched type#error
+eval/primitives/functions/overlay.ion::overlay::OVERLAY FROM MISSING#coerce
+eval/primitives/functions/overlay.ion::overlay::OVERLAY FROM MISSING#error
+eval/primitives/functions/overlay.ion::overlay::OVERLAY FROM NULL#coerce
+eval/primitives/functions/overlay.ion::overlay::OVERLAY FROM NULL#error
+eval/primitives/functions/overlay.ion::overlay::OVERLAY FROM mismatched type#coerce
+eval/primitives/functions/overlay.ion::overlay::OVERLAY FROM mismatched type#error
+eval/primitives/functions/overlay.ion::overlay::OVERLAY MISSING#coerce
+eval/primitives/functions/overlay.ion::overlay::OVERLAY MISSING#error
+eval/primitives/functions/overlay.ion::overlay::OVERLAY NULL#coerce
+eval/primitives/functions/overlay.ion::overlay::OVERLAY NULL#error
+eval/primitives/functions/overlay.ion::overlay::OVERLAY PLACING MISSING#coerce
+eval/primitives/functions/overlay.ion::overlay::OVERLAY PLACING MISSING#error
+eval/primitives/functions/overlay.ion::overlay::OVERLAY PLACING NULL#coerce
+eval/primitives/functions/overlay.ion::overlay::OVERLAY PLACING NULL#error
+eval/primitives/functions/overlay.ion::overlay::OVERLAY PLACING mismatched type#coerce
+eval/primitives/functions/overlay.ion::overlay::OVERLAY PLACING mismatched type#error
+eval/primitives/functions/overlay.ion::overlay::OVERLAY mismatched type#coerce
+eval/primitives/functions/overlay.ion::overlay::OVERLAY mismatched type#error
+eval/primitives/functions/position.ion::position::POSITION MISSING in MISSING#coerce
+eval/primitives/functions/position.ion::position::POSITION MISSING in MISSING#error
+eval/primitives/functions/position.ion::position::POSITION MISSING in NULL#coerce
+eval/primitives/functions/position.ion::position::POSITION MISSING in NULL#error
+eval/primitives/functions/position.ion::position::POSITION MISSING in string#coerce
+eval/primitives/functions/position.ion::position::POSITION MISSING in string#error
+eval/primitives/functions/position.ion::position::POSITION NULL in MISSING#coerce
+eval/primitives/functions/position.ion::position::POSITION NULL in MISSING#error
+eval/primitives/functions/position.ion::position::POSITION NULL in NULL#coerce
+eval/primitives/functions/position.ion::position::POSITION NULL in NULL#error
+eval/primitives/functions/position.ion::position::POSITION NULL in string#coerce
+eval/primitives/functions/position.ion::position::POSITION NULL in string#error
+eval/primitives/functions/position.ion::position::POSITION empty string in string#coerce
+eval/primitives/functions/position.ion::position::POSITION empty string in string#error
+eval/primitives/functions/position.ion::position::POSITION invalid type in string#coerce
+eval/primitives/functions/position.ion::position::POSITION invalid type in string#error
+eval/primitives/functions/position.ion::position::POSITION string at end#coerce
+eval/primitives/functions/position.ion::position::POSITION string at end#error
+eval/primitives/functions/position.ion::position::POSITION string at start#coerce
+eval/primitives/functions/position.ion::position::POSITION string at start#error
+eval/primitives/functions/position.ion::position::POSITION string in MISSING#coerce
+eval/primitives/functions/position.ion::position::POSITION string in MISSING#error
+eval/primitives/functions/position.ion::position::POSITION string in NULL#coerce
+eval/primitives/functions/position.ion::position::POSITION string in NULL#error
+eval/primitives/functions/position.ion::position::POSITION string in invalid type#coerce
+eval/primitives/functions/position.ion::position::POSITION string in invalid type#error
+eval/primitives/functions/position.ion::position::POSITION string in middle#coerce
+eval/primitives/functions/position.ion::position::POSITION string in middle#error
+eval/primitives/functions/position.ion::position::POSITION string not in string#coerce
+eval/primitives/functions/position.ion::position::POSITION string not in string#error
+eval/primitives/functions/substring.ion::substring::substring invalid quantity#coerce
+eval/primitives/functions/substring.ion::substring::substring invalid quantity#error
+eval/primitives/functions/substring.ion::substring::substring null and missing propagation 2 arguments{target:"''",start_pos:"missing"}#coerce
+eval/primitives/functions/substring.ion::substring::substring null and missing propagation 2 arguments{target:"''",start_pos:"missing"}#error
+eval/primitives/functions/substring.ion::substring::substring null and missing propagation 2 arguments{target:"''",start_pos:"null"}#coerce
+eval/primitives/functions/substring.ion::substring::substring null and missing propagation 2 arguments{target:"''",start_pos:"null"}#error
+eval/primitives/functions/substring.ion::substring::substring null and missing propagation 2 arguments{target:"missing",start_pos:"1"}#coerce
+eval/primitives/functions/substring.ion::substring::substring null and missing propagation 2 arguments{target:"missing",start_pos:"1"}#error
+eval/primitives/functions/substring.ion::substring::substring null and missing propagation 2 arguments{target:"missing",start_pos:"missing"}#coerce
+eval/primitives/functions/substring.ion::substring::substring null and missing propagation 2 arguments{target:"missing",start_pos:"missing"}#error
+eval/primitives/functions/substring.ion::substring::substring null and missing propagation 2 arguments{target:"missing",start_pos:"null"}#coerce
+eval/primitives/functions/substring.ion::substring::substring null and missing propagation 2 arguments{target:"missing",start_pos:"null"}#error
+eval/primitives/functions/substring.ion::substring::substring null and missing propagation 2 arguments{target:"null",start_pos:"1"}#coerce
+eval/primitives/functions/substring.ion::substring::substring null and missing propagation 2 arguments{target:"null",start_pos:"1"}#error
+eval/primitives/functions/substring.ion::substring::substring null and missing propagation 2 arguments{target:"null",start_pos:"missing"}#coerce
+eval/primitives/functions/substring.ion::substring::substring null and missing propagation 2 arguments{target:"null",start_pos:"missing"}#error
+eval/primitives/functions/substring.ion::substring::substring null and missing propagation 2 arguments{target:"null",start_pos:"null"}#coerce
+eval/primitives/functions/substring.ion::substring::substring null and missing propagation 2 arguments{target:"null",start_pos:"null"}#error
+eval/primitives/functions/substring.ion::substring::substring null and missing propagation 3 arguments{target:"''",start_pos:"1",quantity:"missing"}#coerce
+eval/primitives/functions/substring.ion::substring::substring null and missing propagation 3 arguments{target:"''",start_pos:"1",quantity:"missing"}#error
+eval/primitives/functions/substring.ion::substring::substring null and missing propagation 3 arguments{target:"''",start_pos:"1",quantity:"null"}#coerce
+eval/primitives/functions/substring.ion::substring::substring null and missing propagation 3 arguments{target:"''",start_pos:"1",quantity:"null"}#error
+eval/primitives/functions/substring.ion::substring::substring null and missing propagation 3 arguments{target:"''",start_pos:"missing",quantity:"1"}#coerce
+eval/primitives/functions/substring.ion::substring::substring null and missing propagation 3 arguments{target:"''",start_pos:"missing",quantity:"1"}#error
+eval/primitives/functions/substring.ion::substring::substring null and missing propagation 3 arguments{target:"''",start_pos:"missing",quantity:"missing"}#coerce
+eval/primitives/functions/substring.ion::substring::substring null and missing propagation 3 arguments{target:"''",start_pos:"missing",quantity:"missing"}#error
+eval/primitives/functions/substring.ion::substring::substring null and missing propagation 3 arguments{target:"''",start_pos:"missing",quantity:"null"}#coerce
+eval/primitives/functions/substring.ion::substring::substring null and missing propagation 3 arguments{target:"''",start_pos:"missing",quantity:"null"}#error
+eval/primitives/functions/substring.ion::substring::substring null and missing propagation 3 arguments{target:"''",start_pos:"null",quantity:"1"}#coerce
+eval/primitives/functions/substring.ion::substring::substring null and missing propagation 3 arguments{target:"''",start_pos:"null",quantity:"1"}#error
+eval/primitives/functions/substring.ion::substring::substring null and missing propagation 3 arguments{target:"''",start_pos:"null",quantity:"missing"}#coerce
+eval/primitives/functions/substring.ion::substring::substring null and missing propagation 3 arguments{target:"''",start_pos:"null",quantity:"missing"}#error
+eval/primitives/functions/substring.ion::substring::substring null and missing propagation 3 arguments{target:"''",start_pos:"null",quantity:"null"}#coerce
+eval/primitives/functions/substring.ion::substring::substring null and missing propagation 3 arguments{target:"''",start_pos:"null",quantity:"null"}#error
+eval/primitives/functions/substring.ion::substring::substring null and missing propagation 3 arguments{target:"missing",start_pos:"1",quantity:"1"}#coerce
+eval/primitives/functions/substring.ion::substring::substring null and missing propagation 3 arguments{target:"missing",start_pos:"1",quantity:"1"}#error
+eval/primitives/functions/substring.ion::substring::substring null and missing propagation 3 arguments{target:"missing",start_pos:"1",quantity:"missing"}#coerce
+eval/primitives/functions/substring.ion::substring::substring null and missing propagation 3 arguments{target:"missing",start_pos:"1",quantity:"missing"}#error
+eval/primitives/functions/substring.ion::substring::substring null and missing propagation 3 arguments{target:"missing",start_pos:"1",quantity:"null"}#coerce
+eval/primitives/functions/substring.ion::substring::substring null and missing propagation 3 arguments{target:"missing",start_pos:"1",quantity:"null"}#error
+eval/primitives/functions/substring.ion::substring::substring null and missing propagation 3 arguments{target:"missing",start_pos:"missing",quantity:"1"}#coerce
+eval/primitives/functions/substring.ion::substring::substring null and missing propagation 3 arguments{target:"missing",start_pos:"missing",quantity:"1"}#error
+eval/primitives/functions/substring.ion::substring::substring null and missing propagation 3 arguments{target:"missing",start_pos:"missing",quantity:"missing"}#coerce
+eval/primitives/functions/substring.ion::substring::substring null and missing propagation 3 arguments{target:"missing",start_pos:"missing",quantity:"missing"}#error
+eval/primitives/functions/substring.ion::substring::substring null and missing propagation 3 arguments{target:"missing",start_pos:"missing",quantity:"null"}#coerce
+eval/primitives/functions/substring.ion::substring::substring null and missing propagation 3 arguments{target:"missing",start_pos:"missing",quantity:"null"}#error
+eval/primitives/functions/substring.ion::substring::substring null and missing propagation 3 arguments{target:"missing",start_pos:"null",quantity:"1"}#coerce
+eval/primitives/functions/substring.ion::substring::substring null and missing propagation 3 arguments{target:"missing",start_pos:"null",quantity:"1"}#error
+eval/primitives/functions/substring.ion::substring::substring null and missing propagation 3 arguments{target:"missing",start_pos:"null",quantity:"missing"}#coerce
+eval/primitives/functions/substring.ion::substring::substring null and missing propagation 3 arguments{target:"missing",start_pos:"null",quantity:"missing"}#error
+eval/primitives/functions/substring.ion::substring::substring null and missing propagation 3 arguments{target:"missing",start_pos:"null",quantity:"null"}#coerce
+eval/primitives/functions/substring.ion::substring::substring null and missing propagation 3 arguments{target:"missing",start_pos:"null",quantity:"null"}#error
+eval/primitives/functions/substring.ion::substring::substring null and missing propagation 3 arguments{target:"null",start_pos:"1",quantity:"1"}#coerce
+eval/primitives/functions/substring.ion::substring::substring null and missing propagation 3 arguments{target:"null",start_pos:"1",quantity:"1"}#error
+eval/primitives/functions/substring.ion::substring::substring null and missing propagation 3 arguments{target:"null",start_pos:"1",quantity:"missing"}#coerce
+eval/primitives/functions/substring.ion::substring::substring null and missing propagation 3 arguments{target:"null",start_pos:"1",quantity:"missing"}#error
+eval/primitives/functions/substring.ion::substring::substring null and missing propagation 3 arguments{target:"null",start_pos:"1",quantity:"null"}#coerce
+eval/primitives/functions/substring.ion::substring::substring null and missing propagation 3 arguments{target:"null",start_pos:"1",quantity:"null"}#error
+eval/primitives/functions/substring.ion::substring::substring null and missing propagation 3 arguments{target:"null",start_pos:"missing",quantity:"1"}#coerce
+eval/primitives/functions/substring.ion::substring::substring null and missing propagation 3 arguments{target:"null",start_pos:"missing",quantity:"1"}#error
+eval/primitives/functions/substring.ion::substring::substring null and missing propagation 3 arguments{target:"null",start_pos:"missing",quantity:"missing"}#coerce
+eval/primitives/functions/substring.ion::substring::substring null and missing propagation 3 arguments{target:"null",start_pos:"missing",quantity:"missing"}#error
+eval/primitives/functions/substring.ion::substring::substring null and missing propagation 3 arguments{target:"null",start_pos:"missing",quantity:"null"}#coerce
+eval/primitives/functions/substring.ion::substring::substring null and missing propagation 3 arguments{target:"null",start_pos:"missing",quantity:"null"}#error
+eval/primitives/functions/substring.ion::substring::substring null and missing propagation 3 arguments{target:"null",start_pos:"null",quantity:"1"}#coerce
+eval/primitives/functions/substring.ion::substring::substring null and missing propagation 3 arguments{target:"null",start_pos:"null",quantity:"1"}#error
+eval/primitives/functions/substring.ion::substring::substring null and missing propagation 3 arguments{target:"null",start_pos:"null",quantity:"missing"}#coerce
+eval/primitives/functions/substring.ion::substring::substring null and missing propagation 3 arguments{target:"null",start_pos:"null",quantity:"missing"}#error
+eval/primitives/functions/substring.ion::substring::substring null and missing propagation 3 arguments{target:"null",start_pos:"null",quantity:"null"}#coerce
+eval/primitives/functions/substring.ion::substring::substring null and missing propagation 3 arguments{target:"null",start_pos:"null",quantity:"null"}#error
+eval/primitives/functions/substring.ion::substring::substring valid cases 2 arguments with FROM syntax{Complete Cyrillic Alphabet Substring Test - From Position 40 to End}#coerce
+eval/primitives/functions/substring.ion::substring::substring valid cases 2 arguments with FROM syntax{Complete Cyrillic Alphabet Substring Test - From Position 40 to End}#error
+eval/primitives/functions/substring.ion::substring::substring valid cases 2 arguments with FROM syntax{Mathematical Bold Pangram Substring Test - From Position 17}#coerce
+eval/primitives/functions/substring.ion::substring::substring valid cases 2 arguments with FROM syntax{Mathematical Bold Pangram Substring Test - From Position 17}#error
+eval/primitives/functions/substring.ion::substring::substring valid cases 2 arguments with FROM syntax{target:"",start:"-1",result:""}#coerce
+eval/primitives/functions/substring.ion::substring::substring valid cases 2 arguments with FROM syntax{target:"",start:"-1",result:""}#error
+eval/primitives/functions/substring.ion::substring::substring valid cases 2 arguments with FROM syntax{target:"",start:"0",result:""}#coerce
+eval/primitives/functions/substring.ion::substring::substring valid cases 2 arguments with FROM syntax{target:"",start:"0",result:""}#error
+eval/primitives/functions/substring.ion::substring::substring valid cases 2 arguments with FROM syntax{target:"( \u0361\xb0 \u035c\u0296 \u0361\xb0)\u252c\u2500\u252c\u30ce( \xba _ \xba\u30ce)",start:"16",result:"( \xba _ \xba\u30ce)"}#coerce
+eval/primitives/functions/substring.ion::substring::substring valid cases 2 arguments with FROM syntax{target:"( \u0361\xb0 \u035c\u0296 \u0361\xb0)\u252c\u2500\u252c\u30ce( \xba _ \xba\u30ce)",start:"16",result:"( \xba _ \xba\u30ce)"}#error
+eval/primitives/functions/substring.ion::substring::substring valid cases 2 arguments with FROM syntax{target:"123456789",start:"-4",result:"123456789"}#coerce
+eval/primitives/functions/substring.ion::substring::substring valid cases 2 arguments with FROM syntax{target:"123456789",start:"-4",result:"123456789"}#error
+eval/primitives/functions/substring.ion::substring::substring valid cases 2 arguments with FROM syntax{target:"123456789",start:"0",result:"123456789"}#coerce
+eval/primitives/functions/substring.ion::substring::substring valid cases 2 arguments with FROM syntax{target:"123456789",start:"0",result:"123456789"}#error
+eval/primitives/functions/substring.ion::substring::substring valid cases 2 arguments with FROM syntax{target:"123456789",start:"1",result:"123456789"}#coerce
+eval/primitives/functions/substring.ion::substring::substring valid cases 2 arguments with FROM syntax{target:"123456789",start:"1",result:"123456789"}#error
+eval/primitives/functions/substring.ion::substring::substring valid cases 2 arguments with FROM syntax{target:"123456789",start:"2",result:"23456789"}#coerce
+eval/primitives/functions/substring.ion::substring::substring valid cases 2 arguments with FROM syntax{target:"123456789",start:"2",result:"23456789"}#error
+eval/primitives/functions/substring.ion::substring::substring valid cases 2 arguments with FROM syntax{target:"\U0001f469\U0001f3fd",start:"2",result:"\U0001f3fd"}#coerce
+eval/primitives/functions/substring.ion::substring::substring valid cases 2 arguments with FROM syntax{target:"\U0001f469\U0001f3fd",start:"2",result:"\U0001f3fd"}#error
+eval/primitives/functions/substring.ion::substring::substring valid cases 2 arguments with FROM syntax{target:"\U0001f601\U0001f61e\U0001f638\U0001f638",start:"3",result:"\U0001f638\U0001f638"}#coerce
+eval/primitives/functions/substring.ion::substring::substring valid cases 2 arguments with FROM syntax{target:"\U0001f601\U0001f61e\U0001f638\U0001f638",start:"3",result:"\U0001f638\U0001f638"}#error
+eval/primitives/functions/substring.ion::substring::substring valid cases 2 arguments with FROM syntax{target:"\u8a71\u5bb6\u8eab\u5727\u8cbb\u8c37\u6599\u6751\u80fd\u8a08\u7a0e\u91d1",start:"6",result:"\u8c37\u6599\u6751\u80fd\u8a08\u7a0e\u91d1"}#coerce
+eval/primitives/functions/substring.ion::substring::substring valid cases 2 arguments with FROM syntax{target:"\u8a71\u5bb6\u8eab\u5727\u8cbb\u8c37\u6599\u6751\u80fd\u8a08\u7a0e\u91d1",start:"6",result:"\u8c37\u6599\u6751\u80fd\u8a08\u7a0e\u91d1"}#error
+eval/primitives/functions/substring.ion::substring::substring valid cases 2 arguments{Complete Cyrillic Alphabet Substring Test FROM 40 to END}#coerce
+eval/primitives/functions/substring.ion::substring::substring valid cases 2 arguments{Complete Cyrillic Alphabet Substring Test FROM 40 to END}#error
+eval/primitives/functions/substring.ion::substring::substring valid cases 2 arguments{Mathematical Bold Pangram Substring Test - From Position 17}#coerce
+eval/primitives/functions/substring.ion::substring::substring valid cases 2 arguments{Mathematical Bold Pangram Substring Test - From Position 17}#error
+eval/primitives/functions/substring.ion::substring::substring valid cases 2 arguments{target:"",start:"-1",result:""}#coerce
+eval/primitives/functions/substring.ion::substring::substring valid cases 2 arguments{target:"",start:"-1",result:""}#error
+eval/primitives/functions/substring.ion::substring::substring valid cases 2 arguments{target:"",start:"0",result:""}#coerce
+eval/primitives/functions/substring.ion::substring::substring valid cases 2 arguments{target:"",start:"0",result:""}#error
+eval/primitives/functions/substring.ion::substring::substring valid cases 2 arguments{target:"( \u0361\xb0 \u035c\u0296 \u0361\xb0)\u252c\u2500\u252c\u30ce( \xba _ \xba\u30ce)",start:"16",result:"( \xba _ \xba\u30ce)"}#coerce
+eval/primitives/functions/substring.ion::substring::substring valid cases 2 arguments{target:"( \u0361\xb0 \u035c\u0296 \u0361\xb0)\u252c\u2500\u252c\u30ce( \xba _ \xba\u30ce)",start:"16",result:"( \xba _ \xba\u30ce)"}#error
+eval/primitives/functions/substring.ion::substring::substring valid cases 2 arguments{target:"123456789",start:"-4",result:"123456789"}#coerce
+eval/primitives/functions/substring.ion::substring::substring valid cases 2 arguments{target:"123456789",start:"-4",result:"123456789"}#error
+eval/primitives/functions/substring.ion::substring::substring valid cases 2 arguments{target:"123456789",start:"0",result:"123456789"}#coerce
+eval/primitives/functions/substring.ion::substring::substring valid cases 2 arguments{target:"123456789",start:"0",result:"123456789"}#error
+eval/primitives/functions/substring.ion::substring::substring valid cases 2 arguments{target:"123456789",start:"1",result:"123456789"}#coerce
+eval/primitives/functions/substring.ion::substring::substring valid cases 2 arguments{target:"123456789",start:"1",result:"123456789"}#error
+eval/primitives/functions/substring.ion::substring::substring valid cases 2 arguments{target:"123456789",start:"2",result:"23456789"}#coerce
+eval/primitives/functions/substring.ion::substring::substring valid cases 2 arguments{target:"123456789",start:"2",result:"23456789"}#error
+eval/primitives/functions/substring.ion::substring::substring valid cases 2 arguments{target:"\U0001f469\U0001f3fd",start:"2",result:"\U0001f3fd"}#coerce
+eval/primitives/functions/substring.ion::substring::substring valid cases 2 arguments{target:"\U0001f469\U0001f3fd",start:"2",result:"\U0001f3fd"}#error
+eval/primitives/functions/substring.ion::substring::substring valid cases 2 arguments{target:"\U0001f601\U0001f61e\U0001f638\U0001f638",start:"3",result:"\U0001f638\U0001f638"}#coerce
+eval/primitives/functions/substring.ion::substring::substring valid cases 2 arguments{target:"\U0001f601\U0001f61e\U0001f638\U0001f638",start:"3",result:"\U0001f638\U0001f638"}#error
+eval/primitives/functions/substring.ion::substring::substring valid cases 2 arguments{target:"\u8a71\u5bb6\u8eab\u5727\u8cbb\u8c37\u6599\u6751\u80fd\u8a08\u7a0e\u91d1",start:"6",result:"\u8c37\u6599\u6751\u80fd\u8a08\u7a0e\u91d1"}#coerce
+eval/primitives/functions/substring.ion::substring::substring valid cases 2 arguments{target:"\u8a71\u5bb6\u8eab\u5727\u8cbb\u8c37\u6599\u6751\u80fd\u8a08\u7a0e\u91d1",start:"6",result:"\u8c37\u6599\u6751\u80fd\u8a08\u7a0e\u91d1"}#error
+eval/primitives/functions/substring.ion::substring::substring valid cases 3 arguments using FROM syntax{Cyrillic Alphabet Substring Test - 4 Characters from Position 40}#coerce
+eval/primitives/functions/substring.ion::substring::substring valid cases 3 arguments using FROM syntax{Cyrillic Alphabet Substring Test - 4 Characters from Position 40}#error
+eval/primitives/functions/substring.ion::substring::substring valid cases 3 arguments using FROM syntax{Cyrillic alphabet substring test - extracting from position 40 to end, covering end of uppercase and all lowercase Cyrillic letters}#coerce
+eval/primitives/functions/substring.ion::substring::substring valid cases 3 arguments using FROM syntax{Cyrillic alphabet substring test - extracting from position 40 to end, covering end of uppercase and all lowercase Cyrillic letters}#error
+eval/primitives/functions/substring.ion::substring::substring valid cases 3 arguments using FROM syntax{Mathematical Bold Pangram Substring Test - From Position 17 with 5 chars}#coerce
+eval/primitives/functions/substring.ion::substring::substring valid cases 3 arguments using FROM syntax{Mathematical Bold Pangram Substring Test - From Position 17 with 5 chars}#error
+eval/primitives/functions/substring.ion::substring::substring valid cases 3 arguments using FROM syntax{Mathematical Bold Pangram Substring Test - From Position 17 with 999 chars}#coerce
+eval/primitives/functions/substring.ion::substring::substring valid cases 3 arguments using FROM syntax{Mathematical Bold Pangram Substring Test - From Position 17 with 999 chars}#error
+eval/primitives/functions/substring.ion::substring::substring valid cases 3 arguments using FROM syntax{target:"",start:"-1",quantity:"999",result:""}#coerce
+eval/primitives/functions/substring.ion::substring::substring valid cases 3 arguments using FROM syntax{target:"",start:"-1",quantity:"999",result:""}#error
+eval/primitives/functions/substring.ion::substring::substring valid cases 3 arguments using FROM syntax{target:"",start:"0",quantity:"999",result:""}#coerce
+eval/primitives/functions/substring.ion::substring::substring valid cases 3 arguments using FROM syntax{target:"",start:"0",quantity:"999",result:""}#error
+eval/primitives/functions/substring.ion::substring::substring valid cases 3 arguments using FROM syntax{target:"( \u0361\xb0 \u035c\u0296 \u0361\xb0)\u252c\u2500\u252c\u30ce( \xba _ \xba\u30ce)",start:"16",quantity:"999",result:"( \xba _ \xba\u30ce)"}#coerce
+eval/primitives/functions/substring.ion::substring::substring valid cases 3 arguments using FROM syntax{target:"( \u0361\xb0 \u035c\u0296 \u0361\xb0)\u252c\u2500\u252c\u30ce( \xba _ \xba\u30ce)",start:"16",quantity:"999",result:"( \xba _ \xba\u30ce)"}#error
+eval/primitives/functions/substring.ion::substring::substring valid cases 3 arguments using FROM syntax{target:"( \u0361\xb0 \u035c\u0296 \u0361\xb0)\u252c\u2500\u252c\u30ce( \xba _ \xba\u30ce)",start:"18",quantity:"5",result:"\xba _ \xba"}#coerce
+eval/primitives/functions/substring.ion::substring::substring valid cases 3 arguments using FROM syntax{target:"( \u0361\xb0 \u035c\u0296 \u0361\xb0)\u252c\u2500\u252c\u30ce( \xba _ \xba\u30ce)",start:"18",quantity:"5",result:"\xba _ \xba"}#error
+eval/primitives/functions/substring.ion::substring::substring valid cases 3 arguments using FROM syntax{target:"1",start:"-4",quantity:"0",result:""}#coerce
+eval/primitives/functions/substring.ion::substring::substring valid cases 3 arguments using FROM syntax{target:"1",start:"-4",quantity:"0",result:""}#error
+eval/primitives/functions/substring.ion::substring::substring valid cases 3 arguments using FROM syntax{target:"1",start:"-4",quantity:"1",result:""}#coerce
+eval/primitives/functions/substring.ion::substring::substring valid cases 3 arguments using FROM syntax{target:"1",start:"-4",quantity:"1",result:""}#error
+eval/primitives/functions/substring.ion::substring::substring valid cases 3 arguments using FROM syntax{target:"1",start:"0",quantity:"0",result:""}#coerce
+eval/primitives/functions/substring.ion::substring::substring valid cases 3 arguments using FROM syntax{target:"1",start:"0",quantity:"0",result:""}#error
+eval/primitives/functions/substring.ion::substring::substring valid cases 3 arguments using FROM syntax{target:"1",start:"1",quantity:"0",result:""}#coerce
+eval/primitives/functions/substring.ion::substring::substring valid cases 3 arguments using FROM syntax{target:"1",start:"1",quantity:"0",result:""}#error
+eval/primitives/functions/substring.ion::substring::substring valid cases 3 arguments using FROM syntax{target:"123456789",start:"-4",quantity:"6",result:"1"}#coerce
+eval/primitives/functions/substring.ion::substring::substring valid cases 3 arguments using FROM syntax{target:"123456789",start:"-4",quantity:"6",result:"1"}#error
+eval/primitives/functions/substring.ion::substring::substring valid cases 3 arguments using FROM syntax{target:"123456789",start:"-4",quantity:"999",result:"123456789"}#coerce
+eval/primitives/functions/substring.ion::substring::substring valid cases 3 arguments using FROM syntax{target:"123456789",start:"-4",quantity:"999",result:"123456789"}#error
+eval/primitives/functions/substring.ion::substring::substring valid cases 3 arguments using FROM syntax{target:"123456789",start:"0",quantity:"2",result:"1"}#coerce
+eval/primitives/functions/substring.ion::substring::substring valid cases 3 arguments using FROM syntax{target:"123456789",start:"0",quantity:"2",result:"1"}#error
+eval/primitives/functions/substring.ion::substring::substring valid cases 3 arguments using FROM syntax{target:"123456789",start:"0",quantity:"999",result:"123456789"}#coerce
+eval/primitives/functions/substring.ion::substring::substring valid cases 3 arguments using FROM syntax{target:"123456789",start:"0",quantity:"999",result:"123456789"}#error
+eval/primitives/functions/substring.ion::substring::substring valid cases 3 arguments using FROM syntax{target:"123456789",start:"1",quantity:"2",result:"12"}#coerce
+eval/primitives/functions/substring.ion::substring::substring valid cases 3 arguments using FROM syntax{target:"123456789",start:"1",quantity:"2",result:"12"}#error
+eval/primitives/functions/substring.ion::substring::substring valid cases 3 arguments using FROM syntax{target:"123456789",start:"1",quantity:"999",result:"123456789"}#coerce
+eval/primitives/functions/substring.ion::substring::substring valid cases 3 arguments using FROM syntax{target:"123456789",start:"1",quantity:"999",result:"123456789"}#error
+eval/primitives/functions/substring.ion::substring::substring valid cases 3 arguments using FROM syntax{target:"123456789",start:"2",quantity:"3",result:"234"}#coerce
+eval/primitives/functions/substring.ion::substring::substring valid cases 3 arguments using FROM syntax{target:"123456789",start:"2",quantity:"3",result:"234"}#error
+eval/primitives/functions/substring.ion::substring::substring valid cases 3 arguments using FROM syntax{target:"123456789",start:"2",quantity:"999",result:"23456789"}#coerce
+eval/primitives/functions/substring.ion::substring::substring valid cases 3 arguments using FROM syntax{target:"123456789",start:"2",quantity:"999",result:"23456789"}#error
+eval/primitives/functions/substring.ion::substring::substring valid cases 3 arguments using FROM syntax{target:"\U0001f469\U0001f3fd",start:"1",quantity:"1",result:"\U0001f469"}#coerce
+eval/primitives/functions/substring.ion::substring::substring valid cases 3 arguments using FROM syntax{target:"\U0001f469\U0001f3fd",start:"1",quantity:"1",result:"\U0001f469"}#error
+eval/primitives/functions/substring.ion::substring::substring valid cases 3 arguments using FROM syntax{target:"\U0001f601\U0001f61e\U0001f638\U0001f638",start:"3",quantity:"1",result:"\U0001f638"}#coerce
+eval/primitives/functions/substring.ion::substring::substring valid cases 3 arguments using FROM syntax{target:"\U0001f601\U0001f61e\U0001f638\U0001f638",start:"3",quantity:"1",result:"\U0001f638"}#error
+eval/primitives/functions/substring.ion::substring::substring valid cases 3 arguments using FROM syntax{target:"\U0001f601\U0001f61e\U0001f638\U0001f638",start:"3",quantity:"999",result:"\U0001f638\U0001f638"}#coerce
+eval/primitives/functions/substring.ion::substring::substring valid cases 3 arguments using FROM syntax{target:"\U0001f601\U0001f61e\U0001f638\U0001f638",start:"3",quantity:"999",result:"\U0001f638\U0001f638"}#error
+eval/primitives/functions/substring.ion::substring::substring valid cases 3 arguments using FROM syntax{target:"\u8a71\u5bb6\u8eab\u5727\u8cbb\u8c37\u6599\u6751\u80fd\u8a08\u7a0e\u91d1",start:"6",quantity:"2",result:"\u8c37\u6599"}#coerce
+eval/primitives/functions/substring.ion::substring::substring valid cases 3 arguments using FROM syntax{target:"\u8a71\u5bb6\u8eab\u5727\u8cbb\u8c37\u6599\u6751\u80fd\u8a08\u7a0e\u91d1",start:"6",quantity:"2",result:"\u8c37\u6599"}#error
+eval/primitives/functions/substring.ion::substring::substring valid cases 3 arguments using FROM syntax{target:"\u8a71\u5bb6\u8eab\u5727\u8cbb\u8c37\u6599\u6751\u80fd\u8a08\u7a0e\u91d1",start:"6",quantity:"999",result:"\u8c37\u6599\u6751\u80fd\u8a08\u7a0e\u91d1"}#coerce
+eval/primitives/functions/substring.ion::substring::substring valid cases 3 arguments using FROM syntax{target:"\u8a71\u5bb6\u8eab\u5727\u8cbb\u8c37\u6599\u6751\u80fd\u8a08\u7a0e\u91d1",start:"6",quantity:"999",result:"\u8c37\u6599\u6751\u80fd\u8a08\u7a0e\u91d1"}#error
+eval/primitives/functions/substring.ion::substring::substring valid cases 3 arguments{Cyrillic alphabet substring test FROM 40 with 4 characters}#coerce
+eval/primitives/functions/substring.ion::substring::substring valid cases 3 arguments{Cyrillic alphabet substring test FROM 40 with 4 characters}#error
+eval/primitives/functions/substring.ion::substring::substring valid cases 3 arguments{Cyrillic alphabet substring test FROM 40 with 999 characters}#coerce
+eval/primitives/functions/substring.ion::substring::substring valid cases 3 arguments{Cyrillic alphabet substring test FROM 40 with 999 characters}#error
+eval/primitives/functions/substring.ion::substring::substring valid cases 3 arguments{Mathematical Bold Pangram Substring Test - From Position 17 with 5 chars}#coerce
+eval/primitives/functions/substring.ion::substring::substring valid cases 3 arguments{Mathematical Bold Pangram Substring Test - From Position 17 with 5 chars}#error
+eval/primitives/functions/substring.ion::substring::substring valid cases 3 arguments{Mathematical Bold Pangram Substring Test - From Position 17 with 999 chars}#coerce
+eval/primitives/functions/substring.ion::substring::substring valid cases 3 arguments{Mathematical Bold Pangram Substring Test - From Position 17 with 999 chars}#error
+eval/primitives/functions/substring.ion::substring::substring valid cases 3 arguments{target:"",start:"-1",quantity:"999",result:""}#coerce
+eval/primitives/functions/substring.ion::substring::substring valid cases 3 arguments{target:"",start:"-1",quantity:"999",result:""}#error
+eval/primitives/functions/substring.ion::substring::substring valid cases 3 arguments{target:"",start:"0",quantity:"999",result:""}#coerce
+eval/primitives/functions/substring.ion::substring::substring valid cases 3 arguments{target:"",start:"0",quantity:"999",result:""}#error
+eval/primitives/functions/substring.ion::substring::substring valid cases 3 arguments{target:"( \u0361\xb0 \u035c\u0296 \u0361\xb0)\u252c\u2500\u252c\u30ce( \xba _ \xba\u30ce)",start:"16",quantity:"999",result:"( \xba _ \xba\u30ce)"}#coerce
+eval/primitives/functions/substring.ion::substring::substring valid cases 3 arguments{target:"( \u0361\xb0 \u035c\u0296 \u0361\xb0)\u252c\u2500\u252c\u30ce( \xba _ \xba\u30ce)",start:"16",quantity:"999",result:"( \xba _ \xba\u30ce)"}#error
+eval/primitives/functions/substring.ion::substring::substring valid cases 3 arguments{target:"( \u0361\xb0 \u035c\u0296 \u0361\xb0)\u252c\u2500\u252c\u30ce( \xba _ \xba\u30ce)",start:"18",quantity:"5",result:"\xba _ \xba"}#coerce
+eval/primitives/functions/substring.ion::substring::substring valid cases 3 arguments{target:"( \u0361\xb0 \u035c\u0296 \u0361\xb0)\u252c\u2500\u252c\u30ce( \xba _ \xba\u30ce)",start:"18",quantity:"5",result:"\xba _ \xba"}#error
+eval/primitives/functions/substring.ion::substring::substring valid cases 3 arguments{target:"1",start:"-4",quantity:"0",result:""}#coerce
+eval/primitives/functions/substring.ion::substring::substring valid cases 3 arguments{target:"1",start:"-4",quantity:"0",result:""}#error
+eval/primitives/functions/substring.ion::substring::substring valid cases 3 arguments{target:"1",start:"-4",quantity:"1",result:""}#coerce
+eval/primitives/functions/substring.ion::substring::substring valid cases 3 arguments{target:"1",start:"-4",quantity:"1",result:""}#error
+eval/primitives/functions/substring.ion::substring::substring valid cases 3 arguments{target:"1",start:"0",quantity:"0",result:""}#coerce
+eval/primitives/functions/substring.ion::substring::substring valid cases 3 arguments{target:"1",start:"0",quantity:"0",result:""}#error
+eval/primitives/functions/substring.ion::substring::substring valid cases 3 arguments{target:"1",start:"1",quantity:"0",result:""}#coerce
+eval/primitives/functions/substring.ion::substring::substring valid cases 3 arguments{target:"1",start:"1",quantity:"0",result:""}#error
+eval/primitives/functions/substring.ion::substring::substring valid cases 3 arguments{target:"123456789",start:"-4",quantity:"6",result:"1"}#coerce
+eval/primitives/functions/substring.ion::substring::substring valid cases 3 arguments{target:"123456789",start:"-4",quantity:"6",result:"1"}#error
+eval/primitives/functions/substring.ion::substring::substring valid cases 3 arguments{target:"123456789",start:"-4",quantity:"999",result:"123456789"}#coerce
+eval/primitives/functions/substring.ion::substring::substring valid cases 3 arguments{target:"123456789",start:"-4",quantity:"999",result:"123456789"}#error
+eval/primitives/functions/substring.ion::substring::substring valid cases 3 arguments{target:"123456789",start:"0",quantity:"2",result:"1"}#coerce
+eval/primitives/functions/substring.ion::substring::substring valid cases 3 arguments{target:"123456789",start:"0",quantity:"2",result:"1"}#error
+eval/primitives/functions/substring.ion::substring::substring valid cases 3 arguments{target:"123456789",start:"0",quantity:"999",result:"123456789"}#coerce
+eval/primitives/functions/substring.ion::substring::substring valid cases 3 arguments{target:"123456789",start:"0",quantity:"999",result:"123456789"}#error
+eval/primitives/functions/substring.ion::substring::substring valid cases 3 arguments{target:"123456789",start:"1",quantity:"2",result:"12"}#coerce
+eval/primitives/functions/substring.ion::substring::substring valid cases 3 arguments{target:"123456789",start:"1",quantity:"2",result:"12"}#error
+eval/primitives/functions/substring.ion::substring::substring valid cases 3 arguments{target:"123456789",start:"1",quantity:"999",result:"123456789"}#coerce
+eval/primitives/functions/substring.ion::substring::substring valid cases 3 arguments{target:"123456789",start:"1",quantity:"999",result:"123456789"}#error
+eval/primitives/functions/substring.ion::substring::substring valid cases 3 arguments{target:"123456789",start:"2",quantity:"3",result:"234"}#coerce
+eval/primitives/functions/substring.ion::substring::substring valid cases 3 arguments{target:"123456789",start:"2",quantity:"3",result:"234"}#error
+eval/primitives/functions/substring.ion::substring::substring valid cases 3 arguments{target:"123456789",start:"2",quantity:"999",result:"23456789"}#coerce
+eval/primitives/functions/substring.ion::substring::substring valid cases 3 arguments{target:"123456789",start:"2",quantity:"999",result:"23456789"}#error
+eval/primitives/functions/substring.ion::substring::substring valid cases 3 arguments{target:"\U0001f469\U0001f3fd",start:"1",quantity:"1",result:"\U0001f469"}#coerce
+eval/primitives/functions/substring.ion::substring::substring valid cases 3 arguments{target:"\U0001f469\U0001f3fd",start:"1",quantity:"1",result:"\U0001f469"}#error
+eval/primitives/functions/substring.ion::substring::substring valid cases 3 arguments{target:"\U0001f601\U0001f61e\U0001f638\U0001f638",start:"3",quantity:"1",result:"\U0001f638"}#coerce
+eval/primitives/functions/substring.ion::substring::substring valid cases 3 arguments{target:"\U0001f601\U0001f61e\U0001f638\U0001f638",start:"3",quantity:"1",result:"\U0001f638"}#error
+eval/primitives/functions/substring.ion::substring::substring valid cases 3 arguments{target:"\U0001f601\U0001f61e\U0001f638\U0001f638",start:"3",quantity:"999",result:"\U0001f638\U0001f638"}#coerce
+eval/primitives/functions/substring.ion::substring::substring valid cases 3 arguments{target:"\U0001f601\U0001f61e\U0001f638\U0001f638",start:"3",quantity:"999",result:"\U0001f638\U0001f638"}#error
+eval/primitives/functions/substring.ion::substring::substring valid cases 3 arguments{target:"\u8a71\u5bb6\u8eab\u5727\u8cbb\u8c37\u6599\u6751\u80fd\u8a08\u7a0e\u91d1",start:"6",quantity:"2",result:"\u8c37\u6599"}#coerce
+eval/primitives/functions/substring.ion::substring::substring valid cases 3 arguments{target:"\u8a71\u5bb6\u8eab\u5727\u8cbb\u8c37\u6599\u6751\u80fd\u8a08\u7a0e\u91d1",start:"6",quantity:"2",result:"\u8c37\u6599"}#error
+eval/primitives/functions/substring.ion::substring::substring valid cases 3 arguments{target:"\u8a71\u5bb6\u8eab\u5727\u8cbb\u8c37\u6599\u6751\u80fd\u8a08\u7a0e\u91d1",start:"6",quantity:"999",result:"\u8c37\u6599\u6751\u80fd\u8a08\u7a0e\u91d1"}#coerce
+eval/primitives/functions/substring.ion::substring::substring valid cases 3 arguments{target:"\u8a71\u5bb6\u8eab\u5727\u8cbb\u8c37\u6599\u6751\u80fd\u8a08\u7a0e\u91d1",start:"6",quantity:"999",result:"\u8c37\u6599\u6751\u80fd\u8a08\u7a0e\u91d1"}#error
+eval/primitives/functions/trim.ion::trim::trim null and missing propagation{sql:"trim(both '' from missing)"}#coerce
+eval/primitives/functions/trim.ion::trim::trim null and missing propagation{sql:"trim(both '' from missing)"}#error
+eval/primitives/functions/trim.ion::trim::trim null and missing propagation{sql:"trim(both '' from null)"}#coerce
+eval/primitives/functions/trim.ion::trim::trim null and missing propagation{sql:"trim(both '' from null)"}#error
+eval/primitives/functions/trim.ion::trim::trim null and missing propagation{sql:"trim(both from missing)"}#coerce
+eval/primitives/functions/trim.ion::trim::trim null and missing propagation{sql:"trim(both from missing)"}#error
+eval/primitives/functions/trim.ion::trim::trim null and missing propagation{sql:"trim(both from null)"}#coerce
+eval/primitives/functions/trim.ion::trim::trim null and missing propagation{sql:"trim(both from null)"}#error
+eval/primitives/functions/trim.ion::trim::trim null and missing propagation{sql:"trim(both missing from '')"}#coerce
+eval/primitives/functions/trim.ion::trim::trim null and missing propagation{sql:"trim(both missing from '')"}#error
+eval/primitives/functions/trim.ion::trim::trim null and missing propagation{sql:"trim(both missing from missing)"}#coerce
+eval/primitives/functions/trim.ion::trim::trim null and missing propagation{sql:"trim(both missing from missing)"}#error
+eval/primitives/functions/trim.ion::trim::trim null and missing propagation{sql:"trim(both missing from null)"}#coerce
+eval/primitives/functions/trim.ion::trim::trim null and missing propagation{sql:"trim(both missing from null)"}#error
+eval/primitives/functions/trim.ion::trim::trim null and missing propagation{sql:"trim(both null from '')"}#coerce
+eval/primitives/functions/trim.ion::trim::trim null and missing propagation{sql:"trim(both null from '')"}#error
+eval/primitives/functions/trim.ion::trim::trim null and missing propagation{sql:"trim(both null from missing)"}#coerce
+eval/primitives/functions/trim.ion::trim::trim null and missing propagation{sql:"trim(both null from missing)"}#error
+eval/primitives/functions/trim.ion::trim::trim null and missing propagation{sql:"trim(both null from null)"}#coerce
+eval/primitives/functions/trim.ion::trim::trim null and missing propagation{sql:"trim(both null from null)"}#error
+eval/primitives/functions/trim.ion::trim::trim null and missing propagation{sql:"trim(leading '' from missing)"}#coerce
+eval/primitives/functions/trim.ion::trim::trim null and missing propagation{sql:"trim(leading '' from missing)"}#error
+eval/primitives/functions/trim.ion::trim::trim null and missing propagation{sql:"trim(leading '' from null)"}#coerce
+eval/primitives/functions/trim.ion::trim::trim null and missing propagation{sql:"trim(leading '' from null)"}#error
+eval/primitives/functions/trim.ion::trim::trim null and missing propagation{sql:"trim(leading from missing)"}#coerce
+eval/primitives/functions/trim.ion::trim::trim null and missing propagation{sql:"trim(leading from missing)"}#error
+eval/primitives/functions/trim.ion::trim::trim null and missing propagation{sql:"trim(leading from null)"}#coerce
+eval/primitives/functions/trim.ion::trim::trim null and missing propagation{sql:"trim(leading from null)"}#error
+eval/primitives/functions/trim.ion::trim::trim null and missing propagation{sql:"trim(leading missing from '')"}#coerce
+eval/primitives/functions/trim.ion::trim::trim null and missing propagation{sql:"trim(leading missing from '')"}#error
+eval/primitives/functions/trim.ion::trim::trim null and missing propagation{sql:"trim(leading missing from missing)"}#coerce
+eval/primitives/functions/trim.ion::trim::trim null and missing propagation{sql:"trim(leading missing from missing)"}#error
+eval/primitives/functions/trim.ion::trim::trim null and missing propagation{sql:"trim(leading missing from null)"}#coerce
+eval/primitives/functions/trim.ion::trim::trim null and missing propagation{sql:"trim(leading missing from null)"}#error
+eval/primitives/functions/trim.ion::trim::trim null and missing propagation{sql:"trim(leading null from '')"}#coerce
+eval/primitives/functions/trim.ion::trim::trim null and missing propagation{sql:"trim(leading null from '')"}#error
+eval/primitives/functions/trim.ion::trim::trim null and missing propagation{sql:"trim(leading null from missing)"}#coerce
+eval/primitives/functions/trim.ion::trim::trim null and missing propagation{sql:"trim(leading null from missing)"}#error
+eval/primitives/functions/trim.ion::trim::trim null and missing propagation{sql:"trim(leading null from null)"}#coerce
+eval/primitives/functions/trim.ion::trim::trim null and missing propagation{sql:"trim(leading null from null)"}#error
+eval/primitives/functions/trim.ion::trim::trim null and missing propagation{sql:"trim(missing)"}#coerce
+eval/primitives/functions/trim.ion::trim::trim null and missing propagation{sql:"trim(missing)"}#error
+eval/primitives/functions/trim.ion::trim::trim null and missing propagation{sql:"trim(null)"}#coerce
+eval/primitives/functions/trim.ion::trim::trim null and missing propagation{sql:"trim(null)"}#error
+eval/primitives/functions/trim.ion::trim::trim null and missing propagation{sql:"trim(trailing '' from missing)"}#coerce
+eval/primitives/functions/trim.ion::trim::trim null and missing propagation{sql:"trim(trailing '' from missing)"}#error
+eval/primitives/functions/trim.ion::trim::trim null and missing propagation{sql:"trim(trailing '' from null)"}#coerce
+eval/primitives/functions/trim.ion::trim::trim null and missing propagation{sql:"trim(trailing '' from null)"}#error
+eval/primitives/functions/trim.ion::trim::trim null and missing propagation{sql:"trim(trailing from missing)"}#coerce
+eval/primitives/functions/trim.ion::trim::trim null and missing propagation{sql:"trim(trailing from missing)"}#error
+eval/primitives/functions/trim.ion::trim::trim null and missing propagation{sql:"trim(trailing from null)"}#coerce
+eval/primitives/functions/trim.ion::trim::trim null and missing propagation{sql:"trim(trailing from null)"}#error
+eval/primitives/functions/trim.ion::trim::trim null and missing propagation{sql:"trim(trailing missing from '')"}#coerce
+eval/primitives/functions/trim.ion::trim::trim null and missing propagation{sql:"trim(trailing missing from '')"}#error
+eval/primitives/functions/trim.ion::trim::trim null and missing propagation{sql:"trim(trailing missing from missing)"}#coerce
+eval/primitives/functions/trim.ion::trim::trim null and missing propagation{sql:"trim(trailing missing from missing)"}#error
+eval/primitives/functions/trim.ion::trim::trim null and missing propagation{sql:"trim(trailing missing from null)"}#coerce
+eval/primitives/functions/trim.ion::trim::trim null and missing propagation{sql:"trim(trailing missing from null)"}#error
+eval/primitives/functions/trim.ion::trim::trim null and missing propagation{sql:"trim(trailing null from '')"}#coerce
+eval/primitives/functions/trim.ion::trim::trim null and missing propagation{sql:"trim(trailing null from '')"}#error
+eval/primitives/functions/trim.ion::trim::trim null and missing propagation{sql:"trim(trailing null from missing)"}#coerce
+eval/primitives/functions/trim.ion::trim::trim null and missing propagation{sql:"trim(trailing null from missing)"}#error
+eval/primitives/functions/trim.ion::trim::trim null and missing propagation{sql:"trim(trailing null from null)"}#coerce
+eval/primitives/functions/trim.ion::trim::trim null and missing propagation{sql:"trim(trailing null from null)"}#error
+eval/primitives/functions/trim.ion::trim::trim unsupported type{target:"1"}#coerce
+eval/primitives/functions/trim.ion::trim::trim unsupported type{target:"1"}#error
+eval/primitives/functions/trim.ion::trim::trim unsupported type{target:"1.0"}#coerce
+eval/primitives/functions/trim.ion::trim::trim unsupported type{target:"1.0"}#error
+eval/primitives/functions/trim.ion::trim::trim unsupported type{target:"1e0"}#coerce
+eval/primitives/functions/trim.ion::trim::trim unsupported type{target:"1e0"}#error
+eval/primitives/functions/trim.ion::trim::trim unsupported type{target:"`()`"}#coerce
+eval/primitives/functions/trim.ion::trim::trim unsupported type{target:"`()`"}#error
+eval/primitives/functions/trim.ion::trim::trim unsupported type{target:"`[]`"}#coerce
+eval/primitives/functions/trim.ion::trim::trim unsupported type{target:"`[]`"}#error
+eval/primitives/functions/trim.ion::trim::trim unsupported type{target:"`{}`"}#coerce
+eval/primitives/functions/trim.ion::trim::trim unsupported type{target:"`{}`"}#error
+eval/primitives/functions/trim.ion::trim::trim unsupported type{target:"true"}#coerce
+eval/primitives/functions/trim.ion::trim::trim unsupported type{target:"true"}#error
+eval/primitives/functions/trim.ion::trim::trim unsupported type{to_remove:"1"}#coerce
+eval/primitives/functions/trim.ion::trim::trim unsupported type{to_remove:"1"}#error
+eval/primitives/functions/trim.ion::trim::trim unsupported type{to_remove:"true"}#coerce
+eval/primitives/functions/trim.ion::trim::trim unsupported type{to_remove:"true"}#error
+eval/primitives/functions/trim.ion::trim::trim valid cases{Emoji leading trim test - removing poop and grinning cat face emojis from start of string}#coerce
+eval/primitives/functions/trim.ion::trim::trim valid cases{Emoji leading trim test - removing poop and grinning cat face emojis from start of string}#error
+eval/primitives/functions/trim.ion::trim::trim valid cases{Emoji trailing trim test - removing poop and grinning cat face emojis from end of string}#coerce
+eval/primitives/functions/trim.ion::trim::trim valid cases{Emoji trailing trim test - removing poop and grinning cat face emojis from end of string}#error
+eval/primitives/functions/trim.ion::trim::trim valid cases{spec:"both",to_remove:" ",target:"            ",result:""}#coerce
+eval/primitives/functions/trim.ion::trim::trim valid cases{spec:"both",to_remove:" ",target:"            ",result:""}#error
+eval/primitives/functions/trim.ion::trim::trim valid cases{spec:"both",to_remove:"12",target:"111112a1212121211",result:"a"}#coerce
+eval/primitives/functions/trim.ion::trim::trim valid cases{spec:"both",to_remove:"12",target:"111112a1212121211",result:"a"}#error
+eval/primitives/functions/trim.ion::trim::trim valid cases{spec:"both",to_remove:"\U0001f476\U0001f3fb",target:"\U0001f476\U0001f3fb\U0001f469\U0001f476\U0001f3fb",result:"\U0001f469"}#coerce
+eval/primitives/functions/trim.ion::trim::trim valid cases{spec:"both",to_remove:"\U0001f476\U0001f3fb",target:"\U0001f476\U0001f3fb\U0001f469\U0001f476\U0001f3fb",result:"\U0001f469"}#error
+eval/primitives/functions/trim.ion::trim::trim valid cases{spec:"both",to_remove:"\U0001f4a9",target:"\U0001f4a9\U0001f4a9\U0001f4a9\U0001f4a9\U0001f601\U0001f4a9\U0001f4a9\U0001f4a9\U0001f4a9",result:"\U0001f601"}#coerce
+eval/primitives/functions/trim.ion::trim::trim valid cases{spec:"both",to_remove:"\U0001f4a9",target:"\U0001f4a9\U0001f4a9\U0001f4a9\U0001f4a9\U0001f601\U0001f4a9\U0001f4a9\U0001f4a9\U0001f4a9",result:"\U0001f601"}#error
+eval/primitives/functions/trim.ion::trim::trim valid cases{spec:"both",to_remove:"\u8a71 ",target:"\u8a71\u8a71 \u8a71\u8a71\u8a71\u8a71\u8a71\u8a71\u8cbb\u8c37\u6599\u6751\u80fd\u8a71\u8a71\u8a71\u8a71 \u8a71\u8a71\u8a71\u8a71    ",result:"\u8cbb\u8c37\u6599\u6751\u80fd"}#coerce
+eval/primitives/functions/trim.ion::trim::trim valid cases{spec:"both",to_remove:"\u8a71 ",target:"\u8a71\u8a71 \u8a71\u8a71\u8a71\u8a71\u8a71\u8a71\u8cbb\u8c37\u6599\u6751\u80fd\u8a71\u8a71\u8a71\u8a71 \u8a71\u8a71\u8a71\u8a71    ",result:"\u8cbb\u8c37\u6599\u6751\u80fd"}#error
+eval/primitives/functions/trim.ion::trim::trim valid cases{spec:"both",to_remove:"\xb0\xba\u25a1(\uff09)\u256f\u30ce\ufe35_ ",target:"(\u256f\xb0\u25a1\xb0\uff09\u256f\ufe35 \u253b\u2501\u253b \u252c\u2500\u252c\u30ce( \xba _ \xba\u30ce)",result:"\u253b\u2501\u253b \u252c\u2500\u252c"}#coerce
+eval/primitives/functions/trim.ion::trim::trim valid cases{spec:"both",to_remove:"\xb0\xba\u25a1(\uff09)\u256f\u30ce\ufe35_ ",target:"(\u256f\xb0\u25a1\xb0\uff09\u256f\ufe35 \u253b\u2501\u253b \u252c\u2500\u252c\u30ce( \xba _ \xba\u30ce)",result:"\u253b\u2501\u253b \u252c\u2500\u252c"}#error
+eval/primitives/functions/trim.ion::trim::trim valid cases{spec:"leading",to_remove:" ",target:"            ",result:""}#coerce
+eval/primitives/functions/trim.ion::trim::trim valid cases{spec:"leading",to_remove:" ",target:"            ",result:""}#error
+eval/primitives/functions/trim.ion::trim::trim valid cases{spec:"leading",to_remove:"12",target:"111112a1212121211",result:"a1212121211"}#coerce
+eval/primitives/functions/trim.ion::trim::trim valid cases{spec:"leading",to_remove:"12",target:"111112a1212121211",result:"a1212121211"}#error
+eval/primitives/functions/trim.ion::trim::trim valid cases{spec:"leading",to_remove:"\U0001f476\U0001f3fb",target:"\U0001f476\U0001f3fb\U0001f469\U0001f476\U0001f3fb",result:"\U0001f469\U0001f476\U0001f3fb"}#coerce
+eval/primitives/functions/trim.ion::trim::trim valid cases{spec:"leading",to_remove:"\U0001f476\U0001f3fb",target:"\U0001f476\U0001f3fb\U0001f469\U0001f476\U0001f3fb",result:"\U0001f469\U0001f476\U0001f3fb"}#error
+eval/primitives/functions/trim.ion::trim::trim valid cases{spec:"leading",to_remove:"\U0001f4a9",target:"\U0001f4a9\U0001f4a9\U0001f4a9\U0001f4a9\U0001f601\U0001f4a9\U0001f4a9\U0001f4a9\U0001f4a9",result:"\U0001f601\U0001f4a9\U0001f4a9\U0001f4a9\U0001f4a9"}#coerce
+eval/primitives/functions/trim.ion::trim::trim valid cases{spec:"leading",to_remove:"\U0001f4a9",target:"\U0001f4a9\U0001f4a9\U0001f4a9\U0001f4a9\U0001f601\U0001f4a9\U0001f4a9\U0001f4a9\U0001f4a9",result:"\U0001f601\U0001f4a9\U0001f4a9\U0001f4a9\U0001f4a9"}#error
+eval/primitives/functions/trim.ion::trim::trim valid cases{spec:"leading",to_remove:"\u8a71 ",target:"\u8a71\u8a71 \u8a71\u8a71\u8a71\u8a71\u8a71\u8a71\u8cbb\u8c37\u6599\u6751\u80fd\u8a71\u8a71\u8a71\u8a71 \u8a71\u8a71\u8a71\u8a71    ",result:"\u8cbb\u8c37\u6599\u6751\u80fd\u8a71\u8a71\u8a71\u8a71 \u8a71\u8a71\u8a71\u8a71    "}#coerce
+eval/primitives/functions/trim.ion::trim::trim valid cases{spec:"leading",to_remove:"\u8a71 ",target:"\u8a71\u8a71 \u8a71\u8a71\u8a71\u8a71\u8a71\u8a71\u8cbb\u8c37\u6599\u6751\u80fd\u8a71\u8a71\u8a71\u8a71 \u8a71\u8a71\u8a71\u8a71    ",result:"\u8cbb\u8c37\u6599\u6751\u80fd\u8a71\u8a71\u8a71\u8a71 \u8a71\u8a71\u8a71\u8a71    "}#error
+eval/primitives/functions/trim.ion::trim::trim valid cases{spec:"leading",to_remove:"\xb0\xba\u25a1(\uff09)\u256f\u30ce\ufe35_ ",target:"(\u256f\xb0\u25a1\xb0\uff09\u256f\ufe35 \u253b\u2501\u253b \u252c\u2500\u252c\u30ce( \xba _ \xba\u30ce)",result:"\u253b\u2501\u253b \u252c\u2500\u252c\u30ce( \xba _ \xba\u30ce)"}#coerce
+eval/primitives/functions/trim.ion::trim::trim valid cases{spec:"leading",to_remove:"\xb0\xba\u25a1(\uff09)\u256f\u30ce\ufe35_ ",target:"(\u256f\xb0\u25a1\xb0\uff09\u256f\ufe35 \u253b\u2501\u253b \u252c\u2500\u252c\u30ce( \xba _ \xba\u30ce)",result:"\u253b\u2501\u253b \u252c\u2500\u252c\u30ce( \xba _ \xba\u30ce)"}#error
+eval/primitives/functions/trim.ion::trim::trim valid cases{spec:"trailing",to_remove:" ",target:"            ",result:""}#coerce
+eval/primitives/functions/trim.ion::trim::trim valid cases{spec:"trailing",to_remove:" ",target:"            ",result:""}#error
+eval/primitives/functions/trim.ion::trim::trim valid cases{spec:"trailing",to_remove:"12",target:"111112a1212121211",result:"111112a"}#coerce
+eval/primitives/functions/trim.ion::trim::trim valid cases{spec:"trailing",to_remove:"12",target:"111112a1212121211",result:"111112a"}#error
+eval/primitives/functions/trim.ion::trim::trim valid cases{spec:"trailing",to_remove:"\U0001f476\U0001f3fb",target:"\U0001f476\U0001f3fb\U0001f469\U0001f476\U0001f3fb",result:"\U0001f476\U0001f3fb\U0001f469"}#coerce
+eval/primitives/functions/trim.ion::trim::trim valid cases{spec:"trailing",to_remove:"\U0001f476\U0001f3fb",target:"\U0001f476\U0001f3fb\U0001f469\U0001f476\U0001f3fb",result:"\U0001f476\U0001f3fb\U0001f469"}#error
+eval/primitives/functions/trim.ion::trim::trim valid cases{spec:"trailing",to_remove:"\U0001f4a9",target:"\U0001f4a9\U0001f4a9\U0001f4a9\U0001f4a9\U0001f601\U0001f4a9\U0001f4a9\U0001f4a9\U0001f4a9",result:"\U0001f4a9\U0001f4a9\U0001f4a9\U0001f4a9\U0001f601"}#coerce
+eval/primitives/functions/trim.ion::trim::trim valid cases{spec:"trailing",to_remove:"\U0001f4a9",target:"\U0001f4a9\U0001f4a9\U0001f4a9\U0001f4a9\U0001f601\U0001f4a9\U0001f4a9\U0001f4a9\U0001f4a9",result:"\U0001f4a9\U0001f4a9\U0001f4a9\U0001f4a9\U0001f601"}#error
+eval/primitives/functions/trim.ion::trim::trim valid cases{spec:"trailing",to_remove:"\u8a71 ",target:"\u8a71\u8a71 \u8a71\u8a71\u8a71\u8a71\u8a71\u8a71\u8cbb\u8c37\u6599\u6751\u80fd\u8a71\u8a71\u8a71\u8a71 \u8a71\u8a71\u8a71\u8a71    ",result:"\u8a71\u8a71 \u8a71\u8a71\u8a71\u8a71\u8a71\u8a71\u8cbb\u8c37\u6599\u6751\u80fd"}#coerce
+eval/primitives/functions/trim.ion::trim::trim valid cases{spec:"trailing",to_remove:"\u8a71 ",target:"\u8a71\u8a71 \u8a71\u8a71\u8a71\u8a71\u8a71\u8a71\u8cbb\u8c37\u6599\u6751\u80fd\u8a71\u8a71\u8a71\u8a71 \u8a71\u8a71\u8a71\u8a71    ",result:"\u8a71\u8a71 \u8a71\u8a71\u8a71\u8a71\u8a71\u8a71\u8cbb\u8c37\u6599\u6751\u80fd"}#error
+eval/primitives/functions/trim.ion::trim::trim valid cases{spec:"trailing",to_remove:"\xb0\xba\u25a1(\uff09)\u256f\u30ce\ufe35_ ",target:"(\u256f\xb0\u25a1\xb0\uff09\u256f\ufe35 \u253b\u2501\u253b \u252c\u2500\u252c\u30ce( \xba _ \xba\u30ce)",result:"(\u256f\xb0\u25a1\xb0\uff09\u256f\ufe35 \u253b\u2501\u253b \u252c\u2500\u252c"}#coerce
+eval/primitives/functions/trim.ion::trim::trim valid cases{spec:"trailing",to_remove:"\xb0\xba\u25a1(\uff09)\u256f\u30ce\ufe35_ ",target:"(\u256f\xb0\u25a1\xb0\uff09\u256f\ufe35 \u253b\u2501\u253b \u252c\u2500\u252c\u30ce( \xba _ \xba\u30ce)",result:"(\u256f\xb0\u25a1\xb0\uff09\u256f\ufe35 \u253b\u2501\u253b \u252c\u2500\u252c"}#error
+eval/primitives/functions/trim.ion::trim::trim valid cases{trim both emoji mixed characters - poop and grinning cat}#coerce
+eval/primitives/functions/trim.ion::trim::trim valid cases{trim both emoji mixed characters - poop and grinning cat}#error
+eval/primitives/functions/trim.ion::trim::trim variations on valid syntax{sql:"trim('      foobar       ')"}#coerce
+eval/primitives/functions/trim.ion::trim::trim variations on valid syntax{sql:"trim('      foobar       ')"}#error
+eval/primitives/functions/trim.ion::trim::trim variations on valid syntax{sql:"trim('12' from '1212foobar')"}#coerce
+eval/primitives/functions/trim.ion::trim::trim variations on valid syntax{sql:"trim('12' from '1212foobar')"}#error
+eval/primitives/functions/trim.ion::trim::trim variations on valid syntax{sql:"trim('12' from '1212foobar1212')"}#coerce
+eval/primitives/functions/trim.ion::trim::trim variations on valid syntax{sql:"trim('12' from '1212foobar1212')"}#error
+eval/primitives/functions/trim.ion::trim::trim variations on valid syntax{sql:"trim('12' from 'foobar1212')"}#coerce
+eval/primitives/functions/trim.ion::trim::trim variations on valid syntax{sql:"trim('12' from 'foobar1212')"}#error
+eval/primitives/functions/trim.ion::trim::trim variations on valid syntax{sql:"trim(both ' ' from '      foobar       ')"}#coerce
+eval/primitives/functions/trim.ion::trim::trim variations on valid syntax{sql:"trim(both ' ' from '      foobar       ')"}#error
+eval/primitives/functions/trim.ion::trim::trim variations on valid syntax{sql:"trim(both from '      foobar       ')"}#coerce
+eval/primitives/functions/trim.ion::trim::trim variations on valid syntax{sql:"trim(both from '      foobar       ')"}#error
+eval/primitives/functions/trim.ion::trim::trim variations on valid syntax{sql:"trim(from '      foobar       ')"}#coerce
+eval/primitives/functions/trim.ion::trim::trim variations on valid syntax{sql:"trim(from '      foobar       ')"}#error
 eval/primitives/int.ion::int::comparison operators{sql:"-0  <   -0",result:false}#coerce
 eval/primitives/int.ion::int::comparison operators{sql:"-0  <   -0",result:false}#error
 eval/primitives/int.ion::int::comparison operators{sql:"-0  <   1",result:true}#coerce
@@ -6149,6 +6583,52 @@ extended/eval/primitives/functions/size.ion::size::size with SELECT subquery{par
 extended/eval/primitives/functions/size.ion::size::size with SELECT subquery{param:"SELECT a FROM <<{'a': 1}, {'a': 2}>>",result:2}#error
 extended/eval/primitives/functions/size.ion::size::size with SELECT subquery{param:"SELECT a FROM <<{'a': 1}>>",result:1}#coerce
 extended/eval/primitives/functions/size.ion::size::size with SELECT subquery{param:"SELECT a FROM <<{'a': 1}>>",result:1}#error
+extended/eval/primitives/functions/text_replace.ion::text_replace::text_replace MISSING first arg#coerce
+extended/eval/primitives/functions/text_replace.ion::text_replace::text_replace MISSING first arg#error
+extended/eval/primitives/functions/text_replace.ion::text_replace::text_replace MISSING second arg#coerce
+extended/eval/primitives/functions/text_replace.ion::text_replace::text_replace MISSING second arg#error
+extended/eval/primitives/functions/text_replace.ion::text_replace::text_replace MISSING third arg#coerce
+extended/eval/primitives/functions/text_replace.ion::text_replace::text_replace MISSING third arg#error
+extended/eval/primitives/functions/text_replace.ion::text_replace::text_replace NULL and MISSING arg#coerce
+extended/eval/primitives/functions/text_replace.ion::text_replace::text_replace NULL and MISSING arg#error
+extended/eval/primitives/functions/text_replace.ion::text_replace::text_replace NULL first arg#coerce
+extended/eval/primitives/functions/text_replace.ion::text_replace::text_replace NULL first arg#error
+extended/eval/primitives/functions/text_replace.ion::text_replace::text_replace NULL second arg#coerce
+extended/eval/primitives/functions/text_replace.ion::text_replace::text_replace NULL second arg#error
+extended/eval/primitives/functions/text_replace.ion::text_replace::text_replace NULL third arg#coerce
+extended/eval/primitives/functions/text_replace.ion::text_replace::text_replace NULL third arg#error
+extended/eval/primitives/functions/text_replace.ion::text_replace::text_replace mistyped first argument#coerce
+extended/eval/primitives/functions/text_replace.ion::text_replace::text_replace mistyped first argument#error
+extended/eval/primitives/functions/text_replace.ion::text_replace::text_replace mistyped second argument#coerce
+extended/eval/primitives/functions/text_replace.ion::text_replace::text_replace mistyped second argument#error
+extended/eval/primitives/functions/text_replace.ion::text_replace::text_replace mistyped third argument#coerce
+extended/eval/primitives/functions/text_replace.ion::text_replace::text_replace mistyped third argument#error
+extended/eval/primitives/functions/text_replace.ion::text_replace::text_replace('', '', 'XX')#coerce
+extended/eval/primitives/functions/text_replace.ion::text_replace::text_replace('', '', 'XX')#error
+extended/eval/primitives/functions/text_replace.ion::text_replace::text_replace('', 'abc', 'XX')#coerce
+extended/eval/primitives/functions/text_replace.ion::text_replace::text_replace('', 'abc', 'XX')#error
+extended/eval/primitives/functions/text_replace.ion::text_replace::text_replace('abcabcabcdef', '', 'X')#coerce
+extended/eval/primitives/functions/text_replace.ion::text_replace::text_replace('abcabcabcdef', '', 'X')#error
+extended/eval/primitives/functions/text_replace.ion::text_replace::text_replace('abcabcabcdef', 'abcabc', 'XXX')#coerce
+extended/eval/primitives/functions/text_replace.ion::text_replace::text_replace('abcabcabcdef', 'abcabc', 'XXX')#error
+extended/eval/primitives/functions/text_replace.ion::text_replace::text_replace('abcdefabcdef', 'cd', 'XX')#coerce
+extended/eval/primitives/functions/text_replace.ion::text_replace::text_replace('abcdefabcdef', 'cd', 'XX')#error
+extended/eval/primitives/functions/text_replace.ion::text_replace::text_replace('abcdefabcdef', 'def', 'deࠫf')#coerce
+extended/eval/primitives/functions/text_replace.ion::text_replace::text_replace('abcdefabcdef', 'def', 'deࠫf')#error
+extended/eval/primitives/functions/text_replace.ion::text_replace::text_replace('abcdefabcdef', 'def', 'd😁😞')#coerce
+extended/eval/primitives/functions/text_replace.ion::text_replace::text_replace('abcdefabcdef', 'def', 'd😁😞')#error
+extended/eval/primitives/functions/text_replace.ion::text_replace::text_replace('abcdefabcdef', 'def', '😁😞')#coerce
+extended/eval/primitives/functions/text_replace.ion::text_replace::text_replace('abcdefabcdef', 'def', '😁😞')#error
+extended/eval/primitives/functions/text_replace.ion::text_replace::text_replace('abcdefabcdef', 'defab', '')#coerce
+extended/eval/primitives/functions/text_replace.ion::text_replace::text_replace('abcdefabcdef', 'defab', '')#error
+extended/eval/primitives/functions/text_replace.ion::text_replace::text_replace('abcdefabcdef', 'xyz', 'XX')#coerce
+extended/eval/primitives/functions/text_replace.ion::text_replace::text_replace('abcdefabcdef', 'xyz', 'XX')#error
+extended/eval/primitives/functions/text_replace.ion::text_replace::text_replace('abcdeࠫfabcdeࠫf', 'def', 'XX')#coerce
+extended/eval/primitives/functions/text_replace.ion::text_replace::text_replace('abcdeࠫfabcdeࠫf', 'def', 'XX')#error
+extended/eval/primitives/functions/text_replace.ion::text_replace::text_replace('abcdeࠫfabcdeࠫf', 'deࠫf', 'XX')#coerce
+extended/eval/primitives/functions/text_replace.ion::text_replace::text_replace('abcdeࠫfabcdeࠫf', 'deࠫf', 'XX')#error
+extended/eval/primitives/functions/text_replace.ion::text_replace::text_replace('abc😁😞abc😁😞', '😁😞', 'def')#coerce
+extended/eval/primitives/functions/text_replace.ion::text_replace::text_replace('abc😁😞abc😁😞', '😁😞', 'def')#error
 extended/eval/primitives/int.ion::division_by_zero_error::divide by zero{sql:"1 % 0"}#coerce
 extended/eval/primitives/int.ion::division_by_zero_error::divide by zero{sql:"1 % 0"}#error
 extended/eval/primitives/int.ion::division_by_zero_error::divide by zero{sql:"1 / 0"}#coerce

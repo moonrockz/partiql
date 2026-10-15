@@ -171,3 +171,31 @@ test "ABS and MOD end to end; deep nesting is a static error" {
     }
   })
 }
+
+///|
+test "special forms equal their comma forms" {
+  @expect.expect_all(soft => {
+    soft.expect(ev("TRIM('  a  ')")).to_equal(String("a"))
+    soft.expect(ev("trim(both '12' from '121a21')")).to_equal(String("a"))
+    soft.expect(ev("trim(leading from '  a  ')")).to_equal(String("a  "))
+    soft.expect(ev("trim(trailing 'x' from 'xax')")).to_equal(String("xa"))
+    soft.expect(ev("trim('x' from 'xax')")).to_equal(String("a"))
+    soft.expect(ev("SUBSTRING('abcdef' FROM 2 FOR 3)")).to_equal(String("bcd"))
+    soft.expect(ev("substring('abcdef', 2, 3)")).to_equal(String("bcd"))
+    soft.expect(ev("substring('abcdef' FROM 3)")).to_equal(String("cdef"))
+    soft.expect(ev("POSITION('c' IN 'abc')")).to_equal(Int(3))
+    soft.expect(ev("position('c', 'abc')")).to_equal(Int(3))
+    soft
+    .expect(ev("OVERLAY('hello' PLACING 'XX' FROM 2 FOR 3)"))
+    .to_equal(String("hXXo"))
+    soft.expect(ev("overlay('hello', 'XX', 2, 3)")).to_equal(String("hXXo"))
+    soft.expect(ev("text_replace('aXa', 'X', 'b')")).to_equal(String("aba"))
+    soft.expect(ev("substring('1', 4, -11)")).to_equal(Missing)
+    soft
+    .expect_call(() => ev("substring('1', 4, -11)", mode=Strict))
+    .to_raise_matching(
+      e => e is @eval.EvalError::TypeError(..),
+      description="TypeError",
+    )
+  })
+}

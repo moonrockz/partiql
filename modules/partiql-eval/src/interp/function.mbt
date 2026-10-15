@@ -20,5 +20,10 @@ fn call(
     MapEntries => @ops.map_entries(args)
     Abs => @ops.abs(args)
     Mod => @ops.modulo(args)
+    Trim(spec) => @ops.trim(spec, args)
+    Substring => @ops.substring(args)
+    Position => @ops.position(args)
+    Overlay => @ops.overlay(args)
+    TextReplace => @ops.text_replace(args)
   }
 }

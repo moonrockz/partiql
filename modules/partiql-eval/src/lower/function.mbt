@@ -31,6 +31,7 @@ fn builtin(id : @ast.Identifier) -> (@plan.Function, Arity)? {
     "MAP_ENTRIES" => Some((MapEntries, Exactly(1)))
     "ABS" => Some((Abs, Exactly(1)))
     "MOD" => Some((Mod, Exactly(2)))
+    "TEXT_REPLACE" => Some((TextReplace, Exactly(3)))
     _ => None
   }
 }
@@ -69,4 +70,17 @@ fn scalar_call(
     _ => lower_at
   }
   Call(f, args.map(x => lower_arg(x, scope, depth)), span)
+}
+
+///|
+/// A special form (TRIM, SUBSTRING, POSITION, OVERLAY) with its arguments in
+/// the fixed positions of `Function`. The syntax tree fixes their number.
+fn special_call(
+  f : @plan.Function,
+  args : Array[@ast.Expr],
+  scope : Scope,
+  depth : Int32,
+  span : @ast.Span,
+) -> @plan.Expr raise @plan.EvalError {
+  Call(f, args.map(x => lower_at(x, scope, depth)), span)
 }

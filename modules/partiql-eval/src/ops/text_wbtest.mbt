@@ -31,3 +31,127 @@ test "OCTET_LENGTH and BIT_LENGTH count UTF-8 bytes" {
     soft.expect(failure(() => bit_length([Int(1)]))).to_equal("type")
   })
 }
+
+///|
+test "TRIM removes a set of code points" {
+  @expect.expect_all(soft => {
+    soft.expect(trim(Both, [s("  foobar  ")])).to_equal(s("foobar"))
+    soft.expect(trim(Both, [s("\tfoobar\t")])).to_equal(s("\tfoobar\t"))
+    soft.expect(trim(Both, [s("111112a1212121211"), s("12")])).to_equal(s("a"))
+    soft
+    .expect(trim(Leading, [s("111112a1212121211"), s("12")]))
+    .to_equal(s("a1212121211"))
+    soft
+    .expect(trim(Trailing, [s("111112a1212121211"), s("12")]))
+    .to_equal(s("111112a"))
+    soft
+    .expect(trim(Both, [s("👶🏻👩👶🏻"), s("👶🏻")]))
+    .to_equal(s("👩"))
+    soft.expect(trim(Both, [s(" "), s(" ")])).to_equal(s(""))
+    soft.expect(trim(Both, [s("abc"), s("")])).to_equal(s("abc"))
+    soft.expect(trim(Leading, [Missing, Null])).to_equal(Missing)
+    soft.expect(trim(Leading, [Null, s("x")])).to_equal(Null)
+    soft.expect(failure(() => trim(Both, [s("test"), Int(1)]))).to_equal("type")
+  })
+}
+
+///|
+test "SUBSTRING follows SQL-92 E = S + L over code points" {
+  let digits = s("123456789")
+  let fraction = @value.Value::Decimal(@ion_core.Decimal::parse("1.1"))
+  @expect.expect_all(soft => {
+    soft.expect(substring([digits, Int(0)])).to_equal(digits)
+    soft.expect(substring([digits, Int(-4)])).to_equal(digits)
+    soft.expect(substring([s(""), Int(-1)])).to_equal(s(""))
+    soft.expect(substring([digits, Int(0), Int(2)])).to_equal(s("1"))
+    soft.expect(substring([digits, Int(-4), Int(6)])).to_equal(s("1"))
+    soft.expect(substring([s("1"), Int(-4), Int(1)])).to_equal(s(""))
+    soft.expect(substring([digits, Int(1), Int(0)])).to_equal(s(""))
+    soft.expect(substring([digits, Int(0), Int(999)])).to_equal(digits)
+    soft
+    .expect(substring([s("😁😞😸😸"), Int(3)]))
+    .to_equal(s("😸😸"))
+    soft.expect(substring([s("👩🏽"), Int(2)])).to_equal(s("🏽"))
+    soft
+    .expect(failure(() => substring([s("1"), Int(4), Int(-11)])))
+    .to_equal("type")
+    soft.expect(failure(() => substring([s(""), fraction]))).to_equal("type")
+    soft.expect(substring([Null, Missing])).to_equal(Missing)
+    soft.expect(substring([Null, Int(1), Null])).to_equal(Null)
+    // Huge positions: no overflow. E = S + L in BigInt, so a minimum start
+    // with a maximum length ends before position 1.
+    soft
+    .expect(
+      substring([
+        s("abc"),
+        Int(-9223372036854775808L),
+        Int(9223372036854775807L),
+      ]),
+    )
+    .to_equal(s(""))
+    soft
+    .expect(
+      substring([s("abc"), Int(9223372036854775807L), Int(9223372036854775807L)]),
+    )
+    .to_equal(s(""))
+    soft
+    .expect(substring([s("abc"), Int(-5L), Int(9223372036854775807L)]))
+    .to_equal(s("abc"))
+  })
+}
+
+///|
+test "POSITION and OVERLAY" {
+  @expect.expect_all(soft => {
+    soft.expect(position([s(""), s("abcdefg")])).to_equal(Int(1))
+    soft.expect(position([s(""), s("")])).to_equal(Int(1))
+    soft.expect(position([s("cde"), s("abcdefg")])).to_equal(Int(3))
+    soft.expect(position([s("ghi"), s("abcdefg")])).to_equal(Int(0))
+    soft.expect(position([s("😸"), s("😁😸")])).to_equal(Int(2))
+    soft.expect(position([Null, Missing])).to_equal(Missing)
+    soft.expect(overlay([s("hello"), s(""), Int(1)])).to_equal(s("hello"))
+    soft.expect(overlay([s("hello"), s(""), Int(2), Int(3)])).to_equal(s("ho"))
+    soft.expect(overlay([s("hello"), s("XX"), Int(1)])).to_equal(s("XXllo"))
+    soft
+    .expect(overlay([s("hello"), s("XX"), Int(1), Int(100)]))
+    .to_equal(s("XX"))
+    soft
+    .expect(overlay([s("hello"), s("XX"), Int(1), Int(0)]))
+    .to_equal(s("XXhello"))
+    soft.expect(overlay([s("hello"), s("XX"), Int(7)])).to_equal(s("helloXX"))
+    soft
+    .expect(overlay([s("hello"), s("XX"), Int(2), Int(3)]))
+    .to_equal(s("hXXo"))
+    soft
+    .expect(overlay([s("hello"), s("X"), Int(2), Int(-1)]))
+    .to_equal(s("hXhello"))
+    soft.expect(overlay([s(""), s("X"), Int(1)])).to_equal(s("X"))
+    soft
+    .expect(failure(() => overlay([s("hello"), s("X"), Int(0)])))
+    .to_equal("type")
+    soft
+    .expect(failure(() => overlay([s("a"), s("X"), s("1")])))
+    .to_equal("type")
+  })
+}
+
+///|
+test "TEXT_REPLACE" {
+  @expect.expect_all(soft => {
+    soft
+    .expect(text_replace([s("abcdefabcdef"), s("cd"), s("XX")]))
+    .to_equal(s("abXXefabXXef"))
+    soft
+    .expect(text_replace([s("abcabcabcdef"), s("abcabc"), s("XXX")]))
+    .to_equal(s("XXXabcdef"))
+    soft
+    .expect(text_replace([s("abcabcabcdef"), s(""), s("X")]))
+    .to_equal(s("XaXbXcXaXbXcXaXbXcXdXeXfX"))
+    soft.expect(text_replace([s(""), s(""), s("XX")])).to_equal(s("XX"))
+    soft.expect(text_replace([s(""), s("abc"), s("XX")])).to_equal(s(""))
+    soft
+    .expect(text_replace([s("😁😁"), s(""), s("-")]))
+    .to_equal(s("-😁-😁-"))
+    soft.expect(text_replace([Null, s("foo"), Missing])).to_equal(Missing)
+  })
+}

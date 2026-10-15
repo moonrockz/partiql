@@ -18,6 +18,8 @@ priv enum Param {
   Exact
   /// A number or an interval (ABS).
   Numeric
+  /// An integer: Int or BigInt.
+  Integer
 }
 
 ///|
@@ -33,6 +35,7 @@ fn Param::accepts(self : Param, v : @value.Value) -> Bool {
     (Exact, Decimal(d)) => d.exponent() == 0
     (Numeric, Int(_) | BigInt(_) | Decimal(_) | Float(_)) => true
     (Numeric, IntervalYM(_) | IntervalDT(_)) => true
+    (Integer, Int(_) | BigInt(_)) => true
     _ => false
   }
 }
