@@ -101,6 +101,18 @@ pub(all) enum Expr {
   /// `COLL_f(e)`: the aggregate of the elements of the collection `e`; NULL
   /// for NULL, MISSING for MISSING, a type failure for any other value.
   CollAggregate(AggregateKind, distinct~ : Bool, Expr, @ast.Span)
+  /// A SQL aggregate `f(e)` (spec section 11.2.2): `e` evaluated for each
+  /// member tuple of the group variable `group`, with each variable of
+  /// `members` (the non-key FROM and LET variables) bound to the member's
+  /// attribute of that name, then folded.
+  Aggregate(
+    AggregateKind,
+    distinct~ : Bool,
+    Expr,
+    members~ : Array[String],
+    group~ : String,
+    @ast.Span
+  )
 } derive(Debug)
 
 ///|
@@ -156,6 +168,12 @@ pub(all) enum Rel {
   /// Each binding tuple with one more variable per `(name, expr)`, bound in
   /// order: an expression sees the variables before it (LET).
   Let(Rel, Array[(String, Expr)], @ast.Span)
+  /// One binding tuple per group of the binding tuples of the input (spec
+  /// section 11.1): the key variables and `group_as`, the bag of the member
+  /// tuples of the group. A member tuple has one attribute per variable of
+  /// `members` (FROM AS and AT, and LET, in order); a MISSING one is left
+  /// out. Keys compare with `eqg` after MISSING becomes NULL.
+  Group(Rel, Grouping, group_as~ : String, members~ : Array[String], @ast.Span)
 } derive(Debug)
 
 ///|
@@ -224,7 +242,8 @@ pub fn Expr::span(self : Expr) -> @ast.Span {
     | Query(_, order=_, limit=_, offset=_, aliases=_, span)
     | SetOp(_, all=_, outer=_, corresponding=_, _, _, span)
     | With(_, _, span)
-    | CollAggregate(_, distinct=_, _, span) => span
+    | CollAggregate(_, distinct=_, _, span)
+    | Aggregate(_, distinct=_, _, members=_, group=_, span) => span
   }
 }
 
@@ -236,7 +255,8 @@ pub fn Rel::span(self : Rel) -> @ast.Span {
     | Unpivot(_, as_=_, at=_, span)
     | Filter(_, _, span)
     | Join(_, _, _, on=_, span)
-    | Let(_, _, span) => span
+    | Let(_, _, span)
+    | Group(_, _, group_as=_, members=_, span) => span
   }
 }
 
@@ -251,3 +271,18 @@ pub(all) enum AggregateKind {
   Any
   Every
 } derive(Debug, Eq)
+
+///|
+/// The keys of a GROUP BY (spec M4c §4).
+pub(all) enum Grouping {
+  /// One group of every binding tuple, also when there are none: GROUP ALL,
+  /// or a query with an aggregate or HAVING and no GROUP BY.
+  All
+  /// The key variables and their expressions.
+  By(Array[(String, Expr)])
+} derive(Debug)
+
+///|
+/// The group variable of a grouped query without GROUP AS. No identifier
+/// can name it.
+pub let group_variable : String = "\u{0}group"

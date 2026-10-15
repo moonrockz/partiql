@@ -81,6 +81,8 @@ fn relation(
       scan(eval(source, env, ctx), as_, at, env, ctx, span)
     Unpivot(source, as_~, at~, span) =>
       unpivot(eval(source, env, ctx), as_, at, env, ctx, span)
+    Group(input, grouping, group_as~, members~, _) =>
+      group(input, grouping, group_as, members, env, ctx)
     Join(_, _, _, on=_, _) => join(rel, env, ctx)
     Let(input, bindings, _) => {
       let input = relation(input, env, ctx)
@@ -208,6 +210,12 @@ fn binds(rel : @plan.Rel) -> Array[String] {
       Join(_, l, r, on=_, _) => {
         pending.push(r)
         pending.push(l)
+      }
+      Group(_, grouping, group_as~, members=_, _) => {
+        if grouping is By(keys) {
+          keys.each(key => names.push(key.0))
+        }
+        names.push(group_as)
       }
     }
   }

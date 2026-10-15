@@ -120,7 +120,8 @@ fn push_operands(
     | Subquery(x, _, _)
     | BoolTest(x, _, negated=_, _)
     | IsType(x, _, negated=_, _)
-    | CollAggregate(_, distinct=_, x, _) => push(x)
+    | CollAggregate(_, distinct=_, x, _)
+    | Aggregate(_, distinct=_, x, members=_, group=_, _) => push(x)
     Binary(_, _, _, _) | And(_, _, _) | Or(_, _, _) => {
       let mut leaf = e
       while true {
@@ -275,6 +276,14 @@ fn within_depth(plan : @plan.Expr) -> @plan.Expr raise @plan.EvalError {
         pending.push(RelAt(input, level + 1))
         for binding in bindings {
           pending.push(ExprAt(binding.1, level + 1))
+        }
+      }
+      RelAt(Group(input, grouping, group_as=_, members=_, _), level) => {
+        pending.push(RelAt(input, level + 1))
+        if grouping is By(keys) {
+          for key in keys {
+            pending.push(ExprAt(key.1, level + 1))
+          }
         }
       }
       RelAt(Join(_, _, _, on=_, _) as rel, level) =>

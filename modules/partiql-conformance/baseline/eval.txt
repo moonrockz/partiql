@@ -20,8 +20,16 @@ eval-equiv/rfc/0007.ion::set::Example 2.2 — With CORRESPONDING Clause[1]#coerc
 eval-equiv/rfc/0007.ion::set::Example 2.2 — With CORRESPONDING Clause[1]#error
 eval-equiv/rfc/0007.ion::set::Example 2.2 — With CORRESPONDING Clause[2]#coerce
 eval-equiv/rfc/0007.ion::set::Example 2.2 — With CORRESPONDING Clause[2]#error
+eval-equiv/spec-tests.ion::section-11::equiv group by with aggregates[0]#coerce
+eval-equiv/spec-tests.ion::section-11::equiv group by with aggregates[0]#error
+eval-equiv/spec-tests.ion::section-11::equiv group_all[0]#coerce
+eval-equiv/spec-tests.ion::section-11::equiv group_all[0]#error
+eval-equiv/spec-tests.ion::section-11::equiv group_all[1]#coerce
+eval-equiv/spec-tests.ion::section-11::equiv group_all[1]#error
 eval-equiv/spec-tests.ion::section-11::equiv group_all[2]#coerce
 eval-equiv/spec-tests.ion::section-11::equiv group_all[2]#error
+eval-equiv/spec-tests.ion::section-11::equiv group_all[3]#coerce
+eval-equiv/spec-tests.ion::section-11::equiv group_all[3]#error
 eval-equiv/spec-tests.ion::section-12::equiv coercions with explicit literals[1]#coerce
 eval-equiv/spec-tests.ion::section-4::equiv path collection expression with wildcard steps[0]#coerce
 eval-equiv/spec-tests.ion::section-4::equiv path collection expression with wildcard steps[0]#error
@@ -185,6 +193,14 @@ eval/ion/primitives/operators/nary-operators.ion::nary::listDifferentTypesDiffer
 eval/ion/primitives/operators/nary-operators.ion::nary::listDifferentTypesDifferentOrderFalse#error
 eval/ion/primitives/symbol.ion::empty-symbol::Empty Symbol in table (with Ion data)#coerce
 eval/ion/primitives/symbol.ion::empty-symbol::Empty Symbol in table (with Ion data)#error
+eval/ion/query/group-by/group-by.ion::simple-group-by-fail::GROUP AS binding referenced in FROM clause (Ion timestamp)#coerce
+eval/ion/query/group-by/group-by.ion::simple-group-by-fail::GROUP AS binding referenced in FROM clause (Ion timestamp)#error
+eval/ion/query/group-by/group-by.ion::simple-group-by-fail::GROUP BY binding referenced in FROM clause (Ion timestamp)#coerce
+eval/ion/query/group-by/group-by.ion::simple-group-by-fail::GROUP BY binding referenced in FROM clause (Ion timestamp)#error
+eval/ion/query/group-by/group-by.ion::simple-group-by::group by with group as and where fiscal_year >= Ion timestamp#coerce
+eval/ion/query/group-by/group-by.ion::simple-group-by::group by with group as and where fiscal_year >= Ion timestamp#error
+eval/ion/query/group-by/group-by.ion::simple-group-by::group by with where fiscal_year >= Ion timestamp #coerce
+eval/ion/query/group-by/group-by.ion::simple-group-by::group by with where fiscal_year >= Ion timestamp #error
 eval/ion/query/order-by.ion::edge_cases::+inf before numeric values then -inf then nan (DESC)#coerce
 eval/ion/query/order-by.ion::edge_cases::+inf before numeric values then -inf then nan (DESC)#error
 eval/ion/query/order-by.ion::edge_cases::LOB types follow their lexicographical ordering by octet (ASC)#coerce
@@ -1236,6 +1252,10 @@ eval/primitives/map.ion::map::construct a map with string keys#coerce
 eval/primitives/map.ion::map::construct a map with string keys#error
 eval/primitives/map.ion::map::construct an empty map#coerce
 eval/primitives/map.ion::map::construct an empty map#error
+eval/primitives/map.ion::map::count entries in environment map#coerce
+eval/primitives/map.ion::map::count entries in environment map#error
+eval/primitives/map.ion::map::count entries per key across multiple maps#coerce
+eval/primitives/map.ion::map::count entries per key across multiple maps#error
 eval/primitives/map.ion::map::empty maps are equal#coerce
 eval/primitives/map.ion::map::empty maps are equal#error
 eval/primitives/map.ion::map::equal maps with different insertion order are equal#coerce
@@ -1278,6 +1298,8 @@ eval/primitives/map.ion::map::select values from environment map#coerce
 eval/primitives/map.ion::map::select values from environment map#error
 eval/primitives/map.ion::map::struct IS MAP returns false#coerce
 eval/primitives/map.ion::map::struct IS MAP returns false#error
+eval/primitives/map.ion::map::sum values grouped by key#coerce
+eval/primitives/map.ion::map::sum values grouped by key#error
 eval/primitives/map.ion::map::unpivot bool-keyed environment map#coerce
 eval/primitives/map.ion::map::unpivot bool-keyed environment map#error
 eval/primitives/map.ion::map::unpivot empty map produces empty bag#coerce
@@ -3683,6 +3705,602 @@ eval/primitives/timestamp.ion::timestampz::timestampz positive offset#coerce
 eval/primitives/timestamp.ion::timestampz::timestampz positive offset#error
 eval/primitives/timestamp.ion::timestampz::timestampz without offset - failure#coerce
 eval/primitives/timestamp.ion::timestampz::timestampz without offset - failure#error
+eval/query/group-by/group-by.ion::group-by-aggregates::Aggregates with subquery containing another aggregate : SELECT COUNT(1) + (SELECT SUM(numInStock) FROM products) as a_number FROM products#coerce
+eval/query/group-by/group-by.ion::group-by-aggregates::Aggregates with subquery containing another aggregate : SELECT COUNT(1) + (SELECT SUM(numInStock) FROM products) as a_number FROM products#error
+eval/query/group-by/group-by.ion::group-by-aggregates::Expression with multiple subqueries containing aggregates : (SELECT COUNT(1) FROM products) / (SELECT COUNT(1) FROM suppliers)#coerce
+eval/query/group-by/group-by.ion::group-by-aggregates::Expression with multiple subqueries containing aggregates : (SELECT COUNT(1) FROM products) / (SELECT COUNT(1) FROM suppliers)#error
+eval/query/group-by/group-by.ion::group-by-aggregates::GROUP BY with JOIN : SELECT supplierName, COUNT(*) as the_count FROM suppliers AS s INNER JOIN products AS p ON s.supplierId = p.supplierId GROUP BY s.supplierName#coerce
+eval/query/group-by/group-by.ion::group-by-aggregates::GROUP BY with JOIN : SELECT supplierName, COUNT(*) as the_count FROM suppliers AS s INNER JOIN products AS p ON s.supplierId = p.supplierId GROUP BY s.supplierName#error
+eval/query/group-by/group-by.ion::group-by-aggregates::SELECT VALUE with nested aggregates : SELECT VALUE (SELECT SUM(outerFromSource.col1) AS the_sum FROM <<1>>) FROM simple_1_col_1_group as outerFromSource#coerce
+eval/query/group-by/group-by.ion::group-by-aggregates::SELECT VALUE with nested aggregates : SELECT VALUE (SELECT SUM(outerFromSource.col1) AS the_sum FROM <<1>>) FROM simple_1_col_1_group as outerFromSource#error
+eval/query/group-by/group-by.ion::group-by-aggregates::SELECT with nested aggregates (complex) 1#coerce
+eval/query/group-by/group-by.ion::group-by-aggregates::SELECT with nested aggregates (complex) 1#error
+eval/query/group-by/group-by.ion::group-by-aggregates::SELECT with nested aggregates (complex) 2#coerce
+eval/query/group-by/group-by.ion::group-by-aggregates::SELECT with nested aggregates (complex) 2#error
+eval/query/group-by/group-by.ion::group-by-aggregates::`COUNT(*)`, should be equivalent to `COUNT(1) : SELECT COUNT(*) AS the_count_1, COUNT(1) AS the_count_2 FROM products#coerce
+eval/query/group-by/group-by.ion::group-by-aggregates::`COUNT(*)`, should be equivalent to `COUNT(1) : SELECT COUNT(*) AS the_count_1, COUNT(1) AS the_count_2 FROM products#error
+eval/query/group-by/group-by.ion::group-by-aggregates::aggregates when used with empty from source : SELECT COUNT(doesntMatterWontBeEvaluated), SUM(doesntMatterWontBeEvaluated), MIN(doesntMatterWontBeEvaluated), MAX(doesntMatterWontBeEvaluated), AVG(doesntMatterWontBeEvaluated) FROM []#coerce
+eval/query/group-by/group-by.ion::group-by-aggregates::aggregates when used with empty from source : SELECT COUNT(doesntMatterWontBeEvaluated), SUM(doesntMatterWontBeEvaluated), MIN(doesntMatterWontBeEvaluated), MAX(doesntMatterWontBeEvaluated), AVG(doesntMatterWontBeEvaluated) FROM []#error
+eval/query/group-by/group-by.ion::group-by-group-as::SELECT VALUE { 'col1': col1, 'g': g } FROM simple_1_col_1_group GROUP BY col1 GROUP AS g#coerce
+eval/query/group-by/group-by.ion::group-by-group-as::SELECT VALUE { 'col1': col1, 'g': g } FROM simple_1_col_1_group GROUP BY col1 GROUP AS g#error
+eval/query/group-by/group-by.ion::group-by-group-as::SELECT VALUE { 'col1': col1, 'g': g } FROM simple_1_col_1_group, different_types_per_row GROUP BY simple_1_col_1_group.col1 GROUP AS g#coerce
+eval/query/group-by/group-by.ion::group-by-group-as::SELECT VALUE { 'col1': col1, 'g': g } FROM simple_1_col_1_group, different_types_per_row GROUP BY simple_1_col_1_group.col1 GROUP AS g#error
+eval/query/group-by/group-by.ion::group-by-group-as::SELECT VALUE { 'col1': col1, 'g': g } FROM simple_1_col_1_group, join_me GROUP BY simple_1_col_1_group.col1 GROUP AS g#coerce
+eval/query/group-by/group-by.ion::group-by-group-as::SELECT VALUE { 'col1': col1, 'g': g } FROM simple_1_col_1_group, join_me GROUP BY simple_1_col_1_group.col1 GROUP AS g#error
+eval/query/group-by/group-by.ion::group-by-group-as::SELECT VALUE { 'col1': col1, 'g': g } FROM simple_1_col_2_groups GROUP BY col1 GROUP AS g#coerce
+eval/query/group-by/group-by.ion::group-by-group-as::SELECT VALUE { 'col1': col1, 'g': g } FROM simple_1_col_2_groups GROUP BY col1 GROUP AS g#error
+eval/query/group-by/group-by.ion::group-by-group-as::SELECT VALUE { 'col1': col1, 'g': g } FROM simple_2_col_1_group GROUP BY col1 GROUP AS g#coerce
+eval/query/group-by/group-by.ion::group-by-group-as::SELECT VALUE { 'col1': col1, 'g': g } FROM simple_2_col_1_group GROUP BY col1 GROUP AS g#error
+eval/query/group-by/group-by.ion::group-by-group-as::SELECT VALUE { 'col1': col1, 'g': g } FROM simple_2_col_2_groups GROUP BY col1 GROUP AS g#coerce
+eval/query/group-by/group-by.ion::group-by-group-as::SELECT VALUE { 'col1': col1, 'g': g } FROM simple_2_col_2_groups GROUP BY col1 GROUP AS g#error
+eval/query/group-by/group-by.ion::group-by-group-as::SELECT VALUE { 'col2': col2, 'g': g } FROM simple_2_col_1_group GROUP BY col2 GROUP AS g#coerce
+eval/query/group-by/group-by.ion::group-by-group-as::SELECT VALUE { 'col2': col2, 'g': g } FROM simple_2_col_1_group GROUP BY col2 GROUP AS g#error
+eval/query/group-by/group-by.ion::group-by-group-as::SELECT VALUE { 'col2': col2, 'g': g } FROM simple_2_col_2_groups GROUP BY col2 GROUP AS g#coerce
+eval/query/group-by/group-by.ion::group-by-group-as::SELECT VALUE { 'col2': col2, 'g': g } FROM simple_2_col_2_groups GROUP BY col2 GROUP AS g#error
+eval/query/group-by/group-by.ion::group-by-group-as::SELECT col1, g FROM simple_1_col_1_group, different_types_per_row GROUP BY simple_1_col_1_group.col1 GROUP AS g#coerce
+eval/query/group-by/group-by.ion::group-by-group-as::SELECT col1, g FROM simple_1_col_1_group, different_types_per_row GROUP BY simple_1_col_1_group.col1 GROUP AS g#error
+eval/query/group-by/group-by.ion::group-by-group-as::SELECT col1, g FROM simple_1_col_1_group, join_me GROUP BY simple_1_col_1_group.col1 GROUP AS g#coerce
+eval/query/group-by/group-by.ion::group-by-group-as::SELECT col1, g FROM simple_1_col_1_group, join_me GROUP BY simple_1_col_1_group.col1 GROUP AS g#error
+eval/query/group-by/group-by.ion::group-by-group-as::SELECT col1, g FROM simple_1_col_2_groups GROUP BY col1 GROUP AS g#coerce
+eval/query/group-by/group-by.ion::group-by-group-as::SELECT col1, g FROM simple_1_col_2_groups GROUP BY col1 GROUP AS g#error
+eval/query/group-by/group-by.ion::group-by-group-as::SELECT col1, g FROM simple_2_col_1_group GROUP BY col1 GROUP AS g#coerce
+eval/query/group-by/group-by.ion::group-by-group-as::SELECT col1, g FROM simple_2_col_1_group GROUP BY col1 GROUP AS g#error
+eval/query/group-by/group-by.ion::group-by-group-as::SELECT col1, g FROM simple_2_col_2_groups GROUP BY col1 GROUP AS g#coerce
+eval/query/group-by/group-by.ion::group-by-group-as::SELECT col1, g FROM simple_2_col_2_groups GROUP BY col1 GROUP AS g#error
+eval/query/group-by/group-by.ion::group-by-group-as::SELECT col2, g FROM simple_2_col_1_group GROUP BY col2 GROUP AS g#coerce
+eval/query/group-by/group-by.ion::group-by-group-as::SELECT col2, g FROM simple_2_col_1_group GROUP BY col2 GROUP AS g#error
+eval/query/group-by/group-by.ion::group-by-group-as::SELECT col2, g FROM simple_2_col_2_groups GROUP BY col2 GROUP AS g#coerce
+eval/query/group-by/group-by.ion::group-by-group-as::SELECT col2, g FROM simple_2_col_2_groups GROUP BY col2 GROUP AS g#error
+eval/query/group-by/group-by.ion::group-by-group-as::nested qualified GROUP BY with alias, SELECT and ORDER BY DESC#coerce
+eval/query/group-by/group-by.ion::group-by-group-as::nested qualified GROUP BY with alias, SELECT and ORDER BY DESC#error
+eval/query/group-by/group-by.ion::group-by-group-as::qualified GROUP BY with alias and ORDER BY with alias#coerce
+eval/query/group-by/group-by.ion::group-by-group-as::qualified GROUP BY with alias and ORDER BY with alias#error
+eval/query/group-by/group-by.ion::group-by-group-as::qualified GROUP BY with alias and SELECT with alias#coerce
+eval/query/group-by/group-by.ion::group-by-group-as::qualified GROUP BY with alias and SELECT with alias#error
+eval/query/group-by/group-by.ion::group-by-group-as::qualified GROUP BY, SELECT and ORDER BY with explicit wrong case - fail#error
+eval/query/group-by/group-by.ion::group-by-group-as::qualified GROUP BY, SELECT and ORDER BY with wrong qualifier - fail#error
+eval/query/group-by/group-by.ion::group-by-test::SELECT VALUE { '_1': _1 } FROM simple_1_col_1_group GROUP BY col1 + 1#coerce
+eval/query/group-by/group-by.ion::group-by-test::SELECT VALUE { '_1': _1 } FROM simple_1_col_1_group GROUP BY col1 + 1#error
+eval/query/group-by/group-by.ion::group-by-test::SELECT VALUE { '_1': _1 } FROM string_groups GROUP BY col1 || 'a'#coerce
+eval/query/group-by/group-by.ion::group-by-test::SELECT VALUE { '_1': _1 } FROM string_groups GROUP BY col1 || 'a'#error
+eval/query/group-by/group-by.ion::group-by-test::SELECT VALUE { 'col1': 1 } FROM simple_1_col_1_group GROUP BY col1#coerce
+eval/query/group-by/group-by.ion::group-by-test::SELECT VALUE { 'col1': 1 } FROM simple_1_col_1_group GROUP BY col1#error
+eval/query/group-by/group-by.ion::group-by-test::SELECT VALUE { 'col1': 1 } FROM simple_2_col_1_group GROUP BY col1#coerce
+eval/query/group-by/group-by.ion::group-by-test::SELECT VALUE { 'col1': 1 } FROM simple_2_col_1_group GROUP BY col1#error
+eval/query/group-by/group-by.ion::group-by-test::SELECT VALUE { 'col1': col1 } FROM simple_1_col_2_groups GROUP BY col1#coerce
+eval/query/group-by/group-by.ion::group-by-test::SELECT VALUE { 'col1': col1 } FROM simple_1_col_2_groups GROUP BY col1#error
+eval/query/group-by/group-by.ion::group-by-test::SELECT VALUE { 'col1': col1 } FROM simple_2_col_2_groups GROUP BY col1#coerce
+eval/query/group-by/group-by.ion::group-by-test::SELECT VALUE { 'col1': col1 } FROM simple_2_col_2_groups GROUP BY col1#error
+eval/query/group-by/group-by.ion::group-by-test::SELECT VALUE { 'col2': col2 } FROM simple_2_col_1_group GROUP BY col2#coerce
+eval/query/group-by/group-by.ion::group-by-test::SELECT VALUE { 'col2': col2 } FROM simple_2_col_1_group GROUP BY col2#error
+eval/query/group-by/group-by.ion::group-by-test::SELECT VALUE { 'col2': col2 } FROM simple_2_col_2_groups GROUP BY col2#coerce
+eval/query/group-by/group-by.ion::group-by-test::SELECT VALUE { 'col2': col2 } FROM simple_2_col_2_groups GROUP BY col2#error
+eval/query/group-by/group-by.ion::group-by-test::SELECT VALUE { 'regionId': p.regionId, 'supplierId_missings': p.supplierId_missings } FROM products_sparse p GROUP BY p.regionId, p.supplierId_missings#error
+eval/query/group-by/group-by.ion::group-by-test::SELECT VALUE { 'regionId': p.regionId, 'supplierId_mixed': p.supplierId_mixed } FROM products_sparse p GROUP BY p.regionId, p.supplierId_mixed#error
+eval/query/group-by/group-by.ion::group-by-test::SELECT VALUE { 'regionId': regionId, 'supplierId_nulls': supplierId_nulls } FROM products_sparse p GROUP BY p.regionId, p.supplierId_nulls#coerce
+eval/query/group-by/group-by.ion::group-by-test::SELECT VALUE { 'regionId': regionId, 'supplierId_nulls': supplierId_nulls } FROM products_sparse p GROUP BY p.regionId, p.supplierId_nulls#error
+eval/query/group-by/group-by.ion::group-by-test::SELECT VALUE { 'someGBE': someGBE } FROM simple_1_col_1_group GROUP BY col1 + 1 AS someGBE#coerce
+eval/query/group-by/group-by.ion::group-by-test::SELECT VALUE { 'someGBE': someGBE } FROM simple_1_col_1_group GROUP BY col1 + 1 AS someGBE#error
+eval/query/group-by/group-by.ion::group-by-test::SELECT VALUE { 'someGBE': someGBE } FROM string_groups GROUP BY col1 || 'a' AS someGBE#coerce
+eval/query/group-by/group-by.ion::group-by-test::SELECT VALUE { 'someGBE': someGBE } FROM string_groups GROUP BY col1 || 'a' AS someGBE#error
+eval/query/group-by/group-by.ion::group-by-test::SELECT VALUE { 'someMissing': someMissing } FROM simple_1_col_1_group GROUP BY MISSING AS someMissing#coerce
+eval/query/group-by/group-by.ion::group-by-test::SELECT VALUE { 'someMissing': someMissing } FROM simple_1_col_1_group GROUP BY MISSING AS someMissing#error
+eval/query/group-by/group-by.ion::group-by-test::SELECT VALUE { 'someNull': someNull } FROM simple_1_col_1_group GROUP BY NULL AS someNull#coerce
+eval/query/group-by/group-by.ion::group-by-test::SELECT VALUE { 'someNull': someNull } FROM simple_1_col_1_group GROUP BY NULL AS someNull#error
+eval/query/group-by/group-by.ion::group-by-test::SELECT VALUE { 'supplierId_missings' : p.supplierId_missings } FROM products_sparse p GROUP BY p.supplierId_missings#error
+eval/query/group-by/group-by.ion::group-by-test::SELECT VALUE { 'supplierId_mixed' : p.supplierId_mixed } FROM products_sparse p GROUP BY p.supplierId_mixed#error
+eval/query/group-by/group-by.ion::group-by-test::SELECT VALUE { 'supplierId_nulls': supplierId_nulls } FROM products_sparse p GROUP BY p.supplierId_nulls#coerce
+eval/query/group-by/group-by.ion::group-by-test::SELECT VALUE { 'supplierId_nulls': supplierId_nulls } FROM products_sparse p GROUP BY p.supplierId_nulls#error
+eval/query/group-by/group-by.ion::group-by-test::SELECT VALUE { } FROM [] GROUP BY doesntMatterWontBeEvaluated#coerce
+eval/query/group-by/group-by.ion::group-by-test::SELECT VALUE { } FROM [] GROUP BY doesntMatterWontBeEvaluated#error
+eval/query/group-by/group-by.ion::group-by-test::SELECT _1 FROM simple_1_col_1_group GROUP BY col1 + 1#coerce
+eval/query/group-by/group-by.ion::group-by-test::SELECT _1 FROM simple_1_col_1_group GROUP BY col1 + 1#error
+eval/query/group-by/group-by.ion::group-by-test::SELECT _1 FROM string_groups GROUP BY col1 || 'a'#coerce
+eval/query/group-by/group-by.ion::group-by-test::SELECT _1 FROM string_groups GROUP BY col1 || 'a'#error
+eval/query/group-by/group-by.ion::group-by-test::SELECT col1 FROM simple_1_col_1_group GROUP BY col1#coerce
+eval/query/group-by/group-by.ion::group-by-test::SELECT col1 FROM simple_1_col_1_group GROUP BY col1#error
+eval/query/group-by/group-by.ion::group-by-test::SELECT col1 FROM simple_1_col_2_groups GROUP BY col1#coerce
+eval/query/group-by/group-by.ion::group-by-test::SELECT col1 FROM simple_1_col_2_groups GROUP BY col1#error
+eval/query/group-by/group-by.ion::group-by-test::SELECT col1 FROM simple_2_col_1_group GROUP BY col1#coerce
+eval/query/group-by/group-by.ion::group-by-test::SELECT col1 FROM simple_2_col_1_group GROUP BY col1#error
+eval/query/group-by/group-by.ion::group-by-test::SELECT col1 FROM simple_2_col_2_groups GROUP BY col1#coerce
+eval/query/group-by/group-by.ion::group-by-test::SELECT col1 FROM simple_2_col_2_groups GROUP BY col1#error
+eval/query/group-by/group-by.ion::group-by-test::SELECT col2 FROM simple_2_col_1_group GROUP BY col2#coerce
+eval/query/group-by/group-by.ion::group-by-test::SELECT col2 FROM simple_2_col_1_group GROUP BY col2#error
+eval/query/group-by/group-by.ion::group-by-test::SELECT col2 FROM simple_2_col_2_groups GROUP BY col2#coerce
+eval/query/group-by/group-by.ion::group-by-test::SELECT col2 FROM simple_2_col_2_groups GROUP BY col2#error
+eval/query/group-by/group-by.ion::group-by-test::SELECT doesntMatterWontBeEvaluated FROM [] GROUP BY doesntMatterWontBeEvaluated#coerce
+eval/query/group-by/group-by.ion::group-by-test::SELECT doesntMatterWontBeEvaluated FROM [] GROUP BY doesntMatterWontBeEvaluated#error
+eval/query/group-by/group-by.ion::group-by-test::SELECT p.regionId, p.supplierId_missings FROM products_sparse p GROUP BY p.regionId, p.supplierId_missings#error
+eval/query/group-by/group-by.ion::group-by-test::SELECT p.supplierId_missings FROM products_sparse p GROUP BY p.supplierId_missings#error
+eval/query/group-by/group-by.ion::group-by-test::SELECT p.supplierId_mixed FROM products_sparse p GROUP BY p.supplierId_mixed#error
+eval/query/group-by/group-by.ion::group-by-test::SELECT regionId, p.supplierId_mixed FROM products_sparse p GROUP BY p.regionId, p.supplierId_mixed#error
+eval/query/group-by/group-by.ion::group-by-test::SELECT regionId, supplierId_missings FROM products_sparse p GROUP BY p.regionId, p.supplierId_missings#coerce
+eval/query/group-by/group-by.ion::group-by-test::SELECT regionId, supplierId_missings FROM products_sparse p GROUP BY p.regionId, p.supplierId_missings#error
+eval/query/group-by/group-by.ion::group-by-test::SELECT regionId, supplierId_mixed FROM products_sparse p GROUP BY p.regionId, p.supplierId_mixed#coerce
+eval/query/group-by/group-by.ion::group-by-test::SELECT regionId, supplierId_mixed FROM products_sparse p GROUP BY p.regionId, p.supplierId_mixed#error
+eval/query/group-by/group-by.ion::group-by-test::SELECT regionId, supplierId_nulls FROM products_sparse p GROUP BY p.regionId, p.supplierId_nulls#coerce
+eval/query/group-by/group-by.ion::group-by-test::SELECT regionId, supplierId_nulls FROM products_sparse p GROUP BY p.regionId, p.supplierId_nulls#error
+eval/query/group-by/group-by.ion::group-by-test::SELECT someGBE FROM simple_1_col_1_group GROUP BY col1 + 1 AS someGBE#coerce
+eval/query/group-by/group-by.ion::group-by-test::SELECT someGBE FROM simple_1_col_1_group GROUP BY col1 + 1 AS someGBE#error
+eval/query/group-by/group-by.ion::group-by-test::SELECT someGBE FROM string_groups GROUP BY col1 || 'a' AS someGBE#coerce
+eval/query/group-by/group-by.ion::group-by-test::SELECT someGBE FROM string_groups GROUP BY col1 || 'a' AS someGBE#error
+eval/query/group-by/group-by.ion::group-by-test::SELECT someMissing FROM simple_1_col_1_group GROUP BY MISSING AS someMissing#coerce
+eval/query/group-by/group-by.ion::group-by-test::SELECT someMissing FROM simple_1_col_1_group GROUP BY MISSING AS someMissing#error
+eval/query/group-by/group-by.ion::group-by-test::SELECT someNull FROM simple_1_col_1_group GROUP BY NULL AS someNull#coerce
+eval/query/group-by/group-by.ion::group-by-test::SELECT someNull FROM simple_1_col_1_group GROUP BY NULL AS someNull#error
+eval/query/group-by/group-by.ion::group-by-test::SELECT supplierId_missings FROM products_sparse p GROUP BY p.supplierId_missings#coerce
+eval/query/group-by/group-by.ion::group-by-test::SELECT supplierId_missings FROM products_sparse p GROUP BY p.supplierId_missings#error
+eval/query/group-by/group-by.ion::group-by-test::SELECT supplierId_mixed FROM products_sparse p GROUP BY p.supplierId_mixed#coerce
+eval/query/group-by/group-by.ion::group-by-test::SELECT supplierId_mixed FROM products_sparse p GROUP BY p.supplierId_mixed#error
+eval/query/group-by/group-by.ion::group-by-test::SELECT supplierId_nulls FROM products_sparse p GROUP BY p.supplierId_nulls#coerce
+eval/query/group-by/group-by.ion::group-by-test::SELECT supplierId_nulls FROM products_sparse p GROUP BY p.supplierId_nulls#error
+eval/query/group-by/group-by.ion::simple-group-by-fail::GROUP AS binding referenced in FROM clause (DATE literal)#coerce
+eval/query/group-by/group-by.ion::simple-group-by-fail::GROUP AS binding referenced in FROM clause (DATE literal)#error
+eval/query/group-by/group-by.ion::simple-group-by-fail::GROUP AS binding referenced in WHERE clause#coerce
+eval/query/group-by/group-by.ion::simple-group-by-fail::GROUP AS binding referenced in WHERE clause#error
+eval/query/group-by/group-by.ion::simple-group-by-fail::GROUP BY binding referenced in FROM clause (DATE literal)#coerce
+eval/query/group-by/group-by.ion::simple-group-by-fail::GROUP BY binding referenced in FROM clause (DATE literal)#error
+eval/query/group-by/group-by.ion::simple-group-by-fail::GROUP BY binding referenced in WHERE clause#coerce
+eval/query/group-by/group-by.ion::simple-group-by-fail::GROUP BY binding referenced in WHERE clause#error
+eval/query/group-by/group-by.ion::simple-group-by::GROUP BY bindings shadow FROM clause bindings#coerce
+eval/query/group-by/group-by.ion::simple-group-by::GROUP BY bindings shadow FROM clause bindings#error
+eval/query/group-by/group-by.ion::simple-group-by::GROUP BY bindings shadow global variables#coerce
+eval/query/group-by/group-by.ion::simple-group-by::GROUP BY bindings shadow global variables#error
+eval/query/group-by/group-by.ion::simple-group-by::SELECT column and group with GROUP BY and GROUP AS#coerce
+eval/query/group-by/group-by.ion::simple-group-by::SELECT column and group with GROUP BY and GROUP AS#error
+eval/query/group-by/group-by.ion::simple-group-by::aliased from source group by with group as - 1 column#coerce
+eval/query/group-by/group-by.ion::simple-group-by::aliased from source group by with group as - 1 column#error
+eval/query/group-by/group-by.ion::simple-group-by::aliased from source group by with group as - 2 columns#coerce
+eval/query/group-by/group-by.ion::simple-group-by::aliased from source group by with group as - 2 columns#error
+eval/query/group-by/group-by.ion::simple-group-by::group by - 2 columms#coerce
+eval/query/group-by/group-by.ion::simple-group-by::group by - 2 columms#error
+eval/query/group-by/group-by.ion::simple-group-by::group by with COUNT(*) - 2 columns#coerce
+eval/query/group-by/group-by.ion::simple-group-by::group by with COUNT(*) - 2 columns#error
+eval/query/group-by/group-by.ion::simple-group-by::group by with MIN() - 1 column#coerce
+eval/query/group-by/group-by.ion::simple-group-by::group by with MIN() - 1 column#error
+eval/query/group-by/group-by.ion::simple-group-by::group by with SUM() - 1 column#coerce
+eval/query/group-by/group-by.ion::simple-group-by::group by with SUM() - 1 column#error
+eval/query/group-by/group-by.ion::simple-group-by::group by with SUM() - 2 column#coerce
+eval/query/group-by/group-by.ion::simple-group-by::group by with SUM() - 2 column#error
+eval/query/group-by/group-by.ion::simple-group-by::group by with aliased group expression and having#coerce
+eval/query/group-by/group-by.ion::simple-group-by::group by with aliased group expression and having#error
+eval/query/group-by/group-by.ion::simple-group-by::group by with count(*) - 1 column#coerce
+eval/query/group-by/group-by.ion::simple-group-by::group by with count(*) - 1 column#error
+eval/query/group-by/group-by.ion::simple-group-by::group by with group as - 1 columm#coerce
+eval/query/group-by/group-by.ion::simple-group-by::group by with group as - 1 columm#error
+eval/query/group-by/group-by.ion::simple-group-by::group by with group as - 2 columns#coerce
+eval/query/group-by/group-by.ion::simple-group-by::group by with group as - 2 columns#error
+eval/query/group-by/group-by.ion::simple-group-by::group by with group as that is not in select list - 1 column#coerce
+eval/query/group-by/group-by.ion::simple-group-by::group by with group as that is not in select list - 1 column#error
+eval/query/group-by/group-by.ion::simple-group-by::group by with having and aggregate#coerce
+eval/query/group-by/group-by.ion::simple-group-by::group by with having and aggregate#error
+eval/query/group-by/group-by.ion::simple-group-by::group by with having expression#coerce
+eval/query/group-by/group-by.ion::simple-group-by::group by with having expression#error
+eval/query/group-by/group-by.ion::simple-group-by::group by with shadowing aliased group expression#coerce
+eval/query/group-by/group-by.ion::simple-group-by::group by with shadowing aliased group expression#error
+eval/query/group-by/group-by.ion::simple-group-by::group by with where fiscal_year >= DATE Literal#coerce
+eval/query/group-by/group-by.ion::simple-group-by::group by with where fiscal_year >= DATE Literal#error
+eval/query/group-by/group-by.ion::simple-group-by::max and min last_modified_time grouped by fiscal_year#coerce
+eval/query/group-by/group-by.ion::simple-group-by::max and min last_modified_time grouped by fiscal_year#error
+eval/query/group-by/group-by.ion::simple-group-by::max and min of created_date grouped by fiscal_year#coerce
+eval/query/group-by/group-by.ion::simple-group-by::max and min of created_date grouped by fiscal_year#error
+eval/query/group-by/group-by.ion::simple-group-by::simple group by with MAX() - 1 column#coerce
+eval/query/group-by/group-by.ion::simple-group-by::simple group by with MAX() - 1 column#error
+eval/query/group-by/group-by.ion::simple-group-by::simple group by with MAX() - 2 column#coerce
+eval/query/group-by/group-by.ion::simple-group-by::simple group by with MAX() - 2 column#error
+eval/query/group-by/group-by.ion::simple-group-by::simple group by with MIN() - 2 column#coerce
+eval/query/group-by/group-by.ion::simple-group-by::simple group by with MIN() - 2 column#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT AVG( numInStock + 1) AS agg FROM products#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT AVG( numInStock + 1) AS agg FROM products#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT AVG( numInStock) + 2 AS agg FROM products#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT AVG( numInStock) + 2 AS agg FROM products#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT AVG( numInStock) AS agg FROM products WHERE categoryId = 20#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT AVG( numInStock) AS agg FROM products WHERE categoryId = 20#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT AVG( numInStock) AS agg FROM products WHERE categoryId = 21#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT AVG( numInStock) AS agg FROM products WHERE categoryId = 21#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT AVG( numInStock) AS agg FROM products WHERE supplierId = 11#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT AVG( numInStock) AS agg FROM products WHERE supplierId = 11#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT AVG(5) FROM products#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT AVG(5) FROM products#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT AVG(numInStock) AS agg FROM products WHERE supplierId = 10#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT AVG(numInStock) AS agg FROM products WHERE supplierId = 10#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT AVG(numInStock) AS agg FROM products#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT AVG(numInStock) AS agg FROM products#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT AVG(p.numInStock + 1) AS agg FROM products as p#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT AVG(p.numInStock + 1) AS agg FROM products as p#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT AVG(p.numInStock) + 2 AS agg FROM products as p#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT AVG(p.numInStock) + 2 AS agg FROM products as p#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT AVG(p.numInStock) AS agg FROM products AS p WHERE categoryId = 21#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT AVG(p.numInStock) AS agg FROM products AS p WHERE categoryId = 21#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT AVG(p.numInStock) AS agg FROM products AS p WHERE p.categoryId = 20#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT AVG(p.numInStock) AS agg FROM products AS p WHERE p.categoryId = 20#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT AVG(p.numInStock) AS agg FROM products AS p WHERE supplierId = 10#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT AVG(p.numInStock) AS agg FROM products AS p WHERE supplierId = 10#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT AVG(p.numInStock) AS agg FROM products AS p WHERE supplierId = 11#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT AVG(p.numInStock) AS agg FROM products AS p WHERE supplierId = 11#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT AVG(p.numInStock) AS agg FROM products AS p#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT AVG(p.numInStock) AS agg FROM products AS p#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT COUNT( numInStock + 1) AS agg FROM products#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT COUNT( numInStock + 1) AS agg FROM products#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT COUNT( numInStock) + 2 AS agg FROM products#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT COUNT( numInStock) + 2 AS agg FROM products#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT COUNT( numInStock) AS agg FROM products WHERE categoryId = 20#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT COUNT( numInStock) AS agg FROM products WHERE categoryId = 20#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT COUNT( numInStock) AS agg FROM products WHERE categoryId = 21#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT COUNT( numInStock) AS agg FROM products WHERE categoryId = 21#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT COUNT( numInStock) AS agg FROM products WHERE supplierId = 11#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT COUNT( numInStock) AS agg FROM products WHERE supplierId = 11#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT COUNT(1) AS the_count, AVG( price_missings) AS the_agg FROM products_sparse AS p#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT COUNT(1) AS the_count, AVG( price_missings) AS the_agg FROM products_sparse AS p#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT COUNT(1) AS the_count, AVG( price_mixed) AS the_agg FROM products_sparse AS p#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT COUNT(1) AS the_count, AVG( price_mixed) AS the_agg FROM products_sparse AS p#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT COUNT(1) AS the_count, AVG( price_nulls) AS the_agg FROM products_sparse#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT COUNT(1) AS the_count, AVG( price_nulls) AS the_agg FROM products_sparse#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT COUNT(1) AS the_count, AVG(p.price_missings) AS the_agg FROM products_sparse AS p#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT COUNT(1) AS the_count, AVG(p.price_missings) AS the_agg FROM products_sparse AS p#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT COUNT(1) AS the_count, AVG(p.price_mixed) AS the_agg FROM products_sparse AS p#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT COUNT(1) AS the_count, AVG(p.price_mixed) AS the_agg FROM products_sparse AS p#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT COUNT(1) AS the_count, AVG(p.price_nulls) AS the_agg FROM products_sparse AS p#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT COUNT(1) AS the_count, AVG(p.price_nulls) AS the_agg FROM products_sparse AS p#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT COUNT(1) AS the_count, COUNT( price_missings) AS the_agg FROM products_sparse AS p#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT COUNT(1) AS the_count, COUNT( price_missings) AS the_agg FROM products_sparse AS p#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT COUNT(1) AS the_count, COUNT( price_mixed) AS the_agg FROM products_sparse AS p#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT COUNT(1) AS the_count, COUNT( price_mixed) AS the_agg FROM products_sparse AS p#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT COUNT(1) AS the_count, COUNT( price_nulls) AS the_agg FROM products_sparse#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT COUNT(1) AS the_count, COUNT( price_nulls) AS the_agg FROM products_sparse#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT COUNT(1) AS the_count, COUNT(p.price_missings) AS the_agg FROM products_sparse AS p#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT COUNT(1) AS the_count, COUNT(p.price_missings) AS the_agg FROM products_sparse AS p#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT COUNT(1) AS the_count, COUNT(p.price_mixed) AS the_agg FROM products_sparse AS p#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT COUNT(1) AS the_count, COUNT(p.price_mixed) AS the_agg FROM products_sparse AS p#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT COUNT(1) AS the_count, COUNT(p.price_nulls) AS the_agg FROM products_sparse AS p#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT COUNT(1) AS the_count, COUNT(p.price_nulls) AS the_agg FROM products_sparse AS p#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT COUNT(1) AS the_count, MAX( price_missings) AS the_agg FROM products_sparse AS p#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT COUNT(1) AS the_count, MAX( price_missings) AS the_agg FROM products_sparse AS p#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT COUNT(1) AS the_count, MAX( price_mixed) AS the_agg FROM products_sparse AS p#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT COUNT(1) AS the_count, MAX( price_mixed) AS the_agg FROM products_sparse AS p#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT COUNT(1) AS the_count, MAX( price_nulls) AS the_agg FROM products_sparse#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT COUNT(1) AS the_count, MAX( price_nulls) AS the_agg FROM products_sparse#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT COUNT(1) AS the_count, MAX(p.price_missings) AS the_agg FROM products_sparse AS p#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT COUNT(1) AS the_count, MAX(p.price_missings) AS the_agg FROM products_sparse AS p#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT COUNT(1) AS the_count, MAX(p.price_mixed) AS the_agg FROM products_sparse AS p#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT COUNT(1) AS the_count, MAX(p.price_mixed) AS the_agg FROM products_sparse AS p#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT COUNT(1) AS the_count, MAX(p.price_nulls) AS the_agg FROM products_sparse AS p#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT COUNT(1) AS the_count, MAX(p.price_nulls) AS the_agg FROM products_sparse AS p#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT COUNT(1) AS the_count, MIN( price_missings) AS the_agg FROM products_sparse AS p#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT COUNT(1) AS the_count, MIN( price_missings) AS the_agg FROM products_sparse AS p#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT COUNT(1) AS the_count, MIN( price_mixed) AS the_agg FROM products_sparse AS p#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT COUNT(1) AS the_count, MIN( price_mixed) AS the_agg FROM products_sparse AS p#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT COUNT(1) AS the_count, MIN( price_nulls) AS the_agg FROM products_sparse#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT COUNT(1) AS the_count, MIN( price_nulls) AS the_agg FROM products_sparse#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT COUNT(1) AS the_count, MIN(p.price_missings) AS the_agg FROM products_sparse AS p#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT COUNT(1) AS the_count, MIN(p.price_missings) AS the_agg FROM products_sparse AS p#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT COUNT(1) AS the_count, MIN(p.price_mixed) AS the_agg FROM products_sparse AS p#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT COUNT(1) AS the_count, MIN(p.price_mixed) AS the_agg FROM products_sparse AS p#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT COUNT(1) AS the_count, MIN(p.price_nulls) AS the_agg FROM products_sparse AS p#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT COUNT(1) AS the_count, MIN(p.price_nulls) AS the_agg FROM products_sparse AS p#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT COUNT(1) AS the_count, SUM( price_missings) AS the_agg FROM products_sparse AS p#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT COUNT(1) AS the_count, SUM( price_missings) AS the_agg FROM products_sparse AS p#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT COUNT(1) AS the_count, SUM( price_mixed) AS the_agg FROM products_sparse AS p#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT COUNT(1) AS the_count, SUM( price_mixed) AS the_agg FROM products_sparse AS p#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT COUNT(1) AS the_count, SUM( price_nulls) AS the_agg FROM products_sparse#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT COUNT(1) AS the_count, SUM( price_nulls) AS the_agg FROM products_sparse#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT COUNT(1) AS the_count, SUM(p.price_missings) AS the_agg FROM products_sparse AS p#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT COUNT(1) AS the_count, SUM(p.price_missings) AS the_agg FROM products_sparse AS p#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT COUNT(1) AS the_count, SUM(p.price_mixed) AS the_agg FROM products_sparse AS p#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT COUNT(1) AS the_count, SUM(p.price_mixed) AS the_agg FROM products_sparse AS p#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT COUNT(1) AS the_count, SUM(p.price_nulls) AS the_agg FROM products_sparse AS p#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT COUNT(1) AS the_count, SUM(p.price_nulls) AS the_agg FROM products_sparse AS p#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT COUNT(5) FROM products#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT COUNT(5) FROM products#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT COUNT(numInStock) AS agg FROM products WHERE supplierId = 10#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT COUNT(numInStock) AS agg FROM products WHERE supplierId = 10#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT COUNT(numInStock) AS agg FROM products#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT COUNT(numInStock) AS agg FROM products#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT COUNT(p.numInStock + 1) AS agg FROM products as p#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT COUNT(p.numInStock + 1) AS agg FROM products as p#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT COUNT(p.numInStock) + 2 AS agg FROM products as p#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT COUNT(p.numInStock) + 2 AS agg FROM products as p#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT COUNT(p.numInStock) AS agg FROM products AS p WHERE categoryId = 21#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT COUNT(p.numInStock) AS agg FROM products AS p WHERE categoryId = 21#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT COUNT(p.numInStock) AS agg FROM products AS p WHERE p.categoryId = 20#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT COUNT(p.numInStock) AS agg FROM products AS p WHERE p.categoryId = 20#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT COUNT(p.numInStock) AS agg FROM products AS p WHERE supplierId = 10#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT COUNT(p.numInStock) AS agg FROM products AS p WHERE supplierId = 10#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT COUNT(p.numInStock) AS agg FROM products AS p WHERE supplierId = 11#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT COUNT(p.numInStock) AS agg FROM products AS p WHERE supplierId = 11#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT COUNT(p.numInStock) AS agg FROM products AS p#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT COUNT(p.numInStock) AS agg FROM products AS p#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT MAX( numInStock + 1) AS agg FROM products#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT MAX( numInStock + 1) AS agg FROM products#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT MAX( numInStock) + 2 AS agg FROM products#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT MAX( numInStock) + 2 AS agg FROM products#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT MAX( numInStock) AS agg FROM products WHERE categoryId = 20#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT MAX( numInStock) AS agg FROM products WHERE categoryId = 20#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT MAX( numInStock) AS agg FROM products WHERE categoryId = 21#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT MAX( numInStock) AS agg FROM products WHERE categoryId = 21#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT MAX( numInStock) AS agg FROM products WHERE supplierId = 11#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT MAX( numInStock) AS agg FROM products WHERE supplierId = 11#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT MAX(5) FROM products#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT MAX(5) FROM products#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT MAX(numInStock) AS agg FROM products WHERE supplierId = 10#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT MAX(numInStock) AS agg FROM products WHERE supplierId = 10#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT MAX(numInStock) AS agg FROM products#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT MAX(numInStock) AS agg FROM products#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT MAX(p.numInStock + 1) AS agg FROM products as p#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT MAX(p.numInStock + 1) AS agg FROM products as p#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT MAX(p.numInStock) + 2 AS agg FROM products as p#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT MAX(p.numInStock) + 2 AS agg FROM products as p#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT MAX(p.numInStock) AS agg FROM products AS p WHERE categoryId = 21#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT MAX(p.numInStock) AS agg FROM products AS p WHERE categoryId = 21#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT MAX(p.numInStock) AS agg FROM products AS p WHERE p.categoryId = 20#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT MAX(p.numInStock) AS agg FROM products AS p WHERE p.categoryId = 20#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT MAX(p.numInStock) AS agg FROM products AS p WHERE supplierId = 10#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT MAX(p.numInStock) AS agg FROM products AS p WHERE supplierId = 10#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT MAX(p.numInStock) AS agg FROM products AS p WHERE supplierId = 11#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT MAX(p.numInStock) AS agg FROM products AS p WHERE supplierId = 11#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT MAX(p.numInStock) AS agg FROM products AS p#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT MAX(p.numInStock) AS agg FROM products AS p#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT MIN( numInStock + 1) AS agg FROM products#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT MIN( numInStock + 1) AS agg FROM products#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT MIN( numInStock) + 2 AS agg FROM products#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT MIN( numInStock) + 2 AS agg FROM products#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT MIN( numInStock) AS agg FROM products WHERE categoryId = 20#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT MIN( numInStock) AS agg FROM products WHERE categoryId = 20#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT MIN( numInStock) AS agg FROM products WHERE categoryId = 21#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT MIN( numInStock) AS agg FROM products WHERE categoryId = 21#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT MIN( numInStock) AS agg FROM products WHERE supplierId = 11#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT MIN( numInStock) AS agg FROM products WHERE supplierId = 11#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT MIN(5) FROM products#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT MIN(5) FROM products#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT MIN(numInStock) AS agg FROM products WHERE supplierId = 10#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT MIN(numInStock) AS agg FROM products WHERE supplierId = 10#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT MIN(numInStock) AS agg FROM products#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT MIN(numInStock) AS agg FROM products#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT MIN(p.numInStock + 1) AS agg FROM products as p#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT MIN(p.numInStock + 1) AS agg FROM products as p#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT MIN(p.numInStock) + 2 AS agg FROM products as p#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT MIN(p.numInStock) + 2 AS agg FROM products as p#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT MIN(p.numInStock) AS agg FROM products AS p WHERE categoryId = 21#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT MIN(p.numInStock) AS agg FROM products AS p WHERE categoryId = 21#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT MIN(p.numInStock) AS agg FROM products AS p WHERE p.categoryId = 20#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT MIN(p.numInStock) AS agg FROM products AS p WHERE p.categoryId = 20#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT MIN(p.numInStock) AS agg FROM products AS p WHERE supplierId = 10#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT MIN(p.numInStock) AS agg FROM products AS p WHERE supplierId = 10#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT MIN(p.numInStock) AS agg FROM products AS p WHERE supplierId = 11#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT MIN(p.numInStock) AS agg FROM products AS p WHERE supplierId = 11#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT MIN(p.numInStock) AS agg FROM products AS p#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT MIN(p.numInStock) AS agg FROM products AS p#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT SUM( numInStock + 1) AS agg FROM products#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT SUM( numInStock + 1) AS agg FROM products#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT SUM( numInStock) + 2 AS agg FROM products#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT SUM( numInStock) + 2 AS agg FROM products#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT SUM( numInStock) AS agg FROM products WHERE categoryId = 20#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT SUM( numInStock) AS agg FROM products WHERE categoryId = 20#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT SUM( numInStock) AS agg FROM products WHERE categoryId = 21#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT SUM( numInStock) AS agg FROM products WHERE categoryId = 21#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT SUM( numInStock) AS agg FROM products WHERE supplierId = 11#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT SUM( numInStock) AS agg FROM products WHERE supplierId = 11#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT SUM(5) FROM products#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT SUM(5) FROM products#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT SUM(numInStock) AS agg FROM products WHERE supplierId = 10#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT SUM(numInStock) AS agg FROM products WHERE supplierId = 10#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT SUM(numInStock) AS agg FROM products#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT SUM(numInStock) AS agg FROM products#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT SUM(p.numInStock + 1) AS agg FROM products as p#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT SUM(p.numInStock + 1) AS agg FROM products as p#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT SUM(p.numInStock) + 2 AS agg FROM products as p#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT SUM(p.numInStock) + 2 AS agg FROM products as p#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT SUM(p.numInStock) AS agg FROM products AS p WHERE categoryId = 21#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT SUM(p.numInStock) AS agg FROM products AS p WHERE categoryId = 21#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT SUM(p.numInStock) AS agg FROM products AS p WHERE p.categoryId = 20#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT SUM(p.numInStock) AS agg FROM products AS p WHERE p.categoryId = 20#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT SUM(p.numInStock) AS agg FROM products AS p WHERE supplierId = 10#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT SUM(p.numInStock) AS agg FROM products AS p WHERE supplierId = 10#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT SUM(p.numInStock) AS agg FROM products AS p WHERE supplierId = 11#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT SUM(p.numInStock) AS agg FROM products AS p WHERE supplierId = 11#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT SUM(p.numInStock) AS agg FROM products AS p#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT SUM(p.numInStock) AS agg FROM products AS p#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT categoryId, AVG( numInStock) AS agg FROM products GROUP BY categoryId#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT categoryId, AVG( numInStock) AS agg FROM products GROUP BY categoryId#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT categoryId, AVG( numInStock) AS agg FROM products WHERE price >= 10 GROUP BY categoryId#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT categoryId, AVG( numInStock) AS agg FROM products WHERE price >= 10 GROUP BY categoryId#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT categoryId, AVG(p.numInStock) AS agg FROM products AS p GROUP BY p.categoryId#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT categoryId, AVG(p.numInStock) AS agg FROM products AS p GROUP BY p.categoryId#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT categoryId, AVG(p.numInStock) AS agg FROM products AS p WHERE price >= 10 GROUP BY p.categoryId#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT categoryId, AVG(p.numInStock) AS agg FROM products AS p WHERE price >= 10 GROUP BY p.categoryId#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT categoryId, COUNT( numInStock) AS agg FROM products GROUP BY categoryId#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT categoryId, COUNT( numInStock) AS agg FROM products GROUP BY categoryId#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT categoryId, COUNT( numInStock) AS agg FROM products WHERE price >= 10 GROUP BY categoryId#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT categoryId, COUNT( numInStock) AS agg FROM products WHERE price >= 10 GROUP BY categoryId#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT categoryId, COUNT(1) AS the_count, AVG( price_missings) AS the_agg FROM products_sparse AS p GROUP BY categoryId#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT categoryId, COUNT(1) AS the_count, AVG( price_missings) AS the_agg FROM products_sparse AS p GROUP BY categoryId#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT categoryId, COUNT(1) AS the_count, AVG( price_mixed) AS the_agg FROM products_sparse AS p GROUP BY categoryId#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT categoryId, COUNT(1) AS the_count, AVG( price_mixed) AS the_agg FROM products_sparse AS p GROUP BY categoryId#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT categoryId, COUNT(1) AS the_count, AVG( price_nulls) AS the_agg FROM products_sparse AS p GROUP BY categoryId#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT categoryId, COUNT(1) AS the_count, AVG( price_nulls) AS the_agg FROM products_sparse AS p GROUP BY categoryId#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT categoryId, COUNT(1) AS the_count, AVG(p.price_missings) AS the_agg FROM products_sparse AS p GROUP BY categoryId#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT categoryId, COUNT(1) AS the_count, AVG(p.price_missings) AS the_agg FROM products_sparse AS p GROUP BY categoryId#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT categoryId, COUNT(1) AS the_count, AVG(p.price_mixed) AS the_agg FROM products_sparse AS p GROUP BY categoryId#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT categoryId, COUNT(1) AS the_count, AVG(p.price_mixed) AS the_agg FROM products_sparse AS p GROUP BY categoryId#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT categoryId, COUNT(1) AS the_count, AVG(p.price_nulls) AS the_agg FROM products_sparse AS p GROUP BY categoryId#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT categoryId, COUNT(1) AS the_count, AVG(p.price_nulls) AS the_agg FROM products_sparse AS p GROUP BY categoryId#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT categoryId, COUNT(1) AS the_count, COUNT( price_missings) AS the_agg FROM products_sparse AS p GROUP BY categoryId#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT categoryId, COUNT(1) AS the_count, COUNT( price_missings) AS the_agg FROM products_sparse AS p GROUP BY categoryId#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT categoryId, COUNT(1) AS the_count, COUNT( price_mixed) AS the_agg FROM products_sparse AS p GROUP BY categoryId#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT categoryId, COUNT(1) AS the_count, COUNT( price_mixed) AS the_agg FROM products_sparse AS p GROUP BY categoryId#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT categoryId, COUNT(1) AS the_count, COUNT( price_nulls) AS the_agg FROM products_sparse AS p GROUP BY categoryId#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT categoryId, COUNT(1) AS the_count, COUNT( price_nulls) AS the_agg FROM products_sparse AS p GROUP BY categoryId#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT categoryId, COUNT(1) AS the_count, COUNT(p.price_missings) AS the_agg FROM products_sparse AS p GROUP BY categoryId#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT categoryId, COUNT(1) AS the_count, COUNT(p.price_missings) AS the_agg FROM products_sparse AS p GROUP BY categoryId#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT categoryId, COUNT(1) AS the_count, COUNT(p.price_mixed) AS the_agg FROM products_sparse AS p GROUP BY categoryId#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT categoryId, COUNT(1) AS the_count, COUNT(p.price_mixed) AS the_agg FROM products_sparse AS p GROUP BY categoryId#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT categoryId, COUNT(1) AS the_count, COUNT(p.price_nulls) AS the_agg FROM products_sparse AS p GROUP BY categoryId#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT categoryId, COUNT(1) AS the_count, COUNT(p.price_nulls) AS the_agg FROM products_sparse AS p GROUP BY categoryId#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT categoryId, COUNT(1) AS the_count, MAX( price_missings) AS the_agg FROM products_sparse AS p GROUP BY categoryId#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT categoryId, COUNT(1) AS the_count, MAX( price_missings) AS the_agg FROM products_sparse AS p GROUP BY categoryId#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT categoryId, COUNT(1) AS the_count, MAX( price_mixed) AS the_agg FROM products_sparse AS p GROUP BY categoryId#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT categoryId, COUNT(1) AS the_count, MAX( price_mixed) AS the_agg FROM products_sparse AS p GROUP BY categoryId#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT categoryId, COUNT(1) AS the_count, MAX( price_nulls) AS the_agg FROM products_sparse AS p GROUP BY categoryId#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT categoryId, COUNT(1) AS the_count, MAX( price_nulls) AS the_agg FROM products_sparse AS p GROUP BY categoryId#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT categoryId, COUNT(1) AS the_count, MAX(p.price_missings) AS the_agg FROM products_sparse AS p GROUP BY categoryId#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT categoryId, COUNT(1) AS the_count, MAX(p.price_missings) AS the_agg FROM products_sparse AS p GROUP BY categoryId#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT categoryId, COUNT(1) AS the_count, MAX(p.price_mixed) AS the_agg FROM products_sparse AS p GROUP BY categoryId#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT categoryId, COUNT(1) AS the_count, MAX(p.price_mixed) AS the_agg FROM products_sparse AS p GROUP BY categoryId#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT categoryId, COUNT(1) AS the_count, MAX(p.price_nulls) AS the_agg FROM products_sparse AS p GROUP BY categoryId#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT categoryId, COUNT(1) AS the_count, MAX(p.price_nulls) AS the_agg FROM products_sparse AS p GROUP BY categoryId#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT categoryId, COUNT(1) AS the_count, MIN( price_missings) AS the_agg FROM products_sparse AS p GROUP BY categoryId#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT categoryId, COUNT(1) AS the_count, MIN( price_missings) AS the_agg FROM products_sparse AS p GROUP BY categoryId#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT categoryId, COUNT(1) AS the_count, MIN( price_mixed) AS the_agg FROM products_sparse AS p GROUP BY categoryId#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT categoryId, COUNT(1) AS the_count, MIN( price_mixed) AS the_agg FROM products_sparse AS p GROUP BY categoryId#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT categoryId, COUNT(1) AS the_count, MIN( price_nulls) AS the_agg FROM products_sparse AS p GROUP BY categoryId#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT categoryId, COUNT(1) AS the_count, MIN( price_nulls) AS the_agg FROM products_sparse AS p GROUP BY categoryId#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT categoryId, COUNT(1) AS the_count, MIN(p.price_missings) AS the_agg FROM products_sparse AS p GROUP BY categoryId#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT categoryId, COUNT(1) AS the_count, MIN(p.price_missings) AS the_agg FROM products_sparse AS p GROUP BY categoryId#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT categoryId, COUNT(1) AS the_count, MIN(p.price_mixed) AS the_agg FROM products_sparse AS p GROUP BY categoryId#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT categoryId, COUNT(1) AS the_count, MIN(p.price_mixed) AS the_agg FROM products_sparse AS p GROUP BY categoryId#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT categoryId, COUNT(1) AS the_count, MIN(p.price_nulls) AS the_agg FROM products_sparse AS p GROUP BY categoryId#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT categoryId, COUNT(1) AS the_count, MIN(p.price_nulls) AS the_agg FROM products_sparse AS p GROUP BY categoryId#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT categoryId, COUNT(1) AS the_count, SUM( price_missings) AS the_agg FROM products_sparse AS p GROUP BY categoryId#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT categoryId, COUNT(1) AS the_count, SUM( price_missings) AS the_agg FROM products_sparse AS p GROUP BY categoryId#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT categoryId, COUNT(1) AS the_count, SUM( price_mixed) AS the_agg FROM products_sparse AS p GROUP BY categoryId#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT categoryId, COUNT(1) AS the_count, SUM( price_mixed) AS the_agg FROM products_sparse AS p GROUP BY categoryId#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT categoryId, COUNT(1) AS the_count, SUM( price_nulls) AS the_agg FROM products_sparse AS p GROUP BY categoryId#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT categoryId, COUNT(1) AS the_count, SUM( price_nulls) AS the_agg FROM products_sparse AS p GROUP BY categoryId#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT categoryId, COUNT(1) AS the_count, SUM(p.price_missings) AS the_agg FROM products_sparse AS p GROUP BY categoryId#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT categoryId, COUNT(1) AS the_count, SUM(p.price_missings) AS the_agg FROM products_sparse AS p GROUP BY categoryId#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT categoryId, COUNT(1) AS the_count, SUM(p.price_mixed) AS the_agg FROM products_sparse AS p GROUP BY categoryId#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT categoryId, COUNT(1) AS the_count, SUM(p.price_mixed) AS the_agg FROM products_sparse AS p GROUP BY categoryId#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT categoryId, COUNT(1) AS the_count, SUM(p.price_nulls) AS the_agg FROM products_sparse AS p GROUP BY categoryId#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT categoryId, COUNT(1) AS the_count, SUM(p.price_nulls) AS the_agg FROM products_sparse AS p GROUP BY categoryId#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT categoryId, COUNT(p.numInStock) AS agg FROM products AS p GROUP BY p.categoryId#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT categoryId, COUNT(p.numInStock) AS agg FROM products AS p GROUP BY p.categoryId#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT categoryId, COUNT(p.numInStock) AS agg FROM products AS p WHERE price >= 10 GROUP BY p.categoryId#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT categoryId, COUNT(p.numInStock) AS agg FROM products AS p WHERE price >= 10 GROUP BY p.categoryId#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT categoryId, MAX( numInStock) AS agg FROM products GROUP BY categoryId#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT categoryId, MAX( numInStock) AS agg FROM products GROUP BY categoryId#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT categoryId, MAX( numInStock) AS agg FROM products WHERE price >= 10 GROUP BY categoryId#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT categoryId, MAX( numInStock) AS agg FROM products WHERE price >= 10 GROUP BY categoryId#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT categoryId, MAX(p.numInStock) AS agg FROM products AS p GROUP BY p.categoryId#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT categoryId, MAX(p.numInStock) AS agg FROM products AS p GROUP BY p.categoryId#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT categoryId, MAX(p.numInStock) AS agg FROM products AS p WHERE price >= 10 GROUP BY p.categoryId#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT categoryId, MAX(p.numInStock) AS agg FROM products AS p WHERE price >= 10 GROUP BY p.categoryId#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT categoryId, MIN( numInStock) AS agg FROM products GROUP BY categoryId#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT categoryId, MIN( numInStock) AS agg FROM products GROUP BY categoryId#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT categoryId, MIN( numInStock) AS agg FROM products WHERE price >= 10 GROUP BY categoryId#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT categoryId, MIN( numInStock) AS agg FROM products WHERE price >= 10 GROUP BY categoryId#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT categoryId, MIN(p.numInStock) AS agg FROM products AS p GROUP BY p.categoryId#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT categoryId, MIN(p.numInStock) AS agg FROM products AS p GROUP BY p.categoryId#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT categoryId, MIN(p.numInStock) AS agg FROM products AS p WHERE price >= 10 GROUP BY p.categoryId#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT categoryId, MIN(p.numInStock) AS agg FROM products AS p WHERE price >= 10 GROUP BY p.categoryId#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT categoryId, SUM( numInStock) AS agg FROM products GROUP BY categoryId#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT categoryId, SUM( numInStock) AS agg FROM products GROUP BY categoryId#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT categoryId, SUM( numInStock) AS agg FROM products WHERE price >= 10 GROUP BY categoryId#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT categoryId, SUM( numInStock) AS agg FROM products WHERE price >= 10 GROUP BY categoryId#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT categoryId, SUM(p.numInStock) AS agg FROM products AS p GROUP BY p.categoryId#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT categoryId, SUM(p.numInStock) AS agg FROM products AS p GROUP BY p.categoryId#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT categoryId, SUM(p.numInStock) AS agg FROM products AS p WHERE price >= 10 GROUP BY p.categoryId#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT categoryId, SUM(p.numInStock) AS agg FROM products AS p WHERE price >= 10 GROUP BY p.categoryId#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT p.categoryId, COUNT(1) AS the_count, AVG( price_missings) AS the_agg FROM products_sparse AS p GROUP BY p.categoryId#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT p.categoryId, COUNT(1) AS the_count, AVG( price_mixed) AS the_agg FROM products_sparse AS p GROUP BY p.categoryId#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT p.categoryId, COUNT(1) AS the_count, AVG(p.price_missings) AS the_agg FROM products_sparse AS p GROUP BY p.categoryId#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT p.categoryId, COUNT(1) AS the_count, AVG(p.price_mixed) AS the_agg FROM products_sparse AS p GROUP BY p.categoryId#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT p.categoryId, COUNT(1) AS the_count, COUNT( price_missings) AS the_agg FROM products_sparse AS p GROUP BY p.categoryId#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT p.categoryId, COUNT(1) AS the_count, COUNT( price_mixed) AS the_agg FROM products_sparse AS p GROUP BY p.categoryId#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT p.categoryId, COUNT(1) AS the_count, COUNT(p.price_missings) AS the_agg FROM products_sparse AS p GROUP BY p.categoryId#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT p.categoryId, COUNT(1) AS the_count, COUNT(p.price_mixed) AS the_agg FROM products_sparse AS p GROUP BY p.categoryId#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT p.categoryId, COUNT(1) AS the_count, MAX( price_missings) AS the_agg FROM products_sparse AS p GROUP BY p.categoryId#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT p.categoryId, COUNT(1) AS the_count, MAX( price_mixed) AS the_agg FROM products_sparse AS p GROUP BY p.categoryId#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT p.categoryId, COUNT(1) AS the_count, MAX(p.price_missings) AS the_agg FROM products_sparse AS p GROUP BY p.categoryId#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT p.categoryId, COUNT(1) AS the_count, MAX(p.price_mixed) AS the_agg FROM products_sparse AS p GROUP BY p.categoryId#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT p.categoryId, COUNT(1) AS the_count, MIN( price_missings) AS the_agg FROM products_sparse AS p GROUP BY p.categoryId#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT p.categoryId, COUNT(1) AS the_count, MIN( price_mixed) AS the_agg FROM products_sparse AS p GROUP BY p.categoryId#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT p.categoryId, COUNT(1) AS the_count, MIN(p.price_missings) AS the_agg FROM products_sparse AS p GROUP BY p.categoryId#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT p.categoryId, COUNT(1) AS the_count, MIN(p.price_mixed) AS the_agg FROM products_sparse AS p GROUP BY p.categoryId#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT p.categoryId, COUNT(1) AS the_count, SUM( price_missings) AS the_agg FROM products_sparse AS p GROUP BY p.categoryId#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT p.categoryId, COUNT(1) AS the_count, SUM( price_mixed) AS the_agg FROM products_sparse AS p GROUP BY p.categoryId#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT p.categoryId, COUNT(1) AS the_count, SUM(p.price_missings) AS the_agg FROM products_sparse AS p GROUP BY p.categoryId#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT p.categoryId, COUNT(1) AS the_count, SUM(p.price_mixed) AS the_agg FROM products_sparse AS p GROUP BY p.categoryId#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT supplierId, AVG( numInStock) AS agg FROM products GROUP BY supplierId#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT supplierId, AVG( numInStock) AS agg FROM products GROUP BY supplierId#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT supplierId, AVG( numInStock) AS agg FROM products WHERE price >= 10 GROUP BY supplierId#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT supplierId, AVG( numInStock) AS agg FROM products WHERE price >= 10 GROUP BY supplierId#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT supplierId, AVG(p.numInStock) AS agg FROM products AS p GROUP BY p.supplierId#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT supplierId, AVG(p.numInStock) AS agg FROM products AS p GROUP BY p.supplierId#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT supplierId, AVG(p.numInStock) AS agg FROM products AS p WHERE price >= 10 GROUP BY p.supplierId#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT supplierId, AVG(p.numInStock) AS agg FROM products AS p WHERE price >= 10 GROUP BY p.supplierId#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT supplierId, COUNT( numInStock) AS agg FROM products GROUP BY supplierId#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT supplierId, COUNT( numInStock) AS agg FROM products GROUP BY supplierId#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT supplierId, COUNT( numInStock) AS agg FROM products WHERE price >= 10 GROUP BY supplierId#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT supplierId, COUNT( numInStock) AS agg FROM products WHERE price >= 10 GROUP BY supplierId#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT supplierId, COUNT(p.numInStock) AS agg FROM products AS p GROUP BY p.supplierId#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT supplierId, COUNT(p.numInStock) AS agg FROM products AS p GROUP BY p.supplierId#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT supplierId, COUNT(p.numInStock) AS agg FROM products AS p WHERE price >= 10 GROUP BY p.supplierId#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT supplierId, COUNT(p.numInStock) AS agg FROM products AS p WHERE price >= 10 GROUP BY p.supplierId#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT supplierId, MAX( numInStock) AS agg FROM products GROUP BY supplierId#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT supplierId, MAX( numInStock) AS agg FROM products GROUP BY supplierId#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT supplierId, MAX( numInStock) AS agg FROM products WHERE price >= 10 GROUP BY supplierId#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT supplierId, MAX( numInStock) AS agg FROM products WHERE price >= 10 GROUP BY supplierId#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT supplierId, MAX(p.numInStock) AS agg FROM products AS p GROUP BY p.supplierId#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT supplierId, MAX(p.numInStock) AS agg FROM products AS p GROUP BY p.supplierId#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT supplierId, MAX(p.numInStock) AS agg FROM products AS p WHERE price >= 10 GROUP BY p.supplierId#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT supplierId, MAX(p.numInStock) AS agg FROM products AS p WHERE price >= 10 GROUP BY p.supplierId#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT supplierId, MIN( numInStock) AS agg FROM products GROUP BY supplierId#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT supplierId, MIN( numInStock) AS agg FROM products GROUP BY supplierId#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT supplierId, MIN( numInStock) AS agg FROM products WHERE price >= 10 GROUP BY supplierId#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT supplierId, MIN( numInStock) AS agg FROM products WHERE price >= 10 GROUP BY supplierId#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT supplierId, MIN(p.numInStock) AS agg FROM products AS p GROUP BY p.supplierId#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT supplierId, MIN(p.numInStock) AS agg FROM products AS p GROUP BY p.supplierId#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT supplierId, MIN(p.numInStock) AS agg FROM products AS p WHERE price >= 10 GROUP BY p.supplierId#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT supplierId, MIN(p.numInStock) AS agg FROM products AS p WHERE price >= 10 GROUP BY p.supplierId#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT supplierId, SUM( numInStock) AS agg FROM products GROUP BY supplierId#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT supplierId, SUM( numInStock) AS agg FROM products GROUP BY supplierId#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT supplierId, SUM( numInStock) AS agg FROM products WHERE price >= 10 GROUP BY supplierId#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT supplierId, SUM( numInStock) AS agg FROM products WHERE price >= 10 GROUP BY supplierId#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT supplierId, SUM(p.numInStock) AS agg FROM products AS p GROUP BY p.supplierId#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT supplierId, SUM(p.numInStock) AS agg FROM products AS p GROUP BY p.supplierId#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT supplierId, SUM(p.numInStock) AS agg FROM products AS p WHERE price >= 10 GROUP BY p.supplierId#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT supplierId, SUM(p.numInStock) AS agg FROM products AS p WHERE price >= 10 GROUP BY p.supplierId#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT supplierId, categoryId, AVG( numInStock) AS agg FROM products GROUP BY supplierId, categoryId#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT supplierId, categoryId, AVG( numInStock) AS agg FROM products GROUP BY supplierId, categoryId#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT supplierId, categoryId, AVG( numInStock) AS agg FROM products WHERE price < 15 GROUP BY supplierId, categoryId#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT supplierId, categoryId, AVG( numInStock) AS agg FROM products WHERE price < 15 GROUP BY supplierId, categoryId#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT supplierId, categoryId, AVG(p.numInStock) AS agg FROM products AS p GROUP BY p.supplierId, p.categoryId#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT supplierId, categoryId, AVG(p.numInStock) AS agg FROM products AS p GROUP BY p.supplierId, p.categoryId#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT supplierId, categoryId, AVG(p.numInStock) AS agg FROM products AS p WHERE p.price < 15 GROUP BY p.supplierId, p.categoryId#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT supplierId, categoryId, AVG(p.numInStock) AS agg FROM products AS p WHERE p.price < 15 GROUP BY p.supplierId, p.categoryId#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT supplierId, categoryId, COUNT( numInStock) AS agg FROM products GROUP BY supplierId, categoryId#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT supplierId, categoryId, COUNT( numInStock) AS agg FROM products GROUP BY supplierId, categoryId#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT supplierId, categoryId, COUNT( numInStock) AS agg FROM products WHERE price < 15 GROUP BY supplierId, categoryId#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT supplierId, categoryId, COUNT( numInStock) AS agg FROM products WHERE price < 15 GROUP BY supplierId, categoryId#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT supplierId, categoryId, COUNT(p.numInStock) AS agg FROM products AS p GROUP BY p.supplierId, p.categoryId#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT supplierId, categoryId, COUNT(p.numInStock) AS agg FROM products AS p GROUP BY p.supplierId, p.categoryId#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT supplierId, categoryId, COUNT(p.numInStock) AS agg FROM products AS p WHERE p.price < 15 GROUP BY p.supplierId, p.categoryId#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT supplierId, categoryId, COUNT(p.numInStock) AS agg FROM products AS p WHERE p.price < 15 GROUP BY p.supplierId, p.categoryId#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT supplierId, categoryId, MAX( numInStock) AS agg FROM products GROUP BY supplierId, categoryId#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT supplierId, categoryId, MAX( numInStock) AS agg FROM products GROUP BY supplierId, categoryId#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT supplierId, categoryId, MAX( numInStock) AS agg FROM products WHERE price < 15 GROUP BY supplierId, categoryId#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT supplierId, categoryId, MAX( numInStock) AS agg FROM products WHERE price < 15 GROUP BY supplierId, categoryId#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT supplierId, categoryId, MAX(p.numInStock) AS agg FROM products AS p GROUP BY p.supplierId, p.categoryId#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT supplierId, categoryId, MAX(p.numInStock) AS agg FROM products AS p GROUP BY p.supplierId, p.categoryId#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT supplierId, categoryId, MAX(p.numInStock) AS agg FROM products AS p WHERE p.price < 15 GROUP BY p.supplierId, p.categoryId#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT supplierId, categoryId, MAX(p.numInStock) AS agg FROM products AS p WHERE p.price < 15 GROUP BY p.supplierId, p.categoryId#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT supplierId, categoryId, MIN( numInStock) AS agg FROM products GROUP BY supplierId, categoryId#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT supplierId, categoryId, MIN( numInStock) AS agg FROM products GROUP BY supplierId, categoryId#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT supplierId, categoryId, MIN( numInStock) AS agg FROM products WHERE price < 15 GROUP BY supplierId, categoryId#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT supplierId, categoryId, MIN( numInStock) AS agg FROM products WHERE price < 15 GROUP BY supplierId, categoryId#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT supplierId, categoryId, MIN(p.numInStock) AS agg FROM products AS p GROUP BY p.supplierId, p.categoryId#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT supplierId, categoryId, MIN(p.numInStock) AS agg FROM products AS p GROUP BY p.supplierId, p.categoryId#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT supplierId, categoryId, MIN(p.numInStock) AS agg FROM products AS p WHERE p.price < 15 GROUP BY p.supplierId, p.categoryId#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT supplierId, categoryId, MIN(p.numInStock) AS agg FROM products AS p WHERE p.price < 15 GROUP BY p.supplierId, p.categoryId#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT supplierId, categoryId, SUM( numInStock) AS agg FROM products GROUP BY supplierId, categoryId#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT supplierId, categoryId, SUM( numInStock) AS agg FROM products GROUP BY supplierId, categoryId#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT supplierId, categoryId, SUM( numInStock) AS agg FROM products WHERE price < 15 GROUP BY supplierId, categoryId#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT supplierId, categoryId, SUM( numInStock) AS agg FROM products WHERE price < 15 GROUP BY supplierId, categoryId#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT supplierId, categoryId, SUM(p.numInStock) AS agg FROM products AS p GROUP BY p.supplierId, p.categoryId#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT supplierId, categoryId, SUM(p.numInStock) AS agg FROM products AS p GROUP BY p.supplierId, p.categoryId#error
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT supplierId, categoryId, SUM(p.numInStock) AS agg FROM products AS p WHERE p.price < 15 GROUP BY p.supplierId, p.categoryId#coerce
+eval/query/group-by/group-by.ion::sql92-style-aggregates::SELECT supplierId, categoryId, SUM(p.numInStock) AS agg FROM products AS p WHERE p.price < 15 GROUP BY p.supplierId, p.categoryId#error
 eval/query/join/joins.ion::join-with-condition::join on column - 1 table contains 1 row with the value null#coerce
 eval/query/join/joins.ion::join-with-condition::join on column - 1 table contains 1 row with the value null#error
 eval/query/join/joins.ion::join-with-condition::join on column - ON condition = false#coerce
@@ -3719,6 +4337,10 @@ eval/query/limitoffset.ion::limit_offset::limit 10 offset 1#coerce
 eval/query/limitoffset.ion::limit_offset::limit 10 offset 1#error
 eval/query/limitoffset.ion::limit_offset::limit 10 offset 10#coerce
 eval/query/limitoffset.ion::limit_offset::limit 10 offset 10#error
+eval/query/limitoffset.ion::limit_offset::limit 2 offset 2#coerce
+eval/query/limitoffset.ion::limit_offset::limit 2 offset 2#error
+eval/query/limitoffset.ion::limit_offset::limit offset after group by#coerce
+eval/query/limitoffset.ion::limit_offset::limit offset after group by#error
 eval/query/limitoffset.ion::limit_offset::offset -1#coerce
 eval/query/limitoffset.ion::limit_offset::offset -1#error
 eval/query/limitoffset.ion::limit_offset::offset 0#coerce
@@ -3745,10 +4367,16 @@ eval/query/limitoffset.ion::limit_offset::offset <decimal>>#coerce
 eval/query/limitoffset.ion::limit_offset::offset <decimal>>#error
 eval/query/limitoffset.ion::limit_offset::offset <str>#coerce
 eval/query/limitoffset.ion::limit_offset::offset <str>#error
+eval/query/limitoffset.ion::limit_offset::offset group by having#coerce
+eval/query/limitoffset.ion::limit_offset::offset group by having#error
 eval/query/limitoffset.ion::limit_offset::offset with pivot#coerce
 eval/query/limitoffset.ion::limit_offset::offset with pivot#error
+eval/query/order-by.ion::alias::order by aggregation alias#coerce
+eval/query/order-by.ion::alias::order by aggregation alias#error
 eval/query/order-by.ion::alias::order by alias in nested sfw#coerce
 eval/query/order-by.ion::alias::order by alias in nested sfw#error
+eval/query/order-by.ion::alias::order by alias with aggregation in nested query#coerce
+eval/query/order-by.ion::alias::order by alias with aggregation in nested query#error
 eval/query/order-by.ion::alias::order by expression alias#coerce
 eval/query/order-by.ion::alias::order by expression alias#error
 eval/query/order-by.ion::alias::order by multiple aliases#coerce
@@ -3809,12 +4437,32 @@ eval/query/order-by.ion::simple::col1 asc, col2 asc#coerce
 eval/query/order-by.ion::simple::col1 asc, col2 asc#error
 eval/query/order-by.ion::simple::col1 desc#coerce
 eval/query/order-by.ion::simple::col1 desc#error
+eval/query/order-by.ion::simple::group and order by ASC (NULLS LAST as default)#coerce
+eval/query/order-by.ion::simple::group and order by ASC (NULLS LAST as default)#error
+eval/query/order-by.ion::simple::group and order by DESC (NULLS FIRST as default)#coerce
+eval/query/order-by.ion::simple::group and order by DESC (NULLS FIRST as default)#error
+eval/query/order-by.ion::simple::group and order by asc and place nulls first#coerce
+eval/query/order-by.ion::simple::group and order by asc and place nulls first#error
+eval/query/order-by.ion::simple::group and order by asc sellerId#coerce
+eval/query/order-by.ion::simple::group and order by asc sellerId#error
+eval/query/order-by.ion::simple::group and order by count#coerce
+eval/query/order-by.ion::simple::group and order by count#error
+eval/query/order-by.ion::simple::group and order by desc sellerId#coerce
+eval/query/order-by.ion::simple::group and order by desc sellerId#error
+eval/query/order-by.ion::simple::group and place nulls first (asc as default)#coerce
+eval/query/order-by.ion::simple::group and place nulls first (asc as default)#error
+eval/query/order-by.ion::simple::group and place nulls last (asc as default)#coerce
+eval/query/order-by.ion::simple::group and place nulls last (asc as default)#error
 eval/query/order-by.ion::simple::nulls first as default for supplierId_nulls desc#coerce
 eval/query/order-by.ion::simple::nulls first as default for supplierId_nulls desc#error
 eval/query/order-by.ion::simple::nulls first for supplierId_nulls desc#coerce
 eval/query/order-by.ion::simple::nulls first for supplierId_nulls desc#error
 eval/query/order-by.ion::simple::nulls last for supplierId_nulls desc#coerce
 eval/query/order-by.ion::simple::nulls last for supplierId_nulls desc#error
+eval/query/order-by.ion::simple::order by aggregation function directly#coerce
+eval/query/order-by.ion::simple::order by aggregation function directly#error
+eval/query/order-by.ion::simple::order by different aggregation function from select#coerce
+eval/query/order-by.ion::simple::order by different aggregation function from select#error
 eval/query/order-by.ion::simple::price desc, productId asc#coerce
 eval/query/order-by.ion::simple::price desc, productId asc#error
 eval/query/order-by.ion::simple::supplierId_nulls asc nulls last, productId asc#coerce
@@ -3947,8 +4595,12 @@ eval/query/select/select-mysql.ion::select::MYSQL_SELECT_22#coerce
 eval/query/select/select-mysql.ion::select::MYSQL_SELECT_22#error
 eval/query/select/select-mysql.ion::select::MYSQL_SELECT_23#coerce
 eval/query/select/select-mysql.ion::select::MYSQL_SELECT_23#error
+eval/query/select/select-mysql.ion::select::MYSQL_SELECT_24#coerce
+eval/query/select/select-mysql.ion::select::MYSQL_SELECT_24#error
 eval/query/select/select-mysql.ion::select::MYSQL_SELECT_25#coerce
 eval/query/select/select-mysql.ion::select::MYSQL_SELECT_25#error
+eval/query/select/select-mysql.ion::select::MYSQL_SELECT_26#coerce
+eval/query/select/select-mysql.ion::select::MYSQL_SELECT_26#error
 eval/query/select/select-mysql.ion::select::MYSQL_SELECT_27#coerce
 eval/query/select/select-mysql.ion::select::MYSQL_SELECT_27#error
 eval/query/select/select-mysql.ion::select::MYSQL_SELECT_28#coerce
@@ -4041,6 +4693,8 @@ eval/query/select/select.ion::select distinct::selectDistinctSubQuery#coerce
 eval/query/select/select.ion::select distinct::selectDistinctSubQuery#error
 eval/query/select/select.ion::select distinct::selectDistinctValue#coerce
 eval/query/select/select.ion::select distinct::selectDistinctValue#error
+eval/query/select/select.ion::select distinct::selectDistinctWithAggregate#coerce
+eval/query/select/select.ion::select distinct::selectDistinctWithAggregate#error
 eval/query/select/select.ion::select distinct::selectDistinctWithJoin#coerce
 eval/query/select/select.ion::select distinct::selectDistinctWithJoin#error
 eval/query/select/select.ion::select distinct::selectDistinctWithSubQuery#coerce
@@ -4087,6 +4741,56 @@ eval/query/select/select.ion::select_where::selectWhereStrinEqualsDifferentCase#
 eval/query/select/select.ion::select_where::selectWhereStrinEqualsDifferentCase#error
 eval/query/select/select.ion::select_where::selectWhereStringEqualsSameCase#coerce
 eval/query/select/select.ion::select_where::selectWhereStringEqualsSameCase#error
+eval/query/select/sql-aggregate.ion::multiple_sql_aggregates::selectListMultipleAggregates#coerce
+eval/query/select/sql-aggregate.ion::multiple_sql_aggregates::selectListMultipleAggregates#error
+eval/query/select/sql-aggregate.ion::multiple_sql_aggregates::selectListMultipleAggregatesNestedQuery#coerce
+eval/query/select/sql-aggregate.ion::multiple_sql_aggregates::selectListMultipleAggregatesNestedQuery#error
+eval/query/select/sql-aggregate.ion::sql_any::ANY DISTINCT with GROUP BY#error
+eval/query/select/sql-aggregate.ion::sql_any::ANY with GROUP BY#error
+eval/query/select/sql-aggregate.ion::sql_avg::avg select{agg:'AVG(ALL d)',result:1.25}#coerce
+eval/query/select/sql-aggregate.ion::sql_avg::avg select{agg:'AVG(ALL d)',result:1.25}#error
+eval/query/select/sql-aggregate.ion::sql_avg::avg select{agg:'AVG(DISTINCT d)',result:1.5}#coerce
+eval/query/select/sql-aggregate.ion::sql_avg::avg select{agg:'AVG(DISTINCT d)',result:1.5}#error
+eval/query/select/sql-aggregate.ion::sql_avg::avg select{agg:'AVG(d)',result:1.25}#coerce
+eval/query/select/sql-aggregate.ion::sql_avg::avg select{agg:'AVG(d)',result:1.25}#error
+eval/query/select/sql-aggregate.ion::sql_count::aggregateInSubqueryOfSelect#coerce
+eval/query/select/sql-aggregate.ion::sql_count::aggregateInSubqueryOfSelect#error
+eval/query/select/sql-aggregate.ion::sql_count::aggregateInSubqueryOfSelectValue#coerce
+eval/query/select/sql-aggregate.ion::sql_count::aggregateInSubqueryOfSelectValue#error
+eval/query/select/sql-aggregate.ion::sql_count::aggregateWithAliasingInSubqueryOfSelectValue#coerce
+eval/query/select/sql-aggregate.ion::sql_count::aggregateWithAliasingInSubqueryOfSelectValue#error
+eval/query/select/sql-aggregate.ion::sql_count::count select{agg:'COUNT(ALL d)',result:4}#coerce
+eval/query/select/sql-aggregate.ion::sql_count::count select{agg:'COUNT(ALL d)',result:4}#error
+eval/query/select/sql-aggregate.ion::sql_count::count select{agg:'COUNT(DISTINCT d)',result:2}#coerce
+eval/query/select/sql-aggregate.ion::sql_count::count select{agg:'COUNT(DISTINCT d)',result:2}#error
+eval/query/select/sql-aggregate.ion::sql_count::count select{agg:'COUNT(d)',result:4}#coerce
+eval/query/select/sql-aggregate.ion::sql_count::count select{agg:'COUNT(d)',result:4}#error
+eval/query/select/sql-aggregate.ion::sql_count::selectListCountStar#coerce
+eval/query/select/sql-aggregate.ion::sql_count::selectListCountStar#error
+eval/query/select/sql-aggregate.ion::sql_count::selectListCountVariable#coerce
+eval/query/select/sql-aggregate.ion::sql_count::selectListCountVariable#error
+eval/query/select/sql-aggregate.ion::sql_every::EVERY DISTINCT with GROUP BY#error
+eval/query/select/sql-aggregate.ion::sql_every::EVERY with GROUP BY#error
+eval/query/select/sql-aggregate.ion::sql_max::max select{agg:'MAX(ALL d)',result:2}#coerce
+eval/query/select/sql-aggregate.ion::sql_max::max select{agg:'MAX(ALL d)',result:2}#error
+eval/query/select/sql-aggregate.ion::sql_max::max select{agg:'MAX(DISTINCT d)',result:2}#coerce
+eval/query/select/sql-aggregate.ion::sql_max::max select{agg:'MAX(DISTINCT d)',result:2}#error
+eval/query/select/sql-aggregate.ion::sql_max::max select{agg:'MAX(d)',result:2}#coerce
+eval/query/select/sql-aggregate.ion::sql_max::max select{agg:'MAX(d)',result:2}#error
+eval/query/select/sql-aggregate.ion::sql_min::min select{agg:'MIN(ALL d)',result:1}#coerce
+eval/query/select/sql-aggregate.ion::sql_min::min select{agg:'MIN(ALL d)',result:1}#error
+eval/query/select/sql-aggregate.ion::sql_min::min select{agg:'MIN(DISTINCT d)',result:1}#coerce
+eval/query/select/sql-aggregate.ion::sql_min::min select{agg:'MIN(DISTINCT d)',result:1}#error
+eval/query/select/sql-aggregate.ion::sql_min::min select{agg:'MIN(d)',result:1}#coerce
+eval/query/select/sql-aggregate.ion::sql_min::min select{agg:'MIN(d)',result:1}#error
+eval/query/select/sql-aggregate.ion::sql_some::SOME DISTINCT with GROUP BY#error
+eval/query/select/sql-aggregate.ion::sql_some::SOME with GROUP BY#error
+eval/query/select/sql-aggregate.ion::sql_sum::sum select{agg:'SUM(ALL d)',result:5}#coerce
+eval/query/select/sql-aggregate.ion::sql_sum::sum select{agg:'SUM(ALL d)',result:5}#error
+eval/query/select/sql-aggregate.ion::sql_sum::sum select{agg:'SUM(DISTINCT d)',result:3}#coerce
+eval/query/select/sql-aggregate.ion::sql_sum::sum select{agg:'SUM(DISTINCT d)',result:3}#error
+eval/query/select/sql-aggregate.ion::sql_sum::sum select{agg:'SUM(d)',result:5}#coerce
+eval/query/select/sql-aggregate.ion::sql_sum::sum select{agg:'SUM(d)',result:5}#error
 eval/query/setop.ion::except::limit offset order by on except#coerce
 eval/query/setop.ion::except::limit offset order by on except#error
 eval/query/setop.ion::intersect::limit offset order by on intersect#coerce
@@ -4133,6 +4837,12 @@ eval/rfc/0007.ion::set::Example 6 - Value Coercion not union-compatible#coerce
 eval/rfc/0007.ion::set::Example 6 - Value Coercion not union-compatible#error
 eval/spec-tests.ion::section-11::coll_count with result of subquery#coerce
 eval/spec-tests.ion::section-11::coll_count with result of subquery#error
+eval/spec-tests.ion::section-11::group by with absent values#coerce
+eval/spec-tests.ion::section-11::group by with absent values#error
+eval/spec-tests.ion::section-11::group by with differenciated absent values#coerce
+eval/spec-tests.ion::section-11::group by with differenciated absent values#error
+eval/spec-tests.ion::section-11::group by without aggregates#coerce
+eval/spec-tests.ion::section-11::group by without aggregates#error
 eval/spec-tests.ion::section-14::pivot to tuple from collection of tuples#coerce
 eval/spec-tests.ion::section-14::pivot to tuple from collection of tuples#error
 eval/spec-tests.ion::section-4::array navigation with wrongly typed array index#coerce
@@ -4273,3 +4983,53 @@ extended/eval/primitives/timestamp.ion::timestamp::timestamp truncate#coerce
 extended/eval/primitives/timestamp.ion::timestamp::timestamp truncate#error
 extended/eval/primitives/timestamp.ion::timestampz::timestampz truncate#coerce
 extended/eval/primitives/timestamp.ion::timestampz::timestampz truncate#error
+extended/eval/query/group-by/group-by.ion::select-star-group-by::GROUP AS binding referenced in FROM clause - Extended#error
+extended/eval/query/group-by/group-by.ion::select-star-group-by::GROUP AS binding referenced in WHERE clause - Extended#error
+extended/eval/query/group-by/group-by.ion::select-star-group-by::GROUP BY binding referenced in FROM clause - Extended#error
+extended/eval/query/group-by/group-by.ion::select-star-group-by::GROUP BY binding referenced in WHERE clause - Extended#error
+extended/eval/query/group-by/group-by.ion::select-star-group-by::SELECT * FROM [] GROUP BY doesntMatterWontBeEvaluated#coerce
+extended/eval/query/group-by/group-by.ion::select-star-group-by::SELECT * FROM [] GROUP BY doesntMatterWontBeEvaluated#error
+extended/eval/query/group-by/group-by.ion::select-star-group-by::SELECT * FROM products_sparse p GROUP BY p.regionId, p.supplierId_nulls#coerce
+extended/eval/query/group-by/group-by.ion::select-star-group-by::SELECT * FROM products_sparse p GROUP BY p.regionId, p.supplierId_nulls#error
+extended/eval/query/group-by/group-by.ion::select-star-group-by::SELECT * FROM products_sparse p GROUP BY p.supplierId_nulls#coerce
+extended/eval/query/group-by/group-by.ion::select-star-group-by::SELECT * FROM products_sparse p GROUP BY p.supplierId_nulls#error
+extended/eval/query/group-by/group-by.ion::select-star-group-by::SELECT * FROM simple_1_col_1_group GROUP BY NULL AS groupExp#coerce
+extended/eval/query/group-by/group-by.ion::select-star-group-by::SELECT * FROM simple_1_col_1_group GROUP BY NULL AS groupExp#error
+extended/eval/query/group-by/group-by.ion::select-star-group-by::SELECT * FROM simple_1_col_1_group GROUP BY NULL AS someNull#coerce
+extended/eval/query/group-by/group-by.ion::select-star-group-by::SELECT * FROM simple_1_col_1_group GROUP BY NULL AS someNull#error
+extended/eval/query/group-by/group-by.ion::select-star-group-by::SELECT * FROM simple_1_col_1_group GROUP BY col1 + 1 AS someGBE#coerce
+extended/eval/query/group-by/group-by.ion::select-star-group-by::SELECT * FROM simple_1_col_1_group GROUP BY col1 + 1 AS someGBE#error
+extended/eval/query/group-by/group-by.ion::select-star-group-by::SELECT * FROM simple_1_col_1_group GROUP BY col1 + 1#coerce
+extended/eval/query/group-by/group-by.ion::select-star-group-by::SELECT * FROM simple_1_col_1_group GROUP BY col1 + 1#error
+extended/eval/query/group-by/group-by.ion::select-star-group-by::SELECT * FROM simple_1_col_1_group, different_types_per_row GROUP BY col1 GROUP AS g#coerce
+extended/eval/query/group-by/group-by.ion::select-star-group-by::SELECT * FROM simple_1_col_1_group, different_types_per_row GROUP BY col1 GROUP AS g#error
+extended/eval/query/group-by/group-by.ion::select-star-group-by::SELECT * FROM simple_1_col_1_group, join_me GROUP BY col1 GROUP AS g#coerce
+extended/eval/query/group-by/group-by.ion::select-star-group-by::SELECT * FROM simple_1_col_1_group, join_me GROUP BY col1 GROUP AS g#error
+extended/eval/query/group-by/group-by.ion::select-star-group-by::SELECT * FROM simple_1_col_2_groups GROUP BY col1 GROUP AS g#coerce
+extended/eval/query/group-by/group-by.ion::select-star-group-by::SELECT * FROM simple_1_col_2_groups GROUP BY col1 GROUP AS g#error
+extended/eval/query/group-by/group-by.ion::select-star-group-by::SELECT * FROM simple_1_col_2_groups GROUP BY col1#coerce
+extended/eval/query/group-by/group-by.ion::select-star-group-by::SELECT * FROM simple_1_col_2_groups GROUP BY col1#error
+extended/eval/query/group-by/group-by.ion::select-star-group-by::SELECT * FROM simple_2_col_1_group GROUP BY col1 GROUP AS g#coerce
+extended/eval/query/group-by/group-by.ion::select-star-group-by::SELECT * FROM simple_2_col_1_group GROUP BY col1 GROUP AS g#error
+extended/eval/query/group-by/group-by.ion::select-star-group-by::SELECT * FROM simple_2_col_1_group GROUP BY col1#coerce
+extended/eval/query/group-by/group-by.ion::select-star-group-by::SELECT * FROM simple_2_col_1_group GROUP BY col1#error
+extended/eval/query/group-by/group-by.ion::select-star-group-by::SELECT * FROM simple_2_col_1_group GROUP BY col2 GROUP AS g#coerce
+extended/eval/query/group-by/group-by.ion::select-star-group-by::SELECT * FROM simple_2_col_1_group GROUP BY col2 GROUP AS g#error
+extended/eval/query/group-by/group-by.ion::select-star-group-by::SELECT * FROM simple_2_col_1_group GROUP BY col2#coerce
+extended/eval/query/group-by/group-by.ion::select-star-group-by::SELECT * FROM simple_2_col_1_group GROUP BY col2#error
+extended/eval/query/group-by/group-by.ion::select-star-group-by::SELECT * FROM simple_2_col_2_groups GROUP BY col1 GROUP AS g#coerce
+extended/eval/query/group-by/group-by.ion::select-star-group-by::SELECT * FROM simple_2_col_2_groups GROUP BY col1 GROUP AS g#error
+extended/eval/query/group-by/group-by.ion::select-star-group-by::SELECT * FROM simple_2_col_2_groups GROUP BY col1#coerce
+extended/eval/query/group-by/group-by.ion::select-star-group-by::SELECT * FROM simple_2_col_2_groups GROUP BY col1#error
+extended/eval/query/group-by/group-by.ion::select-star-group-by::SELECT * FROM simple_2_col_2_groups GROUP BY col2 GROUP AS g#coerce
+extended/eval/query/group-by/group-by.ion::select-star-group-by::SELECT * FROM simple_2_col_2_groups GROUP BY col2 GROUP AS g#error
+extended/eval/query/group-by/group-by.ion::select-star-group-by::SELECT * FROM simple_2_col_2_groups GROUP BY col2#coerce
+extended/eval/query/group-by/group-by.ion::select-star-group-by::SELECT * FROM simple_2_col_2_groups GROUP BY col2#error
+extended/eval/query/group-by/group-by.ion::select-star-group-by::SELECT * FROM string_groups GROUP BY col1 || 'a' AS someGBE#coerce
+extended/eval/query/group-by/group-by.ion::select-star-group-by::SELECT * FROM string_groups GROUP BY col1 || 'a' AS someGBE#error
+extended/eval/query/group-by/group-by.ion::select-star-group-by::SELECT * FROM string_groups GROUP BY col1 || 'a'#coerce
+extended/eval/query/group-by/group-by.ion::select-star-group-by::SELECT * FROM string_groups GROUP BY col1 || 'a'#error
+extended/eval/query/group-by/group-by.ion::select-star-group-by::SELECT * with GROUP BY and GROUP AS#coerce
+extended/eval/query/group-by/group-by.ion::select-star-group-by::SELECT * with GROUP BY and GROUP AS#error
+extended/eval/query/group-by/group-by.ion::select-star-group-by::SELECT * with GROUP BY#coerce
+extended/eval/query/group-by/group-by.ion::select-star-group-by::SELECT * with GROUP BY#error

@@ -8,6 +8,8 @@ import {
 }
 
 // Values
+pub let group_variable : String
+
 pub fn output_variable(String) -> String
 
 pub let row_variable : String
@@ -63,8 +65,14 @@ pub(all) enum Expr {
   SetOp(@ast.SetOpKind, all~ : Bool, outer~ : Bool, corresponding~ : @ast.Corresponding?, Expr, Expr, @ast.Span)
   With(Array[(String, Expr)], Expr, @ast.Span)
   CollAggregate(AggregateKind, distinct~ : Bool, Expr, @ast.Span)
+  Aggregate(AggregateKind, distinct~ : Bool, Expr, members~ : Array[String], group~ : String, @ast.Span)
 } derive(@debug.Debug)
 pub fn Expr::span(Self) -> @ast.Span
+
+pub(all) enum Grouping {
+  All
+  By(Array[(String, Expr)])
+} derive(@debug.Debug)
 
 pub(all) enum Item {
   Named(String, Expr)
@@ -96,6 +104,7 @@ pub(all) enum Rel {
   Filter(Rel, Expr, @ast.Span)
   Join(JoinKind, Rel, Rel, on~ : Expr?, @ast.Span)
   Let(Rel, Array[(String, Expr)], @ast.Span)
+  Group(Rel, Grouping, group_as~ : String, members~ : Array[String], @ast.Span)
 } derive(@debug.Debug)
 pub fn Rel::span(Self) -> @ast.Span
 
