@@ -308,9 +308,13 @@ fn lower_at(
           } else if qualified {
             // Inside a query `@x` names a FROM variable only.
             raise DataError(message="undefined variable @\{id.text}", span~)
-          } else if scope.locals() is [] {
+          } else if scope.locals() is [] && !(scope.aggregates is Allowed(_)) {
             Global(id.text, delimited=id.delimited, span)
           } else {
+            // After grouping, a name that is not a key or GROUP AS (a FROM
+            // variable outside an aggregate, or no variable at all) is
+            // undefined like any other: MISSING in permissive mode, a
+            // TypeError in strict mode (partiql-tests group-by.ion).
             Implicit(
               id.text,
               delimited=id.delimited,

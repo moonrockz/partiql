@@ -3771,12 +3771,16 @@ eval/query/group-by/group-by.ion::group-by-group-as::qualified GROUP BY with qua
 eval/query/group-by/group-by.ion::group-by-group-as::qualified GROUP BY with qualified SELECT and ORDER BY#error
 eval/query/group-by/group-by.ion::group-by-group-as::qualified GROUP BY with qualified SELECT#coerce
 eval/query/group-by/group-by.ion::group-by-group-as::qualified GROUP BY with qualified SELECT#error
+eval/query/group-by/group-by.ion::group-by-group-as::qualified GROUP BY, SELECT and ORDER BY with explicit wrong case - fail#coerce
 eval/query/group-by/group-by.ion::group-by-group-as::qualified GROUP BY, SELECT and ORDER BY with explicit wrong case - fail#error
 eval/query/group-by/group-by.ion::group-by-group-as::qualified GROUP BY, SELECT and ORDER BY with mixed case#coerce
 eval/query/group-by/group-by.ion::group-by-group-as::qualified GROUP BY, SELECT and ORDER BY with mixed case#error
+eval/query/group-by/group-by.ion::group-by-group-as::qualified GROUP BY, SELECT and ORDER BY with wrong qualifier - fail#coerce
 eval/query/group-by/group-by.ion::group-by-group-as::qualified GROUP BY, SELECT and ORDER BY with wrong qualifier - fail#error
 eval/query/group-by/group-by.ion::group-by-group-as::qualified GROUP BY, SELECT and ORDER BY#coerce
 eval/query/group-by/group-by.ion::group-by-group-as::qualified GROUP BY, SELECT and ORDER BY#error
+eval/query/group-by/group-by.ion::group-by-group-as::qualified SELECT and ORDER BY DESC#coerce
+eval/query/group-by/group-by.ion::group-by-group-as::qualified SELECT and ORDER BY DESC#error
 eval/query/group-by/group-by.ion::group-by-test::SELECT VALUE { '_1': _1 } FROM simple_1_col_1_group GROUP BY col1 + 1#coerce
 eval/query/group-by/group-by.ion::group-by-test::SELECT VALUE { '_1': _1 } FROM simple_1_col_1_group GROUP BY col1 + 1#error
 eval/query/group-by/group-by.ion::group-by-test::SELECT VALUE { '_1': _1 } FROM string_groups GROUP BY col1 || 'a'#coerce

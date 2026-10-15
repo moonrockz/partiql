@@ -48,6 +48,9 @@ priv struct Grouped {
   group : String
   /// The grouped scope (keys and GROUP AS) without the grouped context.
   base : Scope
+  /// The only FROM or LET variable of the query, if there is one: then a
+  /// name `a` that no variable declares is the attribute `v.a`.
+  single : String?
 }
 
 ///|
@@ -558,6 +561,13 @@ fn group_at(
     visible.push(name)
     keys.push((name, lower_at(expr, inner, depth)))
     forms.push((expr.canonical(), name))
+    if expr.kind is VarRef(id, qualified=false) &&
+      inner.resolve(id) is None &&
+      names is [variable] {
+      for form in attribute_forms(id, variable) {
+        forms.push((form, name))
+      }
+    }
   }
   let group_as : @ast.Identifier? = match s.group_by {
     Some(g) => g.group_as
@@ -586,7 +596,17 @@ fn group_at(
   let base = { ..scope.inner(visible), grouped: true, }
   let gscope = {
     ..base,
-    aggregates: Allowed({ keys: forms, members: free, group, base, }),
+    aggregates: Allowed({
+      keys: forms,
+      members: free,
+      group,
+      base,
+      single: if names is [variable] {
+        Some(variable)
+      } else {
+        None
+      },
+    }),
   }
   let span = match s.group_by {
     Some(g) => g.span

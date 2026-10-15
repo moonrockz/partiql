@@ -203,11 +203,33 @@ fn key_variable(e : @ast.Expr, scope : Scope) -> String? {
   if e.kind is VarRef(id, ..) && scope.resolve(id) is Some(_) {
     return None
   }
-  let form = e.canonical()
+  let forms = [e.canonical()]
+  if e.kind is VarRef(id, qualified=false) && g.single is Some(variable) {
+    forms.append(attribute_forms(id, variable))
+  }
   for key in g.keys {
-    if key.0 == form {
+    if forms.contains(key.0) {
       return Some(key.1)
     }
   }
   None
+}
+
+///|
+/// The canonical forms of the path `variable.id`: a name that no variable
+/// declares is an attribute of the only variable of the query, so `a` and
+/// `t.a` are the same key (partiql-tests group-by.ion "qualified SELECT and
+/// ORDER BY"). The declared name may have been regular or delimited, so both
+/// spellings are given.
+fn attribute_forms(id : @ast.Identifier, variable : String) -> Array[@ast.Expr] {
+  [false, true].map(delimited => {
+    let base : @ast.Expr = {
+      kind: VarRef(
+        { text: variable, delimited, span: id.span, },
+        qualified=false,
+      ),
+      span: id.span,
+    }
+    @ast.Expr::{ kind: Path(base, [Field(id)]), span: id.span, }.canonical()
+  })
 }

@@ -217,29 +217,44 @@ test "SELECT * after grouping outputs the keys and the GROUP AS variable" {
 ///|
 test "names after grouping: keys and GROUP AS only" {
   @expect.expect_all(soft => {
-    // Review focus 2: a non-key FROM variable outside an aggregate is an
-    // error in both modes, never a silent MISSING.
-    for mode in [@eval.Mode::Permissive, Strict] {
+    // Review focus 2: after grouping, a non-key FROM variable outside an
+    // aggregate is out of scope. Like any undefined name in a query, it is
+    // MISSING in permissive mode and a TypeError in strict mode
+    // (partiql-tests group-by.ion "... - fail" cases).
+    soft
+    .expect(ev("SELECT t.b FROM [{'a': 1, 'b': 2}] AS t GROUP BY t.a"))
+    .to_equal(bag_of([tuple([])]))
+    soft
+    .expect(
+      ev(
+        "SELECT k FROM [{'a': 1, 'b': 2}] AS t GROUP BY t.a AS k HAVING t.b > 0",
+      ),
+    )
+    .to_equal(bag_of([]))
+    for
+      text in [
+        "SELECT t.b FROM [{'a': 1, 'b': 2}] AS t GROUP BY t.a", "SELECT k FROM [{'a': 1, 'b': 2}] AS t GROUP BY t.a AS k HAVING t.b > 0",
+        "SELECT k FROM [{'a': 1}] AS t GROUP BY t.a AS k ORDER BY s.a",
+      ] {
       soft
-      .expect_call(() => {
-        ev("SELECT t.b FROM [{'a': 1, 'b': 2}] AS t GROUP BY t.a", mode~)
-      })
+      .expect_call(() => ev(text, mode=Strict))
       .to_raise_matching(
-        e => e is @eval.EvalError::DataError(..),
-        description="DataError",
-      )
-      soft
-      .expect_call(() => {
-        ev(
-          "SELECT k FROM [{'a': 1, 'b': 2}] AS t GROUP BY t.a AS k HAVING t.b > 0",
-          mode~,
-        )
-      })
-      .to_raise_matching(
-        e => e is @eval.EvalError::DataError(..),
-        description="DataError",
+        e => e is @eval.EvalError::TypeError(..),
+        description="TypeError for \{text}",
       )
     }
+    soft
+    .expect(
+      ev(
+        "SELECT T.a, MAX(b) FROM <<{'a': 1, 'b': 2}, {'a': 3, 'b': 5}>> T GROUP BY T.a ORDER BY S.a",
+      ),
+    )
+    .to_equal(
+      List([
+        tuple([("a", Int(1)), ("_1", Int(2))]),
+        tuple([("a", Int(3)), ("_1", Int(5))]),
+      ]),
+    )
     // Inside an aggregate the FROM variables are bound per member.
     soft
     .expect(
@@ -310,6 +325,22 @@ test "a repeated GROUP BY expression is its key variable" {
         tuple([("rep", String("b")), ("t", Int(5))]),
       ]),
     )
+    // With one FROM variable, `a` and `T.a` name the same attribute.
+    soft
+    .expect(
+      ev(
+        "SELECT T.a, MAX(b) FROM <<{'a': 1, 'b': 2}, {'a': 3, 'b': 5}>> T GROUP BY a ORDER BY a DESC",
+      ),
+    )
+    .to_equal(
+      List([
+        tuple([("a", Int(3)), ("_1", Int(5))]),
+        tuple([("a", Int(1)), ("_1", Int(2))]),
+      ]),
+    )
+    soft
+    .expect(ev("SELECT a FROM <<{'a': 1}>> AS t GROUP BY t.a AS k"))
+    .to_equal(bag_of([tuple([("a", Int(1))])]))
     soft
     .expect(ev("SELECT VALUE a FROM [{'a': 1}, {'a': 2}] GROUP BY a"))
     .to_equal(bag_of([Int(1), Int(2)]))
