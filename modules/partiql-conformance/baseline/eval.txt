@@ -89,6 +89,32 @@ eval-equiv/spec-tests.ion::section-6::equiv nested subquery in select value[1]#c
 eval-equiv/spec-tests.ion::section-6::equiv nested subquery in select value[1]#error
 eval-equiv/spec-tests.ion::section-6::equiv tupleunion with select list[0]#coerce
 eval-equiv/spec-tests.ion::section-6::equiv tupleunion with select list[0]#error
+eval-equiv/spec-tests.ion::section-6::equiv tupleunion with select list[1]#coerce
+eval-equiv/spec-tests.ion::section-6::equiv tupleunion with select list[1]#error
+eval/ion/primitives/functions/exists.ion::exists::exists valid cases{param:"`()`",result:false}#coerce
+eval/ion/primitives/functions/exists.ion::exists::exists valid cases{param:"`()`",result:false}#error
+eval/ion/primitives/functions/exists.ion::exists::exists valid cases{param:"`(1)`",result:true}#coerce
+eval/ion/primitives/functions/exists.ion::exists::exists valid cases{param:"`(1)`",result:true}#error
+eval/ion/primitives/functions/exists.ion::exists::exists valid cases{param:"`(missing)`",result:true}#coerce
+eval/ion/primitives/functions/exists.ion::exists::exists valid cases{param:"`(missing)`",result:true}#error
+eval/ion/primitives/functions/exists.ion::exists::exists valid cases{param:"`(null)`",result:true}#coerce
+eval/ion/primitives/functions/exists.ion::exists::exists valid cases{param:"`(null)`",result:true}#error
+eval/ion/primitives/functions/exists.ion::exists::exists valid cases{param:"`[1]`",result:true}#coerce
+eval/ion/primitives/functions/exists.ion::exists::exists valid cases{param:"`[1]`",result:true}#error
+eval/ion/primitives/functions/exists.ion::exists::exists valid cases{param:"`[]`",result:false}#coerce
+eval/ion/primitives/functions/exists.ion::exists::exists valid cases{param:"`[]`",result:false}#error
+eval/ion/primitives/functions/exists.ion::exists::exists valid cases{param:"`[missing]`",result:true}#coerce
+eval/ion/primitives/functions/exists.ion::exists::exists valid cases{param:"`[missing]`",result:true}#error
+eval/ion/primitives/functions/exists.ion::exists::exists valid cases{param:"`[null]`",result:true}#coerce
+eval/ion/primitives/functions/exists.ion::exists::exists valid cases{param:"`[null]`",result:true}#error
+eval/ion/primitives/functions/exists.ion::exists::exists valid cases{param:"`{a: 1}`",result:true}#coerce
+eval/ion/primitives/functions/exists.ion::exists::exists valid cases{param:"`{a: 1}`",result:true}#error
+eval/ion/primitives/functions/exists.ion::exists::exists valid cases{param:"`{a: missing}`",result:true}#coerce
+eval/ion/primitives/functions/exists.ion::exists::exists valid cases{param:"`{a: missing}`",result:true}#error
+eval/ion/primitives/functions/exists.ion::exists::exists valid cases{param:"`{a: null}`",result:true}#coerce
+eval/ion/primitives/functions/exists.ion::exists::exists valid cases{param:"`{a: null}`",result:true}#error
+eval/ion/primitives/functions/exists.ion::exists::exists valid cases{param:"`{}`",result:false}#coerce
+eval/ion/primitives/functions/exists.ion::exists::exists valid cases{param:"`{}`",result:false}#error
 eval/ion/primitives/null.ion::null::null comparison{sql:"`null.blob` = MISSING",result:null}#coerce
 eval/ion/primitives/null.ion::null::null comparison{sql:"`null.blob` = MISSING",result:null}#error
 eval/ion/primitives/null.ion::null::null comparison{sql:"`null.blob` = NULL",result:null}#coerce
@@ -273,6 +299,8 @@ eval/primitives/basic.ion::basic::emptyListLiteral#coerce
 eval/primitives/basic.ion::basic::emptyListLiteral#error
 eval/primitives/basic.ion::basic::emptyStructLiteral#coerce
 eval/primitives/basic.ion::basic::emptyStructLiteral#error
+eval/primitives/basic.ion::basic::functionCall#coerce
+eval/primitives/basic.ion::basic::functionCall#error
 eval/primitives/basic.ion::basic::grouping#coerce
 eval/primitives/basic.ion::basic::grouping#error
 eval/primitives/basic.ion::basic::identifier#coerce
@@ -545,6 +573,42 @@ eval/primitives/functions/bit_length.ion::bit_length::BIT_LENGTH special charact
 eval/primitives/functions/bit_length.ion::bit_length::BIT_LENGTH special character#error
 eval/primitives/functions/bit_length.ion::bit_length::BIT_LENGTH string#coerce
 eval/primitives/functions/bit_length.ion::bit_length::BIT_LENGTH string#error
+eval/primitives/functions/cardinality.ion::cardinality::CARDINALITY('foo') type mismatch#coerce
+eval/primitives/functions/cardinality.ion::cardinality::CARDINALITY('foo') type mismatch#error
+eval/primitives/functions/cardinality.ion::cardinality::cardinality null and missing propagation{param:"missing"}#coerce
+eval/primitives/functions/cardinality.ion::cardinality::cardinality null and missing propagation{param:"missing"}#error
+eval/primitives/functions/cardinality.ion::cardinality::cardinality null and missing propagation{param:"null"}#coerce
+eval/primitives/functions/cardinality.ion::cardinality::cardinality null and missing propagation{param:"null"}#error
+eval/primitives/functions/cardinality.ion::cardinality::cardinality valid cases{param:"<<1, 2, 3>>",result:3}#coerce
+eval/primitives/functions/cardinality.ion::cardinality::cardinality valid cases{param:"<<1, 2, 3>>",result:3}#error
+eval/primitives/functions/cardinality.ion::cardinality::cardinality valid cases{param:"<<1>>",result:1}#coerce
+eval/primitives/functions/cardinality.ion::cardinality::cardinality valid cases{param:"<<1>>",result:1}#error
+eval/primitives/functions/cardinality.ion::cardinality::cardinality valid cases{param:"<<>>",result:0}#coerce
+eval/primitives/functions/cardinality.ion::cardinality::cardinality valid cases{param:"<<>>",result:0}#error
+eval/primitives/functions/cardinality.ion::cardinality::cardinality valid cases{param:"<<missing>>",result:1}#coerce
+eval/primitives/functions/cardinality.ion::cardinality::cardinality valid cases{param:"<<missing>>",result:1}#error
+eval/primitives/functions/cardinality.ion::cardinality::cardinality valid cases{param:"<<null>>",result:1}#coerce
+eval/primitives/functions/cardinality.ion::cardinality::cardinality valid cases{param:"<<null>>",result:1}#error
+eval/primitives/functions/cardinality.ion::cardinality::cardinality valid cases{param:"[1, 1.0]",result:2}#coerce
+eval/primitives/functions/cardinality.ion::cardinality::cardinality valid cases{param:"[1, 1.0]",result:2}#error
+eval/primitives/functions/cardinality.ion::cardinality::cardinality valid cases{param:"[1]",result:1}#coerce
+eval/primitives/functions/cardinality.ion::cardinality::cardinality valid cases{param:"[1]",result:1}#error
+eval/primitives/functions/cardinality.ion::cardinality::cardinality valid cases{param:"[]",result:0}#coerce
+eval/primitives/functions/cardinality.ion::cardinality::cardinality valid cases{param:"[]",result:0}#error
+eval/primitives/functions/cardinality.ion::cardinality::cardinality valid cases{param:"[missing]",result:1}#coerce
+eval/primitives/functions/cardinality.ion::cardinality::cardinality valid cases{param:"[missing]",result:1}#error
+eval/primitives/functions/cardinality.ion::cardinality::cardinality valid cases{param:"[null]",result:1}#coerce
+eval/primitives/functions/cardinality.ion::cardinality::cardinality valid cases{param:"[null]",result:1}#error
+eval/primitives/functions/cardinality.ion::cardinality::cardinality valid cases{param:"{'a': 1, 'a': 2}",result:2}#coerce
+eval/primitives/functions/cardinality.ion::cardinality::cardinality valid cases{param:"{'a': 1, 'a': 2}",result:2}#error
+eval/primitives/functions/cardinality.ion::cardinality::cardinality valid cases{param:"{'a': 1, 'b': 'foo'}",result:2}#coerce
+eval/primitives/functions/cardinality.ion::cardinality::cardinality valid cases{param:"{'a': 1, 'b': 'foo'}",result:2}#error
+eval/primitives/functions/cardinality.ion::cardinality::cardinality valid cases{param:"{'a': 1}",result:1}#coerce
+eval/primitives/functions/cardinality.ion::cardinality::cardinality valid cases{param:"{'a': 1}",result:1}#error
+eval/primitives/functions/cardinality.ion::cardinality::cardinality valid cases{param:"{'a': null}",result:1}#coerce
+eval/primitives/functions/cardinality.ion::cardinality::cardinality valid cases{param:"{'a': null}",result:1}#error
+eval/primitives/functions/cardinality.ion::cardinality::cardinality valid cases{param:"{}",result:0}#coerce
+eval/primitives/functions/cardinality.ion::cardinality::cardinality valid cases{param:"{}",result:0}#error
 eval/primitives/functions/char_length.ion::char_length::CHARACTER_LENGTH invalid type#coerce
 eval/primitives/functions/char_length.ion::char_length::CHARACTER_LENGTH invalid type#error
 eval/primitives/functions/char_length.ion::char_length::CHARACTER_LENGTH special character#coerce
@@ -1143,6 +1207,24 @@ eval/primitives/functions/coalesce.ion::coalesce::coalesce valid cases{args:"nul
 eval/primitives/functions/coalesce.ion::coalesce::coalesce valid cases{args:"null, missing, null, null, missing, 9, 4, 5, 6",result:(success 9)}#error
 eval/primitives/functions/coalesce.ion::coalesce::coalesce valid cases{args:"null, null, 3",result:(success 3)}#coerce
 eval/primitives/functions/coalesce.ion::coalesce::coalesce valid cases{args:"null, null, 3",result:(success 3)}#error
+eval/primitives/functions/exists.ion::exists::exists valid cases{param:"<<1>>",result:true}#coerce
+eval/primitives/functions/exists.ion::exists::exists valid cases{param:"<<1>>",result:true}#error
+eval/primitives/functions/exists.ion::exists::exists valid cases{param:"<<>>",result:false}#coerce
+eval/primitives/functions/exists.ion::exists::exists valid cases{param:"<<>>",result:false}#error
+eval/primitives/functions/exists.ion::exists::exists valid cases{param:"<<missing>>",result:true}#coerce
+eval/primitives/functions/exists.ion::exists::exists valid cases{param:"<<missing>>",result:true}#error
+eval/primitives/functions/exists.ion::exists::exists valid cases{param:"<<null>>",result:true}#coerce
+eval/primitives/functions/exists.ion::exists::exists valid cases{param:"<<null>>",result:true}#error
+eval/primitives/functions/exists.ion::exists::exists valid cases{param:"[1]",result:true}#coerce
+eval/primitives/functions/exists.ion::exists::exists valid cases{param:"[1]",result:true}#error
+eval/primitives/functions/exists.ion::exists::exists valid cases{param:"[]",result:false}#coerce
+eval/primitives/functions/exists.ion::exists::exists valid cases{param:"[]",result:false}#error
+eval/primitives/functions/exists.ion::exists::exists valid cases{param:"[missing]",result:true}#coerce
+eval/primitives/functions/exists.ion::exists::exists valid cases{param:"[missing]",result:true}#error
+eval/primitives/functions/exists.ion::exists::exists valid cases{param:"[null]",result:true}#coerce
+eval/primitives/functions/exists.ion::exists::exists valid cases{param:"[null]",result:true}#error
+eval/primitives/functions/exists.ion::exists::exists valid cases{param:"{}",result:false}#coerce
+eval/primitives/functions/exists.ion::exists::exists valid cases{param:"{}",result:false}#error
 eval/primitives/functions/nullif.ion::nullif::nullif valid cases{first:"1",second:"1",result:null}#coerce
 eval/primitives/functions/nullif.ion::nullif::nullif valid cases{first:"1",second:"1",result:null}#error
 eval/primitives/functions/nullif.ion::nullif::nullif valid cases{first:"1",second:"2",result:1}#coerce
@@ -1829,6 +1911,14 @@ eval/primitives/map.ion::map::access map with time key#coerce
 eval/primitives/map.ion::map::access map with time key#error
 eval/primitives/map.ion::map::access map with timestamp key#coerce
 eval/primitives/map.ion::map::access map with timestamp key#error
+eval/primitives/map.ion::map::cardinality of a map returns number of entries#coerce
+eval/primitives/map.ion::map::cardinality of a map returns number of entries#error
+eval/primitives/map.ion::map::cardinality of a map with integer keys#coerce
+eval/primitives/map.ion::map::cardinality of a map with integer keys#error
+eval/primitives/map.ion::map::cardinality of an empty map returns zero#coerce
+eval/primitives/map.ion::map::cardinality of an empty map returns zero#error
+eval/primitives/map.ion::map::cardinality of environment map#coerce
+eval/primitives/map.ion::map::cardinality of environment map#error
 eval/primitives/map.ion::map::construct a map with all MISSING values produces empty map#coerce
 eval/primitives/map.ion::map::construct a map with all MISSING values produces empty map#error
 eval/primitives/map.ion::map::construct a map with boolean keys#coerce
@@ -1872,6 +1962,16 @@ eval/primitives/map.ion::map::equal maps with different insertion order are equa
 eval/primitives/map.ion::map::equal maps with different insertion order are equal#error
 eval/primitives/map.ion::map::equal maps with same entries are equal#coerce
 eval/primitives/map.ion::map::equal maps with same entries are equal#error
+eval/primitives/map.ion::map::exists on a map with boolean keys returns true#coerce
+eval/primitives/map.ion::map::exists on a map with boolean keys returns true#error
+eval/primitives/map.ion::map::exists on a map with date keys returns true#coerce
+eval/primitives/map.ion::map::exists on a map with date keys returns true#error
+eval/primitives/map.ion::map::exists on a map with integer keys returns true#coerce
+eval/primitives/map.ion::map::exists on a map with integer keys returns true#error
+eval/primitives/map.ion::map::exists on a non-empty map returns true#coerce
+eval/primitives/map.ion::map::exists on a non-empty map returns true#error
+eval/primitives/map.ion::map::exists on an empty map returns false#coerce
+eval/primitives/map.ion::map::exists on an empty map returns false#error
 eval/primitives/map.ion::map::filter environment map entries by value#coerce
 eval/primitives/map.ion::map::filter environment map entries by value#error
 eval/primitives/map.ion::map::filter rows by map key value#coerce
@@ -1908,6 +2008,18 @@ eval/primitives/map.ion::map::order unpivoted entries by key#coerce
 eval/primitives/map.ion::map::order unpivoted entries by key#error
 eval/primitives/map.ion::map::select values from environment map#coerce
 eval/primitives/map.ion::map::select values from environment map#error
+eval/primitives/map.ion::map::size of a map returns number of entries#coerce
+eval/primitives/map.ion::map::size of a map returns number of entries#error
+eval/primitives/map.ion::map::size of a map with integer keys#coerce
+eval/primitives/map.ion::map::size of a map with integer keys#error
+eval/primitives/map.ion::map::size of an empty map returns zero#coerce
+eval/primitives/map.ion::map::size of an empty map returns zero#error
+eval/primitives/map.ion::map::size of environment map#coerce
+eval/primitives/map.ion::map::size of environment map#error
+eval/primitives/map.ion::map::size of map with boolean keys#coerce
+eval/primitives/map.ion::map::size of map with boolean keys#error
+eval/primitives/map.ion::map::size of map with date keys#coerce
+eval/primitives/map.ion::map::size of map with date keys#error
 eval/primitives/map.ion::map::struct IS MAP returns false#coerce
 eval/primitives/map.ion::map::struct IS MAP returns false#error
 eval/primitives/map.ion::map::sum values grouped by key#coerce
@@ -5735,6 +5847,52 @@ eval/spec-tests.ion::section-8::null and true#error
 eval/spec-tests.ion::section-8::null is missing#coerce
 eval/spec-tests.ion::section-8::null is missing#error
 eval/spec-tests.ion::section-9::inner select evaluating to collection with more than one element#coerce
+extended/eval/primitives/functions/size.ion::size::size null and missing propagation{param:"missing"}#coerce
+extended/eval/primitives/functions/size.ion::size::size null and missing propagation{param:"missing"}#error
+extended/eval/primitives/functions/size.ion::size::size null and missing propagation{param:"null"}#coerce
+extended/eval/primitives/functions/size.ion::size::size null and missing propagation{param:"null"}#error
+extended/eval/primitives/functions/size.ion::size::size valid cases{param:"<<1, 2, 3>>",result:3}#coerce
+extended/eval/primitives/functions/size.ion::size::size valid cases{param:"<<1, 2, 3>>",result:3}#error
+extended/eval/primitives/functions/size.ion::size::size valid cases{param:"<<1>>",result:1}#coerce
+extended/eval/primitives/functions/size.ion::size::size valid cases{param:"<<1>>",result:1}#error
+extended/eval/primitives/functions/size.ion::size::size valid cases{param:"<<>>",result:0}#coerce
+extended/eval/primitives/functions/size.ion::size::size valid cases{param:"<<>>",result:0}#error
+extended/eval/primitives/functions/size.ion::size::size valid cases{param:"<<missing>>",result:1}#coerce
+extended/eval/primitives/functions/size.ion::size::size valid cases{param:"<<missing>>",result:1}#error
+extended/eval/primitives/functions/size.ion::size::size valid cases{param:"<<null>>",result:1}#coerce
+extended/eval/primitives/functions/size.ion::size::size valid cases{param:"<<null>>",result:1}#error
+extended/eval/primitives/functions/size.ion::size::size valid cases{param:"`[1, 1.0]`",result:2}#coerce
+extended/eval/primitives/functions/size.ion::size::size valid cases{param:"`[1, 1.0]`",result:2}#error
+extended/eval/primitives/functions/size.ion::size::size valid cases{param:"`[1]`",result:1}#coerce
+extended/eval/primitives/functions/size.ion::size::size valid cases{param:"`[1]`",result:1}#error
+extended/eval/primitives/functions/size.ion::size::size valid cases{param:"`[[], [1,2,3,4,[5,6], ()], ({a: 1, b: 2})]`",result:3}#coerce
+extended/eval/primitives/functions/size.ion::size::size valid cases{param:"`[[], [1,2,3,4,[5,6], ()], ({a: 1, b: 2})]`",result:3}#error
+extended/eval/primitives/functions/size.ion::size::size valid cases{param:"`[]`",result:0}#coerce
+extended/eval/primitives/functions/size.ion::size::size valid cases{param:"`[]`",result:0}#error
+extended/eval/primitives/functions/size.ion::size::size valid cases{param:"`[missing]`",result:1}#coerce
+extended/eval/primitives/functions/size.ion::size::size valid cases{param:"`[missing]`",result:1}#error
+extended/eval/primitives/functions/size.ion::size::size valid cases{param:"`[null]`",result:1}#coerce
+extended/eval/primitives/functions/size.ion::size::size valid cases{param:"`[null]`",result:1}#error
+extended/eval/primitives/functions/size.ion::size::size valid cases{param:"`{a: 1, a: 2}`",result:2}#coerce
+extended/eval/primitives/functions/size.ion::size::size valid cases{param:"`{a: 1, a: 2}`",result:2}#error
+extended/eval/primitives/functions/size.ion::size::size valid cases{param:"`{a: 1, b: foo}`",result:2}#coerce
+extended/eval/primitives/functions/size.ion::size::size valid cases{param:"`{a: 1, b: foo}`",result:2}#error
+extended/eval/primitives/functions/size.ion::size::size valid cases{param:"`{a: 1}`",result:1}#coerce
+extended/eval/primitives/functions/size.ion::size::size valid cases{param:"`{a: 1}`",result:1}#error
+extended/eval/primitives/functions/size.ion::size::size valid cases{param:"`{a: missing}`",result:1}#coerce
+extended/eval/primitives/functions/size.ion::size::size valid cases{param:"`{a: missing}`",result:1}#error
+extended/eval/primitives/functions/size.ion::size::size valid cases{param:"`{a: null}`",result:1}#coerce
+extended/eval/primitives/functions/size.ion::size::size valid cases{param:"`{a: null}`",result:1}#error
+extended/eval/primitives/functions/size.ion::size::size valid cases{param:"`{}`",result:0}#coerce
+extended/eval/primitives/functions/size.ion::size::size valid cases{param:"`{}`",result:0}#error
+extended/eval/primitives/functions/size.ion::size::size with SELECT subquery and WHERE{param:"SELECT a FROM <<{'a': 1}, {'a': 2}>> WHERE a = 1",result:1}#coerce
+extended/eval/primitives/functions/size.ion::size::size with SELECT subquery and WHERE{param:"SELECT a FROM <<{'a': 1}, {'a': 2}>> WHERE a = 1",result:1}#error
+extended/eval/primitives/functions/size.ion::size::size with SELECT subquery empty result{param:"SELECT a FROM <<{'a': 1}>> WHERE a = 2",result:0}#coerce
+extended/eval/primitives/functions/size.ion::size::size with SELECT subquery empty result{param:"SELECT a FROM <<{'a': 1}>> WHERE a = 2",result:0}#error
+extended/eval/primitives/functions/size.ion::size::size with SELECT subquery{param:"SELECT a FROM <<{'a': 1}, {'a': 2}>>",result:2}#coerce
+extended/eval/primitives/functions/size.ion::size::size with SELECT subquery{param:"SELECT a FROM <<{'a': 1}, {'a': 2}>>",result:2}#error
+extended/eval/primitives/functions/size.ion::size::size with SELECT subquery{param:"SELECT a FROM <<{'a': 1}>>",result:1}#coerce
+extended/eval/primitives/functions/size.ion::size::size with SELECT subquery{param:"SELECT a FROM <<{'a': 1}>>",result:1}#error
 extended/eval/primitives/int.ion::division_by_zero_error::divide by zero{sql:"1 % 0"}#coerce
 extended/eval/primitives/int.ion::division_by_zero_error::divide by zero{sql:"1 % 0"}#error
 extended/eval/primitives/int.ion::division_by_zero_error::divide by zero{sql:"1 / 0"}#coerce

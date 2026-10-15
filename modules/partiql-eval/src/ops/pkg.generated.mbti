@@ -27,6 +27,8 @@ pub fn bit_length(Array[@partiql-value.Value]) -> @partiql-value.Value raise OpF
 
 pub fn bool_test(@partiql-value.Value, Bool?, negated~ : Bool) -> Bool
 
+pub fn cardinality(Array[@partiql-value.Value]) -> @partiql-value.Value raise OpFailure
+
 pub fn char_length(Array[@partiql-value.Value]) -> @partiql-value.Value raise OpFailure
 
 pub fn concat(@partiql-value.Value, @partiql-value.Value) -> @partiql-value.Value raise OpFailure
@@ -38,6 +40,8 @@ pub fn div(@partiql-value.Value, @partiql-value.Value) -> @partiql-value.Value r
 pub fn equal(@partiql-value.Value, @partiql-value.Value) -> @partiql-value.Value
 
 pub fn every_values(Iter[@partiql-value.Value], distinct~ : Bool) -> @partiql-value.Value raise OpFailure
+
+pub fn exists(Array[@partiql-value.Value]) -> @partiql-value.Value raise OpFailure
 
 pub fn field(@partiql-value.Value, String, delimited~ : Bool) -> @partiql-value.Value raise OpFailure
 
@@ -83,9 +87,13 @@ pub fn shift_time(@partiql-value.Time, Int64) -> @partiql-value.Time raise OpFai
 
 pub fn shift_timestamp(@partiql-value.Timestamp, Int64) -> @partiql-value.Timestamp raise OpFailure
 
+pub fn size(Array[@partiql-value.Value]) -> @partiql-value.Value raise OpFailure
+
 pub fn sub(@partiql-value.Value, @partiql-value.Value) -> @partiql-value.Value raise OpFailure
 
 pub fn sum_values(Iter[@partiql-value.Value], distinct~ : Bool) -> @partiql-value.Value raise OpFailure
+
+pub fn tuple_union(Array[@partiql-value.Value]) -> @partiql-value.Value raise OpFailure
 
 // Errors
 pub(all) suberror OpFailure {

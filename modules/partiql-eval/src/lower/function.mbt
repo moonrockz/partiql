@@ -4,6 +4,7 @@
 /// How many arguments a built-in takes.
 priv enum Arity {
   Exactly(Int32)
+  AnyCount
 }
 
 ///|
@@ -19,6 +20,10 @@ fn builtin(id : @ast.Identifier) -> (@plan.Function, Arity)? {
     "CHAR_LENGTH" | "CHARACTER_LENGTH" => Some((CharLength, Exactly(1)))
     "OCTET_LENGTH" => Some((OctetLength, Exactly(1)))
     "BIT_LENGTH" => Some((BitLength, Exactly(1)))
+    "SIZE" => Some((Size, Exactly(1)))
+    "CARDINALITY" => Some((Cardinality, Exactly(1)))
+    "EXISTS" => Some((Exists, Exactly(1)))
+    "TUPLEUNION" => Some((TupleUnion, AnyCount))
     _ => None
   }
 }
@@ -47,9 +52,14 @@ fn scalar_call(
   if quantifier is Some(_) {
     raise DataError(message="\{f.name()} does not take DISTINCT or ALL", span~)
   }
-  let Exactly(n) = arity
-  if args.length() != n {
+  if arity is Exactly(n) && args.length() != n {
     raise DataError(message="\{f.name()} takes \{arguments_text(n)}", span~)
   }
-  Call(f, args.map(x => lower_at(x, scope, depth)), span)
+  // A collection argument is not coerced from a subquery to a scalar
+  // (spec M4d1 §3.4; partiql-tests size.ion:242, basic.ion:61).
+  let lower_arg = match f {
+    Size | Cardinality | Exists => lower_plain
+    _ => lower_at
+  }
+  Call(f, args.map(x => lower_arg(x, scope, depth)), span)
 }

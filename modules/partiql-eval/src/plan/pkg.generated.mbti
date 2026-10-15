@@ -75,6 +75,10 @@ pub(all) enum Function {
   CharLength
   OctetLength
   BitLength
+  Size
+  Cardinality
+  Exists
+  TupleUnion
 } derive(Eq, @debug.Debug)
 pub fn Function::name(Self) -> String
 

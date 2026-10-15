@@ -9,5 +9,9 @@ fn call(
     CharLength => @ops.char_length(args)
     OctetLength => @ops.octet_length(args)
     BitLength => @ops.bit_length(args)
+    Size => @ops.size(args)
+    Cardinality => @ops.cardinality(args)
+    Exists => @ops.exists(args)
+    TupleUnion => @ops.tuple_union(args)
   }
 }

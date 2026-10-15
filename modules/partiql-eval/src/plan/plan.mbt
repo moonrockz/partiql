@@ -303,6 +303,11 @@ pub(all) enum Function {
   CharLength
   OctetLength
   BitLength
+  Size
+  Cardinality
+  Exists
+  /// Zero or more tuples.
+  TupleUnion
 } derive(Debug, Eq)
 
 ///|
@@ -312,5 +317,9 @@ pub fn Function::name(self : Function) -> String {
     CharLength => "CHAR_LENGTH"
     OctetLength => "OCTET_LENGTH"
     BitLength => "BIT_LENGTH"
+    Size => "SIZE"
+    Cardinality => "CARDINALITY"
+    Exists => "EXISTS"
+    TupleUnion => "TUPLEUNION"
   }
 }

@@ -84,3 +84,26 @@ test "a function as a GROUP BY key and around an aggregate" {
     .to_equal(bag_of([Int(2)]))
   })
 }
+
+///|
+test "collection functions; a subquery argument stays a collection" {
+  @expect.expect_all(soft => {
+    soft.expect(ev("SIZE([1, 2, 3])")).to_equal(Int(3))
+    soft.expect(ev("cardinality(<<1, NULL>>)")).to_equal(Int(2))
+    soft.expect(ev("size({'a': 1, 'a': 2})")).to_equal(Int(2))
+    soft.expect(ev("size(`(1 2)`)")).to_equal(Int(2))
+    soft
+    .expect(ev("size(SELECT a FROM <<{'a': 1}, {'a': 2}>>)"))
+    .to_equal(Int(2))
+    soft
+    .expect(ev("cardinality(SELECT a FROM <<{'a': 1}, {'a': 2}>>)"))
+    .to_equal(Int(2))
+    soft.expect(ev("exists(select * from [1])")).to_equal(Bool(true))
+    soft.expect(ev("EXISTS([])")).to_equal(Bool(false))
+    soft
+    .expect(ev("TUPLEUNION({'a': 1}, {'b': 2})"))
+    .to_equal(tuple([("a", Int(1)), ("b", Int(2))]))
+    soft.expect(ev("tupleunion()")).to_equal(tuple([]))
+    soft.expect(ev("cardinality('foo')")).to_equal(Missing)
+  })
+}

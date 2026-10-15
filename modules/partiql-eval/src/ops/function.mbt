@@ -8,6 +8,9 @@ priv enum Param {
   Text
   /// A character or binary string: String, Blob or Clob.
   Bytes
+  /// A list, bag, tuple or map.
+  Collection
+  Tuple
 }
 
 ///|
@@ -15,6 +18,8 @@ fn Param::accepts(self : Param, v : @value.Value) -> Bool {
   match (self, v) {
     (Text, String(_)) => true
     (Bytes, String(_) | Blob(_) | Clob(_)) => true
+    (Collection, List(_) | Bag(_) | Tuple(_) | Map(_)) => true
+    (Tuple, Tuple(_)) => true
     _ => false
   }
 }
