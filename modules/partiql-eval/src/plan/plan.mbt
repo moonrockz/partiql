@@ -328,6 +328,8 @@ pub(all) enum Function {
   Overlay
   /// [value, pattern, replacement]
   TextReplace
+  Upper
+  Lower
 } derive(Debug, Eq)
 
 ///|
@@ -353,5 +355,7 @@ pub fn Function::name(self : Function) -> String {
     Position => "POSITION"
     Overlay => "OVERLAY"
     TextReplace => "TEXT_REPLACE"
+    Upper => "UPPER"
+    Lower => "LOWER"
   }
 }

@@ -199,3 +199,13 @@ test "special forms equal their comma forms" {
     )
   })
 }
+
+///|
+test "UPPER and LOWER end to end; a symbol gives a string" {
+  @expect.expect_all(soft => {
+    soft.expect(ev("UPPER('straße')")).to_equal(String("STRASSE"))
+    soft.expect(ev("lower('ΣΑΣ')")).to_equal(String("σας"))
+    soft.expect(ev("upper(`abc`)")).to_equal(String("ABC"))
+    soft.expect(ev("upper(1)")).to_equal(Missing)
+  })
+}

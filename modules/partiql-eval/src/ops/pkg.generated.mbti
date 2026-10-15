@@ -63,6 +63,8 @@ pub fn less_eq(@partiql-value.Value, @partiql-value.Value) -> @partiql-value.Val
 
 pub fn like(@partiql-value.Value, @partiql-value.Value, @partiql-value.Value?) -> @partiql-value.Value raise OpFailure
 
+pub fn lower(Array[@partiql-value.Value]) -> @partiql-value.Value raise OpFailure
+
 pub fn map_contains_key(Array[@partiql-value.Value]) -> @partiql-value.Value raise OpFailure
 
 pub fn map_entries(Array[@partiql-value.Value]) -> @partiql-value.Value raise OpFailure
@@ -118,6 +120,8 @@ pub fn text_replace(Array[@partiql-value.Value]) -> @partiql-value.Value raise O
 pub fn trim(@ast.TrimSpec, Array[@partiql-value.Value]) -> @partiql-value.Value raise OpFailure
 
 pub fn tuple_union(Array[@partiql-value.Value]) -> @partiql-value.Value raise OpFailure
+
+pub fn upper(Array[@partiql-value.Value]) -> @partiql-value.Value raise OpFailure
 
 // Errors
 pub(all) suberror OpFailure {

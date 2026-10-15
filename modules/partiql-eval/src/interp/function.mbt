@@ -25,5 +25,7 @@ fn call(
     Position => @ops.position(args)
     Overlay => @ops.overlay(args)
     TextReplace => @ops.text_replace(args)
+    Upper => @ops.upper(args)
+    Lower => @ops.lower(args)
   }
 }

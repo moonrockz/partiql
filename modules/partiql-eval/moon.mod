@@ -25,4 +25,5 @@ import {
   "moonrockz/partiql-syntax@0.1.0",
   "moonrockz/ion@0.2.0",
   "moonrockz/expect@0.6.0",
+  "moonbit-community/unicode-data@0.6.0",
 }

@@ -1345,6 +1345,294 @@ eval/primitives/functions/exists.ion::exists::exists valid cases{param:"[null]",
 eval/primitives/functions/exists.ion::exists::exists valid cases{param:"[null]",result:true}#error
 eval/primitives/functions/exists.ion::exists::exists valid cases{param:"{}",result:false}#coerce
 eval/primitives/functions/exists.ion::exists::exists valid cases{param:"{}",result:false}#error
+eval/primitives/functions/lower.ion::lower::lower null and missing propagation{param:"missing"}#coerce
+eval/primitives/functions/lower.ion::lower::lower null and missing propagation{param:"missing"}#error
+eval/primitives/functions/lower.ion::lower::lower null and missing propagation{param:"null"}#coerce
+eval/primitives/functions/lower.ion::lower::lower null and missing propagation{param:"null"}#error
+eval/primitives/functions/lower.ion::lower::lower unsupported type{param:"1"}#coerce
+eval/primitives/functions/lower.ion::lower::lower unsupported type{param:"1"}#error
+eval/primitives/functions/lower.ion::lower::lower unsupported type{param:"1.0"}#coerce
+eval/primitives/functions/lower.ion::lower::lower unsupported type{param:"1.0"}#error
+eval/primitives/functions/lower.ion::lower::lower unsupported type{param:"1e0"}#coerce
+eval/primitives/functions/lower.ion::lower::lower unsupported type{param:"1e0"}#error
+eval/primitives/functions/lower.ion::lower::lower unsupported type{param:"`()`"}#coerce
+eval/primitives/functions/lower.ion::lower::lower unsupported type{param:"`()`"}#error
+eval/primitives/functions/lower.ion::lower::lower unsupported type{param:"`[]`"}#coerce
+eval/primitives/functions/lower.ion::lower::lower unsupported type{param:"`[]`"}#error
+eval/primitives/functions/lower.ion::lower::lower unsupported type{param:"`{}`"}#coerce
+eval/primitives/functions/lower.ion::lower::lower unsupported type{param:"`{}`"}#error
+eval/primitives/functions/lower.ion::lower::lower unsupported type{param:"true"}#coerce
+eval/primitives/functions/lower.ion::lower::lower unsupported type{param:"true"}#error
+eval/primitives/functions/lower.ion::lower::lower valid cases{Complete Cyrillic Alphabet}#coerce
+eval/primitives/functions/lower.ion::lower::lower valid cases{Complete Cyrillic Alphabet}#error
+eval/primitives/functions/lower.ion::lower::lower valid cases{Emoji Keycap Sequence and Symbol Test}#coerce
+eval/primitives/functions/lower.ion::lower::lower valid cases{Emoji Keycap Sequence and Symbol Test}#error
+eval/primitives/functions/lower.ion::lower::lower valid cases{Fullwidth Latin Characters}#coerce
+eval/primitives/functions/lower.ion::lower::lower valid cases{Fullwidth Latin Characters}#error
+eval/primitives/functions/lower.ion::lower::lower valid cases{Heart and Love Emoji Symbols Test}#coerce
+eval/primitives/functions/lower.ion::lower::lower valid cases{Heart and Love Emoji Symbols Test}#error
+eval/primitives/functions/lower.ion::lower::lower valid cases{Latin Extended-A and Extended-B}#coerce
+eval/primitives/functions/lower.ion::lower::lower valid cases{Latin Extended-A and Extended-B}#error
+eval/primitives/functions/lower.ion::lower::lower valid cases{Latin Extended-B and IPA Extensions}#coerce
+eval/primitives/functions/lower.ion::lower::lower valid cases{Latin Extended-B and IPA Extensions}#error
+eval/primitives/functions/lower.ion::lower::lower valid cases{Latin Extended-C}#coerce
+eval/primitives/functions/lower.ion::lower::lower valid cases{Latin Extended-C}#error
+eval/primitives/functions/lower.ion::lower::lower valid cases{Latin-1 Supplement}#coerce
+eval/primitives/functions/lower.ion::lower::lower valid cases{Latin-1 Supplement}#error
+eval/primitives/functions/lower.ion::lower::lower valid cases{Mixed CJK Hiragana Katakana and Greek}#coerce
+eval/primitives/functions/lower.ion::lower::lower valid cases{Mixed CJK Hiragana Katakana and Greek}#error
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:" !\"#%&()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~",result:" !\"#%&()*+,-./0123456789:;<=>?@abcdefghijklmnopqrstuvwxyz[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~"}#coerce
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:" !\"#%&()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~",result:" !\"#%&()*+,-./0123456789:;<=>?@abcdefghijklmnopqrstuvwxyz[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~"}#error
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"!@#%^&*()`~",result:"!@#%^&*()`~"}#coerce
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"!@#%^&*()`~",result:"!@#%^&*()`~"}#error
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"$1.00",result:"$1.00"}#coerce
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"$1.00",result:"$1.00"}#error
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"( \u0361\xb0 \u035c\u0296 \u0361\xb0)",result:"( \u0361\xb0 \u035c\u0296 \u0361\xb0)"}#coerce
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"( \u0361\xb0 \u035c\u0296 \u0361\xb0)",result:"( \u0361\xb0 \u035c\u0296 \u0361\xb0)"}#error
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"(\u256f\xb0\u25a1\xb0\uff09\u256f\ufe35 \u253b\u2501\u253b)",result:"(\u256f\xb0\u25a1\xb0\uff09\u256f\ufe35 \u253b\u2501\u253b)"}#coerce
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"(\u256f\xb0\u25a1\xb0\uff09\u256f\ufe35 \u253b\u2501\u253b)",result:"(\u256f\xb0\u25a1\xb0\uff09\u256f\ufe35 \u253b\u2501\u253b)"}#error
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"(\uff61\u25d5 \u2200 \u25d5\uff61)",result:"(\uff61\u25d5 \u2200 \u25d5\uff61)"}#coerce
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"(\uff61\u25d5 \u2200 \u25d5\uff61)",result:"(\uff61\u25d5 \u2200 \u25d5\uff61)"}#error
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"(\uff89\u0ca5\u76ca\u0ca5\uff09\uff89\ufeff \u253b\u2501\u253b",result:"(\uff89\u0ca5\u76ca\u0ca5\uff09\uff89\ufeff \u253b\u2501\u253b"}#coerce
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"(\uff89\u0ca5\u76ca\u0ca5\uff09\uff89\ufeff \u253b\u2501\u253b",result:"(\uff89\u0ca5\u76ca\u0ca5\uff09\uff89\ufeff \u253b\u2501\u253b"}#error
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"(null)",result:"(null)"}#coerce
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"(null)",result:"(null)"}#error
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"+0",result:"+0"}#coerce
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"+0",result:"+0"}#error
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"+0.0",result:"+0.0"}#coerce
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"+0.0",result:"+0.0"}#error
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:",",result:","}#coerce
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:",",result:","}#error
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:",\u3002\u30fb:*:\u30fb\u309c\u2019( \u263b \u03c9 \u263b )\u3002\u30fb:*:\u30fb\u309c\u2019",result:",\u3002\u30fb:*:\u30fb\u309c\u2019( \u263b \u03c9 \u263b )\u3002\u30fb:*:\u30fb\u309c\u2019"}#coerce
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:",\u3002\u30fb:*:\u30fb\u309c\u2019( \u263b \u03c9 \u263b )\u3002\u30fb:*:\u30fb\u309c\u2019",result:",\u3002\u30fb:*:\u30fb\u309c\u2019( \u263b \u03c9 \u263b )\u3002\u30fb:*:\u30fb\u309c\u2019"}#error
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"-",result:"-"}#coerce
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"-",result:"-"}#error
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"-$1.00",result:"-$1.00"}#coerce
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"-$1.00",result:"-$1.00"}#error
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"-,",result:"-,"}#coerce
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"-,",result:"-,"}#error
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"--1",result:"--1"}#coerce
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"--1",result:"--1"}#error
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"-.",result:"-."}#coerce
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"-.",result:"-."}#error
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"-0",result:"-0"}#coerce
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"-0",result:"-0"}#error
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"-0.0",result:"-0.0"}#coerce
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"-0.0",result:"-0.0"}#error
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"-1",result:"-1"}#coerce
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"-1",result:"-1"}#error
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"-1#IND",result:"-1#ind"}#coerce
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"-1#IND",result:"-1#ind"}#error
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"-1.00",result:"-1.00"}#coerce
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"-1.00",result:"-1.00"}#error
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"-1/2",result:"-1/2"}#coerce
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"-1/2",result:"-1/2"}#error
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"-1E+02",result:"-1e+02"}#coerce
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"-1E+02",result:"-1e+02"}#error
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"-1E02",result:"-1e02"}#coerce
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"-1E02",result:"-1e02"}#error
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"-1E2",result:"-1e2"}#coerce
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"-1E2",result:"-1e2"}#error
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"-2147483648/-1",result:"-2147483648/-1"}#coerce
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"-2147483648/-1",result:"-2147483648/-1"}#error
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"-9223372036854775808/-1",result:"-9223372036854775808/-1"}#coerce
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"-9223372036854775808/-1",result:"-9223372036854775808/-1"}#error
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"-Infinity",result:"-infinity"}#coerce
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"-Infinity",result:"-infinity"}#error
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:".",result:"."}#coerce
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:".",result:"."}#error
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"0",result:"0"}#coerce
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"0",result:"0"}#error
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"0,,0",result:"0,,0"}#coerce
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"0,,0",result:"0,,0"}#error
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"0,0,0",result:"0,0,0"}#coerce
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"0,0,0",result:"0,0,0"}#error
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"0,0/0,0",result:"0,0/0,0"}#coerce
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"0,0/0,0",result:"0,0/0,0"}#error
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"0,00",result:"0,00"}#coerce
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"0,00",result:"0,00"}#error
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"0..0",result:"0..0"}#coerce
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"0..0",result:"0..0"}#error
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"0.0.0",result:"0.0.0"}#coerce
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"0.0.0",result:"0.0.0"}#error
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"0.0/0",result:"0.0/0"}#coerce
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"0.0/0",result:"0.0/0"}#error
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"0.0/0.0",result:"0.0/0.0"}#coerce
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"0.0/0.0",result:"0.0/0.0"}#error
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"0.00",result:"0.00"}#coerce
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"0.00",result:"0.00"}#error
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"0/0",result:"0/0"}#coerce
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"0/0",result:"0/0"}#error
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"01000",result:"01000"}#coerce
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"01000",result:"01000"}#error
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"08",result:"08"}#coerce
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"08",result:"08"}#error
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"09",result:"09"}#coerce
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"09",result:"09"}#error
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"0x0",result:"0x0"}#coerce
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"0x0",result:"0x0"}#error
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"0xabad1dea",result:"0xabad1dea"}#coerce
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"0xabad1dea",result:"0xabad1dea"}#error
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"0xffffffff",result:"0xffffffff"}#coerce
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"0xffffffff",result:"0xffffffff"}#error
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"0xffffffffffffffff",result:"0xffffffffffffffff"}#coerce
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"0xffffffffffffffff",result:"0xffffffffffffffff"}#error
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"1 000 000,00",result:"1 000 000,00"}#coerce
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"1 000 000,00",result:"1 000 000,00"}#error
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"1 000 000.00",result:"1 000 000.00"}#coerce
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"1 000 000.00",result:"1 000 000.00"}#error
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"1 000,00",result:"1 000,00"}#coerce
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"1 000,00",result:"1 000,00"}#error
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"1 000.00",result:"1 000.00"}#coerce
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"1 000.00",result:"1 000.00"}#error
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"1",result:"1"}#coerce
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"1",result:"1"}#error
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"1#IND",result:"1#ind"}#coerce
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"1#IND",result:"1#ind"}#error
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"1#INF",result:"1#inf"}#coerce
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"1#INF",result:"1#inf"}#error
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"1#QNAN",result:"1#qnan"}#coerce
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"1#QNAN",result:"1#qnan"}#error
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"1#SNAN",result:"1#snan"}#coerce
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"1#SNAN",result:"1#snan"}#error
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"1,0/0,0",result:"1,0/0,0"}#coerce
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"1,0/0,0",result:"1,0/0,0"}#error
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"1,000,000.00",result:"1,000,000.00"}#coerce
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"1,000,000.00",result:"1,000,000.00"}#error
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"1,000.00",result:"1,000.00"}#coerce
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"1,000.00",result:"1,000.00"}#error
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"1.0/0.0",result:"1.0/0.0"}#coerce
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"1.0/0.0",result:"1.0/0.0"}#error
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"1.00",result:"1.00"}#coerce
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"1.00",result:"1.00"}#error
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"1.000,00",result:"1.000,00"}#coerce
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"1.000,00",result:"1.000,00"}#error
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"1.000.000,00",result:"1.000.000,00"}#coerce
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"1.000.000,00",result:"1.000.000,00"}#error
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"1/0",result:"1/0"}#coerce
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"1/0",result:"1/0"}#error
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"1/2",result:"1/2"}#coerce
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"1/2",result:"1/2"}#error
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"123456789012345678901234567890123456789",result:"123456789012345678901234567890123456789"}#coerce
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"123456789012345678901234567890123456789",result:"123456789012345678901234567890123456789"}#error
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"1E+02",result:"1e+02"}#coerce
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"1E+02",result:"1e+02"}#error
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"1E02",result:"1e02"}#coerce
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"1E02",result:"1e02"}#error
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"1E2",result:"1e2"}#coerce
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"1E2",result:"1e2"}#error
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"2.2250738585072011e-308",result:"2.2250738585072011e-308"}#coerce
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"2.2250738585072011e-308",result:"2.2250738585072011e-308"}#error
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999",result:"999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999"}#coerce
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999",result:"999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999"}#error
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"<>?:\"{}|_+",result:"<>?:\"{}|_+"}#coerce
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"<>?:\"{}|_+",result:"<>?:\"{}|_+"}#error
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"FALSE",result:"false"}#coerce
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"FALSE",result:"false"}#error
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"False",result:"false"}#coerce
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"False",result:"false"}#error
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"INF",result:"inf"}#coerce
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"INF",result:"inf"}#error
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"Infinity",result:"infinity"}#coerce
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"Infinity",result:"infinity"}#error
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"NIL",result:"nil"}#coerce
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"NIL",result:"nil"}#error
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"NULL",result:"null"}#coerce
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"NULL",result:"null"}#error
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"NaN",result:"nan"}#coerce
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"NaN",result:"nan"}#error
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"None",result:"none"}#coerce
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"None",result:"none"}#error
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"TRUE",result:"true"}#coerce
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"TRUE",result:"true"}#error
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"True",result:"true"}#coerce
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"True",result:"true"}#error
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"\U0001f1fa\U0001f1f8\U0001f1f7\U0001f1fa\U0001f1f8 \U0001f1e6\U0001f1eb\U0001f1e6\U0001f1f2\U0001f1f8",result:"\U0001f1fa\U0001f1f8\U0001f1f7\U0001f1fa\U0001f1f8 \U0001f1e6\U0001f1eb\U0001f1e6\U0001f1f2\U0001f1f8"}#coerce
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"\U0001f1fa\U0001f1f8\U0001f1f7\U0001f1fa\U0001f1f8 \U0001f1e6\U0001f1eb\U0001f1e6\U0001f1f2\U0001f1f8",result:"\U0001f1fa\U0001f1f8\U0001f1f7\U0001f1fa\U0001f1f8 \U0001f1e6\U0001f1eb\U0001f1e6\U0001f1f2\U0001f1f8"}#error
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"\U0001f1fa\U0001f1f8\U0001f1f7\U0001f1fa\U0001f1f8\U0001f1e6",result:"\U0001f1fa\U0001f1f8\U0001f1f7\U0001f1fa\U0001f1f8\U0001f1e6"}#coerce
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"\U0001f1fa\U0001f1f8\U0001f1f7\U0001f1fa\U0001f1f8\U0001f1e6",result:"\U0001f1fa\U0001f1f8\U0001f1f7\U0001f1fa\U0001f1f8\U0001f1e6"}#error
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"\U0001f1fa\U0001f1f8\U0001f1f7\U0001f1fa\U0001f1f8\U0001f1e6\U0001f1eb\U0001f1e6\U0001f1f2",result:"\U0001f1fa\U0001f1f8\U0001f1f7\U0001f1fa\U0001f1f8\U0001f1e6\U0001f1eb\U0001f1e6\U0001f1f2"}#coerce
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"\U0001f1fa\U0001f1f8\U0001f1f7\U0001f1fa\U0001f1f8\U0001f1e6\U0001f1eb\U0001f1e6\U0001f1f2",result:"\U0001f1fa\U0001f1f8\U0001f1f7\U0001f1fa\U0001f1f8\U0001f1e6\U0001f1eb\U0001f1e6\U0001f1f2"}#error
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"\U0001f435 \U0001f648 \U0001f649 \U0001f64a",result:"\U0001f435 \U0001f648 \U0001f649 \U0001f64a"}#coerce
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"\U0001f435 \U0001f648 \U0001f649 \U0001f64a",result:"\U0001f435 \U0001f648 \U0001f649 \U0001f64a"}#error
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"\U0001f469\U0001f3fd",result:"\U0001f469\U0001f3fd"}#coerce
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"\U0001f469\U0001f3fd",result:"\U0001f469\U0001f3fd"}#error
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"\U0001f47e \U0001f647 \U0001f481 \U0001f645 \U0001f646 \U0001f64b \U0001f64e \U0001f64d",result:"\U0001f47e \U0001f647 \U0001f481 \U0001f645 \U0001f646 \U0001f64b \U0001f64e \U0001f64d"}#coerce
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"\U0001f47e \U0001f647 \U0001f481 \U0001f645 \U0001f646 \U0001f64b \U0001f64e \U0001f64d",result:"\U0001f47e \U0001f647 \U0001f481 \U0001f645 \U0001f646 \U0001f64b \U0001f64e \U0001f64d"}#error
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"\U0001f60d",result:"\U0001f60d"}#coerce
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"\U0001f60d",result:"\U0001f60d"}#error
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"\U0001f6be \U0001f192 \U0001f193 \U0001f195 \U0001f196 \U0001f197 \U0001f199 \U0001f3e7",result:"\U0001f6be \U0001f192 \U0001f193 \U0001f195 \U0001f196 \U0001f197 \U0001f199 \U0001f3e7"}#coerce
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"\U0001f6be \U0001f192 \U0001f193 \U0001f195 \U0001f196 \U0001f197 \U0001f199 \U0001f3e7",result:"\U0001f6be \U0001f192 \U0001f193 \U0001f195 \U0001f196 \U0001f197 \U0001f199 \U0001f3e7"}#error
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"\U0002070e\U00020731\U00020779\U00020c53\U00020c78\U00020c96\U00020ccf",result:"\U0002070e\U00020731\U00020779\U00020c53\U00020c78\U00020c96\U00020ccf"}#coerce
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"\U0002070e\U00020731\U00020779\U00020c53\U00020c78\U00020c96\U00020ccf",result:"\U0002070e\U00020731\U00020779\U00020c53\U00020c78\U00020c96\U00020ccf"}#error
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"\u0152\u201e\xb4\u2030\u02c7\xc1\xa8\u02c6\xd8\u220f\u201d\u2019",result:"\u0153\u201e\xb4\u2030\u02c7\xe1\xa8\u02c6\xf8\u220f\u201d\u2019"}#coerce
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"\u0152\u201e\xb4\u2030\u02c7\xc1\xa8\u02c6\xd8\u220f\u201d\u2019",result:"\u0153\u201e\xb4\u2030\u02c7\xe1\xa8\u02c6\xf8\u220f\u201d\u2019"}#error
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"\u0153\u2211\xb4\xae\u2020\xa5\xa8\u02c6\xf8\u03c0\u201c\u2018",result:"\u0153\u2211\xb4\xae\u2020\xa5\xa8\u02c6\xf8\u03c0\u201c\u2018"}#coerce
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"\u0153\u2211\xb4\xae\u2020\xa5\xa8\u02c6\xf8\u03c0\u201c\u2018",result:"\u0153\u2211\xb4\xae\u2020\xa5\xa8\u02c6\xf8\u03c0\u201c\u2018"}#error
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"\u023a",result:"\u2c65"}#coerce
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"\u023a",result:"\u2c65"}#error
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"\u023e",result:"\u2c66"}#coerce
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"\u023e",result:"\u2c66"}#error
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"\u03a9\u2248\xe7\u221a\u222b\u02dc\xb5\u2264\u2265\xf7",result:"\u03c9\u2248\xe7\u221a\u222b\u02dc\xb5\u2264\u2265\xf7"}#coerce
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"\u03a9\u2248\xe7\u221a\u222b\u02dc\xb5\u2264\u2265\xf7",result:"\u03c9\u2248\xe7\u221a\u222b\u02dc\xb5\u2264\u2265\xf7"}#error
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"\u0660\u0661\u0662\u0663\u0664\u0665\u0666\u0667\u0668\u0669",result:"\u0660\u0661\u0662\u0663\u0664\u0665\u0666\u0667\u0668\u0669"}#coerce
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"\u0660\u0661\u0662\u0663\u0664\u0665\u0666\u0667\u0668\u0669",result:"\u0660\u0661\u0662\u0663\u0664\u0665\u0666\u0667\u0668\u0669"}#error
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"\u215b\u215c\u215d\u215e",result:"\u215b\u215c\u215d\u215e"}#coerce
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"\u215b\u215c\u215d\u215e",result:"\u215b\u215c\u215d\u215e"}#error
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"\u252c\u2500\u252c\u30ce( \xba _ \xba\u30ce)",result:"\u252c\u2500\u252c\u30ce( \xba _ \xba\u30ce)"}#coerce
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"\u252c\u2500\u252c\u30ce( \xba _ \xba\u30ce)",result:"\u252c\u2500\u252c\u30ce( \xba _ \xba\u30ce)"}#error
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"\u270b\U0001f3ff \U0001f4aa\U0001f3ff \U0001f450\U0001f3ff \U0001f64c\U0001f3ff \U0001f44f\U0001f3ff \U0001f64f\U0001f3ff",result:"\u270b\U0001f3ff \U0001f4aa\U0001f3ff \U0001f450\U0001f3ff \U0001f64c\U0001f3ff \U0001f44f\U0001f3ff \U0001f64f\U0001f3ff"}#coerce
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"\u270b\U0001f3ff \U0001f4aa\U0001f3ff \U0001f450\U0001f3ff \U0001f64c\U0001f3ff \U0001f44f\U0001f3ff \U0001f64f\U0001f3ff",result:"\u270b\U0001f3ff \U0001f4aa\U0001f3ff \U0001f450\U0001f3ff \U0001f64c\U0001f3ff \U0001f44f\U0001f3ff \U0001f64f\U0001f3ff"}#error
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"\u30d1\u30fc\u30c6\u30a3\u30fc\u3078\u884c\u304b\u306a\u3044\u304b",result:"\u30d1\u30fc\u30c6\u30a3\u30fc\u3078\u884c\u304b\u306a\u3044\u304b"}#coerce
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"\u30d1\u30fc\u30c6\u30a3\u30fc\u3078\u884c\u304b\u306a\u3044\u304b",result:"\u30d1\u30fc\u30c6\u30a3\u30fc\u3078\u884c\u304b\u306a\u3044\u304b"}#error
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"\u30fb(\uffe3\u2200\uffe3)\u30fb:*:",result:"\u30fb(\uffe3\u2200\uffe3)\u30fb:*:"}#coerce
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"\u30fb(\uffe3\u2200\uffe3)\u30fb:*:",result:"\u30fb(\uffe3\u2200\uffe3)\u30fb:*:"}#error
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"\u30fd\u0f3c\u0e88\u0644\u035c\u0e88\u0f3d\uff89 \u30fd\u0f3c\u0e88\u0644\u035c\u0e88\u0f3d\uff89",result:"\u30fd\u0f3c\u0e88\u0644\u035c\u0e88\u0f3d\uff89 \u30fd\u0f3c\u0e88\u0644\u035c\u0e88\u0f3d\uff89"}#coerce
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"\u30fd\u0f3c\u0e88\u0644\u035c\u0e88\u0f3d\uff89 \u30fd\u0f3c\u0e88\u0644\u035c\u0e88\u0f3d\uff89",result:"\u30fd\u0f3c\u0e88\u0644\u035c\u0e88\u0f3d\uff89 \u30fd\u0f3c\u0e88\u0644\u035c\u0e88\u0f3d\uff89"}#error
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"\u548c\u88fd\u6f22\u8a9e",result:"\u548c\u88fd\u6f22\u8a9e"}#coerce
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"\u548c\u88fd\u6f22\u8a9e",result:"\u548c\u88fd\u6f22\u8a9e"}#error
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"\u7530\u4e2d\u3055\u3093\u306b\u3042\u3052\u3066\u4e0b\u3055\u3044",result:"\u7530\u4e2d\u3055\u3093\u306b\u3042\u3052\u3066\u4e0b\u3055\u3044"}#coerce
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"\u7530\u4e2d\u3055\u3093\u306b\u3042\u3052\u3066\u4e0b\u3055\u3044",result:"\u7530\u4e2d\u3055\u3093\u306b\u3042\u3052\u3066\u4e0b\u3055\u3044"}#error
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"\u793e\u6703\u79d1\u5b78\u9662\u8a9e\u5b78\u7814\u7a76\u6240",result:"\u793e\u6703\u79d1\u5b78\u9662\u8a9e\u5b78\u7814\u7a76\u6240"}#coerce
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"\u793e\u6703\u79d1\u5b78\u9662\u8a9e\u5b78\u7814\u7a76\u6240",result:"\u793e\u6703\u79d1\u5b78\u9662\u8a9e\u5b78\u7814\u7a76\u6240"}#error
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"\u90e8\u843d\u683c",result:"\u90e8\u843d\u683c"}#coerce
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"\u90e8\u843d\u683c",result:"\u90e8\u843d\u683c"}#error
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"\uc0ac\ud68c\uacfc\ud559\uc6d0 \uc5b4\ud559\uc5f0\uad6c\uc18c",result:"\uc0ac\ud68c\uacfc\ud559\uc6d0 \uc5b4\ud559\uc5f0\uad6c\uc18c"}#coerce
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"\uc0ac\ud68c\uacfc\ud559\uc6d0 \uc5b4\ud559\uc5f0\uad6c\uc18c",result:"\uc0ac\ud68c\uacfc\ud559\uc6d0 \uc5b4\ud559\uc5f0\uad6c\uc18c"}#error
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"\uc6b8\ub780\ubc14\ud1a0\ub974",result:"\uc6b8\ub780\ubc14\ud1a0\ub974"}#coerce
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"\uc6b8\ub780\ubc14\ud1a0\ub974",result:"\uc6b8\ub780\ubc14\ud1a0\ub974"}#error
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"\ucc26\ucc28\ub97c \ud0c0\uace0 \uc628 \ud3b2\uc2dc\ub9e8\uacfc \uc45b\ub2e4\ub9ac \ub620\ubc29\uac01\ud558",result:"\ucc26\ucc28\ub97c \ud0c0\uace0 \uc628 \ud3b2\uc2dc\ub9e8\uacfc \uc45b\ub2e4\ub9ac \ub620\ubc29\uac01\ud558"}#coerce
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"\ucc26\ucc28\ub97c \ud0c0\uace0 \uc628 \ud3b2\uc2dc\ub9e8\uacfc \uc45b\ub2e4\ub9ac \ub620\ubc29\uac01\ud558",result:"\ucc26\ucc28\ub97c \ud0c0\uace0 \uc628 \ud3b2\uc2dc\ub9e8\uacfc \uc45b\ub2e4\ub9ac \ub620\ubc29\uac01\ud558"}#error
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"\uff40\uff68(\xb4\u2200\uff40\u2229",result:"\uff40\uff68(\xb4\u2200\uff40\u2229"}#coerce
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"\uff40\uff68(\xb4\u2200\uff40\u2229",result:"\uff40\uff68(\xb4\u2200\uff40\u2229"}#error
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"\uff9f\uff65\u273f\u30fe\u2572(\uff61\u25d5\u203f\u25d5\uff61)\u2571\u273f\uff65\uff9f",result:"\uff9f\uff65\u273f\u30fe\u2572(\uff61\u25d5\u203f\u25d5\uff61)\u2571\u273f\uff65\uff9f"}#coerce
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"\uff9f\uff65\u273f\u30fe\u2572(\uff61\u25d5\u203f\u25d5\uff61)\u2571\u273f\uff65\uff9f",result:"\uff9f\uff65\u273f\u30fe\u2572(\uff61\u25d5\u203f\u25d5\uff61)\u2571\u273f\uff65\uff9f"}#error
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"\xa1\u2122\xa3\xa2\u221e\xa7\xb6\u2022\xaa\xba\u2013\u2260",result:"\xa1\u2122\xa3\xa2\u221e\xa7\xb6\u2022\xaa\xba\u2013\u2260"}#coerce
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"\xa1\u2122\xa3\xa2\u221e\xa7\xb6\u2022\xaa\xba\u2013\u2260",result:"\xa1\u2122\xa3\xa2\u221e\xa7\xb6\u2022\xaa\xba\u2013\u2260"}#error
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"\xb8\u02db\xc7\u25ca\u0131\u02dc\xc2\xaf\u02d8\xbf",result:"\xb8\u02db\xe7\u25ca\u0131\u02dc\xe2\xaf\u02d8\xbf"}#coerce
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"\xb8\u02db\xc7\u25ca\u0131\u02dc\xc2\xaf\u02d8\xbf",result:"\xb8\u02db\xe7\u25ca\u0131\u02dc\xe2\xaf\u02d8\xbf"}#error
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"\xc5\xcd\xce\xcf\u02dd\xd3\xd4\uf8ff\xd2\xda\xc6\u2603",result:"\xe5\xed\xee\xef\u02dd\xf3\xf4\uf8ff\xf2\xfa\xe6\u2603"}#coerce
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"\xc5\xcd\xce\xcf\u02dd\xd3\xd4\uf8ff\xd2\xda\xc6\u2603",result:"\xe5\xed\xee\xef\u02dd\xf3\xf4\uf8ff\xf2\xfa\xe6\u2603"}#error
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"\xe5\xdf\u2202\u0192\xa9\u02d9\u2206\u02da\xac\u2026\xe6",result:"\xe5\xdf\u2202\u0192\xa9\u02d9\u2206\u02da\xac\u2026\xe6"}#coerce
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"\xe5\xdf\u2202\u0192\xa9\u02d9\u2206\u02da\xac\u2026\xe6",result:"\xe5\xdf\u2202\u0192\xa9\u02d9\u2206\u02da\xac\u2026\xe6"}#error
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"__\uff9b(,_,*)",result:"__\uff9b(,_,*)"}#coerce
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"__\uff9b(,_,*)",result:"__\uff9b(,_,*)"}#error
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"`\u2044\u20ac\u2039\u203a\ufb01\ufb02\u2021\xb0\xb7\u201a\u2014\xb1",result:"`\u2044\u20ac\u2039\u203a\ufb01\ufb02\u2021\xb0\xb7\u201a\u2014\xb1"}#coerce
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"`\u2044\u20ac\u2039\u203a\ufb01\ufb02\u2021\xb0\xb7\u201a\u2014\xb1",result:"`\u2044\u20ac\u2039\u203a\ufb01\ufb02\u2021\xb0\xb7\u201a\u2014\xb1"}#error
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"false",result:"false"}#coerce
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"false",result:"false"}#error
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"hasOwnProperty",result:"hasownproperty"}#coerce
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"hasOwnProperty",result:"hasownproperty"}#error
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"nil",result:"nil"}#coerce
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"nil",result:"nil"}#error
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"null",result:"null"}#coerce
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"null",result:"null"}#error
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"true",result:"true"}#coerce
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"true",result:"true"}#error
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"undef",result:"undef"}#coerce
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"undef",result:"undef"}#error
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"undefined",result:"undefined"}#coerce
+eval/primitives/functions/lower.ion::lower::lower valid cases{in:"undefined",result:"undefined"}#error
 eval/primitives/functions/mod.ion::mod::MOD('some string', 3)#coerce
 eval/primitives/functions/mod.ion::mod::MOD('some string', 3)#error
 eval/primitives/functions/mod.ion::mod::MOD('some string', MISSING)#coerce
@@ -1855,6 +2143,292 @@ eval/primitives/functions/trim.ion::trim::trim variations on valid syntax{sql:"t
 eval/primitives/functions/trim.ion::trim::trim variations on valid syntax{sql:"trim(both from '      foobar       ')"}#error
 eval/primitives/functions/trim.ion::trim::trim variations on valid syntax{sql:"trim(from '      foobar       ')"}#coerce
 eval/primitives/functions/trim.ion::trim::trim variations on valid syntax{sql:"trim(from '      foobar       ')"}#error
+eval/primitives/functions/upper.ion::upper::upper null and missing propagation{param:"missing"}#coerce
+eval/primitives/functions/upper.ion::upper::upper null and missing propagation{param:"missing"}#error
+eval/primitives/functions/upper.ion::upper::upper null and missing propagation{param:"null"}#coerce
+eval/primitives/functions/upper.ion::upper::upper null and missing propagation{param:"null"}#error
+eval/primitives/functions/upper.ion::upper::upper unsupported type{param:"1"}#coerce
+eval/primitives/functions/upper.ion::upper::upper unsupported type{param:"1"}#error
+eval/primitives/functions/upper.ion::upper::upper unsupported type{param:"1.0"}#coerce
+eval/primitives/functions/upper.ion::upper::upper unsupported type{param:"1.0"}#error
+eval/primitives/functions/upper.ion::upper::upper unsupported type{param:"1e0"}#coerce
+eval/primitives/functions/upper.ion::upper::upper unsupported type{param:"1e0"}#error
+eval/primitives/functions/upper.ion::upper::upper unsupported type{param:"`()`"}#coerce
+eval/primitives/functions/upper.ion::upper::upper unsupported type{param:"`()`"}#error
+eval/primitives/functions/upper.ion::upper::upper unsupported type{param:"`[]`"}#coerce
+eval/primitives/functions/upper.ion::upper::upper unsupported type{param:"`[]`"}#error
+eval/primitives/functions/upper.ion::upper::upper unsupported type{param:"`{}`"}#coerce
+eval/primitives/functions/upper.ion::upper::upper unsupported type{param:"`{}`"}#error
+eval/primitives/functions/upper.ion::upper::upper unsupported type{param:"true"}#coerce
+eval/primitives/functions/upper.ion::upper::upper unsupported type{param:"true"}#error
+eval/primitives/functions/upper.ion::upper::upper valid cases{ASCII Printable Characters}#coerce
+eval/primitives/functions/upper.ion::upper::upper valid cases{ASCII Printable Characters}#error
+eval/primitives/functions/upper.ion::upper::upper valid cases{Complete Cyrillic Alphabet}#coerce
+eval/primitives/functions/upper.ion::upper::upper valid cases{Complete Cyrillic Alphabet}#error
+eval/primitives/functions/upper.ion::upper::upper valid cases{Emoji Hearts Unicode String}#coerce
+eval/primitives/functions/upper.ion::upper::upper valid cases{Emoji Hearts Unicode String}#error
+eval/primitives/functions/upper.ion::upper::upper valid cases{FULLWIDTH LATIN Unicode String Pangram}#coerce
+eval/primitives/functions/upper.ion::upper::upper valid cases{FULLWIDTH LATIN Unicode String Pangram}#error
+eval/primitives/functions/upper.ion::upper::upper valid cases{Japanese Kanji Hiragana Katakana Greek}#coerce
+eval/primitives/functions/upper.ion::upper::upper valid cases{Japanese Kanji Hiragana Katakana Greek}#error
+eval/primitives/functions/upper.ion::upper::upper valid cases{Keycap Digit Emojis (0-10) Unicode String}#coerce
+eval/primitives/functions/upper.ion::upper::upper valid cases{Keycap Digit Emojis (0-10) Unicode String}#error
+eval/primitives/functions/upper.ion::upper::upper valid cases{Large Number String}#coerce
+eval/primitives/functions/upper.ion::upper::upper valid cases{Large Number String}#error
+eval/primitives/functions/upper.ion::upper::upper valid cases{Latin Extended-A and Extended-B}#coerce
+eval/primitives/functions/upper.ion::upper::upper valid cases{Latin Extended-A and Extended-B}#error
+eval/primitives/functions/upper.ion::upper::upper valid cases{Latin Supplement Extended}#coerce
+eval/primitives/functions/upper.ion::upper::upper valid cases{Latin Supplement Extended}#error
+eval/primitives/functions/upper.ion::upper::upper valid cases{Latin-1 Supplement}#coerce
+eval/primitives/functions/upper.ion::upper::upper valid cases{Latin-1 Supplement}#error
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"!@#%^&*()`~",result:"!@#%^&*()`~"}#coerce
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"!@#%^&*()`~",result:"!@#%^&*()`~"}#error
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"$1.00",result:"$1.00"}#coerce
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"$1.00",result:"$1.00"}#error
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"( \u0361\xb0 \u035c\u0296 \u0361\xb0)",result:"( \u0361\xb0 \u035c\u0296 \u0361\xb0)"}#coerce
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"( \u0361\xb0 \u035c\u0296 \u0361\xb0)",result:"( \u0361\xb0 \u035c\u0296 \u0361\xb0)"}#error
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"(\u256f\xb0\u25a1\xb0\uff09\u256f\ufe35 \u253b\u2501\u253b)",result:"(\u256f\xb0\u25a1\xb0\uff09\u256f\ufe35 \u253b\u2501\u253b)"}#coerce
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"(\u256f\xb0\u25a1\xb0\uff09\u256f\ufe35 \u253b\u2501\u253b)",result:"(\u256f\xb0\u25a1\xb0\uff09\u256f\ufe35 \u253b\u2501\u253b)"}#error
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"(\uff61\u25d5 \u2200 \u25d5\uff61)",result:"(\uff61\u25d5 \u2200 \u25d5\uff61)"}#coerce
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"(\uff61\u25d5 \u2200 \u25d5\uff61)",result:"(\uff61\u25d5 \u2200 \u25d5\uff61)"}#error
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"(\uff89\u0ca5\u76ca\u0ca5\uff09\uff89\ufeff \u253b\u2501\u253b",result:"(\uff89\u0ca5\u76ca\u0ca5\uff09\uff89\ufeff \u253b\u2501\u253b"}#coerce
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"(\uff89\u0ca5\u76ca\u0ca5\uff09\uff89\ufeff \u253b\u2501\u253b",result:"(\uff89\u0ca5\u76ca\u0ca5\uff09\uff89\ufeff \u253b\u2501\u253b"}#error
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"(null)",result:"(NULL)"}#coerce
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"(null)",result:"(NULL)"}#error
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"+0",result:"+0"}#coerce
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"+0",result:"+0"}#error
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"+0.0",result:"+0.0"}#coerce
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"+0.0",result:"+0.0"}#error
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:",",result:","}#coerce
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:",",result:","}#error
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:",\u3002\u30fb:*:\u30fb\u309c\u2019( \u263b \u03c9 \u263b )\u3002\u30fb:*:\u30fb\u309c\u2019",result:",\u3002\u30fb:*:\u30fb\u309c\u2019( \u263b \u03a9 \u263b )\u3002\u30fb:*:\u30fb\u309c\u2019"}#coerce
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:",\u3002\u30fb:*:\u30fb\u309c\u2019( \u263b \u03c9 \u263b )\u3002\u30fb:*:\u30fb\u309c\u2019",result:",\u3002\u30fb:*:\u30fb\u309c\u2019( \u263b \u03a9 \u263b )\u3002\u30fb:*:\u30fb\u309c\u2019"}#error
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"-",result:"-"}#coerce
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"-",result:"-"}#error
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"-$1.00",result:"-$1.00"}#coerce
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"-$1.00",result:"-$1.00"}#error
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"-,",result:"-,"}#coerce
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"-,",result:"-,"}#error
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"--1",result:"--1"}#coerce
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"--1",result:"--1"}#error
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"-.",result:"-."}#coerce
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"-.",result:"-."}#error
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"-0",result:"-0"}#coerce
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"-0",result:"-0"}#error
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"-0.0",result:"-0.0"}#coerce
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"-0.0",result:"-0.0"}#error
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"-1",result:"-1"}#coerce
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"-1",result:"-1"}#error
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"-1#IND",result:"-1#IND"}#coerce
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"-1#IND",result:"-1#IND"}#error
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"-1.00",result:"-1.00"}#coerce
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"-1.00",result:"-1.00"}#error
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"-1/2",result:"-1/2"}#coerce
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"-1/2",result:"-1/2"}#error
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"-1E+02",result:"-1E+02"}#coerce
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"-1E+02",result:"-1E+02"}#error
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"-1E02",result:"-1E02"}#coerce
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"-1E02",result:"-1E02"}#error
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"-1E2",result:"-1E2"}#coerce
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"-1E2",result:"-1E2"}#error
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"-2147483648/-1",result:"-2147483648/-1"}#coerce
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"-2147483648/-1",result:"-2147483648/-1"}#error
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"-9223372036854775808/-1",result:"-9223372036854775808/-1"}#coerce
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"-9223372036854775808/-1",result:"-9223372036854775808/-1"}#error
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"-Infinity",result:"-INFINITY"}#coerce
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"-Infinity",result:"-INFINITY"}#error
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:".",result:"."}#coerce
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:".",result:"."}#error
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"0",result:"0"}#coerce
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"0",result:"0"}#error
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"0,,0",result:"0,,0"}#coerce
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"0,,0",result:"0,,0"}#error
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"0,0,0",result:"0,0,0"}#coerce
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"0,0,0",result:"0,0,0"}#error
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"0,0/0,0",result:"0,0/0,0"}#coerce
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"0,0/0,0",result:"0,0/0,0"}#error
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"0,00",result:"0,00"}#coerce
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"0,00",result:"0,00"}#error
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"0..0",result:"0..0"}#coerce
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"0..0",result:"0..0"}#error
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"0.0.0",result:"0.0.0"}#coerce
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"0.0.0",result:"0.0.0"}#error
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"0.0/0",result:"0.0/0"}#coerce
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"0.0/0",result:"0.0/0"}#error
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"0.0/0.0",result:"0.0/0.0"}#coerce
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"0.0/0.0",result:"0.0/0.0"}#error
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"0.00",result:"0.00"}#coerce
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"0.00",result:"0.00"}#error
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"0/0",result:"0/0"}#coerce
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"0/0",result:"0/0"}#error
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"01000",result:"01000"}#coerce
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"01000",result:"01000"}#error
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"08",result:"08"}#coerce
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"08",result:"08"}#error
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"09",result:"09"}#coerce
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"09",result:"09"}#error
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"0x0",result:"0X0"}#coerce
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"0x0",result:"0X0"}#error
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"0xabad1dea",result:"0XABAD1DEA"}#coerce
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"0xabad1dea",result:"0XABAD1DEA"}#error
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"0xffffffff",result:"0XFFFFFFFF"}#coerce
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"0xffffffff",result:"0XFFFFFFFF"}#error
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"0xffffffffffffffff",result:"0XFFFFFFFFFFFFFFFF"}#coerce
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"0xffffffffffffffff",result:"0XFFFFFFFFFFFFFFFF"}#error
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"1 000 000,00",result:"1 000 000,00"}#coerce
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"1 000 000,00",result:"1 000 000,00"}#error
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"1 000 000.00",result:"1 000 000.00"}#coerce
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"1 000 000.00",result:"1 000 000.00"}#error
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"1 000,00",result:"1 000,00"}#coerce
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"1 000,00",result:"1 000,00"}#error
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"1 000.00",result:"1 000.00"}#coerce
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"1 000.00",result:"1 000.00"}#error
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"1",result:"1"}#coerce
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"1",result:"1"}#error
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"1#IND",result:"1#IND"}#coerce
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"1#IND",result:"1#IND"}#error
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"1#INF",result:"1#INF"}#coerce
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"1#INF",result:"1#INF"}#error
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"1#QNAN",result:"1#QNAN"}#coerce
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"1#QNAN",result:"1#QNAN"}#error
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"1#SNAN",result:"1#SNAN"}#coerce
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"1#SNAN",result:"1#SNAN"}#error
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"1,0/0,0",result:"1,0/0,0"}#coerce
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"1,0/0,0",result:"1,0/0,0"}#error
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"1,000,000.00",result:"1,000,000.00"}#coerce
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"1,000,000.00",result:"1,000,000.00"}#error
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"1,000.00",result:"1,000.00"}#coerce
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"1,000.00",result:"1,000.00"}#error
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"1.0/0.0",result:"1.0/0.0"}#coerce
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"1.0/0.0",result:"1.0/0.0"}#error
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"1.00",result:"1.00"}#coerce
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"1.00",result:"1.00"}#error
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"1.000,00",result:"1.000,00"}#coerce
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"1.000,00",result:"1.000,00"}#error
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"1.000.000,00",result:"1.000.000,00"}#coerce
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"1.000.000,00",result:"1.000.000,00"}#error
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"1/0",result:"1/0"}#coerce
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"1/0",result:"1/0"}#error
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"1/2",result:"1/2"}#coerce
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"1/2",result:"1/2"}#error
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"123456789012345678901234567890123456789",result:"123456789012345678901234567890123456789"}#coerce
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"123456789012345678901234567890123456789",result:"123456789012345678901234567890123456789"}#error
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"1E+02",result:"1E+02"}#coerce
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"1E+02",result:"1E+02"}#error
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"1E02",result:"1E02"}#coerce
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"1E02",result:"1E02"}#error
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"1E2",result:"1E2"}#coerce
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"1E2",result:"1E2"}#error
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"2.2250738585072011e-308",result:"2.2250738585072011E-308"}#coerce
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"2.2250738585072011e-308",result:"2.2250738585072011E-308"}#error
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"<>?:\"{}|_+",result:"<>?:\"{}|_+"}#coerce
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"<>?:\"{}|_+",result:"<>?:\"{}|_+"}#error
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"FALSE",result:"FALSE"}#coerce
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"FALSE",result:"FALSE"}#error
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"False",result:"FALSE"}#coerce
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"False",result:"FALSE"}#error
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"INF",result:"INF"}#coerce
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"INF",result:"INF"}#error
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"Infinity",result:"INFINITY"}#coerce
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"Infinity",result:"INFINITY"}#error
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"NIL",result:"NIL"}#coerce
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"NIL",result:"NIL"}#error
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"NULL",result:"NULL"}#coerce
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"NULL",result:"NULL"}#error
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"NaN",result:"NAN"}#coerce
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"NaN",result:"NAN"}#error
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"None",result:"NONE"}#coerce
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"None",result:"NONE"}#error
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"TRUE",result:"TRUE"}#coerce
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"TRUE",result:"TRUE"}#error
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"True",result:"TRUE"}#coerce
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"True",result:"TRUE"}#error
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"\U0001f1fa\U0001f1f8\U0001f1f7\U0001f1fa\U0001f1f8 \U0001f1e6\U0001f1eb\U0001f1e6\U0001f1f2\U0001f1f8",result:"\U0001f1fa\U0001f1f8\U0001f1f7\U0001f1fa\U0001f1f8 \U0001f1e6\U0001f1eb\U0001f1e6\U0001f1f2\U0001f1f8"}#coerce
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"\U0001f1fa\U0001f1f8\U0001f1f7\U0001f1fa\U0001f1f8 \U0001f1e6\U0001f1eb\U0001f1e6\U0001f1f2\U0001f1f8",result:"\U0001f1fa\U0001f1f8\U0001f1f7\U0001f1fa\U0001f1f8 \U0001f1e6\U0001f1eb\U0001f1e6\U0001f1f2\U0001f1f8"}#error
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"\U0001f1fa\U0001f1f8\U0001f1f7\U0001f1fa\U0001f1f8\U0001f1e6",result:"\U0001f1fa\U0001f1f8\U0001f1f7\U0001f1fa\U0001f1f8\U0001f1e6"}#coerce
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"\U0001f1fa\U0001f1f8\U0001f1f7\U0001f1fa\U0001f1f8\U0001f1e6",result:"\U0001f1fa\U0001f1f8\U0001f1f7\U0001f1fa\U0001f1f8\U0001f1e6"}#error
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"\U0001f1fa\U0001f1f8\U0001f1f7\U0001f1fa\U0001f1f8\U0001f1e6\U0001f1eb\U0001f1e6\U0001f1f2",result:"\U0001f1fa\U0001f1f8\U0001f1f7\U0001f1fa\U0001f1f8\U0001f1e6\U0001f1eb\U0001f1e6\U0001f1f2"}#coerce
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"\U0001f1fa\U0001f1f8\U0001f1f7\U0001f1fa\U0001f1f8\U0001f1e6\U0001f1eb\U0001f1e6\U0001f1f2",result:"\U0001f1fa\U0001f1f8\U0001f1f7\U0001f1fa\U0001f1f8\U0001f1e6\U0001f1eb\U0001f1e6\U0001f1f2"}#error
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"\U0001f435 \U0001f648 \U0001f649 \U0001f64a",result:"\U0001f435 \U0001f648 \U0001f649 \U0001f64a"}#coerce
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"\U0001f435 \U0001f648 \U0001f649 \U0001f64a",result:"\U0001f435 \U0001f648 \U0001f649 \U0001f64a"}#error
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"\U0001f469\U0001f3fd",result:"\U0001f469\U0001f3fd"}#coerce
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"\U0001f469\U0001f3fd",result:"\U0001f469\U0001f3fd"}#error
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"\U0001f47e \U0001f647 \U0001f481 \U0001f645 \U0001f646 \U0001f64b \U0001f64e \U0001f64d",result:"\U0001f47e \U0001f647 \U0001f481 \U0001f645 \U0001f646 \U0001f64b \U0001f64e \U0001f64d"}#coerce
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"\U0001f47e \U0001f647 \U0001f481 \U0001f645 \U0001f646 \U0001f64b \U0001f64e \U0001f64d",result:"\U0001f47e \U0001f647 \U0001f481 \U0001f645 \U0001f646 \U0001f64b \U0001f64e \U0001f64d"}#error
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"\U0001f60d",result:"\U0001f60d"}#coerce
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"\U0001f60d",result:"\U0001f60d"}#error
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"\U0001f6be \U0001f192 \U0001f193 \U0001f195 \U0001f196 \U0001f197 \U0001f199 \U0001f3e7",result:"\U0001f6be \U0001f192 \U0001f193 \U0001f195 \U0001f196 \U0001f197 \U0001f199 \U0001f3e7"}#coerce
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"\U0001f6be \U0001f192 \U0001f193 \U0001f195 \U0001f196 \U0001f197 \U0001f199 \U0001f3e7",result:"\U0001f6be \U0001f192 \U0001f193 \U0001f195 \U0001f196 \U0001f197 \U0001f199 \U0001f3e7"}#error
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"\U0002070e\U00020731\U00020779\U00020c53\U00020c78\U00020c96\U00020ccf",result:"\U0002070e\U00020731\U00020779\U00020c53\U00020c78\U00020c96\U00020ccf"}#coerce
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"\U0002070e\U00020731\U00020779\U00020c53\U00020c78\U00020c96\U00020ccf",result:"\U0002070e\U00020731\U00020779\U00020c53\U00020c78\U00020c96\U00020ccf"}#error
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"\u0152\u201e\xb4\u2030\u02c7\xc1\xa8\u02c6\xd8\u220f\u201d\u2019",result:"\u0152\u201e\xb4\u2030\u02c7\xc1\xa8\u02c6\xd8\u220f\u201d\u2019"}#coerce
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"\u0152\u201e\xb4\u2030\u02c7\xc1\xa8\u02c6\xd8\u220f\u201d\u2019",result:"\u0152\u201e\xb4\u2030\u02c7\xc1\xa8\u02c6\xd8\u220f\u201d\u2019"}#error
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"\u0153\u2211\xb4\xae\u2020\xa5\xa8\u02c6\xf8\u03c0\u201c\u2018",result:"\u0152\u2211\xb4\xae\u2020\xa5\xa8\u02c6\xd8\u03a0\u201c\u2018"}#coerce
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"\u0153\u2211\xb4\xae\u2020\xa5\xa8\u02c6\xf8\u03c0\u201c\u2018",result:"\u0152\u2211\xb4\xae\u2020\xa5\xa8\u02c6\xd8\u03a0\u201c\u2018"}#error
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"\u023a",result:"\u023a"}#coerce
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"\u023a",result:"\u023a"}#error
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"\u023e",result:"\u023e"}#coerce
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"\u023e",result:"\u023e"}#error
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"\u03a9\u2248\xe7\u221a\u222b\u02dc\xb5\u2264\u2265\xf7",result:"\u03a9\u2248\xc7\u221a\u222b\u02dc\u039c\u2264\u2265\xf7"}#coerce
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"\u03a9\u2248\xe7\u221a\u222b\u02dc\xb5\u2264\u2265\xf7",result:"\u03a9\u2248\xc7\u221a\u222b\u02dc\u039c\u2264\u2265\xf7"}#error
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"\u0660\u0661\u0662\u0663\u0664\u0665\u0666\u0667\u0668\u0669",result:"\u0660\u0661\u0662\u0663\u0664\u0665\u0666\u0667\u0668\u0669"}#coerce
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"\u0660\u0661\u0662\u0663\u0664\u0665\u0666\u0667\u0668\u0669",result:"\u0660\u0661\u0662\u0663\u0664\u0665\u0666\u0667\u0668\u0669"}#error
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"\u215b\u215c\u215d\u215e",result:"\u215b\u215c\u215d\u215e"}#coerce
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"\u215b\u215c\u215d\u215e",result:"\u215b\u215c\u215d\u215e"}#error
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"\u252c\u2500\u252c\u30ce( \xba _ \xba\u30ce)",result:"\u252c\u2500\u252c\u30ce( \xba _ \xba\u30ce)"}#coerce
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"\u252c\u2500\u252c\u30ce( \xba _ \xba\u30ce)",result:"\u252c\u2500\u252c\u30ce( \xba _ \xba\u30ce)"}#error
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"\u270b\U0001f3ff \U0001f4aa\U0001f3ff \U0001f450\U0001f3ff \U0001f64c\U0001f3ff \U0001f44f\U0001f3ff \U0001f64f\U0001f3ff",result:"\u270b\U0001f3ff \U0001f4aa\U0001f3ff \U0001f450\U0001f3ff \U0001f64c\U0001f3ff \U0001f44f\U0001f3ff \U0001f64f\U0001f3ff"}#coerce
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"\u270b\U0001f3ff \U0001f4aa\U0001f3ff \U0001f450\U0001f3ff \U0001f64c\U0001f3ff \U0001f44f\U0001f3ff \U0001f64f\U0001f3ff",result:"\u270b\U0001f3ff \U0001f4aa\U0001f3ff \U0001f450\U0001f3ff \U0001f64c\U0001f3ff \U0001f44f\U0001f3ff \U0001f64f\U0001f3ff"}#error
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"\u30d1\u30fc\u30c6\u30a3\u30fc\u3078\u884c\u304b\u306a\u3044\u304b",result:"\u30d1\u30fc\u30c6\u30a3\u30fc\u3078\u884c\u304b\u306a\u3044\u304b"}#coerce
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"\u30d1\u30fc\u30c6\u30a3\u30fc\u3078\u884c\u304b\u306a\u3044\u304b",result:"\u30d1\u30fc\u30c6\u30a3\u30fc\u3078\u884c\u304b\u306a\u3044\u304b"}#error
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"\u30fb(\uffe3\u2200\uffe3)\u30fb:*:",result:"\u30fb(\uffe3\u2200\uffe3)\u30fb:*:"}#coerce
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"\u30fb(\uffe3\u2200\uffe3)\u30fb:*:",result:"\u30fb(\uffe3\u2200\uffe3)\u30fb:*:"}#error
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"\u30fd\u0f3c\u0e88\u0644\u035c\u0e88\u0f3d\uff89 \u30fd\u0f3c\u0e88\u0644\u035c\u0e88\u0f3d\uff89",result:"\u30fd\u0f3c\u0e88\u0644\u035c\u0e88\u0f3d\uff89 \u30fd\u0f3c\u0e88\u0644\u035c\u0e88\u0f3d\uff89"}#coerce
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"\u30fd\u0f3c\u0e88\u0644\u035c\u0e88\u0f3d\uff89 \u30fd\u0f3c\u0e88\u0644\u035c\u0e88\u0f3d\uff89",result:"\u30fd\u0f3c\u0e88\u0644\u035c\u0e88\u0f3d\uff89 \u30fd\u0f3c\u0e88\u0644\u035c\u0e88\u0f3d\uff89"}#error
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"\u548c\u88fd\u6f22\u8a9e",result:"\u548c\u88fd\u6f22\u8a9e"}#coerce
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"\u548c\u88fd\u6f22\u8a9e",result:"\u548c\u88fd\u6f22\u8a9e"}#error
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"\u7530\u4e2d\u3055\u3093\u306b\u3042\u3052\u3066\u4e0b\u3055\u3044",result:"\u7530\u4e2d\u3055\u3093\u306b\u3042\u3052\u3066\u4e0b\u3055\u3044"}#coerce
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"\u7530\u4e2d\u3055\u3093\u306b\u3042\u3052\u3066\u4e0b\u3055\u3044",result:"\u7530\u4e2d\u3055\u3093\u306b\u3042\u3052\u3066\u4e0b\u3055\u3044"}#error
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"\u793e\u6703\u79d1\u5b78\u9662\u8a9e\u5b78\u7814\u7a76\u6240",result:"\u793e\u6703\u79d1\u5b78\u9662\u8a9e\u5b78\u7814\u7a76\u6240"}#coerce
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"\u793e\u6703\u79d1\u5b78\u9662\u8a9e\u5b78\u7814\u7a76\u6240",result:"\u793e\u6703\u79d1\u5b78\u9662\u8a9e\u5b78\u7814\u7a76\u6240"}#error
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"\u90e8\u843d\u683c",result:"\u90e8\u843d\u683c"}#coerce
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"\u90e8\u843d\u683c",result:"\u90e8\u843d\u683c"}#error
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"\uc0ac\ud68c\uacfc\ud559\uc6d0 \uc5b4\ud559\uc5f0\uad6c\uc18c",result:"\uc0ac\ud68c\uacfc\ud559\uc6d0 \uc5b4\ud559\uc5f0\uad6c\uc18c"}#coerce
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"\uc0ac\ud68c\uacfc\ud559\uc6d0 \uc5b4\ud559\uc5f0\uad6c\uc18c",result:"\uc0ac\ud68c\uacfc\ud559\uc6d0 \uc5b4\ud559\uc5f0\uad6c\uc18c"}#error
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"\uc6b8\ub780\ubc14\ud1a0\ub974",result:"\uc6b8\ub780\ubc14\ud1a0\ub974"}#coerce
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"\uc6b8\ub780\ubc14\ud1a0\ub974",result:"\uc6b8\ub780\ubc14\ud1a0\ub974"}#error
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"\ucc26\ucc28\ub97c \ud0c0\uace0 \uc628 \ud3b2\uc2dc\ub9e8\uacfc \uc45b\ub2e4\ub9ac \ub620\ubc29\uac01\ud558",result:"\ucc26\ucc28\ub97c \ud0c0\uace0 \uc628 \ud3b2\uc2dc\ub9e8\uacfc \uc45b\ub2e4\ub9ac \ub620\ubc29\uac01\ud558"}#coerce
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"\ucc26\ucc28\ub97c \ud0c0\uace0 \uc628 \ud3b2\uc2dc\ub9e8\uacfc \uc45b\ub2e4\ub9ac \ub620\ubc29\uac01\ud558",result:"\ucc26\ucc28\ub97c \ud0c0\uace0 \uc628 \ud3b2\uc2dc\ub9e8\uacfc \uc45b\ub2e4\ub9ac \ub620\ubc29\uac01\ud558"}#error
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"\uff40\uff68(\xb4\u2200\uff40\u2229",result:"\uff40\uff68(\xb4\u2200\uff40\u2229"}#coerce
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"\uff40\uff68(\xb4\u2200\uff40\u2229",result:"\uff40\uff68(\xb4\u2200\uff40\u2229"}#error
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"\uff9f\uff65\u273f\u30fe\u2572(\uff61\u25d5\u203f\u25d5\uff61)\u2571\u273f\uff65\uff9f",result:"\uff9f\uff65\u273f\u30fe\u2572(\uff61\u25d5\u203f\u25d5\uff61)\u2571\u273f\uff65\uff9f"}#coerce
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"\uff9f\uff65\u273f\u30fe\u2572(\uff61\u25d5\u203f\u25d5\uff61)\u2571\u273f\uff65\uff9f",result:"\uff9f\uff65\u273f\u30fe\u2572(\uff61\u25d5\u203f\u25d5\uff61)\u2571\u273f\uff65\uff9f"}#error
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"\xa1\u2122\xa3\xa2\u221e\xa7\xb6\u2022\xaa\xba\u2013\u2260",result:"\xa1\u2122\xa3\xa2\u221e\xa7\xb6\u2022\xaa\xba\u2013\u2260"}#coerce
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"\xa1\u2122\xa3\xa2\u221e\xa7\xb6\u2022\xaa\xba\u2013\u2260",result:"\xa1\u2122\xa3\xa2\u221e\xa7\xb6\u2022\xaa\xba\u2013\u2260"}#error
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"\xb8\u02db\xc7\u25ca\u0131\u02dc\xc2\xaf\u02d8\xbf",result:"\xb8\u02db\xc7\u25caI\u02dc\xc2\xaf\u02d8\xbf"}#coerce
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"\xb8\u02db\xc7\u25ca\u0131\u02dc\xc2\xaf\u02d8\xbf",result:"\xb8\u02db\xc7\u25caI\u02dc\xc2\xaf\u02d8\xbf"}#error
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"\xc5\xcd\xce\xcf\u02dd\xd3\xd4\uf8ff\xd2\xda\xc6\u2603",result:"\xc5\xcd\xce\xcf\u02dd\xd3\xd4\uf8ff\xd2\xda\xc6\u2603"}#coerce
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"\xc5\xcd\xce\xcf\u02dd\xd3\xd4\uf8ff\xd2\xda\xc6\u2603",result:"\xc5\xcd\xce\xcf\u02dd\xd3\xd4\uf8ff\xd2\xda\xc6\u2603"}#error
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"\xe5\xdf\u2202\u0192\xa9\u02d9\u2206\u02da\xac\u2026\xe6",result:"\xc5SS\u2202\u0191\xa9\u02d9\u2206\u02da\xac\u2026\xc6"}#coerce
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"\xe5\xdf\u2202\u0192\xa9\u02d9\u2206\u02da\xac\u2026\xe6",result:"\xc5SS\u2202\u0191\xa9\u02d9\u2206\u02da\xac\u2026\xc6"}#error
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"__\uff9b(,_,*)",result:"__\uff9b(,_,*)"}#coerce
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"__\uff9b(,_,*)",result:"__\uff9b(,_,*)"}#error
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"`\u2044\u20ac\u2039\u203a\ufb01\ufb02\u2021\xb0\xb7\u201a\u2014\xb1",result:"`\u2044\u20ac\u2039\u203aFIFL\u2021\xb0\xb7\u201a\u2014\xb1"}#coerce
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"`\u2044\u20ac\u2039\u203a\ufb01\ufb02\u2021\xb0\xb7\u201a\u2014\xb1",result:"`\u2044\u20ac\u2039\u203aFIFL\u2021\xb0\xb7\u201a\u2014\xb1"}#error
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"false",result:"FALSE"}#coerce
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"false",result:"FALSE"}#error
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"hasOwnProperty",result:"HASOWNPROPERTY"}#coerce
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"hasOwnProperty",result:"HASOWNPROPERTY"}#error
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"nil",result:"NIL"}#coerce
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"nil",result:"NIL"}#error
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"null",result:"NULL"}#coerce
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"null",result:"NULL"}#error
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"true",result:"TRUE"}#coerce
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"true",result:"TRUE"}#error
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"undef",result:"UNDEF"}#coerce
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"undef",result:"UNDEF"}#error
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"undefined",result:"UNDEFINED"}#coerce
+eval/primitives/functions/upper.ion::upper::upper valid cases{in:"undefined",result:"UNDEFINED"}#error
 eval/primitives/int.ion::int::comparison operators{sql:"-0  <   -0",result:false}#coerce
 eval/primitives/int.ion::int::comparison operators{sql:"-0  <   -0",result:false}#error
 eval/primitives/int.ion::int::comparison operators{sql:"-0  <   1",result:true}#coerce

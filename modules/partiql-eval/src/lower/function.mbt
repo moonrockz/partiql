@@ -32,6 +32,8 @@ fn builtin(id : @ast.Identifier) -> (@plan.Function, Arity)? {
     "ABS" => Some((Abs, Exactly(1)))
     "MOD" => Some((Mod, Exactly(2)))
     "TEXT_REPLACE" => Some((TextReplace, Exactly(3)))
+    "UPPER" => Some((Upper, Exactly(1)))
+    "LOWER" => Some((Lower, Exactly(1)))
     _ => None
   }
 }

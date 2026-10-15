@@ -83,6 +83,7 @@ release when you bump the toolchain.
 | Module | Purpose |
 |--------|---------|
 | [moonrockz/ion](https://mooncakes.io/docs/moonrockz/ion) | Ion data model and text reader. `partiql-value` uses its `IonValue`, `Decimal`, `Timestamp` and `SymbolToken` (see ADR 0003). |
+| [moonbit-community/unicode-data](https://mooncakes.io/docs/moonbit-community/unicode-data) | Unicode Character Database lookups. `partiql-eval` `ops` uses its `case_mapping`, `lowercase`, `uppercase` and `general_category` packages for UPPER and LOWER. Import the specific packages, never the umbrella `moonbit-community/unicode`. |
 | [moonrockz/expect](https://mooncakes.io/docs/moonrockz/expect) | Fluent test assertions |
 
 Module dependencies are declared in the `import` block of each module's

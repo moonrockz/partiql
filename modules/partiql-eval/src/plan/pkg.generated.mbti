@@ -91,6 +91,8 @@ pub(all) enum Function {
   Position
   Overlay
   TextReplace
+  Upper
+  Lower
 } derive(Eq, @debug.Debug)
 pub fn Function::name(Self) -> String
 
