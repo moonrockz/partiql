@@ -35,3 +35,13 @@ test "README GROUP BY example" {
     ),
   )
 }
+
+///|
+/// Mirrors the function example of README.mbt.md. Keep the two in step.
+test "README function example" {
+  let value = @eval.evaluate_text(
+    "UPPER(TRIM('  straße  '))",
+    env=@eval.Bindings::empty(),
+  )
+  @expect.expect(value).to_equal(@value.Value::String("STRASSE"))
+}

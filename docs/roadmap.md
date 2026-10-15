@@ -127,11 +127,17 @@ Its parts, in this order:
   its section 11.2.2 rewrite onto COLL_ over the group. The `eval`
   conformance check passes 5211 of 9960 assertions; 4649 are not
   applicable; 100 fail (see `conformance.md`).
-- **M4d: functions and CAST** (bead `partiql-5se.5`). String, numeric and datetime functions,
-  EXTRACT, DATE_ADD, DATE_DIFF, TRIM, SUBSTRING, POSITION, OVERLAY,
-  OVERLAPS, and CAST in both modes.
+- **M4d1 (done): built-in functions** (bead `partiql-5se.5.1`). CHAR_LENGTH,
+  OCTET_LENGTH, BIT_LENGTH, UPPER and LOWER (full Unicode case mapping),
+  TRIM, SUBSTRING, POSITION, OVERLAY, TEXT_REPLACE, ABS, MOD, SIZE,
+  CARDINALITY, EXISTS, TUPLEUNION and the MAP_ functions (RFC 0104). The
+  `eval` conformance check passes 7287 of 9960 assertions; 2567 are not
+  applicable; 106 fail (see `conformance.md`).
+- **M4d2: CAST** (bead `partiql-5se.5.2`) and **M4d3: datetime functions**
+  (bead `partiql-5se.5.3`): EXTRACT, DATE_ADD, DATE_DIFF, OVERLAPS and the
+  other datetime functions.
 
-M4e and M4c are done. The next part is M4d.
+M4e, M4c and M4d1 are done. The next part is M4d2.
 
 Graph MATCH evaluation and `?` parameters come after M4. A REPL is not part
 of M4.

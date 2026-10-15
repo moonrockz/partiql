@@ -44,6 +44,16 @@ guard value ==
   )
 ```
 
+The built-in functions count Unicode code points and use full case mapping:
+
+```moonbit
+let value = @eval.evaluate_text(
+  "UPPER(TRIM('  straße  '))",
+  env=@eval.Bindings::empty(),
+)
+guard value == @value.Value::String("STRASSE")
+```
+
 Pass `mode=@eval.Mode::Strict` to make a type error raise instead of giving
 `MISSING`.
 
@@ -58,8 +68,11 @@ query: `FROM` (collections, `AT`, `UNPIVOT`, joins), `LET`, `WHERE`,
 operations (`UNION`, `INTERSECT` and `EXCEPT`, with `ALL`, `OUTER` and
 `CORRESPONDING`), `PIVOT`, `TABLE` and `WITH`, and grouping: `GROUP BY`,
 `GROUP AS`, `GROUP ALL`, `HAVING`, the SQL aggregates (`COUNT`, `SUM`, `AVG`,
-`MIN`, `MAX`, `ANY`, `SOME`, `EVERY`) and the `COLL_` functions. Functions
-and `CAST` follow in later releases. A form that is not supported yet raises
+`MIN`, `MAX`, `ANY`, `SOME`, `EVERY`) and the `COLL_` functions. It
+evaluates the built-in functions `CHAR_LENGTH`, `OCTET_LENGTH`, `BIT_LENGTH`,
+`UPPER`, `LOWER`, `TRIM`, `SUBSTRING`, `POSITION`, `OVERLAY`, `TEXT_REPLACE`,
+`ABS`, `MOD`, `SIZE`, `CARDINALITY`, `EXISTS`, `TUPLEUNION` and the `MAP_`
+functions. `CAST` and the datetime functions follow in later releases. A form that is not supported yet raises
 `EvalError::Unsupported`, never a wrong answer.
 
 ## Errors
