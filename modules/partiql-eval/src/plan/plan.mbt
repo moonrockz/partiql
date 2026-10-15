@@ -318,7 +318,7 @@ pub(all) enum Function {
   Abs
   /// [dividend, divisor]
   Mod
-  /// [target] or [target, characters]
+  /// [target] or [characters, target] (source order)
   Trim(@ast.TrimSpec)
   /// [value, start] or [value, start, length]
   Substring

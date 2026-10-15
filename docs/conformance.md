@@ -205,9 +205,10 @@ reasons:
   `123.456 IS DECIMAL(7,3)` expect results that do not agree with the rules for
   precision and scale that the other cases of the corpus follow.
 - **DATE against Ion timestamp (2 ids).** "unpivot map with date keys" gives
-  DATE keys, and the corpus writes them as Ion timestamps. "map_keys with
-  date keys" fails for the same reason since M4d1 (counted under M4d1). The comparison of
+  DATE keys, and the corpus writes them as Ion timestamps. The comparison of
   the harness does not treat a DATE and a midnight UTC TIMESTAMP as equal.
+  "map_keys with date keys" fails for the same reason since M4d1 (counted
+  under M4d1).
 - **Ambiguous names in strict mode (3 ids).** "repeated field on Ion struct is
   ambiguous" (2 ids) and "path expression with ambiguous table alias
   (lowercase, unquoted)" expect a failure when two names differ only in case.

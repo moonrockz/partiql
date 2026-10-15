@@ -227,7 +227,8 @@ pub fn text_replace(args : Array[@value.Value]) -> @value.Value raise OpFailure 
 
 ///|
 /// `TRIM([spec] [chars] FROM v)`: removes code points of the set `chars`
-/// (default U+0020) from the chosen ends. Arguments: [v] or [v, chars].
+/// (default U+0020) from the chosen ends. Arguments in source order: [v] or
+/// [chars, v].
 pub fn trim(
   spec : @ast.TrimSpec,
   args : Array[@value.Value],
@@ -235,7 +236,7 @@ pub fn trim(
   apply("TRIM", Array::make(args.length(), Param::Text), args, xs => {
     let (v, set) = match xs {
       [String(v)] => (v, [' '])
-      [String(v), String(c)] => (v, chars_of(c))
+      [String(c), String(v)] => (v, chars_of(c))
       _ => raise TypeFailure("TRIM of a value that is not a string")
     }
     let cs = chars_of(v)

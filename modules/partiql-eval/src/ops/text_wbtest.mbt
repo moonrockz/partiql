@@ -37,21 +37,21 @@ test "TRIM removes a set of code points" {
   @expect.expect_all(soft => {
     soft.expect(trim(Both, [s("  foobar  ")])).to_equal(s("foobar"))
     soft.expect(trim(Both, [s("\tfoobar\t")])).to_equal(s("\tfoobar\t"))
-    soft.expect(trim(Both, [s("111112a1212121211"), s("12")])).to_equal(s("a"))
+    soft.expect(trim(Both, [s("12"), s("111112a1212121211")])).to_equal(s("a"))
     soft
-    .expect(trim(Leading, [s("111112a1212121211"), s("12")]))
+    .expect(trim(Leading, [s("12"), s("111112a1212121211")]))
     .to_equal(s("a1212121211"))
     soft
-    .expect(trim(Trailing, [s("111112a1212121211"), s("12")]))
+    .expect(trim(Trailing, [s("12"), s("111112a1212121211")]))
     .to_equal(s("111112a"))
     soft
-    .expect(trim(Both, [s("👶🏻👩👶🏻"), s("👶🏻")]))
+    .expect(trim(Both, [s("👶🏻"), s("👶🏻👩👶🏻")]))
     .to_equal(s("👩"))
     soft.expect(trim(Both, [s(" "), s(" ")])).to_equal(s(""))
-    soft.expect(trim(Both, [s("abc"), s("")])).to_equal(s("abc"))
-    soft.expect(trim(Leading, [Missing, Null])).to_equal(Missing)
-    soft.expect(trim(Leading, [Null, s("x")])).to_equal(Null)
-    soft.expect(failure(() => trim(Both, [s("test"), Int(1)]))).to_equal("type")
+    soft.expect(trim(Both, [s(""), s("abc")])).to_equal(s("abc"))
+    soft.expect(trim(Leading, [Null, Missing])).to_equal(Missing)
+    soft.expect(trim(Leading, [s("x"), Null])).to_equal(Null)
+    soft.expect(failure(() => trim(Both, [Int(1), s("test")]))).to_equal("type")
   })
 }
 

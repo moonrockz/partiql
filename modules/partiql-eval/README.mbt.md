@@ -72,8 +72,9 @@ operations (`UNION`, `INTERSECT` and `EXCEPT`, with `ALL`, `OUTER` and
 evaluates the built-in functions `CHAR_LENGTH`, `OCTET_LENGTH`, `BIT_LENGTH`,
 `UPPER`, `LOWER`, `TRIM`, `SUBSTRING`, `POSITION`, `OVERLAY`, `TEXT_REPLACE`,
 `ABS`, `MOD`, `SIZE`, `CARDINALITY`, `EXISTS`, `TUPLEUNION` and the `MAP_`
-functions. `CAST` and the datetime functions follow in later releases. A form that is not supported yet raises
-`EvalError::Unsupported`, never a wrong answer.
+functions. `CAST` and the datetime functions follow in later releases. A
+form that is not supported yet raises `EvalError::Unsupported`, never a wrong
+answer.
 
 ## Errors
 

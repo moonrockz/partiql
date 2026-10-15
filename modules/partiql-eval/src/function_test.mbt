@@ -209,3 +209,46 @@ test "UPPER and LOWER end to end; a symbol gives a string" {
     soft.expect(ev("upper(1)")).to_equal(Missing)
   })
 }
+
+///|
+test "nested calls just under the parser limit evaluate" {
+  // The parser allows 100 levels of nesting; 98 calls run through the
+  // lowering and the interpreter (no stack overflow on any target).
+  let n = 98
+  let abs = "ABS(".repeat(n) + "-1" + ")".repeat(n)
+  let upper = "UPPER(".repeat(n) + "'a'" + ")".repeat(n)
+  let trim = "TRIM(".repeat(n) + "' a '" + ")".repeat(n)
+  @expect.expect_all(soft => {
+    for mode in [@eval.Mode::Permissive, Strict] {
+      soft.expect(ev(abs, mode~)).to_equal(Int(1))
+      soft.expect(ev(upper, mode~)).to_equal(String("A"))
+      soft.expect(ev(trim, mode~)).to_equal(String("a"))
+    }
+  })
+}
+
+///|
+/// The message of a strict-mode type error.
+fn type_error_message(source : String) -> String {
+  try ev(source, mode=Strict) catch {
+    TypeError(message~, ..) => message
+    e => "other error: \{@debug.to_string(e)}"
+  } noraise {
+    v => "no error: \{@debug.to_string(v)}"
+  }
+}
+
+///|
+test "TRIM type errors number the arguments in source order" {
+  @expect.expect_all(soft => {
+    soft
+    .expect(type_error_message("trim(1 from 'a')"))
+    .to_equal("argument 1 of TRIM has the wrong type")
+    soft
+    .expect(type_error_message("trim(leading 'a' from 1)"))
+    .to_equal("argument 2 of TRIM has the wrong type")
+    soft
+    .expect(type_error_message("trim(1)"))
+    .to_equal("argument 1 of TRIM has the wrong type")
+  })
+}

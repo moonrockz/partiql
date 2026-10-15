@@ -444,7 +444,7 @@ fn lower_at(
     Trim(spec~, chars~, x) =>
       special_call(
         Trim(spec.unwrap_or(Both)),
-        [x] + optional(chars),
+        optional(chars) + [x],
         scope,
         depth,
         span,
