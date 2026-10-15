@@ -39,6 +39,8 @@ priv enum Aggregates {
 ///|
 /// The grouped context of a query.
 priv struct Grouped {
+  /// The canonical form of each key expression and its key name.
+  keys : Array[(@ast.Expr, String)]
   /// The FROM and LET variables that are not keys: an aggregate argument
   /// binds them per member (the `p.` of spec section 11.2.2).
   members : Array[String]
@@ -486,6 +488,34 @@ fn projection_exprs(p : @ast.Projection) -> Array[@ast.Expr] {
 }
 
 ///|
+/// The expression of the SELECT item called `id`, when `id` names no FROM or
+/// LET variable of the query (spec section 11.2.4: GROUP BY may name a
+/// SELECT alias; a variable comes first).
+fn select_alias(
+  id : @ast.Identifier,
+  projection : @ast.Projection,
+  names : Array[String],
+) -> @ast.Expr? {
+  let same = (name : String) => {
+    if id.delimited {
+      name == id.text
+    } else {
+      name.to_lower() == id.text.to_lower()
+    }
+  }
+  if names.iter().any(same) {
+    return None
+  }
+  guard projection is Items(items) else { return None }
+  for item in items {
+    if item is Expr(e, as_=Some(item_as), ..) && same(item_as.text) {
+      return Some(e)
+    }
+  }
+  None
+}
+
+///|
 /// The GROUP BY and HAVING of a grouped query over `rel`: the relation, the
 /// grouped scope (keys and GROUP AS over the outer `scope`, spec section
 /// 11.2), and the names `SELECT *` outputs. `names` are the FROM and LET
@@ -504,10 +534,20 @@ fn group_at(
   }
   let keys : Array[(String, @plan.Expr)] = []
   let visible = []
+  let forms : Array[(@ast.Expr, String)] = []
   for i, k in key_items {
-    let name = match k.as_ {
-      Some(id) => id.text
-      None => implicit_name(k.expr, i)
+    let (expr, select_name) = match k.expr.kind {
+      VarRef(id, qualified=false) =>
+        match select_alias(id, s.projection, names) {
+          Some(e) => (e, Some(id.text))
+          None => (k.expr, None)
+        }
+      _ => (k.expr, None)
+    }
+    let name = match (k.as_, select_name) {
+      (Some(id), _) => id.text
+      (None, Some(a)) => a
+      (None, None) => implicit_name(k.expr, i)
     }
     if visible.contains(name) {
       raise DataError(
@@ -516,7 +556,8 @@ fn group_at(
       )
     }
     visible.push(name)
-    keys.push((name, lower_at(k.expr, inner, depth)))
+    keys.push((name, lower_at(expr, inner, depth)))
+    forms.push((expr.canonical(), name))
   }
   let group_as : @ast.Identifier? = match s.group_by {
     Some(g) => g.group_as
@@ -543,7 +584,10 @@ fn group_at(
     !visible.contains(name) || (group_as is Some(id) && id.text == name)
   })
   let base = { ..scope.inner(visible), grouped: true, }
-  let gscope = { ..base, aggregates: Allowed({ members: free, group, base, }), }
+  let gscope = {
+    ..base,
+    aggregates: Allowed({ keys: forms, members: free, group, base, }),
+  }
   let span = match s.group_by {
     Some(g) => g.span
     None => s.span

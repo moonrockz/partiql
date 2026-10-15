@@ -193,6 +193,11 @@ fn lower_chain(
   let links : Array[Link] = []
   let mut leaf = e
   while true {
+    // A link that is a key variable stops the walk (`t.a + 1 + 1` finds the
+    // key `t.a + 1`).
+    if !links.is_empty() && key_variable(leaf, scope) is Some(_) {
+      break
+    }
     match leaf.kind {
       Binary(op, l, r) => {
         links.push(BinaryLink(op, l, r, leaf.span))
@@ -282,6 +287,9 @@ fn lower_at(
     raise DataError(message="expression is too deep", span~)
   }
   let depth = depth + 1
+  if key_variable(e, scope) is Some(name) {
+    return Local(name, span)
+  }
   match e.kind {
     Lit(Ion(_, v)) if depth + ion_depth(v) > max_depth =>
       raise DataError(message="expression is too deep", span~)

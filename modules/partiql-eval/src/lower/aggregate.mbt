@@ -191,3 +191,23 @@ fn contains_aggregate(roots : Array[@ast.Expr]) -> Bool {
   }
   false
 }
+
+///|
+/// The key variable that `e` repeats, in the SELECT, HAVING or ORDER BY of a
+/// grouped query (spec section 11.2.1). A name that already resolves (a key,
+/// GROUP AS, an output name, an outer variable) keeps its meaning.
+fn key_variable(e : @ast.Expr, scope : Scope) -> String? {
+  guard scope.aggregates is Allowed(g) && !g.keys.is_empty() else {
+    return None
+  }
+  if e.kind is VarRef(id, ..) && scope.resolve(id) is Some(_) {
+    return None
+  }
+  let form = e.canonical()
+  for key in g.keys {
+    if key.0 == form {
+      return Some(key.1)
+    }
+  }
+  None
+}

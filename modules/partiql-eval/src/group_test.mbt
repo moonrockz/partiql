@@ -285,3 +285,150 @@ test "static errors of aggregates" {
     }
   })
 }
+
+///|
+test "a repeated GROUP BY expression is its key variable" {
+  @expect.expect_all(soft => {
+    soft
+    .expect(
+      ev("SELECT t.A, MAX(T.b) FROM [{'a': 1, 'b': 2}] AS t GROUP BY T.a"),
+    )
+    .to_equal(bag_of([tuple([("A", Int(1)), ("_1", Int(2))])]))
+    soft
+    .expect(
+      ev("SELECT t.a + 1 AS n FROM [{'a': 1}, {'a': 1}] AS t GROUP BY t.a + 1"),
+    )
+    .to_equal(bag_of([tuple([("n", Int(2))])]))
+    soft
+    .expect(ev("SELECT t.a + 1 + 1 AS n FROM [{'a': 1}] AS t GROUP BY t.a + 1"))
+    .to_equal(bag_of([tuple([("n", Int(3))])]))
+    soft
+    .expect(ev("SELECT s.rep, SUM(s.n) AS t FROM \{sales} AS s GROUP BY s.rep"))
+    .to_equal(
+      bag_of([
+        tuple([("rep", String("a")), ("t", Int(30))]),
+        tuple([("rep", String("b")), ("t", Int(5))]),
+      ]),
+    )
+    soft
+    .expect(ev("SELECT VALUE a FROM [{'a': 1}, {'a': 2}] GROUP BY a"))
+    .to_equal(bag_of([Int(1), Int(2)]))
+  })
+}
+
+///|
+test "GROUP BY can name a SELECT alias" {
+  @expect.expect_all(soft => {
+    soft
+    .expect(
+      ev(
+        "SELECT t.a * 10 AS tag, COUNT(*) AS c FROM [{'a': 1}, {'a': 1}, {'a': 2}] AS t GROUP BY tag",
+      ),
+    )
+    .to_equal(
+      bag_of([
+        tuple([("tag", Int(10)), ("c", Int(2))]),
+        tuple([("tag", Int(20)), ("c", Int(1))]),
+      ]),
+    )
+    // A FROM variable wins over a SELECT alias.
+    soft
+    .expect(ev("SELECT 0 AS t, COUNT(*) AS c FROM [1, 1, 2] AS t GROUP BY t"))
+    .to_equal(
+      bag_of([
+        tuple([("t", Int(0)), ("c", Int(2))]),
+        tuple([("t", Int(0)), ("c", Int(1))]),
+      ]),
+    )
+    // A SELECT alias wins over an implicit attribute (spec M4c §3.5):
+    // here the key is COUNT(*), an aggregate in GROUP BY.
+    soft
+    .expect_call(() => ev("SELECT COUNT(*) AS a FROM [{'a': 1}] GROUP BY a"))
+    .to_raise_matching(
+      e => e is @eval.EvalError::DataError(..),
+      description="DataError",
+    )
+  })
+}
+
+///|
+test "ORDER BY in a grouped query" {
+  let rows = "[{'s': 1, 'n': 5}, {'s': 2, 'n': 1}, {'s': 1, 'n': 7}, {'s': 3, 'n': 2}]"
+  @expect.expect_all(soft => {
+    soft
+    .expect(
+      ev("SELECT s, MAX(n) AS m FROM \{rows} GROUP BY s ORDER BY MAX(n) DESC"),
+    )
+    .to_equal(
+      List([
+        tuple([("s", Int(1)), ("m", Int(7))]),
+        tuple([("s", Int(3)), ("m", Int(2))]),
+        tuple([("s", Int(2)), ("m", Int(1))]),
+      ]),
+    )
+    soft
+    .expect(ev("SELECT s FROM \{rows} GROUP BY s ORDER BY COUNT(n), s"))
+    .to_equal(
+      List([
+        tuple([("s", Int(2))]),
+        tuple([("s", Int(3))]),
+        tuple([("s", Int(1))]),
+      ]),
+    )
+    // Review focus 3: the output alias wins over the key for a bare name.
+    soft
+    .expect(
+      ev(
+        "SELECT COUNT(*) AS a FROM [{'a': 1}, {'a': 1}, {'a': 2}] AS t GROUP BY t.a ORDER BY a",
+      ),
+    )
+    .to_equal(List([tuple([("a", Int(1))]), tuple([("a", Int(2))])]))
+    soft
+    .expect(ev("SELECT s FROM \{rows} GROUP BY s ORDER BY s LIMIT 1 OFFSET 1"))
+    .to_equal(List([tuple([("s", Int(2))])]))
+  })
+}
+
+///|
+test "subqueries and grouped queries in other positions" {
+  @expect.expect_all(soft => {
+    // Review focus 4: a subquery that reads GROUP AS, and one with its own
+    // aggregate.
+    soft
+    .expect(
+      ev(
+        "SELECT k, (SELECT VALUE v.t.b FROM g AS v) AS bs FROM [{'a': 1, 'b': 2}, {'a': 1, 'b': 3}] AS t GROUP BY t.a AS k GROUP AS g",
+      ),
+    )
+    .to_equal(
+      bag_of([tuple([("k", Int(1)), ("bs", bag_of([Int(2), Int(3)]))])]),
+    )
+    soft
+    .expect(
+      ev(
+        "SELECT VALUE (SELECT VALUE SUM(o) FROM [1, 2] AS i) FROM [10, 20] AS o",
+      ),
+    )
+    .to_equal(bag_of([bag_of([Int(20)]), bag_of([Int(40)])]))
+    // Review focus 5: grouped queries in a set operation, a WITH and a FROM.
+    soft
+    .expect(
+      ev(
+        "(SELECT VALUE COUNT(*) FROM [1]) OUTER UNION ALL (SELECT VALUE COUNT(*) FROM [1, 2])",
+      ),
+    )
+    .to_equal(bag_of([Int(1), Int(2)]))
+    soft
+    .expect(
+      ev(
+        "WITH c AS (SELECT VALUE COUNT(*) FROM [1, 2]) SELECT VALUE x FROM c AS x",
+      ),
+    )
+    .to_equal(bag_of([Int(2)]))
+    soft
+    .expect(
+      ev("SELECT VALUE x FROM (SELECT VALUE SUM(y) FROM [1, 2] AS y) AS x"),
+    )
+    .to_equal(bag_of([Int(3)]))
+  })
+}
