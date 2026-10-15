@@ -9,6 +9,8 @@ import {
 }
 
 // Values
+pub fn abs(Array[@partiql-value.Value]) -> @partiql-value.Value raise OpFailure
+
 pub fn add(@partiql-value.Value, @partiql-value.Value) -> @partiql-value.Value raise OpFailure
 
 pub fn all_elements(@partiql-value.Value) -> Array[@partiql-value.Value] raise OpFailure
@@ -74,6 +76,8 @@ pub fn map_values(Array[@partiql-value.Value]) -> @partiql-value.Value raise OpF
 pub fn max_values(Iter[@partiql-value.Value], distinct~ : Bool) -> @partiql-value.Value raise OpFailure
 
 pub fn min_values(Iter[@partiql-value.Value], distinct~ : Bool) -> @partiql-value.Value raise OpFailure
+
+pub fn modulo(Array[@partiql-value.Value]) -> @partiql-value.Value raise OpFailure
 
 pub fn mul(@partiql-value.Value, @partiql-value.Value) -> @partiql-value.Value raise OpFailure
 

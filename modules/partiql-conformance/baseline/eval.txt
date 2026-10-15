@@ -91,6 +91,30 @@ eval-equiv/spec-tests.ion::section-6::equiv tupleunion with select list[0]#coerc
 eval-equiv/spec-tests.ion::section-6::equiv tupleunion with select list[0]#error
 eval-equiv/spec-tests.ion::section-6::equiv tupleunion with select list[1]#coerce
 eval-equiv/spec-tests.ion::section-6::equiv tupleunion with select list[1]#error
+eval/ion/primitives/functions/abs.ion::abs::ABS(`+inf`) special value#coerce
+eval/ion/primitives/functions/abs.ion::abs::ABS(`+inf`) special value#error
+eval/ion/primitives/functions/abs.ion::abs::ABS(`-0.0000`) preserve scale#coerce
+eval/ion/primitives/functions/abs.ion::abs::ABS(`-0.0000`) preserve scale#error
+eval/ion/primitives/functions/abs.ion::abs::ABS(`-0.0d1`)#coerce
+eval/ion/primitives/functions/abs.ion::abs::ABS(`-0.0d1`)#error
+eval/ion/primitives/functions/abs.ion::abs::ABS(`-0.`)#coerce
+eval/ion/primitives/functions/abs.ion::abs::ABS(`-0.`)#error
+eval/ion/primitives/functions/abs.ion::abs::ABS(`-0d-0`)#coerce
+eval/ion/primitives/functions/abs.ion::abs::ABS(`-0d-0`)#error
+eval/ion/primitives/functions/abs.ion::abs::ABS(`-0d0`)#coerce
+eval/ion/primitives/functions/abs.ion::abs::ABS(`-0d0`)#error
+eval/ion/primitives/functions/abs.ion::abs::ABS(`-1d0`)#coerce
+eval/ion/primitives/functions/abs.ion::abs::ABS(`-1d0`)#error
+eval/ion/primitives/functions/abs.ion::abs::ABS(`-1e0`)#coerce
+eval/ion/primitives/functions/abs.ion::abs::ABS(`-1e0`)#error
+eval/ion/primitives/functions/abs.ion::abs::ABS(`-inf`) special value#coerce
+eval/ion/primitives/functions/abs.ion::abs::ABS(`-inf`) special value#error
+eval/ion/primitives/functions/abs.ion::abs::ABS(`1d0`) Ion DECIMAL#coerce
+eval/ion/primitives/functions/abs.ion::abs::ABS(`1d0`) Ion DECIMAL#error
+eval/ion/primitives/functions/abs.ion::abs::ABS(`1e0`) Ion FLOAT#coerce
+eval/ion/primitives/functions/abs.ion::abs::ABS(`1e0`) Ion FLOAT#error
+eval/ion/primitives/functions/abs.ion::abs::ABS(`nan`) special value#coerce
+eval/ion/primitives/functions/abs.ion::abs::ABS(`nan`) special value#error
 eval/ion/primitives/functions/exists.ion::exists::exists valid cases{param:"`()`",result:false}#coerce
 eval/ion/primitives/functions/exists.ion::exists::exists valid cases{param:"`()`",result:false}#error
 eval/ion/primitives/functions/exists.ion::exists::exists valid cases{param:"`(1)`",result:true}#coerce
@@ -561,6 +585,102 @@ eval/primitives/date-time.ion::regression::dateTimePartsAsStructFieldNames#coerc
 eval/primitives/date-time.ion::regression::dateTimePartsAsStructFieldNames#error
 eval/primitives/date-time.ion::regression::dateTimePartsAsVariableNames#coerce
 eval/primitives/date-time.ion::regression::dateTimePartsAsVariableNames#error
+eval/primitives/functions/abs.ion::abs::ABS('foo')#coerce
+eval/primitives/functions/abs.ion::abs::ABS('foo')#error
+eval/primitives/functions/abs.ion::abs::ABS(-1)#coerce
+eval/primitives/functions/abs.ion::abs::ABS(-1)#error
+eval/primitives/functions/abs.ion::abs::ABS(-1.0)#coerce
+eval/primitives/functions/abs.ion::abs::ABS(-1.0)#error
+eval/primitives/functions/abs.ion::abs::ABS(-1.9999999999999999999900)#coerce
+eval/primitives/functions/abs.ion::abs::ABS(-1.9999999999999999999900)#error
+eval/primitives/functions/abs.ion::abs::ABS(1) INT#coerce
+eval/primitives/functions/abs.ion::abs::ABS(1) INT#error
+eval/primitives/functions/abs.ion::abs::ABS(1.0) DECIMAL#coerce
+eval/primitives/functions/abs.ion::abs::ABS(1.0) DECIMAL#error
+eval/primitives/functions/abs.ion::abs::ABS(1.9999999999999999999900)#coerce
+eval/primitives/functions/abs.ion::abs::ABS(1.9999999999999999999900)#error
+eval/primitives/functions/abs.ion::abs::ABS(INTERVAL '+1-6' YEAR TO MONTH)#coerce
+eval/primitives/functions/abs.ion::abs::ABS(INTERVAL '+1-6' YEAR TO MONTH)#error
+eval/primitives/functions/abs.ion::abs::ABS(INTERVAL '-1 2' DAY TO HOUR)#coerce
+eval/primitives/functions/abs.ion::abs::ABS(INTERVAL '-1 2' DAY TO HOUR)#error
+eval/primitives/functions/abs.ion::abs::ABS(INTERVAL '-1 2:30' DAY TO MINUTE)#coerce
+eval/primitives/functions/abs.ion::abs::ABS(INTERVAL '-1 2:30' DAY TO MINUTE)#error
+eval/primitives/functions/abs.ion::abs::ABS(INTERVAL '-1 2:30:45.567' DAY TO SECOND)#coerce
+eval/primitives/functions/abs.ion::abs::ABS(INTERVAL '-1 2:30:45.567' DAY TO SECOND)#error
+eval/primitives/functions/abs.ion::abs::ABS(INTERVAL '-1-6' YEAR TO MONTH)#coerce
+eval/primitives/functions/abs.ion::abs::ABS(INTERVAL '-1-6' YEAR TO MONTH)#error
+eval/primitives/functions/abs.ion::abs::ABS(INTERVAL '-100 10:30' DAY(3) TO MINUTE)#coerce
+eval/primitives/functions/abs.ion::abs::ABS(INTERVAL '-100 10:30' DAY(3) TO MINUTE)#error
+eval/primitives/functions/abs.ion::abs::ABS(INTERVAL '-100 10:30:45.123456' DAY(3) TO SECOND(6))#coerce
+eval/primitives/functions/abs.ion::abs::ABS(INTERVAL '-100 10:30:45.123456' DAY(3) TO SECOND(6))#error
+eval/primitives/functions/abs.ion::abs::ABS(INTERVAL '-100' DAY(3))#coerce
+eval/primitives/functions/abs.ion::abs::ABS(INTERVAL '-100' DAY(3))#error
+eval/primitives/functions/abs.ion::abs::ABS(INTERVAL '-100' MONTH(3))#coerce
+eval/primitives/functions/abs.ion::abs::ABS(INTERVAL '-100' MONTH(3))#error
+eval/primitives/functions/abs.ion::abs::ABS(INTERVAL '-100-6' YEAR(3) TO MONTH)#coerce
+eval/primitives/functions/abs.ion::abs::ABS(INTERVAL '-100-6' YEAR(3) TO MONTH)#error
+eval/primitives/functions/abs.ion::abs::ABS(INTERVAL '-123.456789' SECOND(3,6))#coerce
+eval/primitives/functions/abs.ion::abs::ABS(INTERVAL '-123.456789' SECOND(3,6))#error
+eval/primitives/functions/abs.ion::abs::ABS(INTERVAL '-2:30' HOUR TO MINUTE)#coerce
+eval/primitives/functions/abs.ion::abs::ABS(INTERVAL '-2:30' HOUR TO MINUTE)#error
+eval/primitives/functions/abs.ion::abs::ABS(INTERVAL '-2:30:45.789' HOUR TO SECOND)#coerce
+eval/primitives/functions/abs.ion::abs::ABS(INTERVAL '-2:30:45.789' HOUR TO SECOND)#error
+eval/primitives/functions/abs.ion::abs::ABS(INTERVAL '-3' HOUR)#coerce
+eval/primitives/functions/abs.ion::abs::ABS(INTERVAL '-3' HOUR)#error
+eval/primitives/functions/abs.ion::abs::ABS(INTERVAL '-30' MINUTE)#coerce
+eval/primitives/functions/abs.ion::abs::ABS(INTERVAL '-30' MINUTE)#error
+eval/primitives/functions/abs.ion::abs::ABS(INTERVAL '-30:45.123' MINUTE TO SECOND)#coerce
+eval/primitives/functions/abs.ion::abs::ABS(INTERVAL '-30:45.123' MINUTE TO SECOND)#error
+eval/primitives/functions/abs.ion::abs::ABS(INTERVAL '-45.123' SECOND)#coerce
+eval/primitives/functions/abs.ion::abs::ABS(INTERVAL '-45.123' SECOND)#error
+eval/primitives/functions/abs.ion::abs::ABS(INTERVAL '-5' DAY)#coerce
+eval/primitives/functions/abs.ion::abs::ABS(INTERVAL '-5' DAY)#error
+eval/primitives/functions/abs.ion::abs::ABS(INTERVAL '-5' YEAR)#coerce
+eval/primitives/functions/abs.ion::abs::ABS(INTERVAL '-5' YEAR)#error
+eval/primitives/functions/abs.ion::abs::ABS(INTERVAL '0 0:0:0' DAY TO SECOND)#coerce
+eval/primitives/functions/abs.ion::abs::ABS(INTERVAL '0 0:0:0' DAY TO SECOND)#error
+eval/primitives/functions/abs.ion::abs::ABS(INTERVAL '0-0' YEAR TO MONTH)#coerce
+eval/primitives/functions/abs.ion::abs::ABS(INTERVAL '0-0' YEAR TO MONTH)#error
+eval/primitives/functions/abs.ion::abs::ABS(INTERVAL '1 2' DAY TO HOUR)#coerce
+eval/primitives/functions/abs.ion::abs::ABS(INTERVAL '1 2' DAY TO HOUR)#error
+eval/primitives/functions/abs.ion::abs::ABS(INTERVAL '1 2:30' DAY TO MINUTE)#coerce
+eval/primitives/functions/abs.ion::abs::ABS(INTERVAL '1 2:30' DAY TO MINUTE)#error
+eval/primitives/functions/abs.ion::abs::ABS(INTERVAL '1 2:30:45.567' DAY TO SECOND)#coerce
+eval/primitives/functions/abs.ion::abs::ABS(INTERVAL '1 2:30:45.567' DAY TO SECOND)#error
+eval/primitives/functions/abs.ion::abs::ABS(INTERVAL '1-6' YEAR TO MONTH)#coerce
+eval/primitives/functions/abs.ion::abs::ABS(INTERVAL '1-6' YEAR TO MONTH)#error
+eval/primitives/functions/abs.ion::abs::ABS(INTERVAL '100 10:30' DAY(3) TO MINUTE)#coerce
+eval/primitives/functions/abs.ion::abs::ABS(INTERVAL '100 10:30' DAY(3) TO MINUTE)#error
+eval/primitives/functions/abs.ion::abs::ABS(INTERVAL '100 10:30:45.123456' DAY(3) TO SECOND(6))#coerce
+eval/primitives/functions/abs.ion::abs::ABS(INTERVAL '100 10:30:45.123456' DAY(3) TO SECOND(6))#error
+eval/primitives/functions/abs.ion::abs::ABS(INTERVAL '100' DAY(3))#coerce
+eval/primitives/functions/abs.ion::abs::ABS(INTERVAL '100' DAY(3))#error
+eval/primitives/functions/abs.ion::abs::ABS(INTERVAL '100' MONTH(3))#coerce
+eval/primitives/functions/abs.ion::abs::ABS(INTERVAL '100' MONTH(3))#error
+eval/primitives/functions/abs.ion::abs::ABS(INTERVAL '100-6' YEAR(3) TO MONTH)#coerce
+eval/primitives/functions/abs.ion::abs::ABS(INTERVAL '100-6' YEAR(3) TO MONTH)#error
+eval/primitives/functions/abs.ion::abs::ABS(INTERVAL '123.456789' SECOND(3,6))#coerce
+eval/primitives/functions/abs.ion::abs::ABS(INTERVAL '123.456789' SECOND(3,6))#error
+eval/primitives/functions/abs.ion::abs::ABS(INTERVAL '2:30' HOUR TO MINUTE)#coerce
+eval/primitives/functions/abs.ion::abs::ABS(INTERVAL '2:30' HOUR TO MINUTE)#error
+eval/primitives/functions/abs.ion::abs::ABS(INTERVAL '2:30:45.789' HOUR TO SECOND)#coerce
+eval/primitives/functions/abs.ion::abs::ABS(INTERVAL '2:30:45.789' HOUR TO SECOND)#error
+eval/primitives/functions/abs.ion::abs::ABS(INTERVAL '3' HOUR)#coerce
+eval/primitives/functions/abs.ion::abs::ABS(INTERVAL '3' HOUR)#error
+eval/primitives/functions/abs.ion::abs::ABS(INTERVAL '30' MINUTE)#coerce
+eval/primitives/functions/abs.ion::abs::ABS(INTERVAL '30' MINUTE)#error
+eval/primitives/functions/abs.ion::abs::ABS(INTERVAL '30:45.123' MINUTE TO SECOND)#coerce
+eval/primitives/functions/abs.ion::abs::ABS(INTERVAL '30:45.123' MINUTE TO SECOND)#error
+eval/primitives/functions/abs.ion::abs::ABS(INTERVAL '45.123' SECOND)#coerce
+eval/primitives/functions/abs.ion::abs::ABS(INTERVAL '45.123' SECOND)#error
+eval/primitives/functions/abs.ion::abs::ABS(INTERVAL '5' DAY)#coerce
+eval/primitives/functions/abs.ion::abs::ABS(INTERVAL '5' DAY)#error
+eval/primitives/functions/abs.ion::abs::ABS(INTERVAL '5' YEAR)#coerce
+eval/primitives/functions/abs.ion::abs::ABS(INTERVAL '5' YEAR)#error
+eval/primitives/functions/abs.ion::abs::ABS(MISSING) null propogation#coerce
+eval/primitives/functions/abs.ion::abs::ABS(MISSING) null propogation#error
+eval/primitives/functions/abs.ion::abs::ABS(NULL) null propogation#coerce
+eval/primitives/functions/abs.ion::abs::ABS(NULL) null propogation#error
 eval/primitives/functions/bit_length.ion::bit_length::BIT_LENGTH MISSING#coerce
 eval/primitives/functions/bit_length.ion::bit_length::BIT_LENGTH MISSING#error
 eval/primitives/functions/bit_length.ion::bit_length::BIT_LENGTH NULL#coerce
@@ -1225,6 +1345,44 @@ eval/primitives/functions/exists.ion::exists::exists valid cases{param:"[null]",
 eval/primitives/functions/exists.ion::exists::exists valid cases{param:"[null]",result:true}#error
 eval/primitives/functions/exists.ion::exists::exists valid cases{param:"{}",result:false}#coerce
 eval/primitives/functions/exists.ion::exists::exists valid cases{param:"{}",result:false}#error
+eval/primitives/functions/mod.ion::mod::MOD('some string', 3)#coerce
+eval/primitives/functions/mod.ion::mod::MOD('some string', 3)#error
+eval/primitives/functions/mod.ion::mod::MOD('some string', MISSING)#coerce
+eval/primitives/functions/mod.ion::mod::MOD('some string', MISSING)#error
+eval/primitives/functions/mod.ion::mod::MOD('some string', NULL)#coerce
+eval/primitives/functions/mod.ion::mod::MOD('some string', NULL)#error
+eval/primitives/functions/mod.ion::mod::MOD(-17, 4)#coerce
+eval/primitives/functions/mod.ion::mod::MOD(-17, 4)#error
+eval/primitives/functions/mod.ion::mod::MOD(1, 1)#coerce
+eval/primitives/functions/mod.ion::mod::MOD(1, 1)#error
+eval/primitives/functions/mod.ion::mod::MOD(10, 1)#coerce
+eval/primitives/functions/mod.ion::mod::MOD(10, 1)#error
+eval/primitives/functions/mod.ion::mod::MOD(10, 3)#coerce
+eval/primitives/functions/mod.ion::mod::MOD(10, 3)#error
+eval/primitives/functions/mod.ion::mod::MOD(17, -4)#coerce
+eval/primitives/functions/mod.ion::mod::MOD(17, -4)#error
+eval/primitives/functions/mod.ion::mod::MOD(17, 1)#coerce
+eval/primitives/functions/mod.ion::mod::MOD(17, 1)#error
+eval/primitives/functions/mod.ion::mod::MOD(17, 3)#coerce
+eval/primitives/functions/mod.ion::mod::MOD(17, 3)#error
+eval/primitives/functions/mod.ion::mod::MOD(3, 'some string')#coerce
+eval/primitives/functions/mod.ion::mod::MOD(3, 'some string')#error
+eval/primitives/functions/mod.ion::mod::MOD(3, MISSING)#coerce
+eval/primitives/functions/mod.ion::mod::MOD(3, MISSING)#error
+eval/primitives/functions/mod.ion::mod::MOD(3, NULL)#coerce
+eval/primitives/functions/mod.ion::mod::MOD(3, NULL)#error
+eval/primitives/functions/mod.ion::mod::MOD(MISSING, 'some string')#coerce
+eval/primitives/functions/mod.ion::mod::MOD(MISSING, 'some string')#error
+eval/primitives/functions/mod.ion::mod::MOD(MISSING, 3)#coerce
+eval/primitives/functions/mod.ion::mod::MOD(MISSING, 3)#error
+eval/primitives/functions/mod.ion::mod::MOD(MISSING, NULL)#coerce
+eval/primitives/functions/mod.ion::mod::MOD(MISSING, NULL)#error
+eval/primitives/functions/mod.ion::mod::MOD(NULL, 'some string')#coerce
+eval/primitives/functions/mod.ion::mod::MOD(NULL, 'some string')#error
+eval/primitives/functions/mod.ion::mod::MOD(NULL, 3)#coerce
+eval/primitives/functions/mod.ion::mod::MOD(NULL, 3)#error
+eval/primitives/functions/mod.ion::mod::MOD(NULL, MISSING)#coerce
+eval/primitives/functions/mod.ion::mod::MOD(NULL, MISSING)#error
 eval/primitives/functions/nullif.ion::nullif::nullif valid cases{first:"1",second:"1",result:null}#coerce
 eval/primitives/functions/nullif.ion::nullif::nullif valid cases{first:"1",second:"1",result:null}#error
 eval/primitives/functions/nullif.ion::nullif::nullif valid cases{first:"1",second:"2",result:1}#coerce

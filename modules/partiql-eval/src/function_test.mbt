@@ -139,3 +139,35 @@ test "map functions and m[k] share the key rule" {
     .to_equal(bag_of([tuple([("k", String("a")), ("v", Int(1))])]))
   })
 }
+
+///|
+test "ABS and MOD end to end; deep nesting is a static error" {
+  let deep = "ABS(".repeat(1000) + "-1" + ")".repeat(1000)
+  @expect.expect_all(soft => {
+    soft.expect(ev("ABS(-3)")).to_equal(Int(3))
+    soft.expect(ev("abs(1.0)")).to_equal(dec("1.0"))
+    soft.expect(ev("MOD(-17, 4)")).to_equal(Int(-1))
+    soft.expect(ev("MOD(MISSING, 'some string')")).to_equal(Missing)
+    soft
+    .expect_call(() => ev("MOD(NULL, 'some string')", mode=Strict))
+    .to_raise_matching(
+      e => e is @eval.EvalError::TypeError(..),
+      description="TypeError",
+    )
+    for mode in [@eval.Mode::Permissive, Strict] {
+      soft
+      .expect_call(() => ev("MOD(1, 0)", mode~))
+      .to_raise_matching(
+        e => e is @eval.EvalError::DataError(..),
+        description="DataError",
+      )
+      // The parser or the lowering stops it: an error, never a stack overflow.
+      soft
+      .expect_call(() => ev(deep, mode~))
+      .to_raise_matching(
+        e => e is (@eval.EvalError::Syntax(_) | @eval.EvalError::DataError(..)),
+        description="Syntax or DataError: too deep",
+      )
+    }
+  })
+}

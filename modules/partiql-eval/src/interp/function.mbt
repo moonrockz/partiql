@@ -18,5 +18,7 @@ fn call(
     MapKeys => @ops.map_keys(args)
     MapValues => @ops.map_values(args)
     MapEntries => @ops.map_entries(args)
+    Abs => @ops.abs(args)
+    Mod => @ops.modulo(args)
   }
 }

@@ -14,6 +14,10 @@ priv enum Param {
   Map
   /// Any value (a map key; the map decides compatibility).
   Any
+  /// An integer or a decimal with scale 0 (SQL MOD: exact numeric, scale 0).
+  Exact
+  /// A number or an interval (ABS).
+  Numeric
 }
 
 ///|
@@ -25,6 +29,10 @@ fn Param::accepts(self : Param, v : @value.Value) -> Bool {
     (Tuple, Tuple(_)) => true
     (Map, Map(_)) => true
     (Any, _) => true
+    (Exact, Int(_) | BigInt(_)) => true
+    (Exact, Decimal(d)) => d.exponent() == 0
+    (Numeric, Int(_) | BigInt(_) | Decimal(_) | Float(_)) => true
+    (Numeric, IntervalYM(_) | IntervalDT(_)) => true
     _ => false
   }
 }

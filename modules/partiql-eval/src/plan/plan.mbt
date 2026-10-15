@@ -315,6 +315,9 @@ pub(all) enum Function {
   MapKeys
   MapValues
   MapEntries
+  Abs
+  /// [dividend, divisor]
+  Mod
 } derive(Debug, Eq)
 
 ///|
@@ -333,5 +336,7 @@ pub fn Function::name(self : Function) -> String {
     MapKeys => "MAP_KEYS"
     MapValues => "MAP_VALUES"
     MapEntries => "MAP_ENTRIES"
+    Abs => "ABS"
+    Mod => "MOD"
   }
 }

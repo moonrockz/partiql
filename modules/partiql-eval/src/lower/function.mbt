@@ -29,6 +29,8 @@ fn builtin(id : @ast.Identifier) -> (@plan.Function, Arity)? {
     "MAP_KEYS" => Some((MapKeys, Exactly(1)))
     "MAP_VALUES" => Some((MapValues, Exactly(1)))
     "MAP_ENTRIES" => Some((MapEntries, Exactly(1)))
+    "ABS" => Some((Abs, Exactly(1)))
+    "MOD" => Some((Mod, Exactly(2)))
     _ => None
   }
 }
