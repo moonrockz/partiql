@@ -53,6 +53,9 @@ pub(all) enum Expr {
   )
   Coalesce(Array[Expr], @ast.Span)
   NullIf(Expr, Expr, @ast.Span)
+  /// A built-in scalar function (spec M4d1 §2), with its arguments in the
+  /// positions `Function` documents.
+  Call(Function, Array[Expr], @ast.Span)
   /// A FROM variable, by the name it was declared with.
   Local(String, @ast.Span)
   /// A name in a FROM source: the global of that name if there is one, else
@@ -238,6 +241,7 @@ pub fn Expr::span(self : Expr) -> @ast.Span {
     | Case(operand=_, branches=_, default=_, span)
     | Coalesce(_, span)
     | NullIf(_, _, span)
+    | Call(_, _, span)
     | Local(_, span)
     | GlobalOrLocal(_, variable=_, delimited=_, span)
     | Implicit(_, delimited=_, locals=_, span)
@@ -291,3 +295,22 @@ pub(all) enum Grouping {
 /// The group variable of a grouped query without GROUP AS. No identifier
 /// can name it.
 pub let group_variable : String = "\u{0}group"
+
+///|
+/// A built-in scalar function (spec M4d1). One argument unless a variant
+/// says otherwise.
+pub(all) enum Function {
+  CharLength
+  OctetLength
+  BitLength
+} derive(Debug, Eq)
+
+///|
+/// The SQL name, for messages.
+pub fn Function::name(self : Function) -> String {
+  match self {
+    CharLength => "CHAR_LENGTH"
+    OctetLength => "OCTET_LENGTH"
+    BitLength => "BIT_LENGTH"
+  }
+}

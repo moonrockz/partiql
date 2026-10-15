@@ -528,6 +528,10 @@ fn eval(
         x
       }
     }
+    Call(f, args, span) => {
+      let values = args.map(x => eval(x, env, ctx))
+      typed(ctx.mode, span, () => call(f, values))
+    }
     GlobalOrLocal(name, variable~, delimited~, span) =>
       match find_global(ctx.globals, name, delimited) {
         Some(v) => v

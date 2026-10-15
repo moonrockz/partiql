@@ -99,7 +99,10 @@ fn push_operands(
     | Local(_, _)
     | GlobalOrLocal(_, variable=_, delimited=_, _)
     | Implicit(_, delimited=_, locals=_, _) => ()
-    ListOf(items, _) | BagOf(items, _) | Coalesce(items, _) => items.each(push)
+    ListOf(items, _)
+    | BagOf(items, _)
+    | Coalesce(items, _)
+    | Call(_, items, _) => items.each(push)
     TupleOf(pairs, _) | MapOf(pairs, _) =>
       for pair in pairs {
         push(pair.0)

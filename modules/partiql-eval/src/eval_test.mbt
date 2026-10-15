@@ -34,7 +34,7 @@ test "unsupported forms say so" {
       description="Unsupported",
     )
     soft
-    .expect_call(() => ev("upper('a')"))
+    .expect_call(() => ev("no_such_function('a')"))
     .to_raise_matching(
       e => e is @eval.EvalError::Unsupported(..),
       description="Unsupported",

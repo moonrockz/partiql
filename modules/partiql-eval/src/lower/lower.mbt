@@ -455,14 +455,24 @@ fn lower_at(
         Some((kind, true)) =>
           coll_call(kind, id, args, quantifier, scope, depth, span)
         Some((_, false)) => sql_aggregate_call(e, scope, depth)
-        None => unsupported("a function call (M4d)", span)
+        None =>
+          match builtin(id) {
+            Some((f, arity)) =>
+              scalar_call(f, arity, args, quantifier, scope, depth, span)
+            None => unsupported("a function call (M4d)", span)
+          }
       }
     CallStar(id) =>
       match aggregate_function(id) {
         Some((_, true)) =>
           raise DataError(message="\{id.text} does not take *", span~)
         Some((_, false)) => sql_aggregate_call(e, scope, depth)
-        None => unsupported("a function call (M4d)", span)
+        None =>
+          match builtin(id) {
+            Some((f, _)) =>
+              raise DataError(message="\{f.name()} does not take *", span~)
+            None => unsupported("a function call (M4d)", span)
+          }
       }
   }
 }
