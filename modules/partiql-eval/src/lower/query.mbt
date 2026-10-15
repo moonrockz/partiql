@@ -366,13 +366,14 @@ fn select_parts(
     Star(_) => Star(variables)
     Items(items) => {
       let out : Array[@plan.Item] = []
-      for i, item in items {
+      let unnamed = Ref(0)
+      for item in items {
         out.push(
           match item {
             Expr(e, as_~, ..) => {
               let name = match as_ {
                 Some(id) => id.text
-                None => implicit_name(e, i)
+                None => item_name(e, unnamed)
               }
               aliases.push(name)
               @plan.Item::Named(name, lower_at(e, inner, depth))
@@ -409,15 +410,36 @@ fn from_name(source : @ast.FromSource, position : Int32) -> String {
 }
 
 ///|
-/// The name of an expression without `AS`: the name of the variable or of the
-/// last field of the path, else `_` and the position `index` (from 0) in its
-/// list plus 1.
-fn implicit_name(e : @ast.Expr, index : Int32) -> String {
+/// The name an expression implies: the name of the variable or of the last
+/// field of the path.
+fn implied_name(e : @ast.Expr) -> String? {
   match e.kind {
-    VarRef(id, ..) => id.text
-    Path(_, [.., Field(id)]) => id.text
-    Path(_, [.., FieldString(name, ..)]) => name
-    _ => "_\{index + 1}"
+    VarRef(id, ..) => Some(id.text)
+    Path(_, [.., Field(id)]) => Some(id.text)
+    Path(_, [.., FieldString(name, ..)]) => Some(name)
+    _ => None
+  }
+}
+
+///|
+/// The name of an expression without `AS` in a list where position counts
+/// (FROM sources, GROUP BY keys): the implied name, else `_` and the
+/// position `index` (from 0) plus 1.
+fn implicit_name(e : @ast.Expr, index : Int32) -> String {
+  implied_name(e).unwrap_or("_\{index + 1}")
+}
+
+///|
+/// The name of a SELECT item without `AS`: the implied name, else `_` and the
+/// count of unnamed items so far (partiql-lang-kotlin and partiql-tests;
+/// the specification leaves it open, partiql-lang #85).
+fn item_name(e : @ast.Expr, unnamed : Ref[Int32]) -> String {
+  match implied_name(e) {
+    Some(name) => name
+    None => {
+      unnamed.val += 1
+      "_\{unnamed.val}"
+    }
   }
 }
 

@@ -226,3 +226,19 @@ test "a repeated FROM variable is an error" {
     .to_equal(bag([bag([Int(5)])]))
   })
 }
+
+///|
+test "unnamed SELECT items are numbered by a counter of unnamed items" {
+  @expect.expect_all(soft => {
+    soft
+    .expect(ev("SELECT x.a, x.a + 1, 2 FROM [{'a': 1}] AS x"))
+    .to_equal(bag_of([tuple([("a", Int(1)), ("_1", Int(2)), ("_2", Int(2))])]))
+    soft
+    .expect(ev("SELECT x.a + 1, x.a FROM [{'a': 1}] AS x"))
+    .to_equal(bag_of([tuple([("_1", Int(2)), ("a", Int(1))])]))
+    // FROM sources keep their position.
+    soft
+    .expect(ev("SELECT * FROM <<{'a': 1}>> AS x, <<{'b': 2}>>"))
+    .to_equal(bag_of([tuple([("a", Int(1)), ("b", Int(2))])]))
+  })
+}
