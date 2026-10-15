@@ -52,3 +52,111 @@ pub fn tuple_union(args : Array[@value.Value]) -> @value.Value raise OpFailure {
     Tuple(@value.Tuple::new(fields))
   })
 }
+
+///|
+/// Whether `key` can be compared with the keys of a map whose key type is
+/// `t`: the same type family (RFC 0104: compatible types are cast, others
+/// are a type error). A map never has the key type DYNAMIC.
+fn key_compatible(t : @value.MapType, key : @value.Value) -> Bool {
+  match (t, key) {
+    (
+      TinyInt
+      | SmallInt
+      | Integer
+      | BigInt
+      | Numeric
+      | Decimal
+      | Real
+      | Double,
+      Int(_)
+      | BigInt(_)
+      | Decimal(_)
+      | Float(_),
+    ) => true
+    (String | Char | Varchar, String(_)) => true
+    (Bool, Bool(_)) | (Date, Date(_)) | (Time, Time(_)) => true
+    (Timestamp, Timestamp(_)) => true
+    _ => false
+  }
+}
+
+///|
+/// The value for `key` in `m`, matched by value (`eqg`, so `1` finds `1.0`),
+/// or None. A key of an incompatible type is a `TypeFailure`.
+fn map_lookup(
+  m : @value.MapValue,
+  key : @value.Value,
+) -> @value.Value? raise OpFailure {
+  if !key_compatible(m.key_type, key) {
+    raise TypeFailure("a map key of an incompatible type")
+  }
+  for entry in m.entries() {
+    if @value.eqg(entry.0, key) {
+      return Some(entry.1)
+    }
+  }
+  None
+}
+
+///|
+/// `MAP_GET(m, k)`: `m[k]`; an absent key is a `TypeFailure` (RFC 0104).
+pub fn map_get(args : Array[@value.Value]) -> @value.Value raise OpFailure {
+  apply("MAP_GET", [Map, Any], args, xs => {
+    match xs {
+      [Map(m), key] =>
+        match map_lookup(m, key) {
+          Some(v) => v
+          None => raise TypeFailure("no such key in the map")
+        }
+      _ => raise TypeFailure("MAP_GET of a value that is not a map")
+    }
+  })
+}
+
+///|
+/// `MAP_CONTAINS_KEY(m, k)`.
+pub fn map_contains_key(
+  args : Array[@value.Value],
+) -> @value.Value raise OpFailure {
+  apply("MAP_CONTAINS_KEY", [Map, Any], args, xs => {
+    match xs {
+      [Map(m), key] => Bool(map_lookup(m, key) is Some(_))
+      _ => raise TypeFailure("MAP_CONTAINS_KEY of a value that is not a map")
+    }
+  })
+}
+
+///|
+/// The entries of a map argument, for MAP_KEYS, MAP_VALUES and MAP_ENTRIES.
+fn map_bag(
+  name : String,
+  args : Array[@value.Value],
+  item : ((@value.Value, @value.Value)) -> @value.Value,
+) -> @value.Value raise OpFailure {
+  apply(name, [Map], args, xs => {
+    match xs {
+      [Map(m)] => Bag(@value.Bag::new(m.entries().iter().map(item).collect()))
+      _ => raise TypeFailure("\{name} of a value that is not a map")
+    }
+  })
+}
+
+///|
+/// `MAP_KEYS(m)`: a bag of the keys in insertion order.
+pub fn map_keys(args : Array[@value.Value]) -> @value.Value raise OpFailure {
+  map_bag("MAP_KEYS", args, e => e.0)
+}
+
+///|
+/// `MAP_VALUES(m)`: a bag of the values in insertion order.
+pub fn map_values(args : Array[@value.Value]) -> @value.Value raise OpFailure {
+  map_bag("MAP_VALUES", args, e => e.1)
+}
+
+///|
+/// `MAP_ENTRIES(m)`: a bag of `{k, v}` tuples (partiql-tests map.ion:956).
+pub fn map_entries(args : Array[@value.Value]) -> @value.Value raise OpFailure {
+  map_bag("MAP_ENTRIES", args, e => {
+    Tuple(@value.Tuple::new([("k", e.0), ("v", e.1)]))
+  })
+}

@@ -308,6 +308,13 @@ pub(all) enum Function {
   Exists
   /// Zero or more tuples.
   TupleUnion
+  /// [map, key]
+  MapGet
+  /// [map, key]
+  MapContainsKey
+  MapKeys
+  MapValues
+  MapEntries
 } derive(Debug, Eq)
 
 ///|
@@ -321,5 +328,10 @@ pub fn Function::name(self : Function) -> String {
     Cardinality => "CARDINALITY"
     Exists => "EXISTS"
     TupleUnion => "TUPLEUNION"
+    MapGet => "MAP_GET"
+    MapContainsKey => "MAP_CONTAINS_KEY"
+    MapKeys => "MAP_KEYS"
+    MapValues => "MAP_VALUES"
+    MapEntries => "MAP_ENTRIES"
   }
 }

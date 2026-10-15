@@ -36,3 +36,63 @@ test "TUPLEUNION keeps every field in order" {
     soft.expect(failure(() => tuple_union([tup([]), Int(1)]))).to_equal("type")
   })
 }
+
+///|
+fn map_of(
+  key_type : @value.MapType,
+  entries : Array[(@value.Value, @value.Value)],
+) -> @value.Value raise {
+  Map(@value.MapValue::new(key_type~, value_type=Dynamic, entries))
+}
+
+///|
+test "map key lookup is by value within a type family" {
+  let decimals = map_of(Decimal, [
+    (Decimal(@ion_core.Decimal::parse("1.0")), String("one")),
+  ])
+  let ints = map_of(Integer, [(Int(1), String("one")), (Int(2), String("two"))])
+  @expect.expect_all(soft => {
+    soft.expect(map_get([decimals, Int(1)])).to_equal(String("one"))
+    soft.expect(map_get([ints, Int(2)])).to_equal(String("two"))
+    soft.expect(failure(() => map_get([ints, Int(9)]))).to_equal("type")
+    soft.expect(failure(() => map_get([ints, String("1")]))).to_equal("type")
+    soft.expect(map_get([ints, Null])).to_equal(Null)
+    soft.expect(map_get([Null, Int(1)])).to_equal(Null)
+    soft.expect(map_get([ints, Missing])).to_equal(Missing)
+    soft.expect(map_contains_key([ints, Int(1)])).to_equal(Bool(true))
+    soft.expect(map_contains_key([ints, Int(9)])).to_equal(Bool(false))
+    soft.expect(map_contains_key([decimals, Int(1)])).to_equal(Bool(true))
+    soft
+    .expect(failure(() => map_contains_key([ints, String("1")])))
+    .to_equal("type")
+    soft
+    .expect(failure(() => map_get([tup([("a", Int(1))]), String("a")])))
+    .to_equal("type")
+  })
+}
+
+///|
+test "MAP_KEYS, MAP_VALUES and MAP_ENTRIES give bags in insertion order" {
+  let m = map_of(String, [(String("x"), Int(1)), (String("y"), Int(2))])
+  let empty = map_of(String, [])
+  @expect.expect_all(soft => {
+    soft
+    .expect(map_keys([m]))
+    .to_equal(Bag(@value.Bag::new([String("x"), String("y")])))
+    soft
+    .expect(map_values([m]))
+    .to_equal(Bag(@value.Bag::new([Int(1), Int(2)])))
+    soft
+    .expect(map_entries([m]))
+    .to_equal(
+      Bag(
+        @value.Bag::new([
+          tup([("k", String("x")), ("v", Int(1))]),
+          tup([("k", String("y")), ("v", Int(2))]),
+        ]),
+      ),
+    )
+    soft.expect(map_keys([empty])).to_equal(Bag(@value.Bag::new([])))
+    soft.expect(map_values([Null])).to_equal(Null)
+  })
+}

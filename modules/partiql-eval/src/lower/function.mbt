@@ -24,6 +24,11 @@ fn builtin(id : @ast.Identifier) -> (@plan.Function, Arity)? {
     "CARDINALITY" => Some((Cardinality, Exactly(1)))
     "EXISTS" => Some((Exists, Exactly(1)))
     "TUPLEUNION" => Some((TupleUnion, AnyCount))
+    "MAP_GET" => Some((MapGet, Exactly(2)))
+    "MAP_CONTAINS_KEY" => Some((MapContainsKey, Exactly(2)))
+    "MAP_KEYS" => Some((MapKeys, Exactly(1)))
+    "MAP_VALUES" => Some((MapValues, Exactly(1)))
+    "MAP_ENTRIES" => Some((MapEntries, Exactly(1)))
     _ => None
   }
 }

@@ -1873,6 +1873,8 @@ eval/primitives/logical.ion::logical::orTrueNull#coerce
 eval/primitives/logical.ion::logical::orTrueNull#error
 eval/primitives/logical.ion::logical::orTrueTrue#coerce
 eval/primitives/logical.ion::logical::orTrueTrue#error
+eval/primitives/map.ion::map::MAP_GET on NULL map returns NULL (null propagation)#coerce
+eval/primitives/map.ion::map::MAP_GET on NULL map returns NULL (null propagation)#error
 eval/primitives/map.ion::map::MISSING IS MAP returns MISSING#coerce
 eval/primitives/map.ion::map::MISSING IS MAP returns MISSING#error
 eval/primitives/map.ion::map::NULL IS MAP returns NULL#coerce
@@ -1895,6 +1897,8 @@ eval/primitives/map.ion::map::access map from environment variable#coerce
 eval/primitives/map.ion::map::access map from environment variable#error
 eval/primitives/map.ion::map::access map with boolean key#coerce
 eval/primitives/map.ion::map::access map with boolean key#error
+eval/primitives/map.ion::map::access map with cross-type cast integer to decimal key#coerce
+eval/primitives/map.ion::map::access map with cross-type cast integer to decimal key#error
 eval/primitives/map.ion::map::access map with date key#coerce
 eval/primitives/map.ion::map::access map with date key#error
 eval/primitives/map.ion::map::access map with integer key not found returns missing#coerce
@@ -1976,6 +1980,8 @@ eval/primitives/map.ion::map::filter environment map entries by value#coerce
 eval/primitives/map.ion::map::filter environment map entries by value#error
 eval/primitives/map.ion::map::filter rows by map key value#coerce
 eval/primitives/map.ion::map::filter rows by map key value#error
+eval/primitives/map.ion::map::filter rows where key exists using map_contains_key#coerce
+eval/primitives/map.ion::map::filter rows where key exists using map_contains_key#error
 eval/primitives/map.ion::map::filter with unpivot only entries with score above 80#coerce
 eval/primitives/map.ion::map::filter with unpivot only entries with score above 80#error
 eval/primitives/map.ion::map::group by map access value#coerce
@@ -1994,6 +2000,98 @@ eval/primitives/map.ion::map::map equality with integer keys#coerce
 eval/primitives/map.ion::map::map equality with integer keys#error
 eval/primitives/map.ion::map::map not equal operator#coerce
 eval/primitives/map.ion::map::map not equal operator#error
+eval/primitives/map.ion::map::map_contains_key on MISSING map returns MISSING#coerce
+eval/primitives/map.ion::map::map_contains_key on MISSING map returns MISSING#error
+eval/primitives/map.ion::map::map_contains_key on NULL map returns NULL#coerce
+eval/primitives/map.ion::map::map_contains_key on NULL map returns NULL#error
+eval/primitives/map.ion::map::map_contains_key on bool-keyed environment map#coerce
+eval/primitives/map.ion::map::map_contains_key on bool-keyed environment map#error
+eval/primitives/map.ion::map::map_contains_key returns false when key is absent#coerce
+eval/primitives/map.ion::map::map_contains_key returns false when key is absent#error
+eval/primitives/map.ion::map::map_contains_key returns true when key exists#coerce
+eval/primitives/map.ion::map::map_contains_key returns true when key exists#error
+eval/primitives/map.ion::map::map_contains_key with boolean key returns true#coerce
+eval/primitives/map.ion::map::map_contains_key with boolean key returns true#error
+eval/primitives/map.ion::map::map_contains_key with cross-type integer key matches decimal map#coerce
+eval/primitives/map.ion::map::map_contains_key with cross-type integer key matches decimal map#error
+eval/primitives/map.ion::map::map_contains_key with date key returns true#coerce
+eval/primitives/map.ion::map::map_contains_key with date key returns true#error
+eval/primitives/map.ion::map::map_contains_key with decimal key returns false when absent#coerce
+eval/primitives/map.ion::map::map_contains_key with decimal key returns false when absent#error
+eval/primitives/map.ion::map::map_contains_key with decimal key returns true#coerce
+eval/primitives/map.ion::map::map_contains_key with decimal key returns true#error
+eval/primitives/map.ion::map::map_contains_key with incompatible string key on integer-keyed map returns false#coerce
+eval/primitives/map.ion::map::map_contains_key with incompatible string key on integer-keyed map returns false#error
+eval/primitives/map.ion::map::map_contains_key with integer key returns true#coerce
+eval/primitives/map.ion::map::map_contains_key with integer key returns true#error
+eval/primitives/map.ion::map::map_contains_key with missing key returns missing#coerce
+eval/primitives/map.ion::map::map_contains_key with missing key returns missing#error
+eval/primitives/map.ion::map::map_contains_key with null key returns null#coerce
+eval/primitives/map.ion::map::map_contains_key with null key returns null#error
+eval/primitives/map.ion::map::map_entries on empty map returns empty bag#coerce
+eval/primitives/map.ion::map::map_entries on empty map returns empty bag#error
+eval/primitives/map.ion::map::map_entries returns a bag of key-value structs#coerce
+eval/primitives/map.ion::map::map_entries returns a bag of key-value structs#error
+eval/primitives/map.ion::map::map_entries with integer keys#coerce
+eval/primitives/map.ion::map::map_entries with integer keys#error
+eval/primitives/map.ion::map::map_get on MISSING map returns MISSING#coerce
+eval/primitives/map.ion::map::map_get on MISSING map returns MISSING#error
+eval/primitives/map.ion::map::map_get on NULL map returns NULL#coerce
+eval/primitives/map.ion::map::map_get on NULL map returns NULL#error
+eval/primitives/map.ion::map::map_get on bool-keyed environment map#coerce
+eval/primitives/map.ion::map::map_get on bool-keyed environment map#error
+eval/primitives/map.ion::map::map_get returns the value for an existing key#coerce
+eval/primitives/map.ion::map::map_get returns the value for an existing key#error
+eval/primitives/map.ion::map::map_get with boolean key returns the value#coerce
+eval/primitives/map.ion::map::map_get with boolean key returns the value#error
+eval/primitives/map.ion::map::map_get with cross-type integer key matches decimal map#coerce
+eval/primitives/map.ion::map::map_get with cross-type integer key matches decimal map#error
+eval/primitives/map.ion::map::map_get with date key returns the value#coerce
+eval/primitives/map.ion::map::map_get with date key returns the value#error
+eval/primitives/map.ion::map::map_get with decimal key returns the value#coerce
+eval/primitives/map.ion::map::map_get with decimal key returns the value#error
+eval/primitives/map.ion::map::map_get with incompatible string key on integer-keyed map fails#coerce
+eval/primitives/map.ion::map::map_get with incompatible string key on integer-keyed map fails#error
+eval/primitives/map.ion::map::map_get with integer key returns the value#coerce
+eval/primitives/map.ion::map::map_get with integer key returns the value#error
+eval/primitives/map.ion::map::map_get with missing key returns missing#coerce
+eval/primitives/map.ion::map::map_get with missing key returns missing#error
+eval/primitives/map.ion::map::map_get with nonexistent key returns missing#coerce
+eval/primitives/map.ion::map::map_get with nonexistent key returns missing#error
+eval/primitives/map.ion::map::map_get with null key returns null#coerce
+eval/primitives/map.ion::map::map_get with null key returns null#error
+eval/primitives/map.ion::map::map_keys on MISSING map returns MISSING#coerce
+eval/primitives/map.ion::map::map_keys on MISSING map returns MISSING#error
+eval/primitives/map.ion::map::map_keys on NULL map returns NULL#coerce
+eval/primitives/map.ion::map::map_keys on NULL map returns NULL#error
+eval/primitives/map.ion::map::map_keys on bool-keyed environment map#coerce
+eval/primitives/map.ion::map::map_keys on bool-keyed environment map#error
+eval/primitives/map.ion::map::map_keys on decimal-keyed map returns all keys#coerce
+eval/primitives/map.ion::map::map_keys on decimal-keyed map returns all keys#error
+eval/primitives/map.ion::map::map_keys on empty map returns empty bag#coerce
+eval/primitives/map.ion::map::map_keys on empty map returns empty bag#error
+eval/primitives/map.ion::map::map_keys returns a bag of all keys#coerce
+eval/primitives/map.ion::map::map_keys returns a bag of all keys#error
+eval/primitives/map.ion::map::map_keys with boolean keys#coerce
+eval/primitives/map.ion::map::map_keys with boolean keys#error
+eval/primitives/map.ion::map::map_keys with integer keys#coerce
+eval/primitives/map.ion::map::map_keys with integer keys#error
+eval/primitives/map.ion::map::map_values on MISSING map returns MISSING#coerce
+eval/primitives/map.ion::map::map_values on MISSING map returns MISSING#error
+eval/primitives/map.ion::map::map_values on NULL map returns NULL#coerce
+eval/primitives/map.ion::map::map_values on NULL map returns NULL#error
+eval/primitives/map.ion::map::map_values on bool-keyed environment map#coerce
+eval/primitives/map.ion::map::map_values on bool-keyed environment map#error
+eval/primitives/map.ion::map::map_values on decimal-keyed map returns all values#coerce
+eval/primitives/map.ion::map::map_values on decimal-keyed map returns all values#error
+eval/primitives/map.ion::map::map_values on empty map returns empty bag#coerce
+eval/primitives/map.ion::map::map_values on empty map returns empty bag#error
+eval/primitives/map.ion::map::map_values returns a bag of all values#coerce
+eval/primitives/map.ion::map::map_values returns a bag of all values#error
+eval/primitives/map.ion::map::map_values with boolean keys#coerce
+eval/primitives/map.ion::map::map_values with boolean keys#error
+eval/primitives/map.ion::map::map_values with integer keys#coerce
+eval/primitives/map.ion::map::map_values with integer keys#error
 eval/primitives/map.ion::map::maps with different keys are not equal#coerce
 eval/primitives/map.ion::map::maps with different keys are not equal#error
 eval/primitives/map.ion::map::maps with different sizes are not equal#coerce

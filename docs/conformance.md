@@ -66,9 +66,9 @@ per assertion and mode: `<id>#coerce` or `<id>#error`.
   `<case id>[<i>]#coerce` and `<case id>[<i>]#error`, with `i` from 0.
 
 Two cases (`eval/primitives/map.ion`, lines 850 and 1194) expect a DATE
-written as a plain Ion timestamp. Line 850 needs `map_keys` and is not
-applicable. Line 1194 ("unpivot map with date keys") runs since M4b1 and
-fails in both modes, because the comparison does not treat a DATE and a
+written as a plain Ion timestamp. Line 1194 ("unpivot map with date keys")
+runs since M4b1 and line 850 ("map_keys with date keys") since M4d1. Both
+fail in both modes, because the comparison does not treat a DATE and a
 midnight UTC TIMESTAMP as equal yet.
 
 A test case whose `statement` names an `equiv_class` is checked once per
@@ -204,12 +204,9 @@ reasons:
 - **DECIMAL(p,s) IS-type (4 ids).** `1.000 IS DECIMAL(3,3)` and
   `123.456 IS DECIMAL(7,3)` expect results that do not agree with the rules for
   precision and scale that the other cases of the corpus follow.
-- **Map key match across numeric types (2 ids).** "access map with
-  cross-type cast integer to decimal key" is `MAP { 1.0: 'one', 2.0: 'two' }[1]`
-  and expects `'one'`. The evaluator does not match map keys across numeric
-  types yet.
 - **DATE against Ion timestamp (2 ids).** "unpivot map with date keys" gives
-  DATE keys, and the corpus writes them as Ion timestamps. The comparison of
+  DATE keys, and the corpus writes them as Ion timestamps. Since M4d1 the
+  same applies to "map_keys with date keys" (2 more ids). The comparison of
   the harness does not treat a DATE and a midnight UTC TIMESTAMP as equal.
 - **Ambiguous names in strict mode (3 ids).** "repeated field on Ion struct is
   ambiguous" (2 ids) and "path expression with ambiguous table alias

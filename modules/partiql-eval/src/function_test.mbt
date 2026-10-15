@@ -107,3 +107,35 @@ test "collection functions; a subquery argument stays a collection" {
     soft.expect(ev("cardinality('foo')")).to_equal(Missing)
   })
 }
+
+///|
+test "map functions and m[k] share the key rule" {
+  @expect.expect_all(soft => {
+    soft.expect(ev("MAP { 1.0: 'one', 2.0: 'two' }[1]")).to_equal(String("one"))
+    soft
+    .expect(ev("map_get(MAP { 1.0: 'one', 2.0: 'two' }, 1)"))
+    .to_equal(String("one"))
+    soft.expect(ev("map_get(MAP { 'a': 1 }, 'z')")).to_equal(Missing)
+    soft
+    .expect_call(() => ev("map_get(MAP { 'a': 1 }, 'z')", mode=Strict))
+    .to_raise_matching(
+      e => e is @eval.EvalError::TypeError(..),
+      description="TypeError",
+    )
+    soft
+    .expect_call(() => ev("MAP { 1: 'one' }['1']", mode=Strict))
+    .to_raise_matching(
+      e => e is @eval.EvalError::TypeError(..),
+      description="TypeError",
+    )
+    soft
+    .expect(ev("map_contains_key(MAP { 1: 'one' }, 1)"))
+    .to_equal(Bool(true))
+    soft
+    .expect(ev("MAP_KEYS(MAP { 'x': 1, 'y': 2 })"))
+    .to_equal(bag_of([String("x"), String("y")]))
+    soft
+    .expect(ev("map_entries(MAP { 'a': 1 })"))
+    .to_equal(bag_of([tuple([("k", String("a")), ("v", Int(1))])]))
+  })
+}

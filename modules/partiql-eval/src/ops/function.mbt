@@ -11,6 +11,9 @@ priv enum Param {
   /// A list, bag, tuple or map.
   Collection
   Tuple
+  Map
+  /// Any value (a map key; the map decides compatibility).
+  Any
 }
 
 ///|
@@ -20,6 +23,8 @@ fn Param::accepts(self : Param, v : @value.Value) -> Bool {
     (Bytes, String(_) | Blob(_) | Clob(_)) => true
     (Collection, List(_) | Bag(_) | Tuple(_) | Map(_)) => true
     (Tuple, Tuple(_)) => true
+    (Map, Map(_)) => true
+    (Any, _) => true
     _ => false
   }
 }

@@ -13,5 +13,10 @@ fn call(
     Cardinality => @ops.cardinality(args)
     Exists => @ops.exists(args)
     TupleUnion => @ops.tuple_union(args)
+    MapGet => @ops.map_get(args)
+    MapContainsKey => @ops.map_contains_key(args)
+    MapKeys => @ops.map_keys(args)
+    MapValues => @ops.map_values(args)
+    MapEntries => @ops.map_entries(args)
   }
 }
