@@ -318,7 +318,8 @@ test "map timestamps in date positions round trip without coercion" {
     ),
   )
   let date = @value.Value::Date(@value.Date::new(year=2024, month=1, day=1))
-  let m = map_value(Date, Date, [(ts, @value.Value::String("x")), (date, ts)])
+  // A TIMESTAMP key is outside the DATE key family, so only values carry it.
+  let m = map_value(Date, Date, [(date, ts)])
   @expect.expect_all(soft => {
     soft.expect(@partiql_ion.from_ion(@partiql_ion.to_ion(m))).to_equal(m)
     // Only a plain day-precision Ion timestamp is a date.
@@ -337,6 +338,8 @@ test "map keys are checked even when the value is MISSING" {
       text in [
         "$map::string::integer::[[null, $missing::null]]", "$map::string::integer::[[[\"x\"], $missing::null]]",
         "$map::string::integer::[[\"a\", 1], [\"a\", $missing::null]]", "$map::string::integer::[foo::[\"a\", 1]]",
+        // A key outside the declared key type family.
+         "$map::string::int::[[1, 2]]", "$map::string::int::[[{{aGk=}}, 3]]", "$map::integer::int::[[\"1\", 2]]",
       ] {
       soft
       .expect_call(() => decode(text), label=text)

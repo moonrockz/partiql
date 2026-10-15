@@ -54,40 +54,14 @@ pub fn tuple_union(args : Array[@value.Value]) -> @value.Value raise OpFailure {
 }
 
 ///|
-/// Whether `key` can be compared with the keys of a map whose key type is
-/// `t`: the same type family (RFC 0104: compatible types are cast, others
-/// are a type error). A map never has the key type DYNAMIC.
-fn key_compatible(t : @value.MapType, key : @value.Value) -> Bool {
-  match (t, key) {
-    (
-      TinyInt
-      | SmallInt
-      | Integer
-      | BigInt
-      | Numeric
-      | Decimal
-      | Real
-      | Double,
-      Int(_)
-      | BigInt(_)
-      | Decimal(_)
-      | Float(_),
-    ) => true
-    (String | Char | Varchar, String(_)) => true
-    (Bool, Bool(_)) | (Date, Date(_)) | (Time, Time(_)) => true
-    (Timestamp, Timestamp(_)) => true
-    _ => false
-  }
-}
-
-///|
 /// The value for `key` in `m`, matched by value (`eqg`, so `1` finds `1.0`),
-/// or None. A key of an incompatible type is a `TypeFailure`.
+/// or None. A key outside the map's key type family (`MapType::admits`) is a
+/// `TypeFailure` (RFC 0104: compatible types are cast, others are an error).
 fn map_lookup(
   m : @value.MapValue,
   key : @value.Value,
 ) -> @value.Value? raise OpFailure {
-  if !key_compatible(m.key_type, key) {
+  if !m.key_type.admits(key) {
     raise TypeFailure("a map key of an incompatible type")
   }
   for entry in m.entries() {

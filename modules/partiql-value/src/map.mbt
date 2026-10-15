@@ -88,21 +88,31 @@ pub struct MapValue {
 } derive(Debug)
 
 ///|
-fn is_scalar_key(key : Value) -> Bool {
-  key
-  is (Bool(_)
-  | Int(_)
-  | BigInt(_)
-  | Float(_)
-  | Decimal(_)
-  | String(_)
-  | Clob(_)
-  | Blob(_)
-  | Date(_)
-  | Time(_)
-  | Timestamp(_)
-  | IntervalYM(_)
-  | IntervalDT(_))
+/// Whether a map with this key type can hold `key` (RFC 0104): the key is of
+/// the same type family. Every number fits a numeric key type, and every
+/// string a character key type. DYNAMIC holds no key (RFC 0104 leaves it for
+/// future work), and NULL, MISSING and non-scalar values are never keys.
+pub fn MapType::admits(self : MapType, key : Value) -> Bool {
+  match (self, key) {
+    (
+      TinyInt
+      | SmallInt
+      | Integer
+      | BigInt
+      | Numeric
+      | Decimal
+      | Real
+      | Double,
+      Int(_)
+      | BigInt(_)
+      | Decimal(_)
+      | Float(_),
+    ) => true
+    (String | Char | Varchar, String(_)) => true
+    (Bool, Bool(_)) | (Date, Date(_)) | (Time, Time(_)) => true
+    (Timestamp, Timestamp(_)) => true
+    _ => false
+  }
 }
 
 ///|
@@ -124,7 +134,7 @@ pub fn MapValue::new(
     let key = entry.0.lower() catch {
       _ => raise InvalidKey("a symbol without text")
     }
-    if !is_scalar_key(key) {
+    if !key_type.admits(key) {
       raise InvalidKey(@debug.to_string(key))
     }
     if keys.iter().any(k => eqg(k, key)) {
