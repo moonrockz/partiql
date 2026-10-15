@@ -193,34 +193,292 @@ fn contains_aggregate(roots : Array[@ast.Expr]) -> Bool {
 }
 
 ///|
-/// The key variable that `e` repeats, in the SELECT, HAVING or ORDER BY of a
-/// grouped query (spec section 11.2.1). A name that already resolves (a key,
-/// GROUP AS, an output name, an outer variable) keeps its meaning.
-fn key_variable(e : @ast.Expr, scope : Scope) -> String? {
-  guard scope.aggregates is Allowed(g) && !g.keys.is_empty() else {
+/// A form of a GROUP BY key that lowering matches (spec section 11.2.1): an
+/// expression and the key variable it stands for.
+priv struct KeyForm {
+  /// The key expression (a SELECT alias is replaced by its item).
+  expr : @ast.Expr
+  /// The key variable.
+  name : String
+  /// The number of links on the left spine of `expr` (see `spine_links`):
+  /// a chain is compared only with a key of the same length.
+  links : Int32
+  /// The form `v.a` of a bare key `a`, where `v` is the only variable of the
+  /// query: it holds in the query itself, not in its subqueries.
+  own_only : Bool
+}
+
+///|
+/// The number of binary operator, AND and OR links on the left spine of
+/// `e`, as `lower_chain` walks it. A loop, so a long chain takes no
+/// recursion.
+fn spine_links(e : @ast.Expr) -> Int32 {
+  let mut n = 0
+  let mut x = e
+  while true {
+    match x.kind {
+      Binary(_, l, _) | And(l, _) | Or(l, _) => {
+        n += 1
+        x = l
+      }
+      _ => break
+    }
+  }
+  n
+}
+
+///|
+/// The key forms of the key expression `expr` called `name`.
+fn key_form(expr : @ast.Expr, name : String, own_only~ : Bool) -> KeyForm {
+  { expr, name, links: spine_links(expr), own_only, }
+}
+
+///|
+/// A placeholder for an operand in `shell`.
+let hole : @ast.Expr = { kind: Error, span: { start: 0, end: 0, }, }
+
+///|
+/// `e` with each direct operand (`ast_operands`) replaced by a hole, in
+/// canonical form. Two expressions are the same when their shells are equal
+/// and their operands, in order, are the same. A subquery or a graph match is
+/// returned whole; `same_expr` compares those apart.
+fn shell(e : @ast.Expr) -> @ast.Expr {
+  let h = hole
+  let kind : @ast.ExprKind = match e.kind {
+    Lit(_)
+    | VarRef(_, ..)
+    | Parameter
+    | Error
+    | Query(_)
+    | GraphMatch(_)
+    | CallStar(_) => e.kind
+    Path(_, steps) =>
+      Path(h, steps.map(step => if step is Index(_) { Index(h) } else { step }))
+    Unary(op, _) => Unary(op, h)
+    Not(_) => Not(h)
+    BoolTest(_, truth, negated~) => BoolTest(h, truth, negated~)
+    IsNull(_, negated~) => IsNull(h, negated~)
+    IsMissing(_, negated~) => IsMissing(h, negated~)
+    IsType(_, t, negated~) => IsType(h, t, negated~)
+    Cast(_, t) => Cast(h, t)
+    Extract(f, _) => Extract(f, h)
+    Binary(op, _, _) => Binary(op, h, h)
+    And(_, _) => And(h, h)
+    Or(_, _) => Or(h, h)
+    In(_, _, negated~) => In(h, h, negated~)
+    Overlaps(_, _) => Overlaps(h, h)
+    Position(_, _) => Position(h, h)
+    NullIf(_, _) => NullIf(h, h)
+    DateAdd(f, _, _) => DateAdd(f, h, h)
+    DateDiff(f, _, _) => DateDiff(f, h, h)
+    Like(_, pattern=_, escape~, negated~) =>
+      Like(h, pattern=h, escape=escape.map(_ => h), negated~)
+    Between(_, low=_, high=_, negated~) => Between(h, low=h, high=h, negated~)
+    Case(operand~, branches~, default~) =>
+      Case(
+        operand=operand.map(_ => h),
+        branches=branches.map(_ => (h, h)),
+        default=default.map(_ => h),
+      )
+    Trim(spec~, chars~, _) => Trim(spec~, chars=chars.map(_ => h), h)
+    Substring(_, start=_, length~) =>
+      Substring(h, start=h, length=length.map(_ => h))
+    Overlay(_, placing=_, from=_, for_~) =>
+      Overlay(h, placing=h, from=h, for_=for_.map(_ => h))
+    Coalesce(xs) => Coalesce(xs.map(_ => h))
+    Call(id, xs, quantifier~) => Call(id, xs.map(_ => h), quantifier~)
+    List(xs) => List(xs.map(_ => h))
+    Bag(xs) => Bag(xs.map(_ => h))
+    Sexp(xs) => Sexp(xs.map(_ => h))
+    Row(xs) => Row(xs.map(_ => h))
+    Values(xs) => Values(xs.map(_ => h))
+    Struct(pairs) => Struct(pairs.map(_ => (h, h)))
+    Map(pairs) => Map(pairs.map(_ => (h, h)))
+  }
+  @ast.Expr::{ kind, span: e.span, }.canonical()
+}
+
+///|
+/// Whether `a` and `b` are the same expression: equal up to spans and the
+/// case of regular identifiers (spec M4c §3.5.2). A loop with a stack of
+/// pending pairs, so a long chain takes no recursion. The work stops at the
+/// first difference, so it is bounded by the size of the smaller one.
+fn same_expr(a : @ast.Expr, b : @ast.Expr) -> Bool {
+  let pending = [(a, b)]
+  while pending.pop() is Some((x, y)) {
+    match (x.kind, y.kind) {
+      (Query(_), Query(_)) | (GraphMatch(_), GraphMatch(_)) =>
+        // A scope of its own: compared whole.
+        if x.canonical() != y.canonical() {
+          return false
+        }
+      (Query(_) | GraphMatch(_), _) | (_, Query(_) | GraphMatch(_)) =>
+        return false
+      _ => {
+        if shell(x) != shell(y) {
+          return false
+        }
+        let ys = ast_operands(y)
+        for i, operand in ast_operands(x) {
+          pending.push((operand, ys[i]))
+        }
+      }
+    }
+  }
+  true
+}
+
+///|
+/// Whether `id` names the declared variable `name`: a regular identifier
+/// ignores case, a delimited one does not.
+fn names_variable(id : @ast.Identifier, name : String) -> Bool {
+  if id.delimited {
+    name == id.text
+  } else {
+    name.to_lower() == id.text.to_lower()
+  }
+}
+
+///|
+/// Whether `scope` declares a variable that `id` names.
+fn Scope::declares(self : Scope, id : @ast.Identifier) -> Bool {
+  self.names.iter().any(name => names_variable(id, name))
+}
+
+///|
+/// The grouped query whose keys an expression in `scope` can repeat
+/// (spec section 11.2.1: in the whole SELECT, HAVING or ORDER BY clause,
+/// subqueries included), with the scopes from `scope` out to the grouped
+/// scope, and whether `scope` is in the grouped query itself. In the
+/// argument of an aggregate there is none: the FROM variables are bound
+/// there.
+priv struct KeyContext {
+  grouped : Grouped
+  walk : Array[Scope]
+  own : Bool
+}
+
+///|
+fn key_context(scope : Scope) -> KeyContext? {
+  if !scope.grouped && !scope.under_group {
     return None
   }
-  if e.kind is VarRef(id, ..) && scope.resolve(id) is Some(_) {
-    return None
+  let walk = []
+  let mut found = None
+  let mut own = true
+  let mut current = Some(scope)
+  while current is Some(s) {
+    walk.push(s)
+    match s.aggregates {
+      Inside => return None
+      Allowed(g) => if found is None { found = Some(g) }
+      Forbidden => if found is None && !s.outputs && !s.with_ { own = false }
+    }
+    if s.grouped {
+      break
+    }
+    current = s.outer
   }
-  let forms = [e.canonical()]
-  if e.kind is VarRef(id, qualified=false) && g.single is Some(variable) {
-    forms.append(attribute_forms(id, variable))
+  match found {
+    Some(g) if !g.keys.is_empty() => Some({ grouped: g, walk, own, })
+    _ => None
   }
-  for key in g.keys {
-    if forms.contains(key.0) {
-      return Some(key.1)
+}
+
+///|
+/// Whether `e` means here what it means in the grouped query: no scope on
+/// the way declares a variable that `e` names (an output name only counts
+/// for a bare sort key), and none hides the key variable `name`.
+fn KeyContext::sees(self : KeyContext, e : @ast.Expr, name : String) -> Bool {
+  let pending = [e]
+  while pending.pop() is Some(x) {
+    if x.kind is VarRef(id, ..) &&
+      self.walk
+      .iter()
+      .any(s => !(s.outputs && s.variables_first) && s.declares(id)) {
+      return false
+    }
+    pending.append(ast_operands(x))
+  }
+  self.walk.iter().all(s => s.grouped || s.outputs || !s.names.contains(name))
+}
+
+///|
+/// The key variable that `e` repeats, `links` being the number of links on
+/// its left spine.
+fn KeyContext::find(self : KeyContext, e : @ast.Expr, links : Int32) -> String? {
+  for key in self.grouped.keys {
+    if key.links == links &&
+      (self.own || !key.own_only) &&
+      same_expr(e, key.expr) &&
+      self.sees(e, key.name) {
+      return Some(key.name)
+    }
+  }
+  // In the query itself, a name that no variable declares is an attribute
+  // of its only variable `v`: `a` is the key `v.a`.
+  if self.own &&
+    e.kind is VarRef(id, qualified=false) &&
+    self.grouped.single is Some(variable) &&
+    self.sees(e, "") {
+    for form in attribute_forms(id, variable) {
+      for key in self.grouped.keys {
+        if key.links == 0 && same_expr(form, key.expr) {
+          return Some(key.name)
+        }
+      }
     }
   }
   None
 }
 
 ///|
-/// The canonical forms of the path `variable.id`: a name that no variable
-/// declares is an attribute of the only variable of the query, so `a` and
-/// `t.a` are the same key (partiql-tests group-by.ion "qualified SELECT and
-/// ORDER BY"). The declared name may have been regular or delimited, so both
-/// spellings are given.
+/// The key variable that `e` repeats, in the SELECT, HAVING or ORDER BY of a
+/// grouped query or of a subquery inside them (spec section 11.2.1). A chain
+/// (`lower_chain`) is matched there, with the length of its spine.
+fn key_variable(e : @ast.Expr, scope : Scope) -> String? {
+  guard key_context(scope) is Some(context) else { return None }
+  context.find(e, 0)
+}
+
+///|
+/// The longest prefix of the path `base` `steps` that is a key, as the key
+/// variable and the number of steps it covers: `t.a.x` with the key `t.a`
+/// is the attribute `x` of the key value. The whole path is matched by
+/// `key_variable`.
+fn key_prefix(
+  base : @ast.Expr,
+  steps : Array[@ast.PathStep],
+  span : @ast.Span,
+  scope : Scope,
+) -> (String, Int32)? {
+  guard key_context(scope) is Some(context) else { return None }
+  let mut best : (String, Int32)? = None
+  for key in context.grouped.keys {
+    guard key.expr.kind is Path(_, key_steps) else { continue }
+    let n = key_steps.length()
+    if n >= steps.length() ||
+      (best is Some((_, longest)) && longest >= n) ||
+      !(context.own || !key.own_only) {
+      continue
+    }
+    let prefix : @ast.Expr = {
+      kind: Path(base, Array::from_iter(steps[0:n].iter())),
+      span,
+    }
+    if same_expr(prefix, key.expr) && context.sees(prefix, key.name) {
+      best = Some((key.name, n))
+    }
+  }
+  best
+}
+
+///|
+/// The forms of the path `variable.id`: a name that no variable declares is
+/// an attribute of the only variable of the query, so `a` and `t.a` are the
+/// same key (partiql-tests group-by.ion "qualified SELECT and ORDER BY"). The
+/// declared name may have been regular or delimited, so both spellings are
+/// given.
 fn attribute_forms(id : @ast.Identifier, variable : String) -> Array[@ast.Expr] {
   [false, true].map(delimited => {
     let base : @ast.Expr = {
@@ -230,6 +488,6 @@ fn attribute_forms(id : @ast.Identifier, variable : String) -> Array[@ast.Expr] 
       ),
       span: id.span,
     }
-    @ast.Expr::{ kind: Path(base, [Field(id)]), span: id.span, }.canonical()
+    @ast.Expr::{ kind: Path(base, [Field(id)]), span: id.span, }
   })
 }

@@ -23,6 +23,8 @@ priv struct Scope {
   grouped : Bool
   /// Whether a SQL aggregate may stand here.
   aggregates : Aggregates
+  /// A scope out from this one is grouped (a subquery of a grouped query).
+  under_group : Bool
 }
 
 ///|
@@ -39,8 +41,8 @@ priv enum Aggregates {
 ///|
 /// The grouped context of a query.
 priv struct Grouped {
-  /// The canonical form of each key expression and its key name.
-  keys : Array[(@ast.Expr, String)]
+  /// The forms of the keys that a repeated expression matches.
+  keys : Array[KeyForm]
   /// The FROM and LET variables that are not keys: an aggregate argument
   /// binds them per member (the `p.` of spec section 11.2.2).
   members : Array[String]
@@ -51,6 +53,9 @@ priv struct Grouped {
   /// The only FROM or LET variable of the query, if there is one: then a
   /// name `a` that no variable declares is the attribute `v.a`.
   single : String?
+  /// The FROM and LET variables that grouping hides: outside an aggregate,
+  /// naming one is a static error.
+  hidden : Array[String]
 }
 
 ///|
@@ -65,6 +70,7 @@ fn Scope::top() -> Scope {
     variables_first: false,
     grouped: false,
     aggregates: Forbidden,
+    under_group: false,
   }
 }
 
@@ -80,6 +86,7 @@ fn Scope::inner(self : Scope, names : Array[String]) -> Scope {
     variables_first: false,
     grouped: false,
     aggregates: Forbidden,
+    under_group: self.grouped || self.under_group,
   }
 }
 
@@ -537,7 +544,22 @@ fn group_at(
   }
   let keys : Array[(String, @plan.Expr)] = []
   let visible = []
-  let forms : Array[(@ast.Expr, String)] = []
+  let forms : Array[KeyForm] = []
+  let group_as : @ast.Identifier? = match s.group_by {
+    Some(g) => g.group_as
+    None => None
+  }
+  // The names that the query gives: an implied key name gives way to them.
+  let given = key_items.filter_map(k => k.as_.map(id => id.text))
+  if group_as is Some(id) {
+    if given.contains(id.text) {
+      raise DataError(
+        message="GROUP AS name \{id.text} is also a GROUP BY name",
+        span=id.span,
+      )
+    }
+    given.push(id.text)
+  }
   for i, k in key_items {
     let (expr, select_name) = match k.expr.kind {
       VarRef(id, qualified=false) =>
@@ -547,39 +569,42 @@ fn group_at(
         }
       _ => (k.expr, None)
     }
-    let name = match (k.as_, select_name) {
-      (Some(id), _) => id.text
-      (None, Some(a)) => a
-      (None, None) => implicit_name(k.expr, i)
-    }
-    if visible.contains(name) {
-      raise DataError(
-        message="GROUP BY name \{name} is declared twice; name one of them with AS",
-        span=k.span,
-      )
+    let name = match k.as_ {
+      Some(id) => {
+        if visible.contains(id.text) {
+          raise DataError(
+            message="GROUP BY name \{id.text} is declared twice",
+            span=id.span,
+          )
+        }
+        id.text
+      }
+      // Spec section 11.2.1 gives a key without AS a fresh name. The name
+      // it implies is used when it is free, else its position.
+      None => {
+        let implied = select_name.unwrap_or(implicit_name(k.expr, i))
+        let positional = "_\{i + 1}"
+        if !visible.contains(implied) && !given.contains(implied) {
+          implied
+        } else if !visible.contains(positional) && !given.contains(positional) {
+          positional
+        } else {
+          hidden_key(i)
+        }
+      }
     }
     visible.push(name)
     keys.push((name, lower_at(expr, inner, depth)))
-    forms.push((expr.canonical(), name))
+    forms.push(key_form(expr, name, own_only=false))
     if expr.kind is VarRef(id, qualified=false) &&
       inner.resolve(id) is None &&
       names is [variable] {
       for form in attribute_forms(id, variable) {
-        forms.push((form, name))
+        forms.push(key_form(form, name, own_only=true))
       }
     }
   }
-  let group_as : @ast.Identifier? = match s.group_by {
-    Some(g) => g.group_as
-    None => None
-  }
   if group_as is Some(id) {
-    if visible.contains(id.text) {
-      raise DataError(
-        message="GROUP AS name \{id.text} is also a GROUP BY name",
-        span=id.span,
-      )
-    }
     visible.push(id.text)
   }
   let grouping : @plan.Grouping = match s.group_by {
@@ -606,6 +631,7 @@ fn group_at(
       } else {
         None
       },
+      hidden: names.filter(name => !visible.contains(name)),
     }),
   }
   let span = match s.group_by {
@@ -623,7 +649,14 @@ fn group_at(
     Some(h) => Filter(grouped, lower_at(h, gscope, depth), h.span)
     None => grouped
   }
-  (filtered, gscope, visible)
+  (filtered, gscope, visible.filter(name => !name.has_prefix("\u{0}")))
+}
+
+///|
+/// The name of the key at `position` when its implied name and its position
+/// are both taken: no identifier can name it, and `SELECT *` leaves it out.
+fn hidden_key(position : Int32) -> String {
+  "\u{0}key\{position + 1}"
 }
 
 ///|

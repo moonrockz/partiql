@@ -217,32 +217,38 @@ test "SELECT * after grouping outputs the keys and the GROUP AS variable" {
 ///|
 test "names after grouping: keys and GROUP AS only" {
   @expect.expect_all(soft => {
-    // Review focus 2: after grouping, a non-key FROM variable outside an
-    // aggregate is out of scope. Like any undefined name in a query, it is
-    // MISSING in permissive mode and a TypeError in strict mode
-    // (partiql-tests group-by.ion "... - fail" cases).
-    soft
-    .expect(ev("SELECT t.b FROM [{'a': 1, 'b': 2}] AS t GROUP BY t.a"))
-    .to_equal(bag_of([tuple([])]))
-    soft
-    .expect(
-      ev(
-        "SELECT k FROM [{'a': 1, 'b': 2}] AS t GROUP BY t.a AS k HAVING t.b > 0",
-      ),
-    )
-    .to_equal(bag_of([]))
-    for
-      text in [
-        "SELECT t.b FROM [{'a': 1, 'b': 2}] AS t GROUP BY t.a", "SELECT k FROM [{'a': 1, 'b': 2}] AS t GROUP BY t.a AS k HAVING t.b > 0",
-        "SELECT k FROM [{'a': 1}] AS t GROUP BY t.a AS k ORDER BY s.a",
-      ] {
-      soft
-      .expect_call(() => ev(text, mode=Strict))
-      .to_raise_matching(
-        e => e is @eval.EvalError::TypeError(..),
-        description="TypeError for \{text}",
-      )
+    // Review focus 2: after grouping, a FROM or LET variable that is not a
+    // key is hidden outside an aggregate: naming it there is a static error
+    // in both modes (spec section 10: the name does not resolve).
+    for mode in [@eval.Mode::Permissive, Strict] {
+      for
+        text in [
+          "SELECT t.b FROM [{'a': 1, 'b': 2}] AS t GROUP BY t.a", "SELECT k FROM [{'a': 1, 'b': 2}] AS t GROUP BY t.a AS k HAVING t.b > 0",
+          "SELECT k FROM [{'a': 1}] AS t LET 2 AS z GROUP BY t.a AS k ORDER BY z",
+          "SELECT VALUE x FROM [1, 2] AS x ORDER BY COUNT(*)",
+        ] {
+        soft
+        .expect_call(() => ev(text, mode~))
+        .to_raise_matching(
+          e => e is @eval.EvalError::DataError(..),
+          description="DataError for \{text}",
+        )
+      }
     }
+    // A name that no variable declares is undefined like in any query:
+    // MISSING in permissive mode, a TypeError in strict mode (partiql-tests
+    // group-by.ion "... - fail" cases).
+    soft
+    .expect_call(() => {
+      ev(
+        "SELECT k FROM [{'a': 1}] AS t GROUP BY t.a AS k ORDER BY s.a",
+        mode=Strict,
+      )
+    })
+    .to_raise_matching(
+      e => e is @eval.EvalError::TypeError(..),
+      description="TypeError",
+    )
     soft
     .expect(
       ev(
@@ -289,7 +295,7 @@ test "static errors of aggregates" {
         "SELECT VALUE y FROM [1] AS x LET SUM(x) AS y", "SELECT VALUE x FROM [1] AS x GROUP BY SUM(x)",
         "SELECT VALUE x FROM (SELECT VALUE COUNT(*) FROM [1]) AS x WHERE COUNT(*) > 0",
         "SELECT VALUE SUM(x, x) FROM [1] AS x", "SELECT VALUE SUM(*) FROM [1] AS x",
-        "SUM([1, 2])", "SELECT a FROM [1] AS a GROUP BY a, a", "SELECT k FROM [1] AS a GROUP BY a AS k GROUP AS k",
+        "SUM([1, 2])", "SELECT k FROM [1] AS a GROUP BY a AS k, a + 1 AS k", "SELECT k FROM [1] AS a GROUP BY a AS k GROUP AS k",
       ] {
       soft
       .expect_call(() => ev(text))
@@ -461,5 +467,81 @@ test "subqueries and grouped queries in other positions" {
       ev("SELECT VALUE x FROM (SELECT VALUE SUM(y) FROM [1, 2] AS y) AS x"),
     )
     .to_equal(bag_of([Int(3)]))
+  })
+}
+
+///|
+test "unnamed keys with the same implied name are both keys" {
+  @expect.expect_all(soft => {
+    soft
+    .expect(
+      ev(
+        "SELECT t.a AS ta, s.a AS sa, COUNT(*) AS c FROM [{'a': 1}] AS t, [{'a': 2}] AS s GROUP BY t.a, s.a",
+      ),
+    )
+    .to_equal(bag_of([tuple([("ta", Int(1)), ("sa", Int(2)), ("c", Int(1))])]))
+    // The later key gets its position as its name.
+    soft
+    .expect(
+      ev("SELECT * FROM [{'a': 1}] AS t, [{'a': 2}] AS s GROUP BY t.a, s.a"),
+    )
+    .to_equal(bag_of([tuple([("a", Int(1)), ("_2", Int(2))])]))
+    soft
+    .expect(ev("SELECT a FROM [1] AS a GROUP BY a, a"))
+    .to_equal(bag_of([tuple([("a", Int(1))])]))
+    // GROUP AS keeps its name; the implied key name gives way.
+    soft
+    .expect(ev("SELECT * FROM [{'a': 1}] AS t GROUP BY t.a GROUP AS a"))
+    .to_equal(
+      bag_of([
+        tuple([
+          ("_1", Int(1)),
+          ("a", bag_of([tuple([("t", tuple([("a", Int(1))]))])])),
+        ]),
+      ]),
+    )
+  })
+}
+
+///|
+test "key expressions inside subqueries and as path prefixes" {
+  @expect.expect_all(soft => {
+    // A correlated subquery on a grouping column (spec section 11.2.1).
+    soft
+    .expect(
+      ev(
+        "SELECT t.a AS a, (SELECT VALUE y.n FROM [{'id': 1, 'n': 'one'}, {'id': 2, 'n': 'two'}] AS y WHERE y.id = t.a) AS n FROM [{'a': 1}, {'a': 1}, {'a': 2}] AS t GROUP BY t.a",
+      ),
+    )
+    .to_equal(
+      bag_of([
+        tuple([("a", Int(1)), ("n", bag_of([String("one")]))]),
+        tuple([("a", Int(2)), ("n", bag_of([String("two")]))]),
+      ]),
+    )
+    // A subquery that declares its own t keeps it.
+    soft
+    .expect(
+      ev(
+        "SELECT k, (SELECT VALUE t.a FROM [{'a': 9}] AS t) AS s FROM [{'a': 1}] AS t GROUP BY t.a AS k",
+      ),
+    )
+    .to_equal(bag_of([tuple([("k", Int(1)), ("s", bag_of([Int(9)]))])]))
+    // A path that starts with a key path navigates into the key value.
+    soft
+    .expect(
+      ev(
+        "SELECT t.a.x AS x, COUNT(*) AS c FROM [{'a': {'x': 1}}, {'a': {'x': 1}}] AS t GROUP BY t.a",
+      ),
+    )
+    .to_equal(bag_of([tuple([("x", Int(1)), ("c", Int(2))])]))
+    soft
+    .expect(ev("SELECT t.a[0] AS x FROM [{'a': [7]}] AS t GROUP BY t.a"))
+    .to_equal(bag_of([tuple([("x", Int(7))])]))
+    soft
+    .expect(
+      ev("SELECT t.a.y[0] AS x FROM [{'a': {'y': [5]}}] AS t GROUP BY t.a.y"),
+    )
+    .to_equal(bag_of([tuple([("x", Int(5))])]))
   })
 }

@@ -191,12 +191,12 @@ fn lower_chain(
   depth : Int32,
 ) -> @plan.Expr raise @plan.EvalError {
   let links : Array[Link] = []
+  let nodes : Array[@ast.Expr] = []
   let mut leaf = e
   while true {
-    // A link that is a key variable stops the walk (`t.a + 1 + 1` finds the
-    // key `t.a + 1`).
-    if !links.is_empty() && key_variable(leaf, scope) is Some(_) {
-      break
+    match leaf.kind {
+      Binary(_, _, _) | And(_, _) | Or(_, _) => nodes.push(leaf)
+      _ => ()
     }
     match leaf.kind {
       Binary(op, l, r) => {
@@ -214,17 +214,39 @@ fn lower_chain(
       _ => break
     }
   }
+  // The outermost link that is a key ends the chain (`t.a + 1 + 1` finds
+  // the key `t.a + 1`). A link is compared only with a key whose spine has
+  // as many links, so the search is linear.
+  let mut key : String? = None
+  if key_context(scope) is Some(context) {
+    for j, node in nodes {
+      let length = nodes.length() - j
+      if context.grouped.keys.iter().any(k => k.links == length) &&
+        context.find(node, length) is Some(name) {
+        key = Some(name)
+        links.truncate(j)
+        break
+      }
+    }
+  }
   // Only the innermost link has a query as its left operand; one that is
   // compared with an array literal is coerced (plan ruling 9).
   let leaf_is_row = match links.last() {
     Some(BinaryLink(op, l, r, _)) =>
-      is_comparison(op) && is_select_items(l) && is_array_literal(r)
+      key is None &&
+      is_comparison(op) &&
+      is_select_items(l) &&
+      is_array_literal(r)
     _ => false
   }
-  let mut result = if leaf_is_row {
-    row_at(leaf, scope, depth)
-  } else {
-    lower_at(leaf, scope, depth)
+  let mut result = match key {
+    Some(name) => @plan.Expr::Local(name, nodes[links.length()].span)
+    None =>
+      if leaf_is_row {
+        row_at(leaf, scope, depth)
+      } else {
+        lower_at(leaf, scope, depth)
+      }
   }
   for link in links.rev_iter() {
     result = match link {
@@ -287,7 +309,9 @@ fn lower_at(
     raise DataError(message="expression is too deep", span~)
   }
   let depth = depth + 1
-  if key_variable(e, scope) is Some(name) {
+  // A chain is matched in `lower_chain`, link by link.
+  if !(e.kind is (Binary(_, _, _) | And(_, _) | Or(_, _))) &&
+    key_variable(e, scope) is Some(name) {
     return Local(name, span)
   }
   match e.kind {
@@ -303,7 +327,15 @@ fn lower_at(
             Local(name, span)
           }
         None =>
-          if scope.outer is None {
+          if scope.aggregates is Allowed(g) &&
+            g.hidden.iter().any(name => names_variable(id, name)) {
+            // Spec section 11.2: after grouping, a FROM or LET variable that
+            // is not a key is out of scope outside an aggregate.
+            raise DataError(
+              message="\{id.text} is not a GROUP BY key; use it inside an aggregate function or group by it",
+              span~,
+            )
+          } else if scope.outer is None {
             Global(id.text, delimited=id.delimited, span)
           } else if qualified {
             // Inside a query `@x` names a FROM variable only.
@@ -342,11 +374,22 @@ fn lower_at(
     Parameter => unsupported("a parameter (later)", span)
     Error => raise DataError(message="a broken expression", span~)
     Path(base, steps) =>
-      Path(
-        lower_at(base, scope, depth),
-        steps.map(s => lower_step(s, scope, depth)),
-        span,
-      )
+      match key_prefix(base, steps, span, scope) {
+        Some((name, n)) =>
+          Path(
+            Local(name, span),
+            Array::from_iter(steps[n:].iter()).map(s => {
+              lower_step(s, scope, depth)
+            }),
+            span,
+          )
+        None =>
+          Path(
+            lower_at(base, scope, depth),
+            steps.map(s => lower_step(s, scope, depth)),
+            span,
+          )
+      }
     // `-9223372036854775808` is a literal: its magnitude is out of range.
     Unary(Neg, { kind: Lit(Int(text)), .. }) =>
       Const(integer_value("-" + text, span), span)

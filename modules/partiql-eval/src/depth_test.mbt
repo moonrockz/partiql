@@ -66,3 +66,33 @@ test "a deep Ion literal is a data error, not a stack overflow" {
     soft.expect(ev("\{ion(150)} = \{ion(150)}")).to_equal(Bool(true))
   })
 }
+
+///|
+test "long chains in a grouped query do not overflow the stack" {
+  let ones = " + 1".repeat(99999)
+  let terms = Array::makei(100000, i => "k = \{i}")
+  @expect.expect_all(soft => {
+    soft
+    .expect(
+      ev(
+        "SELECT k FROM [{'a': 1}] AS t GROUP BY t.a AS k HAVING " +
+        terms.join(" OR "),
+      ),
+    )
+    .to_equal(Bag(@value.Bag::new([Tuple(@value.Tuple::new([("k", Int(1))]))])))
+    soft
+    .expect(ev("SELECT VALUE t.a\{ones} FROM [{'a': 1}] AS t GROUP BY t.a"))
+    .to_equal(Bag(@value.Bag::new([Int(100000)])))
+    soft
+    .expect(
+      ev("SELECT VALUE SUM(t.a\{ones}) FROM [{'a': 1}] AS t GROUP BY t.a"),
+    )
+    .to_equal(Bag(@value.Bag::new([Int(100000)])))
+    // A long key, repeated in SELECT.
+    soft
+    .expect(
+      ev("SELECT VALUE t.a\{ones} FROM [{'a': 1}] AS t GROUP BY t.a\{ones}"),
+    )
+    .to_equal(Bag(@value.Bag::new([Int(100000)])))
+  })
+}
