@@ -132,7 +132,8 @@ files, so the codec must accept both.
 After M1 (data model), M1b (MAP and graph), M2 (parser), M2b (graph
 MATCH), M3a (printer), M3b (pretty layout), M3d (error recovery), M4a
 (expression evaluation), M4b1 (query evaluation core), M4b2 (queries,
-part two), M4c (grouping and aggregates) and M4d1 (built-in functions):
+part two), M4c (grouping and aggregates), M4d1 (built-in functions) and
+M4d2 (CAST):
 
 | Check | Passed | Total | N/A |
 |---|---|---|---|
@@ -143,7 +144,7 @@ part two), M4c (grouping and aggregates) and M4d1 (built-in functions):
 | `print-roundtrip` | 5310 | 5313 | 3 |
 | `pretty-roundtrip` | 5310 | 5313 | 3 |
 | `recovery` | 5410 | 5410 | 0 |
-| `eval` | 7287 | 9960 | 2567 |
+| `eval` | 7507 | 9960 | 2346 |
 
 The 3 `eval-parse` failures are corpus defects (bead `partiql-zhj.9`):
 
@@ -157,11 +158,12 @@ The 3 `eval-parse` failures are corpus defects (bead `partiql-zhj.9`):
 
 ### The `eval` check
 
-Of 9960 assertions, 7287 pass and 2567 are not applicable: they need CAST,
-the datetime functions, FULL JOIN, graph MATCH or `?`, which later parts of
-M4 add. 106 fail. M4b1 raised the passes from 2952 to 3719, M4b2 raised them
+Of 9960 assertions, 7507 pass and 2346 are not applicable: they need the
+datetime functions, FULL JOIN, graph MATCH or `?`, which later parts of M4
+add. 107 fail. M4b1 raised the passes from 2952 to 3719, M4b2 raised them
 to 4043 (324 more), with the `eval-equiv` cases now evaluated, M4c raised
-them to 5211 (1168 more), and M4d1 raised them to 7287 (2076 more). To list the
+them to 5211 (1168 more), M4d1 raised them to 7287 (2076 more), and M4d2
+raised them to 7507 (220 more). To list the
 failures, run `PARTIQL_CONFORMANCE_SHOW=eval mise run test:conformance`. Each
 case fails in both modes, except where a reason below says otherwise. The
 reasons:
@@ -250,7 +252,7 @@ M4c evaluates GROUP BY, GROUP AS, GROUP ALL, HAVING, the SQL aggregates
 assertion of `coll-aggregate-function.ion`, `select/sql-aggregate.ion` and
 `ion/query/group-by/group-by.ion` passes. In `query/group-by/group-by.ion`
 726 assertions pass, and in the extended `group-by.ion` 50 pass. The
-grouping cases that stay not applicable need CAST (M4d).
+grouping cases that needed CAST pass since M4d2.
 
 M4c adds 30 failing ids in five groups:
 
@@ -308,8 +310,8 @@ MAP_ENTRIES. Map keys now match by value within a type family, also for
 `char_length.ion`, `octet_length.ion`, `bit_length.ion`, `lower.ion`,
 `trim.ion`, `substring.ion`, `position.ion`, `overlay.ion`, `abs.ion`,
 `ion/abs.ion`, `mod.ion`, `ion/exists.ion` and the extended `size.ion` and
-`text_replace.ion` passes. The map cases that stay not applicable need CAST
-(M4d2).
+`text_replace.ion` passes. M4d2 (CAST) made the map cases that needed CAST
+applicable.
 
 M4d1 adds 8 failing ids in three groups, and the 2 ids of "Map key match
 across numeric types" (M4b1) now pass:
@@ -327,9 +329,61 @@ across numeric types" (M4b1) now pass:
 - **DATE against Ion timestamp (2 ids).** `map.ion` "map_keys with date keys"
   (line 850): see "DATE against Ion timestamp" above.
 
-The groups add up to 106 ids (44 from M4b1: 6 + 3 + 1 + 6 + 14 + 4 + 4 + 2 +
-3 + 1; 24 from M4b2: 17 + 5 + 2; 30 from M4c: 8 + 4 + 2 + 12 + 4; and 8 from
-M4d1: 4 + 2 + 2).
+The groups add up to 107 ids (44 from M4b1: 6 + 3 + 1 + 6 + 14 + 4 + 4 + 2 +
+3 + 1; 24 from M4b2: 17 + 5 + 2; 30 from M4c: 8 + 4 + 2 + 12 + 4; 8 from
+M4d1: 4 + 2 + 2; and 1 from M4d2, see "CAST").
+
+### CAST
+
+M4d2 evaluates `CAST` to every type of the grammar except `SEXP` and
+`ARRAY<T>` (`Unsupported`). The specification defines only two cases
+(`CAST(MISSING AS INTEGER)` and `CAST('1' AS INTEGER)`), so the rules come
+from SQL, then the corpus, then partiql-lang-kotlin:
+
+- **Failure classes.** A cast that is not defined for the source kind, or
+  text that is not a valid literal of the target, is a type error (MISSING
+  in permissive mode). A value out of the range of the target, or the text
+  of a number or datetime longer than `CHAR(n)`/`VARCHAR(n)`, is a data error
+  in both modes. `CAST(x AS NULL)` and `CAST(x AS MISSING)` are static errors.
+- **Numbers.** Rounding is half to even. Text is read as an SQL numeric
+  literal (with `0x`, `0o`, `0b` and `_` separators, SQL:2023), so
+  `CAST('1.5' AS INT)` is 2. BOOL and numbers convert both ways (the corpus
+  needs BOOL to integers; SQL has neither): zero is FALSE, NaN is a type
+  error. A bare `DECIMAL` keeps the scale of the value (38 digits);
+  `DECIMAL(p)` has scale 0. A float casts to DECIMAL as the decimal of its
+  shortest text, and to an integer by its exact binary value (so
+  `` CAST(`-9223372036854775808e0` AS BIGINT) `` fits). `REAL` rounds once
+  from the exact value.
+- **Text.** BOOL is `TRUE`/`FALSE`; a decimal keeps its scale (scientific
+  form outside the range of `DECIMAL(38)`); a float is in SQL form (`1.5E0`;
+  `nan`, `+inf`, `-inf`); datetimes and intervals are the unquoted literal
+  strings. `CHAR(n)` pads with spaces; character text is cut to `n` code
+  points.
+- **LOBs.** STRING to CLOB is UTF-8; CLOB to STRING decodes UTF-8; CLOB and
+  BLOB convert to each other; no LOB converts to a number, BOOL or datetime
+  (as `ion/primitives/cast.ion` requires).
+- **Datetimes.** `evaluate` takes a session time zone (default UTC) and
+  follows the SQL rules for WITH and WITHOUT TIME ZONE. A bare TIME or
+  TIMESTAMP keeps the precision of the value; `TIME(p)` and `TIMESTAMP(p)`
+  round half up with carry. TIME to TIMESTAMP is `Unsupported` (it needs
+  CURRENT_DATE).
+- **Intervals.** An interval is cut to the last field of the qualifier; a
+  leading field that is too long is a data error. An exact number casts to
+  a one-field interval; an interval to a number is `Unsupported` (the value
+  does not keep its field).
+- **Maps (RFC 0104).** A tuple casts to `MAP<K, V>` with a text key type;
+  the last duplicate field wins and MISSING values are dropped. A map
+  re-casts its keys and values. A MAP literal whose keys (or values) all
+  cast to one type has that map type.
+- **Lowering.** `t[CAST(e AS STRING)]` names a field (spec, paths), and the
+  implied name of `CAST(e AS T)` is that of `e` (GROUP BY keys, SELECT
+  items).
+
+One CAST assertion fails: `cast.ion` "cast to int invalid values" with
+`'2e10'` (`cast('2e10' as INT)`) expects MISSING in permissive mode. In SQL `'2e10'` is
+a valid approximate literal whose value is out of the range of INT, a data
+error in both modes, as the extended `int.ion` overflow cases expect. The
+evaluator follows SQL.
 
 Every corpus value passes `codec`, including the `$map` (M1b MAP) and
 `$graph` (M1b graph) values.

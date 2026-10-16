@@ -133,11 +133,15 @@ Its parts, in this order:
   CARDINALITY, EXISTS, TUPLEUNION and the MAP_ functions (RFC 0104). The
   `eval` conformance check passes 7287 of 9960 assertions; 2567 are not
   applicable; 106 fail (see `conformance.md`).
-- **M4d2: CAST** (bead `partiql-5se.5.2`) and **M4d3: datetime functions**
-  (bead `partiql-5se.5.3`): EXTRACT, DATE_ADD, DATE_DIFF, OVERLAPS and the
-  other datetime functions.
+- **M4d2 (done): CAST** (bead `partiql-5se.5.2`). CAST to every type except
+  SEXP and ARRAY<T>, in both modes, with a session time zone; the CAST field
+  step, implied names and MAP literal types. The `eval` conformance check
+  passes 7507 of 9960 assertions; 2346 are not applicable; 107 fail (see
+  `conformance.md`).
+- **M4d3: datetime functions** (bead `partiql-5se.5.3`): EXTRACT, DATE_ADD,
+  DATE_DIFF, OVERLAPS and the other datetime functions.
 
-M4e, M4c and M4d1 are done. The next part is M4d2.
+M4e, M4c, M4d1 and M4d2 are done. The next part is M4d3.
 
 Graph MATCH evaluation and `?` parameters come after M4. A REPL is not part
 of M4.
