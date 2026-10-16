@@ -19,13 +19,20 @@ fn check_qualifier(
 }
 
 ///|
-fn at_least_one(
+/// The longest CHAR or VARCHAR, in code points. SQL leaves the maximum to the
+/// implementation; this is the PostgreSQL limit (10485760). CHAR(n) pads to
+/// n, so a larger n would allocate without bound.
+let max_text_length : Int32 = 10485760
+
+///|
+/// A CHAR or VARCHAR length: 1 to `max_text_length`.
+fn text_length(
   n : Int32,
   what : String,
   span : @ast.Span,
 ) -> Int32 raise @plan.EvalError {
-  if n < 1 {
-    raise DataError(message="\{what} must be at least 1", span~)
+  if n < 1 || n > max_text_length {
+    raise DataError(message="\{what} must be 1 to \{max_text_length}", span~)
   }
   n
 }
@@ -132,8 +139,8 @@ fn target(
       } else {
         raise DataError(message="FLOAT(\{p}) needs 1 <= p <= 53", span~)
       }
-    Char(n) => Text(Char(at_least_one(n.unwrap_or(1), "a CHAR length", span)))
-    Varchar(Some(n)) => Text(Varchar(at_least_one(n, "a VARCHAR length", span)))
+    Char(n) => Text(Char(text_length(n.unwrap_or(1), "a CHAR length", span)))
+    Varchar(Some(n)) => Text(Varchar(text_length(n, "a VARCHAR length", span)))
     Varchar(None) | String | Symbol => Text(String)
     Blob => Blob
     Clob => Clob

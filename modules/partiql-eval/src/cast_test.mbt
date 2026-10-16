@@ -207,3 +207,14 @@ test "a MAP literal declares the types of uniform CAST keys and values" {
     .to_equal(Bool(true))
   })
 }
+
+///|
+test "CHAR and VARCHAR lengths have an upper limit" {
+  // CHAR(n) pads to n code points, so a huge n would allocate without bound.
+  @expect.expect_all(soft => {
+    soft.expect(failure_of("CAST(1 AS CHAR(2147483647))")).to_equal("data")
+    soft.expect(failure_of("CAST(1 AS CHAR(10485761))")).to_equal("data")
+    soft.expect(failure_of("CAST(1 AS VARCHAR(10485761))")).to_equal("data")
+    soft.expect(failure_of("CAST('a' AS VARCHAR(10485760))")).to_equal("ok")
+  })
+}
