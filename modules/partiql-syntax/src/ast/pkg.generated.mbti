@@ -46,6 +46,12 @@ pub(all) enum Corresponding {
   By(Array[Identifier])
 } derive(Eq, @debug.Debug)
 
+pub(all) enum CurrentKind {
+  Date
+  Time
+  Timestamp
+} derive(Eq, @debug.Debug)
+
 pub(all) enum DataType {
   Null
   Missing
@@ -150,6 +156,7 @@ pub(all) enum ExprKind {
   NullIf(Expr, Expr)
   DateAdd(DatetimeField, Expr, Expr)
   DateDiff(DatetimeField, Expr, Expr)
+  CurrentDatetime(CurrentKind, precision~ : Int?)
   Call(Identifier, Array[Expr], quantifier~ : SetQuantifier?)
   CallStar(Identifier)
   List(Array[Expr])

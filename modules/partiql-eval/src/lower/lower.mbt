@@ -369,6 +369,8 @@ fn lower_at(
     Values(rows) => BagOf(lower_all(rows, scope, depth), span)
     GraphMatch(_) => unsupported("graph MATCH (later)", span)
     Parameter => unsupported("a parameter (later)", span)
+    CurrentDatetime(_, ..) =>
+      unsupported("a clock function (session clock)", span)
     Error => raise DataError(message="a broken expression", span~)
     Path(base, steps) =>
       match key_prefix(base, steps, span, scope) {

@@ -112,9 +112,18 @@ fn gen_type(rs : @splitmix.RandomState, depth : Int32) -> @ast.DataType {
 
 ///|
 fn gen_atom(rs : @splitmix.RandomState) -> @ast.Expr raise {
-  match pick(rs, 4) {
+  match pick(rs, 5) {
     0 => mk(VarRef(gen_ident(rs), qualified=chance(rs, 5)))
     1 => mk(Parameter)
+    2 => {
+      let kind : @ast.CurrentKind = one_of(rs, [Date, Time, Timestamp])
+      let precision = if kind is Date || chance(rs, 2) {
+        None
+      } else {
+        Some(pick(rs, 10))
+      }
+      mk(CurrentDatetime(kind, precision~))
+    }
     _ => mk(Lit(gen_literal(rs)))
   }
 }

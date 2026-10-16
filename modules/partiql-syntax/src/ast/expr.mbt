@@ -46,6 +46,14 @@ pub(all) enum DatetimeField {
 } derive(Debug, Eq)
 
 ///|
+/// The SQL clock functions (SQL-92 6.8).
+pub(all) enum CurrentKind {
+  Date
+  Time
+  Timestamp
+} derive(Debug, Eq)
+
+///|
 pub(all) enum ExprKind {
   Lit(Literal)
   /// A variable; `qualified` is the `@` prefix (local-first lookup).
@@ -79,6 +87,8 @@ pub(all) enum ExprKind {
   NullIf(Expr, Expr)
   DateAdd(DatetimeField, Expr, Expr)
   DateDiff(DatetimeField, Expr, Expr)
+  /// `CURRENT_DATE`, `CURRENT_TIME [(p)]`, `CURRENT_TIMESTAMP [(p)]`.
+  CurrentDatetime(CurrentKind, precision~ : Int32?)
   Call(Identifier, Array[Expr], quantifier~ : SetQuantifier?)
   /// `name(*)`, for example `COUNT(*)`
   CallStar(Identifier)

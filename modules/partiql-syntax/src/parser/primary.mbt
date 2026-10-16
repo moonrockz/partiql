@@ -264,6 +264,9 @@ fn Parser::word_primary(
     "TRUE" => return self.literal(Bool(true))
     "FALSE" => return self.literal(Bool(false))
     "DATE" | "TIME" | "TIMESTAMP" | "INTERVAL" => return self.datetime_literal()
+    "CURRENT_DATE" => return self.current_datetime(Date)
+    "CURRENT_TIME" => return self.current_datetime(Time)
+    "CURRENT_TIMESTAMP" => return self.current_datetime(Timestamp)
     _ => ()
   }
   if special_forms.contains(upper) && (next_is_open || upper == "CASE") {
@@ -386,4 +389,17 @@ fn Parser::one_group(self : Parser, from : Int32, to : Int32) -> Bool {
     }
   }
   false
+}
+
+///|
+/// `CURRENT_DATE`, or `CURRENT_TIME`/`CURRENT_TIMESTAMP` with an optional
+/// `( p )` (SQL-92 6.8).
+fn Parser::current_datetime(
+  self : Parser,
+  kind : @ast.CurrentKind,
+) -> @ast.Expr raise @ast.ParseError {
+  let start = self.pos
+  ignore(self.advance())
+  let precision = if kind is Date { None } else { self.precision() }
+  make(CurrentDatetime(kind, precision~), self.span_from(start))
 }

@@ -117,6 +117,7 @@ fn Printer::expr_body(self : Printer, e : @ast.Expr) -> Doc {
     VarRef(i, qualified~) =>
       cat([if qualified { Text("@") } else { Nil }, ident_doc(i)])
     Parameter => Text("?")
+    CurrentDatetime(kind, precision~) => Text(current_text(kind, precision))
     Error => Text("/* error */")
     Path(base, steps) => {
       let docs = [self.path_base(base)]

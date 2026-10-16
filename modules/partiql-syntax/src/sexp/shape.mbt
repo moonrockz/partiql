@@ -269,6 +269,20 @@ fn node_sx(e : @ast.Expr) -> Sx {
     VarRef(i, qualified~) =>
       Atom(if qualified { "@\{ident_text(i)}" } else { ident_text(i) })
     Parameter => Atom("?")
+    CurrentDatetime(kind, precision~) => {
+      let head = match kind {
+        Date => "current_date"
+        Time => "current_time"
+        Timestamp => "current_timestamp"
+      }
+      list(
+        head,
+        match precision {
+          Some(p) => [Atom(p.to_string())]
+          None => []
+        },
+      )
+    }
     Error => list("error", [])
     Path(root, steps) => {
       let parts = steps.map(step => {
