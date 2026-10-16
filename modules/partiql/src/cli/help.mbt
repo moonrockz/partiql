@@ -8,14 +8,31 @@ fn help_text(path : ArrayView[String]) -> String? {
       command(name, "partiql ").render_help()
     _ => return None
   }
-  let lines = examples(path)
-  let text = base.trim_end(chars="\n").to_owned()
+  let text = base.trim_end(chars="\n").to_owned() + "\n"
+  Some(
+    text + section("Examples", examples(path)) + section("Notes", notes(path)),
+  )
+}
+
+///|
+/// A titled block of indented lines, or nothing when there are none.
+fn section(title : String, lines : Array[String]) -> String {
   if lines.is_empty() {
-    Some(text + "\n")
+    ""
   } else {
-    Some(
-      text + "\n\nExamples:\n" + lines.map(line => "  " + line + "\n").join(""),
-    )
+    "\n\{title}:\n" + lines.map(line => "  " + line + "\n").join("")
+  }
+}
+
+///|
+/// Facts about a command that its options do not show.
+fn notes(path : ArrayView[String]) -> Array[String] {
+  match path {
+    ["query"] =>
+      [
+        "The session time zone is UTC: CURRENT_DATE, CURRENT_TIME and", "CURRENT_TIMESTAMP read the system clock at offset +00:00.",
+      ]
+    _ => []
   }
 }
 

@@ -396,3 +396,11 @@ test "query without a clock reports the clock function" {
     soft.expect(out.stderr.contains("needs a clock")).to_be_true()
   })
 }
+
+///|
+test "query help says the session time zone is UTC" {
+  // CURRENT_DATE and the other clock functions read the session zone; the
+  // CLI has no option for it yet (bead partiql-x69).
+  let help = @cli.run(["help", "query"])
+  @expect.expect(help.stdout).to_contain("The session time zone is UTC")
+}

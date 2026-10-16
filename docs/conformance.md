@@ -446,8 +446,9 @@ once and only when the statement uses a clock function. CURRENT_TIME and
 CURRENT_TIMESTAMP carry the session offset (default precisions 0 and 6;
 fractions are cut); UTCNOW() is at offset 0 with precision 6, as in
 partiql-lang-kotlin v1. CAST of TIME to TIMESTAMP takes the date from
-CURRENT_DATE (SQL-92 6.10). Without a clock these are data errors. The corpus
-has no test of them.
+CURRENT_DATE (SQL-92 6.10). Without a clock these are data errors. The
+`partiql` CLI uses the session time zone UTC (no option yet, bead
+`partiql-x69`); `partiql help query` says so. The corpus has no test of them.
 
 Every corpus value passes `codec`, including the `$map` (M1b MAP) and
 `$graph` (M1b graph) values.
