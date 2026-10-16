@@ -69,214 +69,6 @@ fn compare_zoned(
 }
 
 ///|
-fn compare_lists(
-  xs : ArrayView[Value],
-  ys : ArrayView[Value],
-  nulls : NullOrder,
-) -> Int32 {
-  let n = if xs.length() < ys.length() { xs.length() } else { ys.length() }
-  for k in 0..<n {
-    let c = compare(xs[k], ys[k], nulls~)
-    if c != 0 {
-      return c
-    }
-  }
-  sign(xs.length().compare(ys.length()))
-}
-
-///|
-fn sorted_values(values : ArrayView[Value], nulls : NullOrder) -> Array[Value] {
-  let out = values.to_owned()
-  out.sort_by((a, b) => compare(a, b, nulls~))
-  out
-}
-
-///|
-fn compare_pair(
-  p : (String, Value),
-  q : (String, Value),
-  nulls : NullOrder,
-) -> Int32 {
-  let c = compare_text(p.0, q.0)
-  if c != 0 {
-    c
-  } else {
-    compare(p.1, q.1, nulls~)
-  }
-}
-
-///|
-fn compare_tuples(a : Tuple, b : Tuple, nulls : NullOrder) -> Int32 {
-  let xs = a.fields().to_owned()
-  let ys = b.fields().to_owned()
-  xs.sort_by((p, q) => compare_pair(p, q, nulls))
-  ys.sort_by((p, q) => compare_pair(p, q, nulls))
-  let n = if xs.length() < ys.length() { xs.length() } else { ys.length() }
-  for k in 0..<n {
-    let c = compare_pair(xs[k], ys[k], nulls)
-    if c != 0 {
-      return c
-    }
-  }
-  sign(xs.length().compare(ys.length()))
-}
-
-///|
-fn compare_entry(
-  p : (Value, Value),
-  q : (Value, Value),
-  nulls : NullOrder,
-) -> Int32 {
-  let c = compare(p.0, q.0, nulls~)
-  if c != 0 {
-    c
-  } else {
-    compare(p.1, q.1, nulls~)
-  }
-}
-
-///|
-/// RFC 0104: sort each map's entries by key then value, then compare
-/// lexicographically (a shorter prefix first).
-fn compare_maps(a : MapValue, b : MapValue, nulls : NullOrder) -> Int32 {
-  let xs = a.entries().to_owned()
-  let ys = b.entries().to_owned()
-  xs.sort_by((p, q) => compare_entry(p, q, nulls))
-  ys.sort_by((p, q) => compare_entry(p, q, nulls))
-  let n = if xs.length() < ys.length() { xs.length() } else { ys.length() }
-  for k in 0..<n {
-    let c = compare_entry(xs[k], ys[k], nulls)
-    if c != 0 {
-      return c
-    }
-  }
-  sign(xs.length().compare(ys.length()))
-}
-
-///|
-fn compare_text_lists(a : Array[String], b : Array[String]) -> Int32 {
-  let n = if a.length() < b.length() { a.length() } else { b.length() }
-  for k in 0..<n {
-    let c = compare_text(a[k], b[k])
-    if c != 0 {
-      return c
-    }
-  }
-  sign(a.length().compare(b.length()))
-}
-
-///|
-fn sorted_labels(labels : Array[String]) -> Array[String] {
-  let out = labels.copy()
-  out.sort_by(compare_text)
-  out
-}
-
-///|
-/// An absent payload sorts before any payload.
-fn compare_payloads(a : Value?, b : Value?, nulls : NullOrder) -> Int32 {
-  match (a, b) {
-    (None, None) => 0
-    (None, Some(_)) => -1
-    (Some(_), None) => 1
-    (Some(x), Some(y)) => compare(x, y, nulls~)
-  }
-}
-
-///|
-/// Directed before undirected; directed by (from, to), undirected by its
-/// sorted pair of node ids.
-fn compare_ends(a : Ends, b : Ends) -> Int32 {
-  let key = (e : Ends) => {
-    match e {
-      Directed(from~, to~) => (0, from, to)
-      Undirected(x, y) =>
-        if compare_text(x, y) <= 0 {
-          (1, x, y)
-        } else {
-          (1, y, x)
-        }
-    }
-  }
-  let (ka, kb) = (key(a), key(b))
-  let c = sign(ka.0.compare(kb.0))
-  if c != 0 {
-    return c
-  }
-  let c2 = compare_text(ka.1, kb.1)
-  if c2 != 0 {
-    c2
-  } else {
-    compare_text(ka.2, kb.2)
-  }
-}
-
-///|
-fn compare_nodes(a : GraphNode, b : GraphNode, nulls : NullOrder) -> Int32 {
-  let c = compare_text(a.id, b.id)
-  if c != 0 {
-    return c
-  }
-  let c2 = compare_text_lists(sorted_labels(a.labels), sorted_labels(b.labels))
-  if c2 != 0 {
-    return c2
-  }
-  compare_payloads(a.payload, b.payload, nulls)
-}
-
-///|
-fn compare_edges(a : GraphEdge, b : GraphEdge, nulls : NullOrder) -> Int32 {
-  let c = compare_text(a.id, b.id)
-  if c != 0 {
-    return c
-  }
-  let c2 = compare_text_lists(sorted_labels(a.labels), sorted_labels(b.labels))
-  if c2 != 0 {
-    return c2
-  }
-  let c3 = compare_ends(a.ends, b.ends)
-  if c3 != 0 {
-    return c3
-  }
-  compare_payloads(a.payload, b.payload, nulls)
-}
-
-///|
-/// Compares canonical forms: nodes sorted by id, then edges sorted by id,
-/// each list lexicographic with a shorter prefix first.
-fn compare_graphs(a : GraphValue, b : GraphValue, nulls : NullOrder) -> Int32 {
-  let by_id_n = (x : GraphNode, y : GraphNode) => compare_text(x.id, y.id)
-  let by_id_e = (x : GraphEdge, y : GraphEdge) => compare_text(x.id, y.id)
-  let an = a.nodes().to_owned()
-  let bn = b.nodes().to_owned()
-  an.sort_by(by_id_n)
-  bn.sort_by(by_id_n)
-  let n = if an.length() < bn.length() { an.length() } else { bn.length() }
-  for k in 0..<n {
-    let c = compare_nodes(an[k], bn[k], nulls)
-    if c != 0 {
-      return c
-    }
-  }
-  let c = sign(an.length().compare(bn.length()))
-  if c != 0 {
-    return c
-  }
-  let ae = a.edges().to_owned()
-  let be = b.edges().to_owned()
-  ae.sort_by(by_id_e)
-  be.sort_by(by_id_e)
-  let m = if ae.length() < be.length() { ae.length() } else { be.length() }
-  for k in 0..<m {
-    let c = compare_edges(ae[k], be[k], nulls)
-    if c != 0 {
-      return c
-    }
-  }
-  sign(ae.length().compare(be.length()))
-}
-
-///|
 fn lowered_or_self(v : Value) -> Value {
   try v.lower() catch {
     _ => v
@@ -286,8 +78,8 @@ fn lowered_or_self(v : Value) -> Value {
 }
 
 ///|
-/// The ORDER BY total order (spec section 4.4). Returns -1, 0 or 1.
-pub fn compare(a : Value, b : Value, nulls~ : NullOrder) -> Int32 {
+/// The non-container part of ORDER BY.
+fn compare_scalar(a : Value, b : Value, nulls : NullOrder) -> Int32 {
   let x = lowered_or_self(a)
   let y = lowered_or_self(b)
   let (rx, ry) = (rank(x), rank(y))
@@ -343,20 +135,183 @@ pub fn compare(a : Value, b : Value, nulls~ : NullOrder) -> Int32 {
       compare_keys((p.seconds, p.nanos), (q.seconds, q.nanos))
     (String(p), String(q)) => compare_text(p, q)
     (Clob(p) | Blob(p), Clob(q) | Blob(q)) => compare_octets(p, q)
-    (List(p), List(q)) => compare_lists(p[:], q[:], nulls)
-    (Tuple(p), Tuple(q)) => compare_tuples(p, q, nulls)
-    (Map(p), Map(q)) => compare_maps(p, q, nulls)
-    (Graph(p), Graph(q)) => compare_graphs(p, q, nulls)
-    (Bag(p), Bag(q)) =>
-      compare_lists(
-        sorted_values(p.items(), nulls)[:],
-        sorted_values(q.items(), nulls)[:],
-        nulls,
-      )
     _ =>
       match (num_of(x), num_of(y)) {
         (Some(m), Some(n)) => sign(compare_num(m, n))
         _ => 0
       }
+  }
+}
+
+///|
+priv enum OrderKind {
+  List
+  Tuple
+  Bag
+  Map
+  Graph
+  Component
+}
+
+///|
+fn OrderKind::rank(self : OrderKind) -> Int32 {
+  match self {
+    List => 10
+    Tuple => 11
+    Bag => 12
+    Map => 13
+    Graph => 14
+    Component => 16
+  }
+}
+
+///|
+priv enum OrderValue {
+  Scalar(Value)
+  Sequence(OrderKind, Array[OrderValue])
+}
+
+///|
+fn OrderValue::rank(self : OrderValue) -> Int32 {
+  match self {
+    Scalar(v) => rank(v)
+    Sequence(kind, _) => kind.rank()
+  }
+}
+
+///|
+priv enum OrderStep {
+  Pair(OrderValue, OrderValue)
+  Length(Int32, Int32)
+}
+
+///|
+/// Canonical children are already sorted. Comparison itself never sorts
+/// or calls back into `compare`, including comparisons made by a sort.
+fn order_compare(a : OrderValue, b : OrderValue, nulls : NullOrder) -> Int32 {
+  let work = [OrderStep::Pair(a, b)]
+  while work.pop() is Some(step) {
+    let result = match step {
+      Length(x, y) => sign(x.compare(y))
+      Pair(x, y) => {
+        let (rx, ry) = (x.rank(), y.rank())
+        if rx != ry {
+          if (rx == 0 || ry == 0) && nulls is NullsLast {
+            if rx == 0 {
+              1
+            } else {
+              -1
+            }
+          } else {
+            sign(rx.compare(ry))
+          }
+        } else {
+          match (x, y) {
+            (Scalar(p), Scalar(q)) => compare_scalar(p, q, nulls)
+            (Sequence(_, xs), Sequence(_, ys)) => {
+              work.push(Length(xs.length(), ys.length()))
+              for i = xs.length().min(ys.length()) - 1; i >= 0; i = i - 1 {
+                work.push(Pair(xs[i], ys[i]))
+              }
+              0
+            }
+            _ => 0
+          }
+        }
+      }
+    }
+    if result != 0 {
+      return result
+    }
+  }
+  0
+}
+
+///|
+fn order_form(v : Value, nulls : NullOrder) -> OrderValue {
+  v.fold(
+    (node, children) => {
+      let sequence = (xs : Array[OrderValue]) => {
+        OrderValue::Sequence(Component, xs)
+      }
+      let string = (s : String) => OrderValue::Scalar(String(s))
+      let sort = (xs : Array[OrderValue]) => {
+        xs.sort_by((p, q) => order_compare(p, q, nulls))
+        xs
+      }
+      match node {
+        List(_) => Sequence(List, children)
+        Bag(_) => Sequence(Bag, sort(children))
+        Tuple(t) => {
+          let fields = t
+            .fields()
+            .mapi((i, p) => sequence([string(p.0), children[i]]))
+          Sequence(Tuple, sort(fields))
+        }
+        Map(m) => {
+          let entries = m
+            .entries()
+            .mapi((i, _) => sequence([children[2 * i], children[2 * i + 1]]))
+          Sequence(Map, sort(entries))
+        }
+        Graph(g) => {
+          let mut at = 0
+          let payload = (p : Value?) => {
+            match p {
+              None => sequence([])
+              Some(_) => {
+                let child = children[at]
+                at += 1
+                sequence([child])
+              }
+            }
+          }
+          let labels = (xs : Array[String]) => sequence(sort(xs.map(string)))
+          let nodes = g
+            .nodes()
+            .map(n => {
+              sequence([string(n.id), labels(n.labels), payload(n.payload)])
+            })
+          let edges = g
+            .edges()
+            .map(e => {
+              let ends = match e.ends {
+                Directed(from~, to~) =>
+                  sequence([Scalar(Int(0)), string(from), string(to)])
+                Undirected(a, b) => {
+                  let (first, last) = if compare_text(a, b) <= 0 {
+                    (a, b)
+                  } else {
+                    (b, a)
+                  }
+                  sequence([Scalar(Int(1)), string(first), string(last)])
+                }
+              }
+              sequence([
+                string(e.id),
+                labels(e.labels),
+                ends,
+                payload(e.payload),
+              ])
+            })
+          Sequence(Graph, [sequence(sort(nodes)), sequence(sort(edges))])
+        }
+        _ => Scalar(node)
+      }
+    },
+    prepare=lowered_or_self,
+  )
+}
+
+///|
+/// The ORDER BY total order (spec section 4.4). Returns -1, 0 or 1.
+/// Values are canonicalized bottom-up, then compared with an explicit stack.
+pub fn compare(a : Value, b : Value, nulls~ : NullOrder) -> Int32 {
+  let x = lowered_or_self(a)
+  let y = lowered_or_self(b)
+  if rank(x) != rank(y) || rank(x) < 10 || rank(x) == 15 {
+    compare_scalar(x, y, nulls)
+  } else {
+    order_compare(order_form(x, nulls), order_form(y, nulls), nulls)
   }
 }

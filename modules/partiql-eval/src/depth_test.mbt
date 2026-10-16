@@ -54,16 +54,52 @@ test "an expression at the depth limit evaluates on every target" {
 }
 
 ///|
-test "a deep Ion literal is a data error, not a stack overflow" {
+test "a deep Ion literal is a syntax error, not a stack overflow" {
   let ion = (n : Int32) => "`" + "[".repeat(n) + "]".repeat(n) + "`"
   @expect.expect_all(soft => {
     soft
     .expect_call(() => ev("\{ion(1000)} = \{ion(1000)}"))
     .to_raise_matching(
-      e => e is @eval.EvalError::DataError(message="expression is too deep", ..),
-      description="DataError: expression is too deep",
+      e => e is @eval.EvalError::Syntax(_),
+      description="Syntax for excessive Ion nesting",
     )
-    soft.expect(ev("\{ion(150)} = \{ion(150)}")).to_equal(Bool(true))
+    soft.expect(ev("\{ion(128)} = \{ion(128)}")).to_equal(Bool(true))
+  })
+}
+
+///|
+test "lateral FROM can compare values nested at runtime" {
+  let sources = ["[1] AS v0"]
+  for i in 1..<=2000 {
+    sources.push("[[v\{i - 1}]] AS v\{i}")
+  }
+  @expect.expect(ev("SELECT VALUE v2000 = v2000 FROM " + sources.join(", "))).to_equal(
+    Bag(@value.Bag::new([Bool(true)])),
+  )
+}
+
+///|
+test "global values can be nested 100000 levels" {
+  let mut v : @value.Value = Int(1)
+  for _ in 0..<100000 {
+    v = List([v])
+  }
+  let env = @eval.Bindings::of_tuple(@value.Tuple::new([("v", v)]))
+  @expect.expect_all(soft => {
+    for mode in [@eval.Mode::Permissive, Strict] {
+      soft
+      .expect(@eval.evaluate_text("v = v", env~, mode~))
+      .to_equal(Bool(true))
+      soft
+      .expect(@eval.evaluate_text("v IN [v]", env~, mode~))
+      .to_equal(Bool(true))
+      soft
+      .expect_call(() => @eval.evaluate_text("MAP {v: 1}", env~, mode~))
+      .to_raise_matching(
+        e => e is @eval.EvalError::DataError(_),
+        description="DataError for a non-scalar map key",
+      )
+    }
   })
 }
 

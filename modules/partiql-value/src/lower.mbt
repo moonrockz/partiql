@@ -98,55 +98,41 @@ pub fn Value::lower(self : Value) -> Value raise LowerError {
 ///|
 /// Lowers recursively, including the children of collections and tuples.
 pub fn Value::lower_deep(self : Value) -> Value raise LowerError {
-  match self.lower() {
-    List(items) => {
-      let out : Array[Value] = []
-      for item in items {
-        out.push(item.lower_deep())
+  self.fold(
+    (node, children) => {
+      let node = node.lower()
+      match node {
+        List(_) => List(children)
+        Bag(_) => Bag(Bag::new(children))
+        Tuple(t) =>
+          Tuple(Tuple::new(t.fields().mapi((i, p) => (p.0, children[i]))))
+        Map(m) =>
+          Map({
+            key_type: m.key_type,
+            value_type: m.value_type,
+            entries: m
+            .entries()
+            .mapi((i, _) => (children[2 * i], children[2 * i + 1])),
+          })
+        Graph(g) => {
+          let mut at = 0
+          let payload = (p : Value?) => {
+            match p {
+              None => None
+              Some(_) => {
+                let v = children[at]
+                at += 1
+                Some(v)
+              }
+            }
+          }
+          let nodes = g.nodes().map(n => { ..n, payload: payload(n.payload), })
+          let edges = g.edges().map(e => { ..e, payload: payload(e.payload), })
+          Graph({ nodes, edges, })
+        }
+        other => other
       }
-      List(out)
-    }
-    Bag(bag) => {
-      let out : Array[Value] = []
-      for item in bag.items() {
-        out.push(item.lower_deep())
-      }
-      Bag(Bag::new(out))
-    }
-    Tuple(tuple) => {
-      let out : Array[(String, Value)] = []
-      for pair in tuple.fields() {
-        out.push((pair.0, pair.1.lower_deep()))
-      }
-      Tuple(Tuple::new(out))
-    }
-    // Keys are stored lowered already; values may hold boxed Ion.
-    Map(m) => {
-      let out : Array[(Value, Value)] = []
-      for pair in m.entries() {
-        out.push((pair.0, pair.1.lower_deep()))
-      }
-      Map({ key_type: m.key_type, value_type: m.value_type, entries: out, })
-    }
-    Graph(g) => {
-      let nodes : Array[GraphNode] = []
-      for n in g.nodes() {
-        nodes.push({ ..n, payload: lower_payload(n.payload), })
-      }
-      let edges : Array[GraphEdge] = []
-      for e in g.edges() {
-        edges.push({ ..e, payload: lower_payload(e.payload), })
-      }
-      Graph({ nodes, edges, })
-    }
-    other => other
-  }
-}
-
-///|
-fn lower_payload(payload : Value?) -> Value? raise LowerError {
-  match payload {
-    Some(v) => Some(v.lower_deep())
-    None => None
-  }
+    },
+    prepare=lowered_or_self,
+  )
 }

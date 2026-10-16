@@ -22,3 +22,57 @@ test "parse errors: Syntax for invalid input; graph MATCH parses" {
     .to_raise()
   })
 }
+
+///|
+test "Ion literals past the reader nesting limit raise Syntax" {
+  @expect.expect_all(soft => {
+    for (open, close) in [("[", "]"), ("(", ")"), ("{a:", "}"), ("a::[", "]")] {
+      let source = "`" + open.repeat(129) + "0" + close.repeat(129) + "`"
+      soft
+      .expect_call(() => @syntax.parse(source))
+      .to_raise_matching(
+        e => e is @syntax.ParseError::Syntax(_),
+        description="Syntax for excessive Ion nesting",
+      )
+    }
+  })
+}
+
+///|
+test "Ion literals at the reader nesting limit still parse and print" {
+  @expect.expect_all(soft => {
+    for (open, close) in [("[", "]"), ("(", ")"), ("{a:", "}"), ("a::[", "]")] {
+      let source = "`" + open.repeat(128) + "0" + close.repeat(128) + "`"
+      let statement = @syntax.parse(source)
+      soft.expect(@syntax.print(statement)).to_equal(source)
+    }
+  })
+}
+
+///|
+test "very deep Ion literals report errors and recover to the next statement" {
+  @expect.expect_all(soft => {
+    for (open, close) in [("[", "]"), ("(", ")"), ("{a:", "}"), ("a::[", "]")] {
+      let literal = "`" + open.repeat(200000) + "0" + close.repeat(200000) + "`"
+      let source = "SELECT " + literal + "; SELECT 2"
+      let strict = try @syntax.parse(source) catch {
+        e => e
+      } noraise {
+        _ => fail("expected excessive Ion nesting to raise Syntax")
+      }
+      soft
+      .expect(
+        strict is @syntax.ParseError::Syntax(message~, span~, ..) &&
+        message.has_prefix("invalid Ion literal:") &&
+        span == { start: 7, end: 7 + literal.length(), },
+      )
+      .to_be_true()
+      let recovered = @syntax.parse_script_recovering(source)
+      soft.expect(recovered.errors).to_equal([strict])
+      soft.expect(recovered.script.statements.length()).to_equal(2)
+      soft
+      .expect(recovered.script.statements.get(1).map(s => @syntax.print(s)))
+      .to_equal(Some("SELECT 2"))
+    }
+  })
+}

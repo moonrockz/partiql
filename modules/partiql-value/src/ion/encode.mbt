@@ -74,106 +74,90 @@ pub fn from_ion_data(x : @ion_core.IonValue) -> @value.Value {
 ///|
 /// The shared encoder. `preserve` writes boxed Ion values exactly.
 fn encode(v : @value.Value, preserve : Bool) -> @ion_core.IonValue {
-  match v {
-    Null => @ion_core.IonValue::untyped_null()
-    Missing => annotate(@ion_core.IonValue::untyped_null(), "$missing")
-    Bool(b) => @ion_core.IonValue::bool(b)
-    Int(n) => int64(n)
-    BigInt(n) => @ion_core.IonValue::big_int(n)
-    Float(d) => @ion_core.IonValue::float(d)
-    Decimal(d) => @ion_core.IonValue::decimal(d)
-    String(s) => @ion_core.IonValue::string(s)
-    Clob(bytes) => @ion_core.IonValue::clob(bytes)
-    Blob(bytes) => @ion_core.IonValue::blob(bytes)
-    Date(d) =>
-      annotate(
-        struct_of([
-          ("year", small(d.year)),
-          ("month", small(d.month)),
-          ("day", small(d.day)),
-        ]),
-        "$date",
-      )
-    Time(t) =>
-      annotate(
-        struct_of([
-          ("hour", small(t.hour)),
-          ("minute", small(t.minute)),
-          ("second", seconds_decimal(t)),
-          ("offset", offset_value(t.offset)),
-        ]),
-        "$time",
-      )
-    Timestamp(ts) =>
-      annotate(
-        struct_of([
-          ("year", small(ts.date.year)),
-          ("month", small(ts.date.month)),
-          ("day", small(ts.date.day)),
-          ("hour", small(ts.time.hour)),
-          ("minute", small(ts.time.minute)),
-          ("second", seconds_decimal(ts.time)),
-          ("offset", offset_value(ts.time.offset)),
-        ]),
-        "$timestamp",
-      )
-    IntervalYM(i) =>
-      annotate(
-        struct_of([
-          ("sign", sign_value(i.is_negative())),
-          ("years", int64(i.years())),
-          ("months", int64(i.months_part())),
-        ]),
-        "$interval_ym",
-      )
-    IntervalDT(i) =>
-      annotate(
-        struct_of([
-          ("sign", sign_value(i.is_negative())),
-          ("days", int64(i.days())),
-          ("hours", int64(i.hours())),
-          ("minutes", int64(i.minutes())),
-          ("seconds", int64(i.seconds_part())),
-          ("nanos", int64(i.nanos_part())),
-        ]),
-        "$interval_dt",
-      )
-    List(items) => @ion_core.IonValue::list(items.map(x => encode(x, preserve)))
-    Bag(bag) =>
-      annotate(
-        @ion_core.IonValue::list(
-          bag.items().iter().map(x => encode(x, preserve)).collect(),
-        ),
-        "$bag",
-      )
-    Tuple(t) =>
-      struct_of(
-        t
-        .fields()
-        .iter()
-        .map(pair => (pair.0, encode(pair.1, preserve)))
-        .collect(),
-      )
-    Map(m) => {
-      let pairs = m
-        .entries()
-        .iter()
-        .map(pair => {
-          @ion_core.IonValue::list([
-            encode(pair.0, preserve),
-            encode(pair.1, preserve),
-          ])
-        })
-        .collect()
-      @ion_core.IonValue::list(pairs).with_annotations([
-        @ion_core.SymbolToken::new("$map"),
-        @ion_core.SymbolToken::new(m.key_type.name()),
-        @ion_core.SymbolToken::new(m.value_type.name()),
-      ])
+  v.fold((v, children) => {
+    match v {
+      Null => @ion_core.IonValue::untyped_null()
+      Missing => annotate(@ion_core.IonValue::untyped_null(), "$missing")
+      Bool(b) => @ion_core.IonValue::bool(b)
+      Int(n) => int64(n)
+      BigInt(n) => @ion_core.IonValue::big_int(n)
+      Float(d) => @ion_core.IonValue::float(d)
+      Decimal(d) => @ion_core.IonValue::decimal(d)
+      String(s) => @ion_core.IonValue::string(s)
+      Clob(bytes) => @ion_core.IonValue::clob(bytes)
+      Blob(bytes) => @ion_core.IonValue::blob(bytes)
+      Date(d) =>
+        annotate(
+          struct_of([
+            ("year", small(d.year)),
+            ("month", small(d.month)),
+            ("day", small(d.day)),
+          ]),
+          "$date",
+        )
+      Time(t) =>
+        annotate(
+          struct_of([
+            ("hour", small(t.hour)),
+            ("minute", small(t.minute)),
+            ("second", seconds_decimal(t)),
+            ("offset", offset_value(t.offset)),
+          ]),
+          "$time",
+        )
+      Timestamp(ts) =>
+        annotate(
+          struct_of([
+            ("year", small(ts.date.year)),
+            ("month", small(ts.date.month)),
+            ("day", small(ts.date.day)),
+            ("hour", small(ts.time.hour)),
+            ("minute", small(ts.time.minute)),
+            ("second", seconds_decimal(ts.time)),
+            ("offset", offset_value(ts.time.offset)),
+          ]),
+          "$timestamp",
+        )
+      IntervalYM(i) =>
+        annotate(
+          struct_of([
+            ("sign", sign_value(i.is_negative())),
+            ("years", int64(i.years())),
+            ("months", int64(i.months_part())),
+          ]),
+          "$interval_ym",
+        )
+      IntervalDT(i) =>
+        annotate(
+          struct_of([
+            ("sign", sign_value(i.is_negative())),
+            ("days", int64(i.days())),
+            ("hours", int64(i.hours())),
+            ("minutes", int64(i.minutes())),
+            ("seconds", int64(i.seconds_part())),
+            ("nanos", int64(i.nanos_part())),
+          ]),
+          "$interval_dt",
+        )
+      List(_) => @ion_core.IonValue::list(children)
+      Bag(_) => annotate(@ion_core.IonValue::list(children), "$bag")
+      Tuple(t) => struct_of(t.fields().mapi((i, p) => (p.0, children[i])))
+      Map(m) => {
+        let pairs = m
+          .entries()
+          .mapi((i, _) => {
+            @ion_core.IonValue::list([children[2 * i], children[2 * i + 1]])
+          })
+        @ion_core.IonValue::list(pairs).with_annotations([
+          @ion_core.SymbolToken::new("$map"),
+          @ion_core.SymbolToken::new(m.key_type.name()),
+          @ion_core.SymbolToken::new(m.value_type.name()),
+        ])
+      }
+      Graph(g) => encode_graph(g, children)
+      Ion(x) => if preserve { x } else { annotate(x, "$ion") }
     }
-    Graph(g) => encode_graph(g, preserve)
-    Ion(x) => if preserve { x } else { annotate(x, "$ion") }
-  }
+  })
 }
 
 ///|
@@ -186,8 +170,7 @@ fn symbol(text : String) -> @ion_core.IonValue {
 /// payload when there is one.
 fn element_fields(
   labels : Array[String],
-  payload : @value.Value?,
-  preserve : Bool,
+  payload : @ion_core.IonValue?,
 ) -> Array[(String, @ion_core.IonValue)] {
   let out : Array[(String, @ion_core.IonValue)] = []
   if !labels.is_empty() {
@@ -199,14 +182,28 @@ fn element_fields(
     )
   }
   if payload is Some(p) {
-    out.push(("payload", encode(p, preserve)))
+    out.push(("payload", p))
   }
   out
 }
 
 ///|
 /// `$graph::{nodes: [...], edges: [...]}` (the external graph format).
-fn encode_graph(g : @value.GraphValue, preserve : Bool) -> @ion_core.IonValue {
+fn encode_graph(
+  g : @value.GraphValue,
+  children : Array[@ion_core.IonValue],
+) -> @ion_core.IonValue {
+  let mut at = 0
+  let payload = (p : @value.Value?) => {
+    match p {
+      None => None
+      Some(_) => {
+        let x = children[at]
+        at += 1
+        Some(x)
+      }
+    }
+  }
   let nodes = g
     .nodes()
     .iter()
@@ -214,7 +211,7 @@ fn encode_graph(g : @value.GraphValue, preserve : Bool) -> @ion_core.IonValue {
       struct_of(
         [
           ("id", symbol(n.id)),
-          ..element_fields(n.labels().to_owned(), n.payload, preserve),
+          ..element_fields(n.labels().to_owned(), payload(n.payload)),
         ],
       )
     })
@@ -232,7 +229,7 @@ fn encode_graph(g : @value.GraphValue, preserve : Bool) -> @ion_core.IonValue {
       struct_of(
         [
           ("id", symbol(e.id)),
-          ..element_fields(e.labels().to_owned(), e.payload, preserve),
+          ..element_fields(e.labels().to_owned(), payload(e.payload)),
           ("ends", ends),
         ],
       )

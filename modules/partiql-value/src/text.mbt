@@ -25,31 +25,3 @@ fn compare_octets(a : Bytes, b : Bytes) -> Int32 {
   }
   a.length().compare(b.length())
 }
-
-///|
-/// Whether `xs` and `ys` are the same multiset under `same`. `same` must be
-/// an equivalence relation (then greedy matching is exact).
-fn[T] match_multiset(
-  xs : ArrayView[T],
-  ys : ArrayView[T],
-  same : (T, T) -> Bool,
-) -> Bool {
-  if xs.length() != ys.length() {
-    return false
-  }
-  let used = Array::make(ys.length(), false)
-  for x in xs {
-    let mut found = false
-    for j, y in ys {
-      if !used[j] && same(x, y) {
-        used[j] = true
-        found = true
-        break
-      }
-    }
-    if !found {
-      return false
-    }
-  }
-  true
-}
