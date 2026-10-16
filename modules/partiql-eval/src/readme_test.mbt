@@ -57,3 +57,13 @@ test "README CAST example" {
     @value.Value::Decimal(@ion.Decimal::parse("3.14")),
   )
 }
+
+///|
+/// Mirrors the datetime example of README.mbt.md. Keep the two in step.
+test "README datetime example" {
+  let value = @eval.evaluate_text(
+    "TO_STRING(DATE_ADD(day, 30, DATE '2024-02-15'), 'MMMM d, yyyy')",
+    env=@eval.Bindings::empty(),
+  )
+  @expect.expect(value).to_equal(@value.Value::String("March 16, 2024"))
+}
