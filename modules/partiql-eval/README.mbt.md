@@ -122,6 +122,7 @@ supported yet raises `EvalError::Unsupported`, never a wrong answer.
 - `TypeError`: an operand has the wrong type. Permissive mode gives `MISSING`;
   strict mode raises.
 - `DataError`: the data is wrong (division by zero, Int64 overflow, an
-  undefined variable). It raises in both modes.
+  undefined variable), or the statement is wrong before any data is read
+  (an unknown function name, a CAST to NULL). It raises in both modes.
 - `Unsupported`: the form is not evaluated yet.
 - `Syntax`: `evaluate_text` could not parse the text.

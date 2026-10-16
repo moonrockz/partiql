@@ -404,3 +404,13 @@ test "query help says the session time zone is UTC" {
   let help = @cli.run(["help", "query"])
   @expect.expect(help.stdout).to_contain("The session time zone is UTC")
 }
+
+///|
+test "query reports an unknown function at its name" {
+  let out = query(["-e", "SELECT VALUE foo(x) FROM <<1>> AS x"])
+  @expect.expect_all(soft => {
+    soft.expect(out.status).to_equal(1)
+    soft.expect(out.stdout).to_equal("")
+    soft.expect(out.stderr).to_contain("unknown function foo")
+  })
+}

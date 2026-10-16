@@ -36,8 +36,8 @@ test "unsupported forms say so" {
     soft
     .expect_call(() => ev("no_such_function('a')"))
     .to_raise_matching(
-      e => e is @eval.EvalError::Unsupported(..),
-      description="Unsupported",
+      e => e is @eval.EvalError::DataError(..),
+      description="DataError",
     )
     soft
     .expect_call(() => ev("SELECT FROM"))

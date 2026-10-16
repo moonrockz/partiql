@@ -31,13 +31,14 @@ test "absent and wrong-type arguments in both modes" {
 ///|
 test "name resolution and static checks" {
   @expect.expect_all(soft => {
-    // An unknown name is not supported yet. The parser rejects a delimited
-    // function name, so it never reaches the built-ins.
+    // An unknown name is a static error (spec unknown-function design). The
+    // parser rejects a delimited function name, so it never reaches the
+    // built-ins.
     soft
     .expect_call(() => ev("no_such_function('a')"))
     .to_raise_matching(
-      e => e is @eval.EvalError::Unsupported(..),
-      description="Unsupported",
+      e => e is @eval.EvalError::DataError(..),
+      description="DataError",
     )
     soft
     .expect_call(() => ev("\"char_length\"('a')"))
@@ -250,5 +251,39 @@ test "TRIM type errors number the arguments in source order" {
     soft
     .expect(type_error_message("trim(1)"))
     .to_equal("argument 1 of TRIM has the wrong type")
+  })
+}
+
+///|
+/// The message of a static error, or what happened instead.
+fn static_error(source : String, mode~ : @eval.Mode = Permissive) -> String {
+  try ev(source, mode~) catch {
+    DataError(message~, ..) => message
+    _ => "other error"
+  } noraise {
+    _ => "no error"
+  }
+}
+
+///|
+test "an unknown function name is a static error in both modes" {
+  @expect.expect_all(soft => {
+    for mode in [@eval.Mode::Permissive, Strict] {
+      for
+        source in [
+          "foo(1)", "foo(*)", "MAKE_DATE(2020, 1, 1)", "CASE WHEN FALSE THEN foo(1) END",
+          "SELECT VALUE x FROM <<1>> AS x WHERE FALSE AND bar(x)", "SELECT VALUE (SELECT VALUE baz() FROM <<>>) FROM <<1>>",
+          "SELECT COUNT(*) FROM <<1>> AS x GROUP BY qux(x)",
+        ] {
+        soft
+        .expect(
+          (source, static_error(source, mode~).contains("unknown function")),
+        )
+        .to_equal((source, true))
+      }
+    }
+    soft
+    .expect(static_error("MAKE_DATE(2020, 1, 1)"))
+    .to_equal("unknown function MAKE_DATE")
   })
 }
