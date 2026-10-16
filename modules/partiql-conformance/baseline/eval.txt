@@ -8945,6 +8945,562 @@ extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string val
 extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"9999T",pattern:"y",result:"9999"}#error
 extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"9999T",pattern:"yy",result:"99"}#coerce
 extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"9999T",pattern:"yy",result:"99"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid pattern{pattern:"A"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid pattern{pattern:"A"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid pattern{pattern:"E"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid pattern{pattern:"E"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid pattern{pattern:"F"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid pattern{pattern:"F"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid pattern{pattern:"G"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid pattern{pattern:"G"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid pattern{pattern:"K"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid pattern{pattern:"K"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid pattern{pattern:"L"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid pattern{pattern:"L"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid pattern{pattern:"M",fields:"YEAR"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid pattern{pattern:"M",fields:"YEAR"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid pattern{pattern:"O"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid pattern{pattern:"O"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid pattern{pattern:"Q"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid pattern{pattern:"Q"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid pattern{pattern:"V"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid pattern{pattern:"V"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid pattern{pattern:"W"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid pattern{pattern:"W"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid pattern{pattern:"X",fields:"YEAR, MONTH_OF_YEAR, DAY_OF_MONTH, HOUR_OF_DAY"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid pattern{pattern:"X",fields:"YEAR, MONTH_OF_YEAR, DAY_OF_MONTH, HOUR_OF_DAY"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid pattern{pattern:"XX",fields:"YEAR, MONTH_OF_YEAR, DAY_OF_MONTH, HOUR_OF_DAY"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid pattern{pattern:"XX",fields:"YEAR, MONTH_OF_YEAR, DAY_OF_MONTH, HOUR_OF_DAY"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid pattern{pattern:"XXX",fields:"YEAR, MONTH_OF_YEAR, DAY_OF_MONTH, HOUR_OF_DAY"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid pattern{pattern:"XXX",fields:"YEAR, MONTH_OF_YEAR, DAY_OF_MONTH, HOUR_OF_DAY"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid pattern{pattern:"c"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid pattern{pattern:"c"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid pattern{pattern:"dd",fields:"YEAR, MONTH_OF_YEAR"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid pattern{pattern:"dd",fields:"YEAR, MONTH_OF_YEAR"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid pattern{pattern:"e"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid pattern{pattern:"e"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid pattern{pattern:"foobar"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid pattern{pattern:"foobar"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid pattern{pattern:"h",fields:"YEAR, MONTH_OF_YEAR, DAY_OF_MONTH"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid pattern{pattern:"h",fields:"YEAR, MONTH_OF_YEAR, DAY_OF_MONTH"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid pattern{pattern:"hh",fields:"YEAR, MONTH_OF_YEAR, DAY_OF_MONTH"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid pattern{pattern:"hh",fields:"YEAR, MONTH_OF_YEAR, DAY_OF_MONTH"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid pattern{pattern:"k"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid pattern{pattern:"k"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid pattern{pattern:"p"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid pattern{pattern:"p"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid pattern{pattern:"q"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid pattern{pattern:"q"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid pattern{pattern:"u"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid pattern{pattern:"u"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid pattern{pattern:"w"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid pattern{pattern:"w"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid pattern{pattern:"x",fields:"YEAR, MONTH_OF_YEAR, DAY_OF_MONTH, HOUR_OF_DAY"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid pattern{pattern:"x",fields:"YEAR, MONTH_OF_YEAR, DAY_OF_MONTH, HOUR_OF_DAY"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid pattern{pattern:"xx",fields:"YEAR, MONTH_OF_YEAR, DAY_OF_MONTH, HOUR_OF_DAY"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid pattern{pattern:"xx",fields:"YEAR, MONTH_OF_YEAR, DAY_OF_MONTH, HOUR_OF_DAY"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid pattern{pattern:"xxx",fields:"YEAR, MONTH_OF_YEAR, DAY_OF_MONTH, HOUR_OF_DAY"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid pattern{pattern:"xxx",fields:"YEAR, MONTH_OF_YEAR, DAY_OF_MONTH, HOUR_OF_DAY"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid pattern{pattern:"y M X",fields:"DAY_OF_MONTH, HOUR_OF_DAY"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid pattern{pattern:"y M X",fields:"DAY_OF_MONTH, HOUR_OF_DAY"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid pattern{pattern:"y M a",fields:"DAY_OF_MONTH, HOUR_OF_DAY"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid pattern{pattern:"y M a",fields:"DAY_OF_MONTH, HOUR_OF_DAY"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid pattern{pattern:"y M d X",fields:"HOUR_OF_DAY"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid pattern{pattern:"y M d X",fields:"HOUR_OF_DAY"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid pattern{pattern:"y M d a",fields:"HOUR_OF_DAY"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid pattern{pattern:"y M d a",fields:"HOUR_OF_DAY"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid pattern{pattern:"y MMMMM"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid pattern{pattern:"y MMMMM"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid pattern{pattern:"y X",fields:"MONTH_OF_YEAR, DAY_OF_MONTH, HOUR_OF_DAY"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid pattern{pattern:"y X",fields:"MONTH_OF_YEAR, DAY_OF_MONTH, HOUR_OF_DAY"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid pattern{pattern:"y a",fields:"MONTH_OF_YEAR, DAY_OF_MONTH, HOUR_OF_DAY"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid pattern{pattern:"y a",fields:"MONTH_OF_YEAR, DAY_OF_MONTH, HOUR_OF_DAY"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid pattern{pattern:"z"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid pattern{pattern:"z"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"-1",pattern:"y"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"-1",pattern:"y"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"0",pattern:"y"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"0",pattern:"y"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"00010",pattern:"yyyy"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"00010",pattern:"yyyy"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"010",pattern:"yy"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"010",pattern:"yy"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"010",pattern:"yyyy"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"010",pattern:"yyyy"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 -1",pattern:"y M"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 -1",pattern:"y M"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 001",pattern:"y MM"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 001",pattern:"y MM"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 1 -1",pattern:"y M d"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 1 -1",pattern:"y M d"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 1 001",pattern:"y M dd"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 1 001",pattern:"y M dd"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 1 1 -1 1 AM",pattern:"y M d h m a"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 1 1 -1 1 AM",pattern:"y M d h m a"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 1 1 -1 1",pattern:"y M d H m"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 1 1 -1 1",pattern:"y M d H m"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 1 1 001 1 AM",pattern:"y M d hh m a"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 1 1 001 1 AM",pattern:"y M d hh m a"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 1 1 001 1",pattern:"y M d HH m"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 1 1 001 1",pattern:"y M d HH m"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 1 1 1 -1",pattern:"y M d H m"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 1 1 1 -1",pattern:"y M d H m"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 1 1 1 001",pattern:"y M d H mm"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 1 1 1 001",pattern:"y M d H mm"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 1 1 1 1 +1",pattern:"y M d H m X"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 1 1 1 1 +1",pattern:"y M d H m X"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 1 1 1 1 +1",pattern:"y M d H m x"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 1 1 1 1 +1",pattern:"y M d H m x"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 1 1 1 1 +100",pattern:"y M d H m XX"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 1 1 1 1 +100",pattern:"y M d H m XX"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 1 1 1 1 +100",pattern:"y M d H m xx"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 1 1 1 1 +100",pattern:"y M d H m xx"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 1 1 1 1 +1000000",pattern:"y M d H m X"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 1 1 1 1 +1000000",pattern:"y M d H m X"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 1 1 1 1 +1000000",pattern:"y M d H m x"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 1 1 1 1 +1000000",pattern:"y M d H m x"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 1 1 1 1 +1:00",pattern:"y M d H m XXX"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 1 1 1 1 +1:00",pattern:"y M d H m XXX"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 1 1 1 1 +1:00",pattern:"y M d H m xxx"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 1 1 1 1 +1:00",pattern:"y M d H m xxx"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 1 1 1 1 +24",pattern:"y M d H m X"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 1 1 1 1 +24",pattern:"y M d H m X"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 1 1 1 1 +24",pattern:"y M d H m x"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 1 1 1 1 +24",pattern:"y M d H m x"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 1 1 1 1 +2400",pattern:"y M d H m XX"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 1 1 1 1 +2400",pattern:"y M d H m XX"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 1 1 1 1 +2400",pattern:"y M d H m xx"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 1 1 1 1 +2400",pattern:"y M d H m xx"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 1 1 1 1 +24:00",pattern:"y M d H m XXX"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 1 1 1 1 +24:00",pattern:"y M d H m XXX"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 1 1 1 1 +24:00",pattern:"y M d H m xxx"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 1 1 1 1 +24:00",pattern:"y M d H m xxx"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 1 1 1 1 -001:00",pattern:"y M d H m XXX"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 1 1 1 1 -001:00",pattern:"y M d H m XXX"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 1 1 1 1 -001:00",pattern:"y M d H m xxx"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 1 1 1 1 -001:00",pattern:"y M d H m xxx"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 1 1 1 1 -1",pattern:"y M d H m X"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 1 1 1 1 -1",pattern:"y M d H m X"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 1 1 1 1 -1",pattern:"y M d H m s"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 1 1 1 1 -1",pattern:"y M d H m s"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 1 1 1 1 -1",pattern:"y M d H m x"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 1 1 1 1 -1",pattern:"y M d H m x"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 1 1 1 1 -100",pattern:"y M d H m XX"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 1 1 1 1 -100",pattern:"y M d H m XX"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 1 1 1 1 -100",pattern:"y M d H m xx"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 1 1 1 1 -100",pattern:"y M d H m xx"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 1 1 1 1 -10000",pattern:"y M d H m XX"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 1 1 1 1 -10000",pattern:"y M d H m XX"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 1 1 1 1 -10000",pattern:"y M d H m xx"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 1 1 1 1 -10000",pattern:"y M d H m xx"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 1 1 1 1 -1:00",pattern:"y M d H m XXX"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 1 1 1 1 -1:00",pattern:"y M d H m XXX"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 1 1 1 1 -1:00",pattern:"y M d H m xxx"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 1 1 1 1 -1:00",pattern:"y M d H m xxx"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 1 1 1 1 -24",pattern:"y M d H m X"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 1 1 1 1 -24",pattern:"y M d H m X"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 1 1 1 1 -24",pattern:"y M d H m x"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 1 1 1 1 -24",pattern:"y M d H m x"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 1 1 1 1 -2400",pattern:"y M d H m XX"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 1 1 1 1 -2400",pattern:"y M d H m XX"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 1 1 1 1 -2400",pattern:"y M d H m xx"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 1 1 1 1 -2400",pattern:"y M d H m xx"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 1 1 1 1 -24:00",pattern:"y M d H m XXX"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 1 1 1 1 -24:00",pattern:"y M d H m XXX"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 1 1 1 1 -24:00",pattern:"y M d H m xxx"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 1 1 1 1 -24:00",pattern:"y M d H m xxx"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 1 1 1 1 001",pattern:"y M d HH m ss"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 1 1 1 1 001",pattern:"y M d HH m ss"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 1 1 1 1 05",pattern:"y M d H m X"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 1 1 1 1 05",pattern:"y M d H m X"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 1 1 1 1 05",pattern:"y M d H m x"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 1 1 1 1 05",pattern:"y M d H m x"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 1 1 1 1 0500",pattern:"y M d H m XX"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 1 1 1 1 0500",pattern:"y M d H m XX"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 1 1 1 1 0500",pattern:"y M d H m xx"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 1 1 1 1 0500",pattern:"y M d H m xx"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 1 1 1 1 05:00",pattern:"y M d H m XXX"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 1 1 1 1 05:00",pattern:"y M d H m XXX"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 1 1 1 1 05:00",pattern:"y M d H m xxx"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 1 1 1 1 05:00",pattern:"y M d H m xxx"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 1 1 1 1 1 -0.1",pattern:"y M d H m s S"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 1 1 1 1 1 -0.1",pattern:"y M d H m s S"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 1 1 1 1 1 -1",pattern:"y M d H m s n"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 1 1 1 1 1 -1",pattern:"y M d H m s n"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 1 1 1 1 1 0.001",pattern:"y M d H m s SS"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 1 1 1 1 1 0.001",pattern:"y M d H m s SS"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 1 1 1 1 1 0.1",pattern:"y M d H m s SS"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 1 1 1 1 1 0.1",pattern:"y M d H m s SS"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 1 1 1 1 1 1.0",pattern:"y M d H m s S"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 1 1 1 1 1 1.0",pattern:"y M d H m s S"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 1 1 1 1 1 1000000000",pattern:"y M d H m s n"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 1 1 1 1 1 1000000000",pattern:"y M d H m s n"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 1 1 1 1 1",pattern:"y M d HH m ss"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 1 1 1 1 1",pattern:"y M d HH m ss"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 1 1 1 1 AM",pattern:"y M d hh m a"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 1 1 1 1 AM",pattern:"y M d hh m a"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 1 1 1 1 Z",pattern:"y M d H m x"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 1 1 1 1 Z",pattern:"y M d H m x"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 1 1 1 1 Z",pattern:"y M d H m xx"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 1 1 1 1 Z",pattern:"y M d H m xx"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 1 1 1 1 Z",pattern:"y M d H m xxx"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 1 1 1 1 Z",pattern:"y M d H m xxx"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 1 1 1 1",pattern:"y M d H m s S"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 1 1 1 1",pattern:"y M d H m s S"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 1 1 1 1",pattern:"y M d H m s n"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 1 1 1 1",pattern:"y M d H m s n"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 1 1 1 1",pattern:"y M d H m s"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 1 1 1 1",pattern:"y M d H m s"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 1 1 1 1",pattern:"y M d H mm"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 1 1 1 1",pattern:"y M d H mm"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 1 1 1 1",pattern:"y M d HH m"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 1 1 1 1",pattern:"y M d HH m"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 1 1 1 61",pattern:"y M d H m"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 1 1 1 61",pattern:"y M d H m"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 1 1 1",pattern:"y M d H m"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 1 1 1",pattern:"y M d H m"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 1 1 13 1 AM",pattern:"y M d h m a"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 1 1 13 1 AM",pattern:"y M d h m a"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 1 1 25 1 61",pattern:"y M d H m s"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 1 1 25 1 61",pattern:"y M d H m s"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 1 1 25 1",pattern:"y M d H m"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 1 1 25 1",pattern:"y M d H m"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 1 1 AM",pattern:"y M d h m a"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 1 1 AM",pattern:"y M d h m a"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 1 1",pattern:"y M d H m"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 1 1",pattern:"y M d H m"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 1 1",pattern:"y M dd"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 1 1",pattern:"y M dd"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 1 40",pattern:"y M d"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 1 40",pattern:"y M d"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 1",pattern:"y M d"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 1",pattern:"y M d"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 1",pattern:"y MM"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 1",pattern:"y MM"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 1",pattern:"y MMM"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 1",pattern:"y MMM"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 1",pattern:"y MMMM"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 1",pattern:"y MMMM"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 13",pattern:"y M"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 13",pattern:"y M"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 Fub",pattern:"y MMM"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 Fub",pattern:"y MMM"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 Fubruary",pattern:"y MMMM"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10 Fubruary",pattern:"y MMMM"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10",pattern:"y M"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10",pattern:"y M"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10000",pattern:"y"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"10000",pattern:"y"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"9",pattern:"yy"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"9",pattern:"yy"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"some text",pattern:"y M d H m s S"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"some text",pattern:"y M d H m s S"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"some text",pattern:"y M d H m s SSS"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"some text",pattern:"y M d H m s SSS"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"some text",pattern:"y M d H m s X"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"some text",pattern:"y M d H m s X"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"some text",pattern:"y M d H m s XX"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"some text",pattern:"y M d H m s XX"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"some text",pattern:"y M d H m s XXX"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"some text",pattern:"y M d H m s XXX"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"some text",pattern:"y M d H m s n"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"some text",pattern:"y M d H m s n"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"some text",pattern:"y M d H m s x"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"some text",pattern:"y M d H m s x"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"some text",pattern:"y M d H m s xx"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"some text",pattern:"y M d H m s xx"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"some text",pattern:"y M d H m s xxx"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"some text",pattern:"y M d H m s xxx"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"some text",pattern:"y M d H m s"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"some text",pattern:"y M d H m s"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"some text",pattern:"y M d H m ss"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"some text",pattern:"y M d H m ss"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"some text",pattern:"y M d H m"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"some text",pattern:"y M d H m"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"some text",pattern:"y M d H mm"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"some text",pattern:"y M d H mm"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"some text",pattern:"y M d h m a"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"some text",pattern:"y M d h m a"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"some text",pattern:"y M d hh m a"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"some text",pattern:"y M d hh m a"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"some text",pattern:"y M d"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"some text",pattern:"y M d"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"some text",pattern:"y M dd"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"some text",pattern:"y M dd"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"some text",pattern:"y M"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"some text",pattern:"y M"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"some text",pattern:"y MM"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"some text",pattern:"y MM"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"some text",pattern:"y MMM"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"some text",pattern:"y MMM"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"some text",pattern:"y MMMM"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"some text",pattern:"y MMMM"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"some text",pattern:"y"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"some text",pattern:"y"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"some text",pattern:"yy"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"some text",pattern:"yy"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"some text",pattern:"yyyy"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_invalid::to_timestamp invalid string{string:"some text",pattern:"yyyy"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp null and missing propagation{string:"''",pattern:"missing"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp null and missing propagation{string:"''",pattern:"missing"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp null and missing propagation{string:"''",pattern:"null"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp null and missing propagation{string:"''",pattern:"null"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp null and missing propagation{string:"missing",pattern:"'y'"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp null and missing propagation{string:"missing",pattern:"'y'"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp null and missing propagation{string:"missing",pattern:"missing"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp null and missing propagation{string:"missing",pattern:"missing"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp null and missing propagation{string:"missing",pattern:"null"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp null and missing propagation{string:"missing",pattern:"null"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp null and missing propagation{string:"null",pattern:"'y'"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp null and missing propagation{string:"null",pattern:"'y'"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp null and missing propagation{string:"null",pattern:"missing"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp null and missing propagation{string:"null",pattern:"missing"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp null and missing propagation{string:"null",pattern:"null"}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp null and missing propagation{string:"null",pattern:"null"}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp single argument missing propagation#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp single argument missing propagation#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp single argument null propagation#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp single argument null propagation#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"0001",pattern:"yyyy",result:0001T}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"0001",pattern:"yyyy",result:0001T}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"0010",pattern:"yyyy",result:0010T}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"0010",pattern:"yyyy",result:0010T}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"0069",pattern:"yyyy",result:0069T}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"0069",pattern:"yyyy",result:0069T}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"01",pattern:"yy",result:2001T}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"01",pattern:"yy",result:2001T}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"1 01",pattern:"y M",result:0001-01T}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"1 01",pattern:"y M",result:0001-01T}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"1 01",pattern:"y MM",result:0001-01T}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"1 01",pattern:"y MM",result:0001-01T}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"1 1 01",pattern:"y M d",result:0001-01-01}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"1 1 01",pattern:"y M d",result:0001-01-01}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"1 1 01",pattern:"y M dd",result:0001-01-01}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"1 1 01",pattern:"y M dd",result:0001-01-01}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"1 1 1 0 0 0 0",pattern:"y M d H m s S",result:0001-01-01T00:00:00-00:00}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"1 1 1 0 0 0 0",pattern:"y M d H m s S",result:0001-01-01T00:00:00-00:00}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"1 1 1 0 0 0 0",pattern:"y M d H m s n",result:0001-01-01T00:00:00-00:00}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"1 1 1 0 0 0 0",pattern:"y M d H m s n",result:0001-01-01T00:00:00-00:00}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"1 1 1 0 0 0 00",pattern:"y M d H m s SS",result:0001-01-01T00:00:00-00:00}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"1 1 1 0 0 0 00",pattern:"y M d H m s SS",result:0001-01-01T00:00:00-00:00}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"1 1 1 0 0 0 00000000001",pattern:"y M d H m s n",result:0001-01-01T00:00:00.000000001-00:00}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"1 1 1 0 0 0 00000000001",pattern:"y M d H m s n",result:0001-01-01T00:00:00.000000001-00:00}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"1 1 1 0 0 0 01",pattern:"y M d H m s SS",result:0001-01-01T00:00:00.01-00:00}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"1 1 1 0 0 0 01",pattern:"y M d H m s SS",result:0001-01-01T00:00:00.01-00:00}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"1 1 1 0 0 0 1",pattern:"y M d H m s S",result:0001-01-01T00:00:00.1-00:00}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"1 1 1 0 0 0 1",pattern:"y M d H m s S",result:0001-01-01T00:00:00.1-00:00}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"1 1 1 0 0 0 1",pattern:"y M d H m s n",result:0001-01-01T00:00:00.000000001-00:00}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"1 1 1 0 0 0 1",pattern:"y M d H m s n",result:0001-01-01T00:00:00.000000001-00:00}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"1 1 1 0 0 0 10",pattern:"y M d H m s SS",result:0001-01-01T00:00:00.1-00:00}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"1 1 1 0 0 0 10",pattern:"y M d H m s SS",result:0001-01-01T00:00:00.1-00:00}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"1 1 1 0 0 0 9",pattern:"y M d H m s S",result:0001-01-01T00:00:00.9-00:00}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"1 1 1 0 0 0 9",pattern:"y M d H m s S",result:0001-01-01T00:00:00.9-00:00}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"1 1 1 0 0 0 99",pattern:"y M d H m s SS",result:0001-01-01T00:00:00.99-00:00}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"1 1 1 0 0 0 99",pattern:"y M d H m s SS",result:0001-01-01T00:00:00.99-00:00}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"1 1 1 0 0 0 999999999",pattern:"y M d H m s n",result:0001-01-01T00:00:00.999999999-00:00}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"1 1 1 0 0 0 999999999",pattern:"y M d H m s n",result:0001-01-01T00:00:00.999999999-00:00}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"1 1 1 0 0 0",pattern:"y M d H m s",result:0001-01-01T00:00:00-00:00}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"1 1 1 0 0 0",pattern:"y M d H m s",result:0001-01-01T00:00:00-00:00}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"1 1 1 0 0 00",pattern:"y M d H m ss",result:0001-01-01T00:00:00-00:00}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"1 1 1 0 0 00",pattern:"y M d H m ss",result:0001-01-01T00:00:00-00:00}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"1 1 1 0 0 01",pattern:"y M d H m s",result:0001-01-01T00:00:01-00:00}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"1 1 1 0 0 01",pattern:"y M d H m s",result:0001-01-01T00:00:01-00:00}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"1 1 1 0 0 01",pattern:"y M d H m ss",result:0001-01-01T00:00:01-00:00}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"1 1 1 0 0 01",pattern:"y M d H m ss",result:0001-01-01T00:00:01-00:00}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"1 1 1 0 0 1",pattern:"y M d H m s",result:0001-01-01T00:00:01-00:00}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"1 1 1 0 0 1",pattern:"y M d H m s",result:0001-01-01T00:00:01-00:00}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"1 1 1 0 0 59",pattern:"y M d H m s",result:0001-01-01T00:00:59-00:00}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"1 1 1 0 0 59",pattern:"y M d H m s",result:0001-01-01T00:00:59-00:00}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"1 1 1 0 0 59",pattern:"y M d H m ss",result:0001-01-01T00:00:59-00:00}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"1 1 1 0 0 59",pattern:"y M d H m ss",result:0001-01-01T00:00:59-00:00}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"1 1 1 0 0",pattern:"y M d H m",result:0001-01-01T00:00-00:00}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"1 1 1 0 0",pattern:"y M d H m",result:0001-01-01T00:00-00:00}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"1 1 1 0 00",pattern:"y M d H mm",result:0001-01-01T00:00-00:00}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"1 1 1 0 00",pattern:"y M d H mm",result:0001-01-01T00:00-00:00}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"1 1 1 0",pattern:"y M d H",result:0001-01-01T00:00-00:00}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"1 1 1 0",pattern:"y M d H",result:0001-01-01T00:00-00:00}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"1 1 1 00 0",pattern:"y M d HH m",result:0001-01-01T00:00-00:00}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"1 1 1 00 0",pattern:"y M d HH m",result:0001-01-01T00:00-00:00}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"1 1 1 00 00",pattern:"y M d H m",result:0001-01-01T00:00-00:00}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"1 1 1 00 00",pattern:"y M d H m",result:0001-01-01T00:00-00:00}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"1 1 1 00",pattern:"y M d H",result:0001-01-01T00:00-00:00}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"1 1 1 00",pattern:"y M d H",result:0001-01-01T00:00-00:00}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"1 1 1 01 0 AM",pattern:"y M d hh m a",result:0001-01-01T01:00-00:00}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"1 1 1 01 0 AM",pattern:"y M d hh m a",result:0001-01-01T01:00-00:00}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"1 1 1 01 00 AM",pattern:"y M d h m a",result:0001-01-01T01:00-00:00}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"1 1 1 01 00 AM",pattern:"y M d h m a",result:0001-01-01T01:00-00:00}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"1 1 1 1 0 AM",pattern:"y M d h m a",result:0001-01-01T01:00-00:00}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"1 1 1 1 0 AM",pattern:"y M d h m a",result:0001-01-01T01:00-00:00}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"1 1 1 11 59 PM",pattern:"y M d h m a",result:0001-01-01T23:59-00:00}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"1 1 1 11 59 PM",pattern:"y M d h m a",result:0001-01-01T23:59-00:00}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"1 1 1 11 59 PM",pattern:"y M d hh m a",result:0001-01-01T23:59-00:00}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"1 1 1 11 59 PM",pattern:"y M d hh m a",result:0001-01-01T23:59-00:00}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"1 1 1 23 59",pattern:"y M d H m",result:0001-01-01T23:59-00:00}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"1 1 1 23 59",pattern:"y M d H m",result:0001-01-01T23:59-00:00}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"1 1 1 23 59",pattern:"y M d H mm",result:0001-01-01T23:59-00:00}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"1 1 1 23 59",pattern:"y M d H mm",result:0001-01-01T23:59-00:00}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"1 1 1 23 59",pattern:"y M d HH m",result:0001-01-01T23:59-00:00}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"1 1 1 23 59",pattern:"y M d HH m",result:0001-01-01T23:59-00:00}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"1 1 1 23",pattern:"y M d H",result:0001-01-01T23:00-00:00}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"1 1 1 23",pattern:"y M d H",result:0001-01-01T23:00-00:00}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"1 1 1",pattern:"y M d",result:0001-01-01}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"1 1 1",pattern:"y M d",result:0001-01-01}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"1 1 31",pattern:"y M d",result:0001-01-31}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"1 1 31",pattern:"y M d",result:0001-01-31}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"1 1 31",pattern:"y M dd",result:0001-01-31}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"1 1 31",pattern:"y M dd",result:0001-01-31}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"1 1",pattern:"y M",result:0001-01T}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"1 1",pattern:"y M",result:0001-01T}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"1 10",pattern:"y M",result:0001-10T}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"1 10",pattern:"y M",result:0001-10T}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"1 10",pattern:"y MM",result:0001-10T}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"1 10",pattern:"y MM",result:0001-10T}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"1 12",pattern:"y M",result:0001-12T}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"1 12",pattern:"y M",result:0001-12T}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"1 12",pattern:"y MM",result:0001-12T}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"1 12",pattern:"y MM",result:0001-12T}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"1 Apr",pattern:"y MMM",result:0001-04T}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"1 Apr",pattern:"y MMM",result:0001-04T}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"1 April",pattern:"y MMMM",result:0001-04T}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"1 April",pattern:"y MMMM",result:0001-04T}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"1 Aug",pattern:"y MMM",result:0001-08T}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"1 Aug",pattern:"y MMM",result:0001-08T}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"1 August",pattern:"y MMMM",result:0001-08T}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"1 August",pattern:"y MMMM",result:0001-08T}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"1 Dec",pattern:"y MMM",result:0001-12T}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"1 Dec",pattern:"y MMM",result:0001-12T}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"1 December",pattern:"y MMMM",result:0001-12T}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"1 December",pattern:"y MMMM",result:0001-12T}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"1 Feb",pattern:"y MMM",result:0001-02T}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"1 Feb",pattern:"y MMM",result:0001-02T}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"1 February",pattern:"y MMMM",result:0001-02T}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"1 February",pattern:"y MMMM",result:0001-02T}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"1 Jan",pattern:"y MMM",result:0001-01T}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"1 Jan",pattern:"y MMM",result:0001-01T}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"1 January",pattern:"y MMMM",result:0001-01T}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"1 January",pattern:"y MMMM",result:0001-01T}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"1 Jul",pattern:"y MMM",result:0001-07T}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"1 Jul",pattern:"y MMM",result:0001-07T}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"1 July",pattern:"y MMMM",result:0001-07T}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"1 July",pattern:"y MMMM",result:0001-07T}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"1 Jun",pattern:"y MMM",result:0001-06T}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"1 Jun",pattern:"y MMM",result:0001-06T}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"1 June",pattern:"y MMMM",result:0001-06T}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"1 June",pattern:"y MMMM",result:0001-06T}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"1 Mar",pattern:"y MMM",result:0001-03T}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"1 Mar",pattern:"y MMM",result:0001-03T}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"1 March",pattern:"y MMMM",result:0001-03T}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"1 March",pattern:"y MMMM",result:0001-03T}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"1 May",pattern:"y MMM",result:0001-05T}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"1 May",pattern:"y MMM",result:0001-05T}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"1 May",pattern:"y MMMM",result:0001-05T}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"1 May",pattern:"y MMMM",result:0001-05T}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"1 Nov",pattern:"y MMM",result:0001-11T}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"1 Nov",pattern:"y MMM",result:0001-11T}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"1 November",pattern:"y MMMM",result:0001-11T}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"1 November",pattern:"y MMMM",result:0001-11T}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"1 Oct",pattern:"y MMM",result:0001-10T}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"1 Oct",pattern:"y MMM",result:0001-10T}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"1 October",pattern:"y MMMM",result:0001-10T}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"1 October",pattern:"y MMMM",result:0001-10T}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"1 Sep",pattern:"y MMM",result:0001-09T}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"1 Sep",pattern:"y MMM",result:0001-09T}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"1 September",pattern:"y MMMM",result:0001-09T}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"1 September",pattern:"y MMMM",result:0001-09T}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"1",pattern:"y",result:0001T}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"1",pattern:"y",result:0001T}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"10",pattern:"y",result:0010T}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"10",pattern:"y",result:0010T}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"10",pattern:"yy",result:2010T}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"10",pattern:"yy",result:2010T}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"100",pattern:"y",result:0100T}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"100",pattern:"y",result:0100T}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"1000",pattern:"y",result:1000T}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"1000",pattern:"y",result:1000T}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"1970",pattern:"yyyy",result:1970T}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"1970",pattern:"yyyy",result:1970T}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"1999",pattern:"yyyy",result:1999T}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"1999",pattern:"yyyy",result:1999T}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"2 1 1 0 0 +01",pattern:"y M d H m X",result:0002-01-01T00:00+01:00}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"2 1 1 0 0 +01",pattern:"y M d H m X",result:0002-01-01T00:00+01:00}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"2 1 1 0 0 +01",pattern:"y M d H m x",result:0002-01-01T00:00+01:00}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"2 1 1 0 0 +01",pattern:"y M d H m x",result:0002-01-01T00:00+01:00}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"2 1 1 0 0 +0100",pattern:"y M d H m XX",result:0002-01-01T00:00+01:00}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"2 1 1 0 0 +0100",pattern:"y M d H m XX",result:0002-01-01T00:00+01:00}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"2 1 1 0 0 +0100",pattern:"y M d H m xx",result:0002-01-01T00:00+01:00}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"2 1 1 0 0 +0100",pattern:"y M d H m xx",result:0002-01-01T00:00+01:00}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"2 1 1 0 0 +0159",pattern:"y M d H m XX",result:0002-01-01T00:00+01:59}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"2 1 1 0 0 +0159",pattern:"y M d H m XX",result:0002-01-01T00:00+01:59}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"2 1 1 0 0 +0159",pattern:"y M d H m xx",result:0002-01-01T00:00+01:59}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"2 1 1 0 0 +0159",pattern:"y M d H m xx",result:0002-01-01T00:00+01:59}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"2 1 1 0 0 +01:00",pattern:"y M d H m XXX",result:0002-01-01T00:00+01:00}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"2 1 1 0 0 +01:00",pattern:"y M d H m XXX",result:0002-01-01T00:00+01:00}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"2 1 1 0 0 +01:00",pattern:"y M d H m xxx",result:0002-01-01T00:00+01:00}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"2 1 1 0 0 +01:00",pattern:"y M d H m xxx",result:0002-01-01T00:00+01:00}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"2 1 1 0 0 +01:59",pattern:"y M d H m XXX",result:0002-01-01T00:00+01:59}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"2 1 1 0 0 +01:59",pattern:"y M d H m XXX",result:0002-01-01T00:00+01:59}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"2 1 1 0 0 +01:59",pattern:"y M d H m xxx",result:0002-01-01T00:00+01:59}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"2 1 1 0 0 +01:59",pattern:"y M d H m xxx",result:0002-01-01T00:00+01:59}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"2 1 1 0 0 +10",pattern:"y M d H m X",result:0002-01-01T00:00+10:00}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"2 1 1 0 0 +10",pattern:"y M d H m X",result:0002-01-01T00:00+10:00}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"2 1 1 0 0 +10",pattern:"y M d H m x",result:0002-01-01T00:00+10:00}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"2 1 1 0 0 +10",pattern:"y M d H m x",result:0002-01-01T00:00+10:00}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"2 1 1 0 0 +1000",pattern:"y M d H m XX",result:0002-01-01T00:00+10:00}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"2 1 1 0 0 +1000",pattern:"y M d H m XX",result:0002-01-01T00:00+10:00}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"2 1 1 0 0 +1000",pattern:"y M d H m xx",result:0002-01-01T00:00+10:00}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"2 1 1 0 0 +1000",pattern:"y M d H m xx",result:0002-01-01T00:00+10:00}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"2 1 1 0 0 +10:00",pattern:"y M d H m XXX",result:0002-01-01T00:00+10:00}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"2 1 1 0 0 +10:00",pattern:"y M d H m XXX",result:0002-01-01T00:00+10:00}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"2 1 1 0 0 +10:00",pattern:"y M d H m xxx",result:0002-01-01T00:00+10:00}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"2 1 1 0 0 +10:00",pattern:"y M d H m xxx",result:0002-01-01T00:00+10:00}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"2 1 1 0 0 -01",pattern:"y M d H m X",result:0002-01-01T00:00-01:00}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"2 1 1 0 0 -01",pattern:"y M d H m X",result:0002-01-01T00:00-01:00}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"2 1 1 0 0 -01",pattern:"y M d H m x",result:0002-01-01T00:00-01:00}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"2 1 1 0 0 -01",pattern:"y M d H m x",result:0002-01-01T00:00-01:00}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"2 1 1 0 0 -0100",pattern:"y M d H m XX",result:0002-01-01T00:00-01:00}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"2 1 1 0 0 -0100",pattern:"y M d H m XX",result:0002-01-01T00:00-01:00}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"2 1 1 0 0 -0100",pattern:"y M d H m xx",result:0002-01-01T00:00-01:00}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"2 1 1 0 0 -0100",pattern:"y M d H m xx",result:0002-01-01T00:00-01:00}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"2 1 1 0 0 -0159",pattern:"y M d H m XX",result:0002-01-01T00:00-01:59}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"2 1 1 0 0 -0159",pattern:"y M d H m XX",result:0002-01-01T00:00-01:59}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"2 1 1 0 0 -0159",pattern:"y M d H m xx",result:0002-01-01T00:00-01:59}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"2 1 1 0 0 -0159",pattern:"y M d H m xx",result:0002-01-01T00:00-01:59}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"2 1 1 0 0 -01:00",pattern:"y M d H m XXX",result:0002-01-01T00:00-01:00}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"2 1 1 0 0 -01:00",pattern:"y M d H m XXX",result:0002-01-01T00:00-01:00}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"2 1 1 0 0 -01:00",pattern:"y M d H m xxx",result:0002-01-01T00:00-01:00}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"2 1 1 0 0 -01:00",pattern:"y M d H m xxx",result:0002-01-01T00:00-01:00}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"2 1 1 0 0 -01:59",pattern:"y M d H m XXX",result:0002-01-01T00:00-01:59}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"2 1 1 0 0 -01:59",pattern:"y M d H m XXX",result:0002-01-01T00:00-01:59}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"2 1 1 0 0 -01:59",pattern:"y M d H m xxx",result:0002-01-01T00:00-01:59}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"2 1 1 0 0 -01:59",pattern:"y M d H m xxx",result:0002-01-01T00:00-01:59}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"2 1 1 0 0 -10",pattern:"y M d H m X",result:0002-01-01T00:00-10:00}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"2 1 1 0 0 -10",pattern:"y M d H m X",result:0002-01-01T00:00-10:00}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"2 1 1 0 0 -10",pattern:"y M d H m x",result:0002-01-01T00:00-10:00}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"2 1 1 0 0 -10",pattern:"y M d H m x",result:0002-01-01T00:00-10:00}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"2 1 1 0 0 -1000",pattern:"y M d H m XX",result:0002-01-01T00:00-10:00}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"2 1 1 0 0 -1000",pattern:"y M d H m XX",result:0002-01-01T00:00-10:00}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"2 1 1 0 0 -1000",pattern:"y M d H m xx",result:0002-01-01T00:00-10:00}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"2 1 1 0 0 -1000",pattern:"y M d H m xx",result:0002-01-01T00:00-10:00}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"2 1 1 0 0 -10:00",pattern:"y M d H m XXX",result:0002-01-01T00:00-10:00}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"2 1 1 0 0 -10:00",pattern:"y M d H m XXX",result:0002-01-01T00:00-10:00}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"2 1 1 0 0 -10:00",pattern:"y M d H m xxx",result:0002-01-01T00:00-10:00}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"2 1 1 0 0 -10:00",pattern:"y M d H m xxx",result:0002-01-01T00:00-10:00}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"2 1 1 0 0 Z",pattern:"y M d H m X",result:0002-01-01T00:00Z}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"2 1 1 0 0 Z",pattern:"y M d H m X",result:0002-01-01T00:00Z}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"2 1 1 0 0 Z",pattern:"y M d H m XX",result:0002-01-01T00:00Z}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"2 1 1 0 0 Z",pattern:"y M d H m XX",result:0002-01-01T00:00Z}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"2 1 1 0 0 Z",pattern:"y M d H m XXX",result:0002-01-01T00:00Z}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"2 1 1 0 0 Z",pattern:"y M d H m XXX",result:0002-01-01T00:00Z}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"69",pattern:"yy",result:2069T}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"69",pattern:"yy",result:2069T}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"70",pattern:"yy",result:1970T}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"70",pattern:"yy",result:1970T}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"99",pattern:"yy",result:1999T}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"99",pattern:"yy",result:1999T}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"9999",pattern:"y",result:9999T}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"9999",pattern:"y",result:9999T}#error
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"9999",pattern:"yyyy",result:9999T}#coerce
+extended/eval/primitives/functions/to_timestamp.ion::to_timestamp_valid::to_timestamp valid cases{string:"9999",pattern:"yyyy",result:9999T}#error
 extended/eval/primitives/int.ion::division_by_zero_error::divide by zero{sql:"1 % 0"}#coerce
 extended/eval/primitives/int.ion::division_by_zero_error::divide by zero{sql:"1 % 0"}#error
 extended/eval/primitives/int.ion::division_by_zero_error::divide by zero{sql:"1 / 0"}#coerce

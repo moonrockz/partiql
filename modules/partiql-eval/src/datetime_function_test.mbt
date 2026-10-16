@@ -144,3 +144,26 @@ test "TO_STRING evaluates" {
     .to_equal("data")
   })
 }
+
+///|
+test "TO_TIMESTAMP evaluates" {
+  @expect.expect_all(soft => {
+    soft
+    .expect(
+      ev(
+        "TO_TIMESTAMP('1 1 1 0 0 0 10', 'y M d H m s SS') = `0001-01-01T00:00:00.1-00:00`",
+      ),
+    )
+    .to_equal(Bool(true))
+    soft
+    .expect(failure_of("TO_TIMESTAMP('2020', 'G')", mode=Permissive))
+    .to_equal("data")
+    soft
+    .expect(
+      ev(
+        "TO_TIMESTAMP(TO_STRING(TIMESTAMP '2020-02-29 23:59:58.5+05:30', 'yyyy-MM-dd HH:mm:ss.S XXX'), 'yyyy-MM-dd HH:mm:ss.S XXX')",
+      ),
+    )
+    .to_equal(ev("TIMESTAMP '2020-02-29 23:59:58.5+05:30'"))
+  })
+}

@@ -141,6 +141,8 @@ pub fn sum_values(Iter[@partiql-value.Value], distinct~ : Bool) -> @partiql-valu
 
 pub fn text_replace(Array[@partiql-value.Value]) -> @partiql-value.Value raise OpFailure
 
+pub fn text_to_timestamp(Array[@partiql-value.Value]) -> @partiql-value.Value raise OpFailure
+
 pub fn trim(@ast.TrimSpec, Array[@partiql-value.Value]) -> @partiql-value.Value raise OpFailure
 
 pub fn tuple_union(Array[@partiql-value.Value]) -> @partiql-value.Value raise OpFailure

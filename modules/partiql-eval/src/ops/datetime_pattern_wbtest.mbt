@@ -101,3 +101,138 @@ test "TO_STRING: types and fields the value lacks" {
     soft.expect(datetime_to_string([Null, Missing])).to_equal(Missing)
   })
 }
+
+///|
+fn parse_ts(text : String, pattern : String) -> @value.Value raise OpFailure {
+  text_to_timestamp([String(text), String(pattern)])
+}
+
+///|
+fn stamp_of(
+  year : Int32,
+  month : Int32,
+  day : Int32,
+  hour : Int32,
+  minute : Int32,
+  second : Int32,
+  nanos : Int32,
+  precision : Int32,
+  offset : Int32,
+) -> @value.Value {
+  try
+    @value.Value::Timestamp(
+      @value.Timestamp::new(
+        @value.Date::new(year~, month~, day~),
+        @value.Time::new(
+          hour~,
+          minute~,
+          second~,
+          nanos~,
+          precision~,
+          offset=Some(offset),
+        ),
+      ),
+    )
+  catch {
+    _ => @value.Value::Missing
+  } noraise {
+    v => v
+  }
+}
+
+///|
+test "TO_TIMESTAMP parses with a pattern" {
+  @expect.expect_all(soft => {
+    soft
+    .expect(parse_ts("2007", "y"))
+    .to_equal(stamp_of(2007, 1, 1, 0, 0, 0, 0, 0, 0))
+    soft
+    .expect(parse_ts("1 1 1 0 0 0 10", "y M d H m s SS"))
+    .to_equal(stamp_of(1, 1, 1, 0, 0, 0, 100000000, 1, 0))
+    soft
+    .expect(parse_ts("2007-06-05T04:03:02+01:30", "yyyy-MM-dd'T'HH:mm:ssXXX"))
+    .to_equal(stamp_of(2007, 6, 5, 4, 3, 2, 0, 0, 90))
+    soft
+    .expect(parse_ts("69", "yy"))
+    .to_equal(stamp_of(2069, 1, 1, 0, 0, 0, 0, 0, 0))
+    soft
+    .expect(parse_ts("70", "yy"))
+    .to_equal(stamp_of(1970, 1, 1, 0, 0, 0, 0, 0, 0))
+    soft
+    .expect(parse_ts("2020 jAn 1 12 am", "y MMM d h a"))
+    .to_equal(stamp_of(2020, 1, 1, 0, 0, 0, 0, 0, 0))
+    soft
+    .expect(parse_ts("2020 DECEMBER 31 11 PM", "y MMMM d h a"))
+    .to_equal(stamp_of(2020, 12, 31, 23, 0, 0, 0, 0, 0))
+    soft
+    .expect(parse_ts("2020-01-01 00:00:00 z", "y-M-d H:m:s X"))
+    .to_equal(stamp_of(2020, 1, 1, 0, 0, 0, 0, 0, 0))
+    soft
+    .expect(parse_ts("2020年", "y'年'"))
+    .to_equal(stamp_of(2020, 1, 1, 0, 0, 0, 0, 0, 0))
+    soft
+    .expect(parse_ts("2020 1 1 1 1 1 5", "y M d H m s n"))
+    .to_equal(stamp_of(2020, 1, 1, 1, 1, 1, 5, 9, 0))
+  })
+}
+
+///|
+test "TO_TIMESTAMP: pattern checks" {
+  @expect.expect_all(soft => {
+    for
+      pattern in [
+        "y MMMMM", "y y", "M d", "y d", "y M X", "y M d h", "y M d H a", "yMd", "y M d m",
+      ] {
+      soft
+      .expect((pattern, failure(() => parse_ts("2020 1 1 1", pattern))))
+      .to_equal((pattern, "data"))
+    }
+  })
+}
+
+///|
+test "TO_TIMESTAMP: text that does not match or is out of range" {
+  @expect.expect_all(soft => {
+    for
+      case in [
+        ("10000", "y"),
+        ("0", "y"),
+        ("-5", "y"),
+        ("99999999999999999999", "y"),
+        ("010", "yy"),
+        ("010", "yyyy"),
+        ("00010", "yyyy"),
+        ("1", "MM"),
+        ("2020 13", "y M"),
+        ("2021 2 29", "y M d"),
+        ("2020 1 1 24", "y M d H"),
+        ("2020 1 1 13 AM", "y M d h a"),
+        ("2020 1 1 0 +1", "y M d H X"),
+        ("2020 1 1 0 05", "y M d H X"),
+        ("2020 1 1 0 +24", "y M d H X"),
+        ("2020 1 1 0 Z", "y M d H x"),
+        ("2020 x", "y"),
+        ("2020", "y M"),
+      ] {
+      let (text, pattern) = case
+      soft
+      .expect((text, pattern, failure(() => parse_ts(text, pattern))))
+      .to_equal((text, pattern, "data"))
+    }
+  })
+}
+
+///|
+test "TO_TIMESTAMP with one argument reads Ion timestamp text" {
+  @expect.expect_all(soft => {
+    soft
+    .expect(text_to_timestamp([String("2007-02-23T12:14:33.079-08:00")]))
+    .to_equal(stamp_of(2007, 2, 23, 12, 14, 33, 79000000, 3, -480))
+    soft
+    .expect(failure(() => text_to_timestamp([String("2007-02-23 12:14")])))
+    .to_equal("data")
+    soft.expect(text_to_timestamp([Null])).to_equal(Null)
+    soft.expect(text_to_timestamp([Missing])).to_equal(Missing)
+    soft.expect(failure(() => text_to_timestamp([Int(1)]))).to_equal("type")
+  })
+}

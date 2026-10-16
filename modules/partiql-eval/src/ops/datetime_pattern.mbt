@@ -211,3 +211,380 @@ pub fn datetime_to_string(
     String(format_datetime(xs[0], tokenize(pattern)))
   })
 }
+
+///|
+/// The rank of a field in the chain year > month > day > hour > minute >
+/// second > fraction; `None` for AM/PM, offsets and text.
+fn field_order(t : Token) -> Int32? {
+  match t {
+    Year(_) => Some(0)
+    Month(_) => Some(1)
+    Day(_) => Some(2)
+    Hour24(_) | Hour12(_) => Some(3)
+    Minute(_) => Some(4)
+    Second(_) => Some(5)
+    Fraction(_) | Nano => Some(6)
+    _ => None
+  }
+}
+
+///|
+/// Whether a token reads a variable number of digits.
+fn variable_width(t : Token) -> Bool {
+  match t {
+    Year(1)
+    | Month(1)
+    | Day(1)
+    | Hour24(1)
+    | Hour12(1)
+    | Minute(1)
+    | Second(1)
+    | Nano => true
+    _ => false
+  }
+}
+
+///|
+/// Whether a token reads digits.
+fn numeric(t : Token) -> Bool {
+  match t {
+    Month(3 | 4 | 5) | AmPm | Offset(..) | Literal(_) => false
+    _ => true
+  }
+}
+
+///|
+/// The pattern rules of TO_TIMESTAMP (spec M4d3 §4.6, Kotlin v0
+/// FormatPattern): no MMMMM, no field twice, a year, an unbroken chain of
+/// fields, an offset or AM/PM only with year, month, day and hour, `h` only
+/// with `a`, `H` never with `a`, and no variable-width number directly
+/// before another number.
+fn check_parse_pattern(
+  tokens : Array[Token],
+  pattern : String,
+) -> Unit raise OpFailure {
+  let seen = Array::make(7, false)
+  let mut am_pm = false
+  let mut offset = false
+  let mut hour12 = false
+  let mut hour24 = false
+  for i, t in tokens {
+    if t is Month(5) {
+      raise bad_pattern(pattern, "MMMMM is not valid for TO_TIMESTAMP")
+    }
+    match t {
+      AmPm => {
+        if am_pm {
+          raise bad_pattern(pattern, "AM/PM twice")
+        }
+        am_pm = true
+      }
+      Offset(..) => {
+        if offset {
+          raise bad_pattern(pattern, "an offset twice")
+        }
+        offset = true
+      }
+      Hour12(_) => hour12 = true
+      Hour24(_) => hour24 = true
+      _ => ()
+    }
+    if field_order(t) is Some(r) {
+      if seen[r] {
+        raise bad_pattern(pattern, "a field twice")
+      }
+      seen[r] = true
+    }
+    if variable_width(t) && i + 1 < tokens.length() && numeric(tokens[i + 1]) {
+      raise bad_pattern(pattern, "a variable-width number before a number")
+    }
+  }
+  if !seen[0] {
+    raise bad_pattern(pattern, "no year")
+  }
+  let mut last = 0
+  for r in 0..<7 {
+    if seen[r] {
+      last = r
+    }
+  }
+  for r in 0..<last {
+    if !seen[r] {
+      raise bad_pattern(pattern, "a gap in the fields")
+    }
+  }
+  if (offset || am_pm) && last < 3 {
+    raise bad_pattern(pattern, "an offset or AM/PM needs a date and an hour")
+  }
+  if hour12 && !am_pm {
+    raise bad_pattern(pattern, "h needs a")
+  }
+  if hour24 && am_pm {
+    raise bad_pattern(pattern, "H with a")
+  }
+}
+
+///|
+/// A cursor over the text of TO_TIMESTAMP.
+priv struct Scan {
+  chars : Array[Char]
+  mut pos : Int32
+}
+
+///|
+fn no_match(text : String) -> OpFailure {
+  DataFailure("'\{text}' does not match the pattern")
+}
+
+///|
+/// Digits at the cursor: exactly `width` digits, or with `width` 1 one or
+/// more (with a leading `-`, which the range check then rejects). At most 18
+/// digits, so the value fits Int64; more is out of range.
+fn Scan::number(
+  self : Scan,
+  width : Int32,
+  text : String,
+) -> Int64 raise OpFailure {
+  let negative = width == 1 &&
+    self.pos < self.chars.length() &&
+    self.chars[self.pos] == '-'
+  if negative {
+    self.pos += 1
+  }
+  let start = self.pos
+  while self.pos < self.chars.length() &&
+        self.chars[self.pos] >= '0' &&
+        self.chars[self.pos] <= '9' &&
+        (width == 1 || self.pos - start < width) {
+    self.pos += 1
+  }
+  let count = self.pos - start
+  if count == 0 || (width > 1 && count != width) {
+    raise no_match(text)
+  }
+  if count > 18 {
+    raise DataFailure("'\{text}' has a number out of range")
+  }
+  let mut value = 0L
+  for i in start..<self.pos {
+    value = value * 10L + (self.chars[i].to_int() - '0'.to_int()).to_int64()
+  }
+  if negative {
+    -value
+  } else {
+    value
+  }
+}
+
+///|
+/// Whether the text at the cursor starts with `word`, ignoring ASCII case;
+/// consumes it when it does.
+fn Scan::word(self : Scan, word : String) -> Bool {
+  let w = word.to_array()
+  if self.pos + w.length() > self.chars.length() {
+    return false
+  }
+  for i, c in w {
+    let t = self.chars[self.pos + i]
+    if t != c && t.to_ascii_lowercase() != c.to_ascii_lowercase() {
+      return false
+    }
+  }
+  self.pos += w.length()
+  true
+}
+
+///|
+fn Scan::offset(
+  self : Scan,
+  zulu : Bool,
+  width : Int32,
+  text : String,
+) -> Int32 raise OpFailure {
+  if zulu && self.word("Z") {
+    return 0
+  }
+  let sign = if self.word("+") {
+    1
+  } else if self.word("-") {
+    -1
+  } else {
+    raise no_match(text)
+  }
+  let hours = self.number(2, text)
+  let minutes = match width {
+    1 =>
+      if self.pos < self.chars.length() &&
+        self.chars[self.pos] >= '0' &&
+        self.chars[self.pos] <= '9' {
+        self.number(2, text)
+      } else {
+        0L
+      }
+    2 | 4 => self.number(2, text)
+    _ => {
+      if !self.word(":") {
+        raise no_match(text)
+      }
+      self.number(2, text)
+    }
+  }
+  if hours > 23L || minutes > 59L {
+    raise DataFailure("'\{text}' has an offset out of range")
+  }
+  sign * (hours.to_int() * 60 + minutes.to_int())
+}
+
+///|
+/// TO_TIMESTAMP with a pattern (spec M4d3 §4.6).
+fn parse_with_pattern(
+  text : String,
+  pattern : String,
+) -> @value.Value raise OpFailure {
+  let tokens = tokenize(pattern)
+  check_parse_pattern(tokens, pattern)
+  let scan : Scan = { chars: text.to_array(), pos: 0, }
+  let mut year = 0L
+  let mut month = 1L
+  let mut day = 1L
+  let mut hour = 0L
+  let mut minute = 0L
+  let mut second = 0L
+  let mut nanos = 0L
+  let mut pm : Bool? = None
+  let mut offset = 0
+  let mut fraction = false
+  for token in tokens {
+    match token {
+      Year(2) => {
+        let v = scan.number(2, text)
+        year = if v < 70L { 2000L + v } else { 1900L + v }
+      }
+      Year(w) => year = scan.number(w, text)
+      Month(3 | 4) => {
+        let mut found = false
+        for i, name in month_names {
+          let short = name.view(end_offset=3).to_owned()
+          if (token is Month(4) && scan.word(name)) ||
+            (token is Month(3) && scan.word(short)) {
+            month = (i + 1).to_int64()
+            found = true
+            break
+          }
+        }
+        if !found {
+          raise no_match(text)
+        }
+      }
+      Month(w) => month = scan.number(w, text)
+      Day(w) => day = scan.number(w, text)
+      Hour24(w) | Hour12(w) => hour = scan.number(w, text)
+      AmPm =>
+        pm = if scan.word("AM") {
+          Some(false)
+        } else if scan.word("PM") {
+          Some(true)
+        } else {
+          raise no_match(text)
+        }
+      Minute(w) => minute = scan.number(w, text)
+      Second(w) => second = scan.number(w, text)
+      Fraction(k) => {
+        let v = scan.number(k, text)
+        let mut scale = 1L
+        for _ in 0..<(9 - k) {
+          scale = scale * 10L
+        }
+        nanos = v * scale
+        fraction = true
+      }
+      Nano => {
+        nanos = scan.number(1, text)
+        fraction = true
+      }
+      Offset(zulu~, width~) => offset = scan.offset(zulu, width, text)
+      Literal(s) => if !scan.word(s) { raise no_match(text) }
+    }
+  }
+  if scan.pos != scan.chars.length() {
+    raise no_match(text)
+  }
+  let out_of_range = DataFailure("'\{text}' has a field out of range")
+  if year < 1L || year > 9999L || month < 1L || month > 12L {
+    raise out_of_range
+  }
+  if day < 1L || day > month_length(year.to_int(), month.to_int()).to_int64() {
+    raise out_of_range
+  }
+  let hour24 = match pm {
+    Some(after_noon) => {
+      if hour < 1L || hour > 12L {
+        raise out_of_range
+      }
+      hour % 12L + (if after_noon { 12L } else { 0L })
+    }
+    None => hour
+  }
+  if hour24 < 0L ||
+    hour24 > 23L ||
+    minute < 0L ||
+    minute > 59L ||
+    second < 0L ||
+    second > 59L ||
+    nanos < 0L ||
+    nanos > 999999999L {
+    raise out_of_range
+  }
+  let precision = if fraction { needed_precision(nanos.to_int()) } else { 0 }
+  let date = @value.Date::new(
+    year=year.to_int(),
+    month=month.to_int(),
+    day=day.to_int(),
+  ) catch {
+    _ => raise out_of_range
+  }
+  let time = @value.Time::new(
+    hour=hour24.to_int(),
+    minute=minute.to_int(),
+    second=second.to_int(),
+    nanos=nanos.to_int(),
+    precision~,
+    offset=Some(offset),
+  ) catch {
+    _ => raise out_of_range
+  }
+  Timestamp(@value.Timestamp::new(date, time))
+}
+
+///|
+/// TO_TIMESTAMP of Ion timestamp text (the whole string).
+fn ion_timestamp_text(text : String) -> @value.Value raise OpFailure {
+  let parsed = @ion_core.Timestamp::parse(text) catch {
+    _ => raise DataFailure("'\{text}' is not an Ion timestamp")
+  }
+  let ts = @value.timestamp_of_ion(parsed)
+  ignore(checked_date(ts.date))
+  Timestamp(ts)
+}
+
+///|
+/// `TO_TIMESTAMP(text [, pattern])`.
+pub fn text_to_timestamp(
+  args : Array[@value.Value],
+) -> @value.Value raise OpFailure {
+  if args.length() == 1 {
+    apply("TO_TIMESTAMP", [Text], args, xs => {
+      guard xs[0] is String(text) else {
+        raise TypeFailure("TO_TIMESTAMP needs a string")
+      }
+      ion_timestamp_text(text)
+    })
+  } else {
+    apply("TO_TIMESTAMP", [Text, Text], args, xs => {
+      guard xs[0] is String(text) && xs[1] is String(pattern) else {
+        raise TypeFailure("TO_TIMESTAMP needs strings")
+      }
+      parse_with_pattern(text, pattern)
+    })
+  }
+}
