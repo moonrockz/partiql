@@ -32,7 +32,8 @@ fn call(
     DateAdd(field) => @ops.date_add(field, args)
     DateDiff(field) => @ops.date_diff(field, args, zone~)
     Overlaps => @ops.overlaps(args, zone~)
-    ToString | ToTimestamp =>
+    ToString => @ops.datetime_to_string(args)
+    ToTimestamp =>
       raise @ops.OpFailure::Unsupported("\{f.name()} is not supported yet")
   }
 }

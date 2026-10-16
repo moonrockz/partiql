@@ -8301,6 +8301,650 @@ extended/eval/primitives/functions/text_replace.ion::text_replace::text_replace(
 extended/eval/primitives/functions/text_replace.ion::text_replace::text_replace('abcdeࠫfabcdeࠫf', 'deࠫf', 'XX')#error
 extended/eval/primitives/functions/text_replace.ion::text_replace::text_replace('abc😁😞abc😁😞', '😁😞', 'def')#coerce
 extended/eval/primitives/functions/text_replace.ion::text_replace::text_replace('abc😁😞abc😁😞', '😁😞', 'def')#error
+extended/eval/primitives/functions/to_string.ion::to_string_invalid::to_string invalid pattern{pattern:"A",cn:1}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_invalid::to_string invalid pattern{pattern:"A",cn:1}#error
+extended/eval/primitives/functions/to_string.ion::to_string_invalid::to_string invalid pattern{pattern:"E",cn:1}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_invalid::to_string invalid pattern{pattern:"E",cn:1}#error
+extended/eval/primitives/functions/to_string.ion::to_string_invalid::to_string invalid pattern{pattern:"F",cn:1}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_invalid::to_string invalid pattern{pattern:"F",cn:1}#error
+extended/eval/primitives/functions/to_string.ion::to_string_invalid::to_string invalid pattern{pattern:"G",cn:1}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_invalid::to_string invalid pattern{pattern:"G",cn:1}#error
+extended/eval/primitives/functions/to_string.ion::to_string_invalid::to_string invalid pattern{pattern:"K",cn:1}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_invalid::to_string invalid pattern{pattern:"K",cn:1}#error
+extended/eval/primitives/functions/to_string.ion::to_string_invalid::to_string invalid pattern{pattern:"Q",cn:1}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_invalid::to_string invalid pattern{pattern:"Q",cn:1}#error
+extended/eval/primitives/functions/to_string.ion::to_string_invalid::to_string invalid pattern{pattern:"V",cn:1}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_invalid::to_string invalid pattern{pattern:"V",cn:1}#error
+extended/eval/primitives/functions/to_string.ion::to_string_invalid::to_string invalid pattern{pattern:"W",cn:1}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_invalid::to_string invalid pattern{pattern:"W",cn:1}#error
+extended/eval/primitives/functions/to_string.ion::to_string_invalid::to_string invalid pattern{pattern:"c",cn:1}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_invalid::to_string invalid pattern{pattern:"c",cn:1}#error
+extended/eval/primitives/functions/to_string.ion::to_string_invalid::to_string invalid pattern{pattern:"e",cn:1}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_invalid::to_string invalid pattern{pattern:"e",cn:1}#error
+extended/eval/primitives/functions/to_string.ion::to_string_invalid::to_string invalid pattern{pattern:"k",cn:1}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_invalid::to_string invalid pattern{pattern:"k",cn:1}#error
+extended/eval/primitives/functions/to_string.ion::to_string_invalid::to_string invalid pattern{pattern:"not_a_pattern",cn:1}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_invalid::to_string invalid pattern{pattern:"not_a_pattern",cn:1}#error
+extended/eval/primitives/functions/to_string.ion::to_string_invalid::to_string invalid pattern{pattern:"p",cn:1}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_invalid::to_string invalid pattern{pattern:"p",cn:1}#error
+extended/eval/primitives/functions/to_string.ion::to_string_invalid::to_string invalid pattern{pattern:"q",cn:1}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_invalid::to_string invalid pattern{pattern:"q",cn:1}#error
+extended/eval/primitives/functions/to_string.ion::to_string_invalid::to_string invalid pattern{pattern:"u",cn:1}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_invalid::to_string invalid pattern{pattern:"u",cn:1}#error
+extended/eval/primitives/functions/to_string.ion::to_string_invalid::to_string invalid pattern{pattern:"w",cn:1}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_invalid::to_string invalid pattern{pattern:"w",cn:1}#error
+extended/eval/primitives/functions/to_string.ion::to_string_invalid::to_string invalid pattern{pattern:"z",cn:1}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_invalid::to_string invalid pattern{pattern:"z",cn:1}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string multiple symbols{timestamp:"0001-03-09",pattern:"M/d/y",result:"3/9/1"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string multiple symbols{timestamp:"0001-03-09",pattern:"M/d/y",result:"3/9/1"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string multiple symbols{timestamp:"0001-03-09",pattern:"MM/dd/yyyy",result:"03/09/0001"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string multiple symbols{timestamp:"0001-03-09",pattern:"MM/dd/yyyy",result:"03/09/0001"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string multiple symbols{timestamp:"0500-03-09",pattern:"M/d/y",result:"3/9/500"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string multiple symbols{timestamp:"0500-03-09",pattern:"M/d/y",result:"3/9/500"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string multiple symbols{timestamp:"0500-03-09",pattern:"MM/dd/yyyy",result:"03/09/0500"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string multiple symbols{timestamp:"0500-03-09",pattern:"MM/dd/yyyy",result:"03/09/0500"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string multiple symbols{timestamp:"1969-07-20T20:18+08:00",pattern:"y-MM-dd''T''H:m:ssX",result:"1969-07-20T20:18:00+08"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string multiple symbols{timestamp:"1969-07-20T20:18+08:00",pattern:"y-MM-dd''T''H:m:ssX",result:"1969-07-20T20:18:00+08"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string multiple symbols{timestamp:"1969-07-20T20:18+08:00",pattern:"y-MM-dd''T''H:m:ssXXXX",result:"1969-07-20T20:18:00+0800"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string multiple symbols{timestamp:"1969-07-20T20:18+08:00",pattern:"y-MM-dd''T''H:m:ssXXXX",result:"1969-07-20T20:18:00+0800"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string multiple symbols{timestamp:"1969-07-20T20:18+08:00",pattern:"y-MM-dd''T''H:m:ssXXXXX",result:"1969-07-20T20:18:00+08:00"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string multiple symbols{timestamp:"1969-07-20T20:18+08:00",pattern:"y-MM-dd''T''H:m:ssXXXXX",result:"1969-07-20T20:18:00+08:00"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string multiple symbols{timestamp:"1969-07-20T20:18Z",pattern:"M-d-yy",result:"7-20-69"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string multiple symbols{timestamp:"1969-07-20T20:18Z",pattern:"M-d-yy",result:"7-20-69"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string multiple symbols{timestamp:"1969-07-20T20:18Z",pattern:"MM-d-y",result:"07-20-1969"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string multiple symbols{timestamp:"1969-07-20T20:18Z",pattern:"MM-d-y",result:"07-20-1969"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string multiple symbols{timestamp:"1969-07-20T20:18Z",pattern:"MMM d, yyyy",result:"Jul 20, 1969"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string multiple symbols{timestamp:"1969-07-20T20:18Z",pattern:"MMM d, yyyy",result:"Jul 20, 1969"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string multiple symbols{timestamp:"1969-07-20T20:18Z",pattern:"MMMM d, y h:m a",result:"July 20, 1969 8:18 PM"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string multiple symbols{timestamp:"1969-07-20T20:18Z",pattern:"MMMM d, y h:m a",result:"July 20, 1969 8:18 PM"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string multiple symbols{timestamp:"1969-07-20T20:18Z",pattern:"MMMM d, y",result:"July 20, 1969"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string multiple symbols{timestamp:"1969-07-20T20:18Z",pattern:"MMMM d, y",result:"July 20, 1969"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string multiple symbols{timestamp:"1969-07-20T20:18Z",pattern:"y-MM-dd''T''H:m:ssX",result:"1969-07-20T20:18:00Z"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string multiple symbols{timestamp:"1969-07-20T20:18Z",pattern:"y-MM-dd''T''H:m:ssX",result:"1969-07-20T20:18:00Z"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string multiple symbols{timestamp:"9999-03-09",pattern:"M/d/y",result:"3/9/9999"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string multiple symbols{timestamp:"9999-03-09",pattern:"M/d/y",result:"3/9/9999"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string multiple symbols{timestamp:"9999-03-09",pattern:"MM/dd/yyyy",result:"03/09/9999"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string multiple symbols{timestamp:"9999-03-09",pattern:"MM/dd/yyyy",result:"03/09/9999"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string null and missing propagation{timestamp:"`2000T`",pattern:"missing",result:null}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string null and missing propagation{timestamp:"`2000T`",pattern:"missing",result:null}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string null and missing propagation{timestamp:"`2000T`",pattern:"null",result:null}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string null and missing propagation{timestamp:"`2000T`",pattern:"null",result:null}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string null and missing propagation{timestamp:"missing",pattern:"'y'",result:null}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string null and missing propagation{timestamp:"missing",pattern:"'y'",result:null}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string null and missing propagation{timestamp:"missing",pattern:"missing",result:null}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string null and missing propagation{timestamp:"missing",pattern:"missing",result:null}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string null and missing propagation{timestamp:"missing",pattern:"null",result:null}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string null and missing propagation{timestamp:"missing",pattern:"null",result:null}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string null and missing propagation{timestamp:"null",pattern:"'y'",result:null}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string null and missing propagation{timestamp:"null",pattern:"'y'",result:null}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string null and missing propagation{timestamp:"null",pattern:"missing",result:null}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string null and missing propagation{timestamp:"null",pattern:"missing",result:null}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string null and missing propagation{timestamp:"null",pattern:"null",result:null}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string null and missing propagation{timestamp:"null",pattern:"null",result:null}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0001T",pattern:"y",result:"1"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0001T",pattern:"y",result:"1"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0001T",pattern:"yy",result:"01"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0001T",pattern:"yy",result:"01"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T",pattern:"H",result:"0"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T",pattern:"H",result:"0"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T",pattern:"HH",result:"00"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T",pattern:"HH",result:"00"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T",pattern:"MMM",result:"Jan"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T",pattern:"MMM",result:"Jan"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T",pattern:"MMMM",result:"January"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T",pattern:"MMMM",result:"January"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T",pattern:"MMMMM",result:"J"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T",pattern:"MMMMM",result:"J"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T",pattern:"S",result:"0"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T",pattern:"S",result:"0"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T",pattern:"X",result:"Z"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T",pattern:"X",result:"Z"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T",pattern:"XX",result:"Z"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T",pattern:"XX",result:"Z"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T",pattern:"XXX",result:"Z"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T",pattern:"XXX",result:"Z"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T",pattern:"a",result:"AM"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T",pattern:"a",result:"AM"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T",pattern:"d",result:"2"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T",pattern:"d",result:"2"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T",pattern:"dd",result:"02"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T",pattern:"dd",result:"02"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T",pattern:"h",result:"12"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T",pattern:"h",result:"12"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T",pattern:"hh",result:"12"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T",pattern:"hh",result:"12"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T",pattern:"m",result:"0"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T",pattern:"m",result:"0"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T",pattern:"mm",result:"00"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T",pattern:"mm",result:"00"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T",pattern:"n",result:"0"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T",pattern:"n",result:"0"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T",pattern:"s",result:"0"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T",pattern:"s",result:"0"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T",pattern:"ss",result:"00"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T",pattern:"ss",result:"00"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T",pattern:"x",result:"+00"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T",pattern:"x",result:"+00"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T",pattern:"xx",result:"+0000"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T",pattern:"xx",result:"+0000"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T",pattern:"xxx",result:"+00:00"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T",pattern:"xxx",result:"+00:00"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T",pattern:"y",result:"986"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T",pattern:"y",result:"986"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T",pattern:"yyyy",result:"0986"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T",pattern:"yyyy",result:"0986"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T10:01+01:00",pattern:"MMM",result:"Jan"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T10:01+01:00",pattern:"MMM",result:"Jan"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T10:01+01:00",pattern:"MMMM",result:"January"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T10:01+01:00",pattern:"MMMM",result:"January"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T10:01+01:00",pattern:"MMMMM",result:"J"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T10:01+01:00",pattern:"MMMMM",result:"J"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T10:01+01:00",pattern:"y",result:"986"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T10:01+01:00",pattern:"y",result:"986"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T10:01+01:00",pattern:"yyyy",result:"0986"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T10:01+01:00",pattern:"yyyy",result:"0986"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T10:01:55+01:00",pattern:"MMM",result:"Jan"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T10:01:55+01:00",pattern:"MMM",result:"Jan"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T10:01:55+01:00",pattern:"MMMM",result:"January"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T10:01:55+01:00",pattern:"MMMM",result:"January"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T10:01:55+01:00",pattern:"MMMMM",result:"J"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T10:01:55+01:00",pattern:"MMMMM",result:"J"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T10:01:55+01:00",pattern:"y",result:"986"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T10:01:55+01:00",pattern:"y",result:"986"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T10:01:55+01:00",pattern:"yyyy",result:"0986"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T10:01:55+01:00",pattern:"yyyy",result:"0986"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T10:01:55.004+01:00",pattern:"MMM",result:"Jan"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T10:01:55.004+01:00",pattern:"MMM",result:"Jan"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T10:01:55.004+01:00",pattern:"MMMM",result:"January"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T10:01:55.004+01:00",pattern:"MMMM",result:"January"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T10:01:55.004+01:00",pattern:"MMMMM",result:"J"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T10:01:55.004+01:00",pattern:"MMMMM",result:"J"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T10:01:55.004+01:00",pattern:"d",result:"2"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T10:01:55.004+01:00",pattern:"d",result:"2"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T10:01:55.004+01:00",pattern:"dd",result:"02"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T10:01:55.004+01:00",pattern:"dd",result:"02"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T10:01:55.004+01:00",pattern:"y",result:"986"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T10:01:55.004+01:00",pattern:"y",result:"986"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T10:01:55.004+01:00",pattern:"yyyy",result:"0986"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T10:01:55.004+01:00",pattern:"yyyy",result:"0986"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T10:01:55.004Z",pattern:"MMM",result:"Jan"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T10:01:55.004Z",pattern:"MMM",result:"Jan"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T10:01:55.004Z",pattern:"MMMM",result:"January"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T10:01:55.004Z",pattern:"MMMM",result:"January"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T10:01:55.004Z",pattern:"MMMMM",result:"J"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T10:01:55.004Z",pattern:"MMMMM",result:"J"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T10:01:55.004Z",pattern:"d",result:"2"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T10:01:55.004Z",pattern:"d",result:"2"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T10:01:55.004Z",pattern:"dd",result:"02"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T10:01:55.004Z",pattern:"dd",result:"02"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T10:01:55.004Z",pattern:"y",result:"986"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T10:01:55.004Z",pattern:"y",result:"986"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T10:01:55.004Z",pattern:"yyyy",result:"0986"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T10:01:55.004Z",pattern:"yyyy",result:"0986"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T10:01:55Z",pattern:"MMM",result:"Jan"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T10:01:55Z",pattern:"MMM",result:"Jan"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T10:01:55Z",pattern:"MMMM",result:"January"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T10:01:55Z",pattern:"MMMM",result:"January"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T10:01:55Z",pattern:"MMMMM",result:"J"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T10:01:55Z",pattern:"MMMMM",result:"J"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T10:01:55Z",pattern:"y",result:"986"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T10:01:55Z",pattern:"y",result:"986"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T10:01:55Z",pattern:"yyyy",result:"0986"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T10:01:55Z",pattern:"yyyy",result:"0986"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T10:01Z",pattern:"H",result:"10"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T10:01Z",pattern:"H",result:"10"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T10:01Z",pattern:"HH",result:"10"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T10:01Z",pattern:"HH",result:"10"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T10:01Z",pattern:"MMM",result:"Jan"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T10:01Z",pattern:"MMM",result:"Jan"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T10:01Z",pattern:"MMMM",result:"January"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T10:01Z",pattern:"MMMM",result:"January"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T10:01Z",pattern:"MMMMM",result:"J"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T10:01Z",pattern:"MMMMM",result:"J"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T10:01Z",pattern:"S",result:"0"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T10:01Z",pattern:"S",result:"0"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T10:01Z",pattern:"X",result:"Z"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T10:01Z",pattern:"X",result:"Z"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T10:01Z",pattern:"XX",result:"Z"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T10:01Z",pattern:"XX",result:"Z"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T10:01Z",pattern:"XXX",result:"Z"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T10:01Z",pattern:"XXX",result:"Z"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T10:01Z",pattern:"a",result:"AM"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T10:01Z",pattern:"a",result:"AM"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T10:01Z",pattern:"d",result:"2"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T10:01Z",pattern:"d",result:"2"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T10:01Z",pattern:"dd",result:"02"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T10:01Z",pattern:"dd",result:"02"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T10:01Z",pattern:"h",result:"10"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T10:01Z",pattern:"h",result:"10"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T10:01Z",pattern:"hh",result:"10"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T10:01Z",pattern:"hh",result:"10"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T10:01Z",pattern:"m",result:"1"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T10:01Z",pattern:"m",result:"1"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T10:01Z",pattern:"mm",result:"01"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T10:01Z",pattern:"mm",result:"01"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T10:01Z",pattern:"n",result:"0"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T10:01Z",pattern:"n",result:"0"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T10:01Z",pattern:"s",result:"0"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T10:01Z",pattern:"s",result:"0"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T10:01Z",pattern:"ss",result:"00"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T10:01Z",pattern:"ss",result:"00"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T10:01Z",pattern:"x",result:"+00"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T10:01Z",pattern:"x",result:"+00"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T10:01Z",pattern:"xx",result:"+0000"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T10:01Z",pattern:"xx",result:"+0000"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T10:01Z",pattern:"xxx",result:"+00:00"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T10:01Z",pattern:"xxx",result:"+00:00"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T10:01Z",pattern:"y",result:"986"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T10:01Z",pattern:"y",result:"986"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T10:01Z",pattern:"yyyy",result:"0986"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T10:01Z",pattern:"yyyy",result:"0986"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T18:01:55.004+01:00",pattern:"H",result:"18"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T18:01:55.004+01:00",pattern:"H",result:"18"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T18:01:55.004+01:00",pattern:"HH",result:"18"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T18:01:55.004+01:00",pattern:"HH",result:"18"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T18:01:55.004+01:00",pattern:"SS",result:"00"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T18:01:55.004+01:00",pattern:"SS",result:"00"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T18:01:55.004+01:00",pattern:"SSS",result:"004"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T18:01:55.004+01:00",pattern:"SSS",result:"004"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T18:01:55.004+01:00",pattern:"X",result:"+01"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T18:01:55.004+01:00",pattern:"X",result:"+01"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T18:01:55.004+01:00",pattern:"a",result:"PM"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T18:01:55.004+01:00",pattern:"a",result:"PM"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T18:01:55.004+01:00",pattern:"h",result:"6"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T18:01:55.004+01:00",pattern:"h",result:"6"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T18:01:55.004+01:00",pattern:"hh",result:"06"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T18:01:55.004+01:00",pattern:"hh",result:"06"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T18:01:55.004+01:00",pattern:"m",result:"1"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T18:01:55.004+01:00",pattern:"m",result:"1"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T18:01:55.004+01:00",pattern:"mm",result:"01"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T18:01:55.004+01:00",pattern:"mm",result:"01"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T18:01:55.004+01:00",pattern:"n",result:"4000000"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T18:01:55.004+01:00",pattern:"n",result:"4000000"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T18:01:55.004+01:00",pattern:"s",result:"55"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T18:01:55.004+01:00",pattern:"s",result:"55"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T18:01:55.004+01:00",pattern:"ss",result:"55"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T18:01:55.004+01:00",pattern:"ss",result:"55"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T18:01:55.004+01:00",pattern:"x",result:"+01"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T18:01:55.004+01:00",pattern:"x",result:"+01"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T18:01:55.004+01:10",pattern:"XX",result:"+0110"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T18:01:55.004+01:10",pattern:"XX",result:"+0110"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T18:01:55.004+01:10",pattern:"XXX",result:"+01:10"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T18:01:55.004+01:10",pattern:"XXX",result:"+01:10"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T18:01:55.004+01:10",pattern:"xx",result:"+0110"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T18:01:55.004+01:10",pattern:"xx",result:"+0110"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T18:01:55.004+01:10",pattern:"xxx",result:"+01:10"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T18:01:55.004+01:10",pattern:"xxx",result:"+01:10"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T18:01:55.100+01:00",pattern:"SS",result:"10"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T18:01:55.100+01:00",pattern:"SS",result:"10"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T20:01:55.004Z",pattern:"H",result:"20"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T20:01:55.004Z",pattern:"H",result:"20"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T20:01:55.004Z",pattern:"HH",result:"20"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T20:01:55.004Z",pattern:"HH",result:"20"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T20:01:55.004Z",pattern:"X",result:"Z"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T20:01:55.004Z",pattern:"X",result:"Z"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T20:01:55.004Z",pattern:"XX",result:"Z"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T20:01:55.004Z",pattern:"XX",result:"Z"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T20:01:55.004Z",pattern:"XXX",result:"Z"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T20:01:55.004Z",pattern:"XXX",result:"Z"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T20:01:55.004Z",pattern:"a",result:"PM"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T20:01:55.004Z",pattern:"a",result:"PM"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T20:01:55.004Z",pattern:"h",result:"8"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T20:01:55.004Z",pattern:"h",result:"8"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T20:01:55.004Z",pattern:"hh",result:"08"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T20:01:55.004Z",pattern:"hh",result:"08"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T20:01:55.004Z",pattern:"m",result:"1"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T20:01:55.004Z",pattern:"m",result:"1"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T20:01:55.004Z",pattern:"mm",result:"01"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T20:01:55.004Z",pattern:"mm",result:"01"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T20:01:55.004Z",pattern:"n",result:"4000000"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T20:01:55.004Z",pattern:"n",result:"4000000"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T20:01:55.004Z",pattern:"s",result:"55"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T20:01:55.004Z",pattern:"s",result:"55"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T20:01:55.004Z",pattern:"ss",result:"55"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T20:01:55.004Z",pattern:"ss",result:"55"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T20:01:55.004Z",pattern:"x",result:"+00"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T20:01:55.004Z",pattern:"x",result:"+00"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T20:01:55.004Z",pattern:"xx",result:"+0000"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T20:01:55.004Z",pattern:"xx",result:"+0000"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T20:01:55.004Z",pattern:"xxx",result:"+00:00"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T20:01:55.004Z",pattern:"xxx",result:"+00:00"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T20:01:55.100Z",pattern:"S",result:"1"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-02T20:01:55.100Z",pattern:"S",result:"1"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-12T10:01+01:00",pattern:"H",result:"10"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-12T10:01+01:00",pattern:"H",result:"10"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-12T10:01+01:00",pattern:"HH",result:"10"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-12T10:01+01:00",pattern:"HH",result:"10"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-12T10:01+01:00",pattern:"S",result:"0"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-12T10:01+01:00",pattern:"S",result:"0"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-12T10:01+01:00",pattern:"X",result:"+01"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-12T10:01+01:00",pattern:"X",result:"+01"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-12T10:01+01:00",pattern:"XXXX",result:"+0100"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-12T10:01+01:00",pattern:"XXXX",result:"+0100"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-12T10:01+01:00",pattern:"XXXXX",result:"+01:00"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-12T10:01+01:00",pattern:"XXXXX",result:"+01:00"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-12T10:01+01:00",pattern:"a",result:"AM"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-12T10:01+01:00",pattern:"a",result:"AM"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-12T10:01+01:00",pattern:"d",result:"12"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-12T10:01+01:00",pattern:"d",result:"12"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-12T10:01+01:00",pattern:"dd",result:"12"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-12T10:01+01:00",pattern:"dd",result:"12"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-12T10:01+01:00",pattern:"h",result:"10"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-12T10:01+01:00",pattern:"h",result:"10"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-12T10:01+01:00",pattern:"hh",result:"10"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-12T10:01+01:00",pattern:"hh",result:"10"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-12T10:01+01:00",pattern:"m",result:"1"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-12T10:01+01:00",pattern:"m",result:"1"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-12T10:01+01:00",pattern:"mm",result:"01"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-12T10:01+01:00",pattern:"mm",result:"01"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-12T10:01+01:00",pattern:"n",result:"0"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-12T10:01+01:00",pattern:"n",result:"0"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-12T10:01+01:00",pattern:"s",result:"0"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-12T10:01+01:00",pattern:"s",result:"0"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-12T10:01+01:00",pattern:"ss",result:"00"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-12T10:01+01:00",pattern:"ss",result:"00"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-12T10:01+01:00",pattern:"x",result:"+01"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-12T10:01+01:00",pattern:"x",result:"+01"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-12T10:01+01:00",pattern:"xxxx",result:"+0100"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-12T10:01+01:00",pattern:"xxxx",result:"+0100"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-12T10:01+01:00",pattern:"xxxxx",result:"+01:00"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-12T10:01+01:00",pattern:"xxxxx",result:"+01:00"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-20T10:01:55Z",pattern:"H",result:"10"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-20T10:01:55Z",pattern:"H",result:"10"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-20T10:01:55Z",pattern:"HH",result:"10"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-20T10:01:55Z",pattern:"HH",result:"10"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-20T10:01:55Z",pattern:"a",result:"AM"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-20T10:01:55Z",pattern:"a",result:"AM"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-20T10:01:55Z",pattern:"d",result:"20"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-20T10:01:55Z",pattern:"d",result:"20"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-20T10:01:55Z",pattern:"dd",result:"20"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-20T10:01:55Z",pattern:"dd",result:"20"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-20T10:01:55Z",pattern:"h",result:"10"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-20T10:01:55Z",pattern:"h",result:"10"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-20T10:01:55Z",pattern:"hh",result:"10"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-20T10:01:55Z",pattern:"hh",result:"10"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-20T10:10:55Z",pattern:"S",result:"0"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-20T10:10:55Z",pattern:"S",result:"0"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-20T10:10:55Z",pattern:"X",result:"Z"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-20T10:10:55Z",pattern:"X",result:"Z"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-20T10:10:55Z",pattern:"XX",result:"Z"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-20T10:10:55Z",pattern:"XX",result:"Z"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-20T10:10:55Z",pattern:"XXX",result:"Z"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-20T10:10:55Z",pattern:"XXX",result:"Z"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-20T10:10:55Z",pattern:"m",result:"10"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-20T10:10:55Z",pattern:"m",result:"10"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-20T10:10:55Z",pattern:"mm",result:"10"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-20T10:10:55Z",pattern:"mm",result:"10"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-20T10:10:55Z",pattern:"n",result:"0"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-20T10:10:55Z",pattern:"n",result:"0"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-20T10:10:55Z",pattern:"s",result:"55"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-20T10:10:55Z",pattern:"s",result:"55"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-20T10:10:55Z",pattern:"ss",result:"55"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-20T10:10:55Z",pattern:"ss",result:"55"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-20T10:10:55Z",pattern:"x",result:"+00"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-20T10:10:55Z",pattern:"x",result:"+00"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-20T10:10:55Z",pattern:"xx",result:"+0000"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-20T10:10:55Z",pattern:"xx",result:"+0000"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-20T10:10:55Z",pattern:"xxx",result:"+00:00"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-20T10:10:55Z",pattern:"xxx",result:"+00:00"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-31T05:01:55+01:00",pattern:"H",result:"5"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-31T05:01:55+01:00",pattern:"H",result:"5"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-31T05:01:55+01:00",pattern:"HH",result:"05"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-31T05:01:55+01:00",pattern:"HH",result:"05"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-31T05:01:55+01:00",pattern:"h",result:"5"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-31T05:01:55+01:00",pattern:"h",result:"5"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-31T05:01:55+01:00",pattern:"hh",result:"05"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-31T05:01:55+01:00",pattern:"hh",result:"05"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-31T05:05:05+01:00",pattern:"S",result:"0"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-31T05:05:05+01:00",pattern:"S",result:"0"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-31T05:05:05+01:00",pattern:"X",result:"+01"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-31T05:05:05+01:00",pattern:"X",result:"+01"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-31T05:05:05+01:00",pattern:"XX",result:"+0100"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-31T05:05:05+01:00",pattern:"XX",result:"+0100"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-31T05:05:05+01:00",pattern:"XXX",result:"+01:00"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-31T05:05:05+01:00",pattern:"XXX",result:"+01:00"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-31T05:05:05+01:00",pattern:"n",result:"0"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-31T05:05:05+01:00",pattern:"n",result:"0"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-31T05:05:05+01:00",pattern:"s",result:"5"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-31T05:05:05+01:00",pattern:"s",result:"5"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-31T05:05:05+01:00",pattern:"ss",result:"05"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-31T05:05:05+01:00",pattern:"ss",result:"05"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-31T05:05:05+01:00",pattern:"x",result:"+01"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-31T05:05:05+01:00",pattern:"x",result:"+01"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-31T05:05:05+01:00",pattern:"xx",result:"+0100"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-31T05:05:05+01:00",pattern:"xx",result:"+0100"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-31T05:05:05+01:00",pattern:"xxx",result:"+01:00"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-31T05:05:05+01:00",pattern:"xxx",result:"+01:00"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-31T05:05:55+01:00",pattern:"m",result:"5"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-31T05:05:55+01:00",pattern:"m",result:"5"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-31T05:05:55+01:00",pattern:"mm",result:"05"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-31T05:05:55+01:00",pattern:"mm",result:"05"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-31T10:01:55+01:00",pattern:"a",result:"AM"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-31T10:01:55+01:00",pattern:"a",result:"AM"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-31T10:01:55+01:00",pattern:"d",result:"31"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-31T10:01:55+01:00",pattern:"d",result:"31"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-31T10:01:55+01:00",pattern:"dd",result:"31"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01-31T10:01:55+01:00",pattern:"dd",result:"31"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01T",pattern:"H",result:"0"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01T",pattern:"H",result:"0"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01T",pattern:"HH",result:"00"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01T",pattern:"HH",result:"00"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01T",pattern:"M",result:"1"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01T",pattern:"M",result:"1"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01T",pattern:"MM",result:"01"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01T",pattern:"MM",result:"01"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01T",pattern:"MMM",result:"Jan"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01T",pattern:"MMM",result:"Jan"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01T",pattern:"MMMM",result:"January"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01T",pattern:"MMMM",result:"January"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01T",pattern:"MMMMM",result:"J"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01T",pattern:"MMMMM",result:"J"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01T",pattern:"S",result:"0"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01T",pattern:"S",result:"0"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01T",pattern:"X",result:"Z"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01T",pattern:"X",result:"Z"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01T",pattern:"XX",result:"Z"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01T",pattern:"XX",result:"Z"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01T",pattern:"XXX",result:"Z"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01T",pattern:"XXX",result:"Z"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01T",pattern:"a",result:"AM"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01T",pattern:"a",result:"AM"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01T",pattern:"d",result:"1"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01T",pattern:"d",result:"1"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01T",pattern:"dd",result:"01"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01T",pattern:"dd",result:"01"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01T",pattern:"h",result:"12"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01T",pattern:"h",result:"12"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01T",pattern:"hh",result:"12"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01T",pattern:"hh",result:"12"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01T",pattern:"m",result:"0"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01T",pattern:"m",result:"0"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01T",pattern:"mm",result:"00"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01T",pattern:"mm",result:"00"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01T",pattern:"n",result:"0"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01T",pattern:"n",result:"0"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01T",pattern:"s",result:"0"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01T",pattern:"s",result:"0"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01T",pattern:"ss",result:"00"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01T",pattern:"ss",result:"00"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01T",pattern:"x",result:"+00"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01T",pattern:"x",result:"+00"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01T",pattern:"xx",result:"+0000"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01T",pattern:"xx",result:"+0000"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01T",pattern:"xxx",result:"+00:00"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01T",pattern:"xxx",result:"+00:00"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01T",pattern:"y",result:"986"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01T",pattern:"y",result:"986"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01T",pattern:"yyyy",result:"0986"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-01T",pattern:"yyyy",result:"0986"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-02-02T",pattern:"M",result:"2"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-02-02T",pattern:"M",result:"2"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-02-02T",pattern:"MM",result:"02"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-02-02T",pattern:"MM",result:"02"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-02T",pattern:"MMM",result:"Feb"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-02T",pattern:"MMM",result:"Feb"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-02T",pattern:"MMMM",result:"February"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-02T",pattern:"MMMM",result:"February"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-02T",pattern:"MMMMM",result:"F"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-02T",pattern:"MMMMM",result:"F"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-03-02T10:01Z",pattern:"M",result:"3"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-03-02T10:01Z",pattern:"M",result:"3"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-03-02T10:01Z",pattern:"MM",result:"03"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-03-02T10:01Z",pattern:"MM",result:"03"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-03T",pattern:"MMM",result:"Mar"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-03T",pattern:"MMM",result:"Mar"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-03T",pattern:"MMMM",result:"March"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-03T",pattern:"MMMM",result:"March"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-03T",pattern:"MMMMM",result:"M"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-03T",pattern:"MMMMM",result:"M"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-04-02T10:01+01:00",pattern:"M",result:"4"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-04-02T10:01+01:00",pattern:"M",result:"4"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-04-02T10:01+01:00",pattern:"MM",result:"04"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-04-02T10:01+01:00",pattern:"MM",result:"04"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-04T",pattern:"MMM",result:"Apr"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-04T",pattern:"MMM",result:"Apr"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-04T",pattern:"MMMM",result:"April"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-04T",pattern:"MMMM",result:"April"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-04T",pattern:"MMMMM",result:"A"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-04T",pattern:"MMMMM",result:"A"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-05-02T10:01:55Z",pattern:"M",result:"5"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-05-02T10:01:55Z",pattern:"M",result:"5"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-05-02T10:01:55Z",pattern:"MM",result:"05"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-05-02T10:01:55Z",pattern:"MM",result:"05"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-05T",pattern:"MMM",result:"May"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-05T",pattern:"MMM",result:"May"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-05T",pattern:"MMMM",result:"May"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-05T",pattern:"MMMM",result:"May"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-05T",pattern:"MMMMM",result:"M"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-05T",pattern:"MMMMM",result:"M"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-06-02T10:01:55+01:00",pattern:"M",result:"6"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-06-02T10:01:55+01:00",pattern:"M",result:"6"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-06-02T10:01:55+01:00",pattern:"MM",result:"06"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-06-02T10:01:55+01:00",pattern:"MM",result:"06"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-06T",pattern:"MMM",result:"Jun"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-06T",pattern:"MMM",result:"Jun"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-06T",pattern:"MMMM",result:"June"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-06T",pattern:"MMMM",result:"June"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-06T",pattern:"MMMMM",result:"J"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-06T",pattern:"MMMMM",result:"J"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-07-02T10:01:55.004Z",pattern:"M",result:"7"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-07-02T10:01:55.004Z",pattern:"M",result:"7"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-07-02T10:01:55.004Z",pattern:"MM",result:"07"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-07-02T10:01:55.004Z",pattern:"MM",result:"07"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-07T",pattern:"MMM",result:"Jul"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-07T",pattern:"MMM",result:"Jul"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-07T",pattern:"MMMM",result:"July"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-07T",pattern:"MMMM",result:"July"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-07T",pattern:"MMMMM",result:"J"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-07T",pattern:"MMMMM",result:"J"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-08T",pattern:"MMM",result:"Aug"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-08T",pattern:"MMM",result:"Aug"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-08T",pattern:"MMMM",result:"August"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-08T",pattern:"MMMM",result:"August"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-08T",pattern:"MMMMM",result:"A"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-08T",pattern:"MMMMM",result:"A"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-09T",pattern:"MMM",result:"Sep"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-09T",pattern:"MMM",result:"Sep"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-09T",pattern:"MMMM",result:"September"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-09T",pattern:"MMMM",result:"September"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-09T",pattern:"MMMMM",result:"S"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-09T",pattern:"MMMMM",result:"S"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-10-02T10:01:55.004+01:00",pattern:"M",result:"10"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-10-02T10:01:55.004+01:00",pattern:"M",result:"10"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-10-02T10:01:55.004+01:00",pattern:"MM",result:"10"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-10-02T10:01:55.004+01:00",pattern:"MM",result:"10"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-10T",pattern:"MMM",result:"Oct"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-10T",pattern:"MMM",result:"Oct"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-10T",pattern:"MMMM",result:"October"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-10T",pattern:"MMMM",result:"October"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-10T",pattern:"MMMMM",result:"O"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-10T",pattern:"MMMMM",result:"O"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-11T",pattern:"MMM",result:"Nov"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-11T",pattern:"MMM",result:"Nov"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-11T",pattern:"MMMM",result:"November"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-11T",pattern:"MMMM",result:"November"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-11T",pattern:"MMMMM",result:"N"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-11T",pattern:"MMMMM",result:"N"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-12T",pattern:"MMM",result:"Dec"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-12T",pattern:"MMM",result:"Dec"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-12T",pattern:"MMMM",result:"December"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-12T",pattern:"MMMM",result:"December"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-12T",pattern:"MMMMM",result:"D"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986-12T",pattern:"MMMMM",result:"D"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986T",pattern:"H",result:"0"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986T",pattern:"H",result:"0"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986T",pattern:"HH",result:"00"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986T",pattern:"HH",result:"00"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986T",pattern:"M",result:"1"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986T",pattern:"M",result:"1"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986T",pattern:"MM",result:"01"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986T",pattern:"MM",result:"01"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986T",pattern:"MMM",result:"Jan"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986T",pattern:"MMM",result:"Jan"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986T",pattern:"MMMM",result:"January"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986T",pattern:"MMMM",result:"January"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986T",pattern:"MMMMM",result:"J"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986T",pattern:"MMMMM",result:"J"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986T",pattern:"S",result:"0"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986T",pattern:"S",result:"0"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986T",pattern:"X",result:"Z"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986T",pattern:"X",result:"Z"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986T",pattern:"XX",result:"Z"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986T",pattern:"XX",result:"Z"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986T",pattern:"XXX",result:"Z"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986T",pattern:"XXX",result:"Z"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986T",pattern:"a",result:"AM"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986T",pattern:"a",result:"AM"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986T",pattern:"d",result:"1"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986T",pattern:"d",result:"1"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986T",pattern:"dd",result:"01"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986T",pattern:"dd",result:"01"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986T",pattern:"h",result:"12"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986T",pattern:"h",result:"12"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986T",pattern:"hh",result:"12"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986T",pattern:"hh",result:"12"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986T",pattern:"m",result:"0"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986T",pattern:"m",result:"0"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986T",pattern:"mm",result:"00"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986T",pattern:"mm",result:"00"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986T",pattern:"n",result:"0"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986T",pattern:"n",result:"0"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986T",pattern:"s",result:"0"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986T",pattern:"s",result:"0"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986T",pattern:"ss",result:"00"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986T",pattern:"ss",result:"00"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986T",pattern:"x",result:"+00"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986T",pattern:"x",result:"+00"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986T",pattern:"xx",result:"+0000"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986T",pattern:"xx",result:"+0000"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986T",pattern:"xxx",result:"+00:00"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986T",pattern:"xxx",result:"+00:00"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986T",pattern:"y",result:"986"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986T",pattern:"y",result:"986"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986T",pattern:"yyyy",result:"0986"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"0986T",pattern:"yyyy",result:"0986"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"1986-01-02",pattern:"yy",result:"86"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"1986-01-02",pattern:"yy",result:"86"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"1986-01-02T10:01+01:00",pattern:"yy",result:"86"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"1986-01-02T10:01+01:00",pattern:"yy",result:"86"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"1986-01-02T10:01:55+01:00",pattern:"yy",result:"86"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"1986-01-02T10:01:55+01:00",pattern:"yy",result:"86"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"1986-01-02T10:01:55.004+01:00",pattern:"yy",result:"86"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"1986-01-02T10:01:55.004+01:00",pattern:"yy",result:"86"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"1986-01-02T10:01:55.004Z",pattern:"yy",result:"86"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"1986-01-02T10:01:55.004Z",pattern:"yy",result:"86"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"1986-01-02T10:01:55Z",pattern:"yy",result:"86"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"1986-01-02T10:01:55Z",pattern:"yy",result:"86"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"1986-01-02T10:01Z",pattern:"yy",result:"86"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"1986-01-02T10:01Z",pattern:"yy",result:"86"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"1986-01T",pattern:"yy",result:"86"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"1986-01T",pattern:"yy",result:"86"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"1986T",pattern:"yy",result:"86"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"1986T",pattern:"yy",result:"86"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"9999T",pattern:"y",result:"9999"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"9999T",pattern:"y",result:"9999"}#error
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"9999T",pattern:"yy",result:"99"}#coerce
+extended/eval/primitives/functions/to_string.ion::to_string_valid::to_string valid valid cases for each individual supported pattern{timestamp:"9999T",pattern:"yy",result:"99"}#error
 extended/eval/primitives/int.ion::division_by_zero_error::divide by zero{sql:"1 % 0"}#coerce
 extended/eval/primitives/int.ion::division_by_zero_error::divide by zero{sql:"1 % 0"}#error
 extended/eval/primitives/int.ion::division_by_zero_error::divide by zero{sql:"1 / 0"}#coerce

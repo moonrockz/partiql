@@ -129,3 +129,18 @@ test "OVERLAPS uses the session zone for values without an offset" {
     .to_equal(Bool(true))
   })
 }
+
+///|
+test "TO_STRING evaluates" {
+  @expect.expect_all(soft => {
+    soft
+    .expect(
+      ev("TO_STRING(`2017-01-02T03:04:05.006+07:08`, 'y-M-d H:m:s.SSS XXX')"),
+    )
+    .to_equal(String("2017-1-2 3:4:5.006 +07:08"))
+    soft.expect(ev("TO_STRING(`0986T`, 'X')")).to_equal(String("Z"))
+    soft
+    .expect(failure_of("TO_STRING(`2017T`, 'not_a_pattern')", mode=Permissive))
+    .to_equal("data")
+  })
+}
