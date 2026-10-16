@@ -673,12 +673,14 @@ fn from_name(source : @ast.FromSource, position : Int32) -> String {
 
 ///|
 /// The name an expression implies: the name of the variable or of the last
-/// field of the path.
+/// field of the path, also through `CAST`.
 fn implied_name(e : @ast.Expr) -> String? {
   match e.kind {
     VarRef(id, ..) => Some(id.text)
     Path(_, [.., Field(id)]) => Some(id.text)
     Path(_, [.., FieldString(name, ..)]) => Some(name)
+    // CAST(e AS T) keeps the name of e (partiql-lang-kotlin#1122).
+    Cast(inner, _) => implied_name(inner)
     _ => None
   }
 }

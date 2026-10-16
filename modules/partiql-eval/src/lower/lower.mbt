@@ -351,7 +351,13 @@ fn lower_at(
       ListOf(lower_all(items, scope, depth), span)
     Bag(items) => BagOf(lower_all(items, scope, depth), span)
     Struct(fields) => TupleOf(lower_pairs(fields, scope, depth), span)
-    Map(entries) => MapOf(lower_pairs(entries, scope, depth), span)
+    Map(entries) =>
+      MapOf(
+        lower_pairs(entries, scope, depth),
+        key_type=declared_type(entries.map(e => e.0)),
+        value_type=declared_type(entries.map(e => e.1)),
+        span,
+      )
     Query(q) => {
       let inner = query_at(q, scope, depth)
       if is_single_column(e) {

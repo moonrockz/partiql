@@ -160,3 +160,50 @@ test "CAST to collections and maps" {
     soft.expect(ev("CAST(`(1 2)` AS LIST) = [1, 2]")).to_equal(Bool(true))
   })
 }
+
+///|
+test "t[CAST(e AS STRING)] names a field; a map keeps its key lookup" {
+  @expect.expect_all(soft => {
+    soft
+    .expect(ev("{'attr': 1, 'b': 2}[CAST('at' || 'tr' AS STRING)]"))
+    .to_equal(Int(1))
+    soft.expect(ev("{'a': 1}[CAST('a' AS VARCHAR(3))]")).to_equal(Int(1))
+    // A field name match is case-sensitive, as for a string literal.
+    soft.expect(ev("{'a': 1}[CAST('A' AS STRING)]")).to_equal(Missing)
+    soft.expect(ev("MAP {'k': 5}[CAST('k' AS STRING)]")).to_equal(Int(5))
+    // Not a string cast: a tuple is not indexed by an expression.
+    soft.expect(ev("{'a': 1}['a' || '']")).to_equal(Missing)
+  })
+}
+
+///|
+test "the implied name of a CAST is the name of its operand" {
+  @expect.expect_all(soft => {
+    soft
+    .expect(ev("SELECT CAST(t.n AS STRING) FROM [{'n': 1}] AS t"))
+    .to_equal(bag_of([tuple([("n", String("1"))])]))
+    soft
+    .expect(
+      ev(
+        "SELECT num FROM [{'num': 1.0}, {'num': 1}] AS t GROUP BY CAST(t.num AS INT)",
+      ),
+    )
+    .to_equal(bag_of([tuple([("num", Int(1))])]))
+  })
+}
+
+///|
+test "a MAP literal declares the types of uniform CAST keys and values" {
+  @expect.expect_all(soft => {
+    soft
+    .expect(ev("MAP { CAST(100 AS BIGINT): 'hundred' } IS MAP<BIGINT, STRING>"))
+    .to_equal(Bool(true))
+    soft
+    .expect(ev("MAP { 'a': CAST(1 AS SMALLINT) } IS MAP<STRING, SMALLINT>"))
+    .to_equal(Bool(true))
+    // Mixed: inferred as before.
+    soft
+    .expect(ev("MAP { CAST(1 AS BIGINT): 'a', 2: 'b' } IS MAP<INT, STRING>"))
+    .to_equal(Bool(true))
+  })
+}

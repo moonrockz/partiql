@@ -3239,6 +3239,8 @@ eval/primitives/map.ion::map::cast struct with duplicate keys to MAP keeps last 
 eval/primitives/map.ion::map::cast struct with duplicate keys to MAP keeps last value#error
 eval/primitives/map.ion::map::construct a map with all MISSING values produces empty map#coerce
 eval/primitives/map.ion::map::construct a map with all MISSING values produces empty map#error
+eval/primitives/map.ion::map::construct a map with bigint keys#coerce
+eval/primitives/map.ion::map::construct a map with bigint keys#error
 eval/primitives/map.ion::map::construct a map with boolean keys#coerce
 eval/primitives/map.ion::map::construct a map with boolean keys#error
 eval/primitives/map.ion::map::construct a map with compatible heterogeneous keys coerces to common type#coerce
@@ -5933,6 +5935,8 @@ eval/query/group-by/group-by.ion::group-by-test::SELECT VALUE { 'col2': col2 } F
 eval/query/group-by/group-by.ion::group-by-test::SELECT VALUE { 'col2': col2 } FROM simple_2_col_1_group GROUP BY col2#error
 eval/query/group-by/group-by.ion::group-by-test::SELECT VALUE { 'col2': col2 } FROM simple_2_col_2_groups GROUP BY col2#coerce
 eval/query/group-by/group-by.ion::group-by-test::SELECT VALUE { 'col2': col2 } FROM simple_2_col_2_groups GROUP BY col2#error
+eval/query/group-by/group-by.ion::group-by-test::SELECT VALUE { 'num': num } FROM string_numbers GROUP BY CAST(num AS INT)#coerce
+eval/query/group-by/group-by.ion::group-by-test::SELECT VALUE { 'num': num } FROM string_numbers GROUP BY CAST(num AS INT)#error
 eval/query/group-by/group-by.ion::group-by-test::SELECT VALUE { 'regionId': p.regionId, 'supplierId_missings': p.supplierId_missings } FROM products_sparse p GROUP BY p.regionId, p.supplierId_missings#coerce
 eval/query/group-by/group-by.ion::group-by-test::SELECT VALUE { 'regionId': p.regionId, 'supplierId_missings': p.supplierId_missings } FROM products_sparse p GROUP BY p.regionId, p.supplierId_missings#error
 eval/query/group-by/group-by.ion::group-by-test::SELECT VALUE { 'regionId': p.regionId, 'supplierId_mixed': p.supplierId_mixed } FROM products_sparse p GROUP BY p.regionId, p.supplierId_mixed#coerce
@@ -5975,6 +5979,8 @@ eval/query/group-by/group-by.ion::group-by-test::SELECT col2 FROM simple_2_col_2
 eval/query/group-by/group-by.ion::group-by-test::SELECT col2 FROM simple_2_col_2_groups GROUP BY col2#error
 eval/query/group-by/group-by.ion::group-by-test::SELECT doesntMatterWontBeEvaluated FROM [] GROUP BY doesntMatterWontBeEvaluated#coerce
 eval/query/group-by/group-by.ion::group-by-test::SELECT doesntMatterWontBeEvaluated FROM [] GROUP BY doesntMatterWontBeEvaluated#error
+eval/query/group-by/group-by.ion::group-by-test::SELECT num FROM string_numbers GROUP BY CAST(num AS INT)#coerce
+eval/query/group-by/group-by.ion::group-by-test::SELECT num FROM string_numbers GROUP BY CAST(num AS INT)#error
 eval/query/group-by/group-by.ion::group-by-test::SELECT p.regionId, p.supplierId_missings FROM products_sparse p GROUP BY p.regionId, p.supplierId_missings#coerce
 eval/query/group-by/group-by.ion::group-by-test::SELECT p.regionId, p.supplierId_missings FROM products_sparse p GROUP BY p.regionId, p.supplierId_missings#error
 eval/query/group-by/group-by.ion::group-by-test::SELECT p.supplierId_missings FROM products_sparse p GROUP BY p.supplierId_missings#coerce
@@ -7171,6 +7177,8 @@ eval/spec-tests.ion::section-4::tuple navigation missing attribute array notatio
 eval/spec-tests.ion::section-4::tuple navigation missing attribute array notation#error
 eval/spec-tests.ion::section-4::tuple navigation missing attribute dot notation#coerce
 eval/spec-tests.ion::section-4::tuple navigation missing attribute dot notation#error
+eval/spec-tests.ion::section-4::tuple navigation with array notation with explicit CAST to string#coerce
+eval/spec-tests.ion::section-4::tuple navigation with array notation with explicit CAST to string#error
 eval/spec-tests.ion::section-4::tuple navigation with array notation without explicit CAST to string#coerce
 eval/spec-tests.ion::section-4::tuple navigation with array notation without explicit CAST to string#error
 eval/spec-tests.ion::section-4::wildcard steps in SELECT clause item#coerce
@@ -7491,6 +7499,8 @@ extended/eval/query/group-by/group-by.ion::select-star-group-by::SELECT * FROM s
 extended/eval/query/group-by/group-by.ion::select-star-group-by::SELECT * FROM string_groups GROUP BY col1 || 'a'#error
 extended/eval/query/group-by/group-by.ion::select-star-group-by::SELECT * FROM string_numbers GROUP BY CAST(num AS INT) AS someGBE#coerce
 extended/eval/query/group-by/group-by.ion::select-star-group-by::SELECT * FROM string_numbers GROUP BY CAST(num AS INT) AS someGBE#error
+extended/eval/query/group-by/group-by.ion::select-star-group-by::SELECT * FROM string_numbers GROUP BY CAST(num AS INT)#coerce
+extended/eval/query/group-by/group-by.ion::select-star-group-by::SELECT * FROM string_numbers GROUP BY CAST(num AS INT)#error
 extended/eval/query/group-by/group-by.ion::select-star-group-by::SELECT * with GROUP BY and GROUP AS#coerce
 extended/eval/query/group-by/group-by.ion::select-star-group-by::SELECT * with GROUP BY and GROUP AS#error
 extended/eval/query/group-by/group-by.ion::select-star-group-by::SELECT * with GROUP BY#coerce

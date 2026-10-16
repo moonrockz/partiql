@@ -103,7 +103,7 @@ fn push_operands(
     | BagOf(items, _)
     | Coalesce(items, _)
     | Call(_, items, _) => items.each(push)
-    TupleOf(pairs, _) | MapOf(pairs, _) =>
+    TupleOf(pairs, _) | MapOf(pairs, key_type=_, value_type=_, _) =>
       for pair in pairs {
         push(pair.0)
         push(pair.1)

@@ -155,3 +155,20 @@ fn target(
     Custom(id) => raise DataError(message="unknown type \{id.text}", span~)
   }
 }
+
+///|
+/// The map type that every expression declares with `CAST(_ AS T)`, when
+/// they all declare the same one; `None` for no expressions.
+fn declared_type(exprs : Array[@ast.Expr]) -> @value.MapType? {
+  let mut found : @value.MapType? = None
+  for e in exprs {
+    guard e.kind is Cast(_, t) && @ops.map_type_of(t) is Some(declared) else {
+      return None
+    }
+    match found {
+      Some(other) if other != declared => return None
+      _ => found = Some(declared)
+    }
+  }
+  found
+}
