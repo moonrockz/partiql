@@ -5534,6 +5534,128 @@ eval/primitives/operators/nary-operators.ion::nary::unaryMinus#coerce
 eval/primitives/operators/nary-operators.ion::nary::unaryMinus#error
 eval/primitives/operators/nary-operators.ion::nary::unaryPlus#coerce
 eval/primitives/operators/nary-operators.ion::nary::unaryPlus#error
+eval/primitives/operators/overlaps.ion::overlaps::overlaps with array and bag with identical periods#coerce
+eval/primitives/operators/overlaps.ion::overlaps::overlaps with array and bag with identical periods#error
+eval/primitives/operators/overlaps.ion::overlaps::overlaps with array containing non-datetime in interval position#coerce
+eval/primitives/operators/overlaps.ion::overlaps::overlaps with array containing non-datetime in interval position#error
+eval/primitives/operators/overlaps.ion::overlaps::overlaps with arrays with identical periods#coerce
+eval/primitives/operators/overlaps.ion::overlaps::overlaps with arrays with identical periods#error
+eval/primitives/operators/overlaps.ion::overlaps::overlaps with bags with identical periods#coerce
+eval/primitives/operators/overlaps.ion::overlaps::overlaps with bags with identical periods#error
+eval/primitives/operators/overlaps.ion::overlaps::overlaps with boolean in second period start#coerce
+eval/primitives/operators/overlaps.ion::overlaps::overlaps with boolean in second period start#error
+eval/primitives/operators/overlaps.ion::overlaps::overlaps with both missing in first argument#coerce
+eval/primitives/operators/overlaps.ion::overlaps::overlaps with both missing in first argument#error
+eval/primitives/operators/overlaps.ion::overlaps::overlaps with both null in first argument#coerce
+eval/primitives/operators/overlaps.ion::overlaps::overlaps with both null in first argument#error
+eval/primitives/operators/overlaps.ion::overlaps::overlaps with both periods reversed#coerce
+eval/primitives/operators/overlaps.ion::overlaps::overlaps with both periods reversed#error
+eval/primitives/operators/overlaps.ion::overlaps::overlaps with both periods using intervals#coerce
+eval/primitives/operators/overlaps.ion::overlaps::overlaps with both periods using intervals#error
+eval/primitives/operators/overlaps.ion::overlaps::overlaps with cross-year boundary#coerce
+eval/primitives/operators/overlaps.ion::overlaps::overlaps with cross-year boundary#error
+eval/primitives/operators/overlaps.ion::overlaps::overlaps with date period containing another - returns true#coerce
+eval/primitives/operators/overlaps.ion::overlaps::overlaps with date period containing another - returns true#error
+eval/primitives/operators/overlaps.ion::overlaps::overlaps with decimal in second period end#coerce
+eval/primitives/operators/overlaps.ion::overlaps::overlaps with decimal in second period end#error
+eval/primitives/operators/overlaps.ion::overlaps::overlaps with empty collections#coerce
+eval/primitives/operators/overlaps.ion::overlaps::overlaps with empty collections#error
+eval/primitives/operators/overlaps.ion::overlaps::overlaps with identical end times but different start times#coerce
+eval/primitives/operators/overlaps.ion::overlaps::overlaps with identical end times but different start times#error
+eval/primitives/operators/overlaps.ion::overlaps::overlaps with identical start times but different end times#coerce
+eval/primitives/operators/overlaps.ion::overlaps::overlaps with identical start times but different end times#error
+eval/primitives/operators/overlaps.ion::overlaps::overlaps with integer as second argument#coerce
+eval/primitives/operators/overlaps.ion::overlaps::overlaps with integer as second argument#error
+eval/primitives/operators/overlaps.ion::overlaps::overlaps with integer in first period start#coerce
+eval/primitives/operators/overlaps.ion::overlaps::overlaps with integer in first period start#error
+eval/primitives/operators/overlaps.ion::overlaps::overlaps with invalid type and null#coerce
+eval/primitives/operators/overlaps.ion::overlaps::overlaps with invalid type and null#error
+eval/primitives/operators/overlaps.ion::overlaps::overlaps with large negative interval#coerce
+eval/primitives/operators/overlaps.ion::overlaps::overlaps with large negative interval#error
+eval/primitives/operators/overlaps.ion::overlaps::overlaps with leap year date#coerce
+eval/primitives/operators/overlaps.ion::overlaps::overlaps with leap year date#error
+eval/primitives/operators/overlaps.ion::overlaps::overlaps with long periods#coerce
+eval/primitives/operators/overlaps.ion::overlaps::overlaps with long periods#error
+eval/primitives/operators/overlaps.ion::overlaps::overlaps with missing as first argument and null as second argument#coerce
+eval/primitives/operators/overlaps.ion::overlaps::overlaps with missing as first argument and null as second argument#error
+eval/primitives/operators/overlaps.ion::overlaps::overlaps with missing as first argument#coerce
+eval/primitives/operators/overlaps.ion::overlaps::overlaps with missing as first argument#error
+eval/primitives/operators/overlaps.ion::overlaps::overlaps with missing as second argument#coerce
+eval/primitives/operators/overlaps.ion::overlaps::overlaps with missing as second argument#error
+eval/primitives/operators/overlaps.ion::overlaps::overlaps with mixed ROW and array constructors#coerce
+eval/primitives/operators/overlaps.ion::overlaps::overlaps with mixed ROW and array constructors#error
+eval/primitives/operators/overlaps.ion::overlaps::overlaps with month intervals#coerce
+eval/primitives/operators/overlaps.ion::overlaps::overlaps with month intervals#error
+eval/primitives/operators/overlaps.ion::overlaps::overlaps with negative interval#coerce
+eval/primitives/operators/overlaps.ion::overlaps::overlaps with negative interval#error
+eval/primitives/operators/overlaps.ion::overlaps::overlaps with non-overlapping and missing in first argument#coerce
+eval/primitives/operators/overlaps.ion::overlaps::overlaps with non-overlapping and missing in first argument#error
+eval/primitives/operators/overlaps.ion::overlaps::overlaps with non-overlapping and missing in second argument#coerce
+eval/primitives/operators/overlaps.ion::overlaps::overlaps with non-overlapping and missing in second argument#error
+eval/primitives/operators/overlaps.ion::overlaps::overlaps with non-overlapping and null in first argument#coerce
+eval/primitives/operators/overlaps.ion::overlaps::overlaps with non-overlapping and null in first argument#error
+eval/primitives/operators/overlaps.ion::overlaps::overlaps with non-overlapping and null in second argument#coerce
+eval/primitives/operators/overlaps.ion::overlaps::overlaps with non-overlapping and null in second argument#error
+eval/primitives/operators/overlaps.ion::overlaps::overlaps with non-overlapping date periods#coerce
+eval/primitives/operators/overlaps.ion::overlaps::overlaps with non-overlapping date periods#error
+eval/primitives/operators/overlaps.ion::overlaps::overlaps with non-overlapping date-interval period#coerce
+eval/primitives/operators/overlaps.ion::overlaps::overlaps with non-overlapping date-interval period#error
+eval/primitives/operators/overlaps.ion::overlaps::overlaps with non-overlapping periods ROW value#coerce
+eval/primitives/operators/overlaps.ion::overlaps::overlaps with non-overlapping periods ROW value#error
+eval/primitives/operators/overlaps.ion::overlaps::overlaps with null & missing in first argument#coerce
+eval/primitives/operators/overlaps.ion::overlaps::overlaps with null & missing in first argument#error
+eval/primitives/operators/overlaps.ion::overlaps::overlaps with null and invalid type#coerce
+eval/primitives/operators/overlaps.ion::overlaps::overlaps with null and invalid type#error
+eval/primitives/operators/overlaps.ion::overlaps::overlaps with null as first argument and missing as second argument#coerce
+eval/primitives/operators/overlaps.ion::overlaps::overlaps with null as first argument and missing as second argument#error
+eval/primitives/operators/overlaps.ion::overlaps::overlaps with null as first argument#coerce
+eval/primitives/operators/overlaps.ion::overlaps::overlaps with null as first argument#error
+eval/primitives/operators/overlaps.ion::overlaps::overlaps with null as second argument#coerce
+eval/primitives/operators/overlaps.ion::overlaps::overlaps with null as second argument#error
+eval/primitives/operators/overlaps.ion::overlaps::overlaps with one period inside another#coerce
+eval/primitives/operators/overlaps.ion::overlaps::overlaps with one period inside another#error
+eval/primitives/operators/overlaps.ion::overlaps::overlaps with overlapping and missing in first argument#coerce
+eval/primitives/operators/overlaps.ion::overlaps::overlaps with overlapping and missing in first argument#error
+eval/primitives/operators/overlaps.ion::overlaps::overlaps with overlapping and missing in second argument#coerce
+eval/primitives/operators/overlaps.ion::overlaps::overlaps with overlapping and missing in second argument#error
+eval/primitives/operators/overlaps.ion::overlaps::overlaps with overlapping and null in first argument#coerce
+eval/primitives/operators/overlaps.ion::overlaps::overlaps with overlapping and null in first argument#error
+eval/primitives/operators/overlaps.ion::overlaps::overlaps with overlapping and null in second argument#coerce
+eval/primitives/operators/overlaps.ion::overlaps::overlaps with overlapping and null in second argument#error
+eval/primitives/operators/overlaps.ion::overlaps::overlaps with overlapping date periods#coerce
+eval/primitives/operators/overlaps.ion::overlaps::overlaps with overlapping date periods#error
+eval/primitives/operators/overlaps.ion::overlaps::overlaps with overlapping date-interval period#coerce
+eval/primitives/operators/overlaps.ion::overlaps::overlaps with overlapping date-interval period#error
+eval/primitives/operators/overlaps.ion::overlaps::overlaps with overlapping periods ROW value#coerce
+eval/primitives/operators/overlaps.ion::overlaps::overlaps with overlapping periods ROW value#error
+eval/primitives/operators/overlaps.ion::overlaps::overlaps with periods separated by exactly one day#coerce
+eval/primitives/operators/overlaps.ion::overlaps::overlaps with periods separated by exactly one day#error
+eval/primitives/operators/overlaps.ion::overlaps::overlaps with periods that share only one endpoint#coerce
+eval/primitives/operators/overlaps.ion::overlaps::overlaps with periods that share only one endpoint#error
+eval/primitives/operators/overlaps.ion::overlaps::overlaps with reversed date period (end before start)#coerce
+eval/primitives/operators/overlaps.ion::overlaps::overlaps with reversed date period (end before start)#error
+eval/primitives/operators/overlaps.ion::overlaps::overlaps with single point date periods that don't match#coerce
+eval/primitives/operators/overlaps.ion::overlaps::overlaps with single point date periods that don't match#error
+eval/primitives/operators/overlaps.ion::overlaps::overlaps with single point date periods that match#coerce
+eval/primitives/operators/overlaps.ion::overlaps::overlaps with single point date periods that match#error
+eval/primitives/operators/overlaps.ion::overlaps::overlaps with string as first argument#coerce
+eval/primitives/operators/overlaps.ion::overlaps::overlaps with string as first argument#error
+eval/primitives/operators/overlaps.ion::overlaps::overlaps with string in first period end#coerce
+eval/primitives/operators/overlaps.ion::overlaps::overlaps with string in first period end#error
+eval/primitives/operators/overlaps.ion::overlaps::overlaps with struct as first argument#coerce
+eval/primitives/operators/overlaps.ion::overlaps::overlaps with struct as first argument#error
+eval/primitives/operators/overlaps.ion::overlaps::overlaps with touching date periods (end equals start)#coerce
+eval/primitives/operators/overlaps.ion::overlaps::overlaps with touching date periods (end equals start)#error
+eval/primitives/operators/overlaps.ion::overlaps::overlaps with touching date-interval period#coerce
+eval/primitives/operators/overlaps.ion::overlaps::overlaps with touching date-interval period#error
+eval/primitives/operators/overlaps.ion::overlaps::overlaps with wrong collection size (first period has 1 element)#coerce
+eval/primitives/operators/overlaps.ion::overlaps::overlaps with wrong collection size (first period has 1 element)#error
+eval/primitives/operators/overlaps.ion::overlaps::overlaps with wrong collection size (second period has 3 elements)#coerce
+eval/primitives/operators/overlaps.ion::overlaps::overlaps with wrong collection size (second period has 3 elements)#error
+eval/primitives/operators/overlaps.ion::overlaps::overlaps with year intervals#coerce
+eval/primitives/operators/overlaps.ion::overlaps::overlaps with year intervals#error
+eval/primitives/operators/overlaps.ion::overlaps::overlaps with zero-length interval#coerce
+eval/primitives/operators/overlaps.ion::overlaps::overlaps with zero-length interval#error
 eval/primitives/operators/plus.ion::plus::DATE '2025-01-01' + INTERVAL '1' DAY#coerce
 eval/primitives/operators/plus.ion::plus::DATE '2025-01-01' + INTERVAL '1' DAY#error
 eval/primitives/operators/plus.ion::plus::DATE '2025-01-01' + INTERVAL '1' MONTH#coerce

@@ -105,6 +105,8 @@ pub fn octet_length(Array[@partiql-value.Value]) -> @partiql-value.Value raise O
 
 pub fn or_(@partiql-value.Value, @partiql-value.Value) -> @partiql-value.Value raise OpFailure
 
+pub fn overlaps(Array[@partiql-value.Value], zone~ : ZoneOffset) -> @partiql-value.Value raise OpFailure
+
 pub fn overlay(Array[@partiql-value.Value]) -> @partiql-value.Value raise OpFailure
 
 pub fn parse_date(String) -> @partiql-value.Date raise OpFailure

@@ -85,3 +85,47 @@ test "DATE_DIFF evaluates" {
     .to_equal("type")
   })
 }
+
+///|
+test "OVERLAPS evaluates" {
+  @expect.expect_all(soft => {
+    soft
+    .expect(
+      ev(
+        "[DATE '2023-01-01', DATE '2023-01-31'] OVERLAPS [DATE '2023-01-31', DATE '2023-02-28']",
+      ),
+    )
+    .to_equal(Bool(false))
+    soft
+    .expect(
+      ev(
+        "(DATE '2023-01-01', INTERVAL '10' DAY) OVERLAPS (DATE '2023-01-05', DATE '2023-01-06')",
+      ),
+    )
+    .to_equal(Bool(true))
+    soft.expect(ev("NULL OVERLAPS MISSING")).to_equal(Missing)
+    soft
+    .expect(
+      failure_of(
+        "[1, 2] OVERLAPS [DATE '2023-01-01', DATE '2023-01-02']",
+        mode=Strict,
+      ),
+    )
+    .to_equal("type")
+  })
+}
+
+///|
+test "OVERLAPS uses the session zone for values without an offset" {
+  guard @eval.ZoneOffset::new(-300) is Some(minus_five) else { fail("offset") }
+  // 10:00-11:00 local at -05:00 is 15:00-16:00 UTC.
+  let source = "[TIMESTAMP '2020-01-01 10:00:00', TIMESTAMP '2020-01-01 11:00:00'] OVERLAPS [TIMESTAMP '2020-01-01 15:30:00+00:00', TIMESTAMP '2020-01-01 15:45:00+00:00']"
+  @expect.expect_all(soft => {
+    soft.expect(ev(source)).to_equal(Bool(false))
+    soft
+    .expect(
+      @eval.evaluate_text(source, env=@eval.Bindings::empty(), zone=minus_five),
+    )
+    .to_equal(Bool(true))
+  })
+}
