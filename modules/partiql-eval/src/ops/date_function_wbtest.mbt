@@ -223,3 +223,27 @@ test "DATE_DIFF puts values without an offset in the session zone" {
     .to_equal(Int(0))
   })
 }
+
+///|
+test "DATE_DIFF months: wide data years and the year range" {
+  @expect.expect_all(soft => {
+    // Years from data may exceed Int32 arithmetic when multiplied by 12.
+    soft
+    .expect(diff_of(Month, on_day(999999999, 1, 1), on_day(2000, 1, 1)))
+    .to_equal(Int(-11999975988L))
+    // The result is an integer: the 0001-9999 rule for datetime results does
+    // not apply to the values compared.
+    soft
+    .expect(diff_of(Month, on_day(19998, 1, 1), on_day(19998, 3, 1)))
+    .to_equal(Int(2))
+    soft
+    .expect(
+      diff_of(
+        Month,
+        at(2000, 1, 1, 0, 0, 0, Some(300)),
+        at(9999, 12, 31, 23, 0, 0, Some(-300)),
+      ),
+    )
+    .to_equal(Int(96000))
+  })
+}

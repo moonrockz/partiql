@@ -236,3 +236,26 @@ test "TO_TIMESTAMP with one argument reads Ion timestamp text" {
     soft.expect(failure(() => text_to_timestamp([Int(1)]))).to_equal("type")
   })
 }
+
+///|
+test "TO_TIMESTAMP: S x n reads exactly n digits" {
+  @expect.expect_all(soft => {
+    soft
+    .expect(parse_ts("2020-01-01 00:00:00.5", "yyyy-MM-dd HH:mm:ss.S"))
+    .to_equal(stamp_of(2020, 1, 1, 0, 0, 0, 500000000, 1, 0))
+    soft
+    .expect(
+      failure(() => parse_ts("2020-01-01 00:00:00.05", "yyyy-MM-dd HH:mm:ss.S")),
+    )
+    .to_equal("data")
+    soft
+    .expect(
+      failure(() => {
+        parse_ts(
+          "2020-01-01 00:00:00.28999941890838049", "yyyy-MM-dd HH:mm:ss.S",
+        )
+      }),
+    )
+    .to_equal("data")
+  })
+}

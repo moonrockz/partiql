@@ -337,15 +337,33 @@ fn no_match(text : String) -> OpFailure {
 }
 
 ///|
-/// Digits at the cursor: exactly `width` digits, or with `width` 1 one or
-/// more (with a leading `-`, which the range check then rejects). At most 18
-/// digits, so the value fits Int64; more is out of range.
+/// How many digits a number field reads: one letter reads all the digits
+/// that follow; a repeated letter, and `S` x n, read exactly that many.
+priv enum Width {
+  Variable
+  Fixed(Int32)
+}
+
+///|
+/// The width of a field written with `count` letters.
+fn letters_width(count : Int32) -> Width {
+  if count == 1 {
+    Variable
+  } else {
+    Fixed(count)
+  }
+}
+
+///|
+/// Digits at the cursor, by `width`. A variable-width number may start with
+/// `-`, which the range check then rejects. At most 18 digits, so the value
+/// fits Int64; more is out of range.
 fn Scan::number(
   self : Scan,
-  width : Int32,
+  width : Width,
   text : String,
 ) -> Int64 raise OpFailure {
-  let negative = width == 1 &&
+  let negative = width is Variable &&
     self.pos < self.chars.length() &&
     self.chars[self.pos] == '-'
   if negative {
@@ -355,11 +373,14 @@ fn Scan::number(
   while self.pos < self.chars.length() &&
         self.chars[self.pos] >= '0' &&
         self.chars[self.pos] <= '9' &&
-        (width == 1 || self.pos - start < width) {
+        (match width {
+          Variable => true
+          Fixed(n) => self.pos - start < n
+        }) {
     self.pos += 1
   }
   let count = self.pos - start
-  if count == 0 || (width > 1 && count != width) {
+  if count == 0 || (width is Fixed(n) && count != n) {
     raise no_match(text)
   }
   if count > 18 {
@@ -411,22 +432,22 @@ fn Scan::offset(
   } else {
     raise no_match(text)
   }
-  let hours = self.number(2, text)
+  let hours = self.number(Fixed(2), text)
   let minutes = match width {
     1 =>
       if self.pos < self.chars.length() &&
         self.chars[self.pos] >= '0' &&
         self.chars[self.pos] <= '9' {
-        self.number(2, text)
+        self.number(Fixed(2), text)
       } else {
         0L
       }
-    2 | 4 => self.number(2, text)
+    2 | 4 => self.number(Fixed(2), text)
     _ => {
       if !self.word(":") {
         raise no_match(text)
       }
-      self.number(2, text)
+      self.number(Fixed(2), text)
     }
   }
   if hours > 23L || minutes > 59L {
@@ -457,10 +478,10 @@ fn parse_with_pattern(
   for token in tokens {
     match token {
       Year(2) => {
-        let v = scan.number(2, text)
+        let v = scan.number(Fixed(2), text)
         year = if v < 70L { 2000L + v } else { 1900L + v }
       }
-      Year(w) => year = scan.number(w, text)
+      Year(w) => year = scan.number(letters_width(w), text)
       Month(3 | 4) => {
         let mut found = false
         for i, name in month_names {
@@ -476,9 +497,9 @@ fn parse_with_pattern(
           raise no_match(text)
         }
       }
-      Month(w) => month = scan.number(w, text)
-      Day(w) => day = scan.number(w, text)
-      Hour24(w) | Hour12(w) => hour = scan.number(w, text)
+      Month(w) => month = scan.number(letters_width(w), text)
+      Day(w) => day = scan.number(letters_width(w), text)
+      Hour24(w) | Hour12(w) => hour = scan.number(letters_width(w), text)
       AmPm =>
         pm = if scan.word("AM") {
           Some(false)
@@ -487,10 +508,10 @@ fn parse_with_pattern(
         } else {
           raise no_match(text)
         }
-      Minute(w) => minute = scan.number(w, text)
-      Second(w) => second = scan.number(w, text)
+      Minute(w) => minute = scan.number(letters_width(w), text)
+      Second(w) => second = scan.number(letters_width(w), text)
       Fraction(k) => {
-        let v = scan.number(k, text)
+        let v = scan.number(Fixed(k), text)
         let mut scale = 1L
         for _ in 0..<(9 - k) {
           scale = scale * 10L
@@ -499,7 +520,7 @@ fn parse_with_pattern(
         fraction = true
       }
       Nano => {
-        nanos = scan.number(1, text)
+        nanos = scan.number(Variable, text)
         fraction = true
       }
       Offset(zulu~, width~) => offset = scan.offset(zulu, width, text)

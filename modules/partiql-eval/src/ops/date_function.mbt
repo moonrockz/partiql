@@ -107,6 +107,27 @@ fn as_timestamp(v : @value.Value) -> @value.Timestamp raise OpFailure {
 }
 
 ///|
+/// The local calendar position of a timestamp seen at `offset` minutes: the
+/// year and month, and the nanoseconds into the month (day and time of
+/// day). No range check: DATE_DIFF gives an integer, not a datetime, so a
+/// value from data outside 0001-9999 still compares.
+fn month_position(
+  ts : @value.Timestamp,
+  shift : Int32,
+) -> (Int64, Int64, @bigint.BigInt) {
+  let total = big64(date_days(ts.date)) * nanos_per_day +
+    day_nanos(ts.time) +
+    minutes_nanos(shift)
+  let (days, rest) = floor_split(total, nanos_per_day)
+  let (year, month, day) = civil_from_days(days.to_int64())
+  (
+    year.to_int64(),
+    month.to_int64(),
+    big64(day.to_int64()) * nanos_per_day + rest,
+  )
+}
+
+///|
 /// Complete calendar months from `a` to `b`, as Java `ChronoUnit.MONTHS`:
 /// `b` moves to `a`'s offset, then a month counts only when `b`'s day and
 /// time of day reach `a`'s.
@@ -114,15 +135,12 @@ fn month_difference(
   a : @value.Timestamp,
   b : @value.Timestamp,
   zone : ZoneOffset,
-) -> Int64 raise OpFailure {
+) -> Int64 {
   let offset_a = a.time.offset.unwrap_or(zone.minutes)
   let offset_b = b.time.offset.unwrap_or(zone.minutes)
-  let moved = timestamp_shift(b, minutes_nanos(offset_a - offset_b))
-  let m = (moved.date.year * 12 + moved.date.month).to_int64() -
-    (a.date.year * 12 + a.date.month).to_int64()
-  let rest_a = big64(a.date.day.to_int64()) * nanos_per_day + day_nanos(a.time)
-  let rest_b = big64(moved.date.day.to_int64()) * nanos_per_day +
-    day_nanos(moved.time)
+  let (year_a, month_a, rest_a) = month_position(a, 0)
+  let (year_b, month_b, rest_b) = month_position(b, offset_a - offset_b)
+  let m = year_b * 12L + month_b - (year_a * 12L + month_a)
   if m > 0L && rest_b.compare(rest_a) < 0 {
     m - 1L
   } else if m < 0L && rest_b.compare(rest_a) > 0 {
