@@ -57,6 +57,8 @@ pub fn in_(@partiql-value.Value, @partiql-value.Value) -> @partiql-value.Value r
 
 pub fn index(@partiql-value.Value, @partiql-value.Value, named~ : Bool) -> @partiql-value.Value raise OpFailure
 
+pub fn interval_qualifier_valid(@ast.IntervalQualifier) -> Bool
+
 pub fn is_type(@partiql-value.Value, @ast.DataType) -> @partiql-value.Value raise OpFailure
 
 pub fn less(@partiql-value.Value, @partiql-value.Value) -> @partiql-value.Value raise OpFailure
@@ -99,7 +101,15 @@ pub fn or_(@partiql-value.Value, @partiql-value.Value) -> @partiql-value.Value r
 
 pub fn overlay(Array[@partiql-value.Value]) -> @partiql-value.Value raise OpFailure
 
+pub fn parse_date(String) -> @partiql-value.Date raise OpFailure
+
 pub fn parse_decimal(String) -> @ion.Decimal?
+
+pub fn parse_interval(String, negative~ : Bool, qualifier~ : @ast.IntervalQualifier) -> @partiql-value.Value raise OpFailure
+
+pub fn parse_time(String, Int?, Bool) -> @partiql-value.Time raise OpFailure
+
+pub fn parse_timestamp(String, Int?, Bool) -> @partiql-value.Timestamp raise OpFailure
 
 pub fn position(Array[@partiql-value.Value]) -> @partiql-value.Value raise OpFailure
 

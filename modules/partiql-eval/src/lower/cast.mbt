@@ -7,9 +7,8 @@ fn check_qualifier(
   q : @ast.IntervalQualifier,
   span : @ast.Span,
 ) -> Unit raise @plan.EvalError {
-  ignore(interval_fields(q)) catch {
-    _ =>
-      raise DataError(message="an interval qualifier that is not valid", span~)
+  if !@ops.interval_qualifier_valid(q) {
+    raise DataError(message="an interval qualifier that is not valid", span~)
   }
   if q.fractional_precision is Some(f) && (f < 0 || f > 9) {
     raise DataError(message="a fractional precision out of range", span~)
