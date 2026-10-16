@@ -107,30 +107,30 @@ fn as_timestamp(v : @value.Value) -> @value.Timestamp raise OpFailure {
 }
 
 ///|
-/// The local calendar position of a timestamp seen at `offset` minutes: the
-/// year and month, and the nanoseconds into the month (day and time of
-/// day). No range check: DATE_DIFF gives an integer, not a datetime, so a
-/// value from data outside 0001-9999 still compares.
-fn month_position(
-  ts : @value.Timestamp,
-  shift : Int32,
-) -> (Int64, Int64, @bigint.BigInt) {
+/// The day number and the nanoseconds into the day of a timestamp seen
+/// `shift` minutes later. No range check: DATE_DIFF gives an integer, not a
+/// datetime, so a value from data outside 0001-9999 still compares.
+fn local_day(ts : @value.Timestamp, shift : Int32) -> (Int64, @bigint.BigInt) {
   let total = big64(date_days(ts.date)) * nanos_per_day +
     day_nanos(ts.time) +
     minutes_nanos(shift)
   let (days, rest) = floor_split(total, nanos_per_day)
-  let (year, month, day) = civil_from_days(days.to_int64())
-  (
-    year.to_int64(),
-    month.to_int64(),
-    big64(day.to_int64()) * nanos_per_day + rest,
-  )
+  (days.to_int64(), rest)
 }
 
 ///|
-/// Complete calendar months from `a` to `b`, as Java `ChronoUnit.MONTHS`:
-/// `b` moves to `a`'s offset, then a month counts only when `b`'s day and
-/// time of day reach `a`'s.
+/// A date as Java packs it to count months: proleptic month * 32 + day.
+fn packed_date(days : Int64) -> Int64 {
+  let (year, month, day) = civil_from_days(days)
+  (year.to_int64() * 12L + (month - 1).to_int64()) * 32L + day.to_int64()
+}
+
+///|
+/// Complete calendar months from `a` to `b`, exactly as Java
+/// `ChronoUnit.MONTHS.between` (Kotlin v1): `b` moves to `a`'s offset; when
+/// `b`'s time of day has not reached `a`'s, its date moves one day toward
+/// `a` (a partial day does not count); then the months between the dates
+/// count only when the day of the month is reached.
 fn month_difference(
   a : @value.Timestamp,
   b : @value.Timestamp,
@@ -138,16 +138,16 @@ fn month_difference(
 ) -> Int64 {
   let offset_a = a.time.offset.unwrap_or(zone.minutes)
   let offset_b = b.time.offset.unwrap_or(zone.minutes)
-  let (year_a, month_a, rest_a) = month_position(a, 0)
-  let (year_b, month_b, rest_b) = month_position(b, offset_a - offset_b)
-  let m = year_b * 12L + month_b - (year_a * 12L + month_a)
-  if m > 0L && rest_b.compare(rest_a) < 0 {
-    m - 1L
-  } else if m < 0L && rest_b.compare(rest_a) > 0 {
-    m + 1L
+  let (days_a, time_a) = local_day(a, 0)
+  let (end_days, time_b) = local_day(b, offset_a - offset_b)
+  let days_b = if end_days > days_a && time_b.compare(time_a) < 0 {
+    end_days - 1L
+  } else if end_days < days_a && time_b.compare(time_a) > 0 {
+    end_days + 1L
   } else {
-    m
+    end_days
   }
+  (packed_date(days_b) - packed_date(days_a)) / 32L
 }
 
 ///|

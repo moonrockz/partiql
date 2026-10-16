@@ -247,3 +247,54 @@ test "DATE_DIFF months: wide data years and the year range" {
     .to_equal(Int(96000))
   })
 }
+
+///|
+test "DATE_DIFF months match Java ChronoUnit at a short month" {
+  // LocalDateTime.until: when the end's time of day is earlier, the end date
+  // moves back one day before the dates are compared (2025: February has 28
+  // days).
+  @expect.expect_all(soft => {
+    let start = at(2025, 1, 31, 10, 0, 0, None)
+    soft
+    .expect(diff_of(Month, start, at(2025, 2, 28, 23, 0, 0, None)))
+    .to_equal(Int(0))
+    soft
+    .expect(diff_of(Month, start, at(2025, 3, 1, 0, 0, 0, None)))
+    .to_equal(Int(0))
+    soft
+    .expect(diff_of(Month, start, at(2025, 3, 1, 9, 0, 0, None)))
+    .to_equal(Int(0))
+    soft
+    .expect(diff_of(Month, start, at(2025, 3, 1, 10, 0, 0, None)))
+    .to_equal(Int(1))
+    // The negative direction moves the end date forward one day.
+    soft
+    .expect(
+      diff_of(
+        Month,
+        at(2025, 3, 31, 9, 0, 0, None),
+        at(2025, 2, 28, 10, 0, 0, None),
+      ),
+    )
+    .to_equal(Int(0))
+    soft
+    .expect(
+      diff_of(
+        Month,
+        at(2025, 3, 31, 9, 0, 0, None),
+        at(2025, 2, 28, 8, 0, 0, None),
+      ),
+    )
+    .to_equal(Int(-1))
+    soft
+    // The end moves to 2025-02-28: 11 months, so 0 years.
+    .expect(
+      diff_of(
+        Year,
+        at(2024, 2, 29, 10, 0, 0, None),
+        at(2025, 3, 1, 9, 0, 0, None),
+      ),
+    )
+    .to_equal(Int(0))
+  })
+}
