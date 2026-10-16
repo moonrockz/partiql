@@ -74,6 +74,11 @@ dependency.
 | [`moonbitlang/x`](https://mooncakes.io/docs/moonbitlang/x) | Official standard library extensions (fs, sys, path, time, codec, encoding, etc.) |
 | [`moonbitlang/async`](https://mooncakes.io/docs/moonbitlang/async) | Official async runtime (tasks, I/O, process, HTTP); native target preferred |
 
+`partiql-eval` uses `moonbitlang/x/time` for the `Clock` type of the session
+clock. The library never reads a wall clock; the CLI's `src/main.mbt` is the
+composition root that builds the real clock (`@env.now()`) and passes it
+through `Io`.
+
 `moonbitlang/core` comes with the toolchain. `moonbitlang/x` and
 `moonbitlang/async` are versioned on mooncakes.io, so keep them on the latest
 release when you bump the toolchain.
@@ -200,7 +205,7 @@ has gaps; the `cli` package fills them:
 | `<command> -h` fails when the command has a required positional, because validation runs before help is seen | `help_request` scans the arguments for `-h`/`--help` (before `--`) and answers help before argparse parses |
 | `render_help` of a command built alone prints `Usage: version`, without `partiql` | `command(name, prefix)` builds help commands with the name `"partiql <name>"` |
 | A parse error holds the full help text | `short_error` keeps the error line and the usage line, and adds a hint |
-| No examples or epilog section | `help_text` appends an `Examples:` block per command |
+| No examples or epilog section | `help_text` appends an `Examples:` block and a `Notes:` block per command |
 
 Rules:
 

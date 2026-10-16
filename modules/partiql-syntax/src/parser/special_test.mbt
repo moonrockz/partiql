@@ -90,3 +90,19 @@ test "TRIM with FROM only; no empty parentheses" {
   ])
   check_failures(["[()]", "()"])
 }
+
+///|
+test "CURRENT_DATE, CURRENT_TIME and CURRENT_TIMESTAMP" {
+  check_shapes([
+    ("CURRENT_DATE", "(current_date)"),
+    ("current_time", "(current_time)"),
+    ("CURRENT_TIME(3)", "(current_time 3)"),
+    ("CURRENT_TIMESTAMP", "(current_timestamp)"),
+    ("CURRENT_TIMESTAMP (0)", "(current_timestamp 0)"),
+    ("CURRENT_DATE - INTERVAL '1' DAY", "(- (current_date) (interval '1' day))"),
+  ])
+  check_failures([
+    "CURRENT_DATE()", "CURRENT_DATE(1)", "CURRENT_TIME()", "CURRENT_TIMESTAMP()",
+    "CURRENT_TIME(x)",
+  ])
+}

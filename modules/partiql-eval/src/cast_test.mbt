@@ -114,7 +114,7 @@ test "CAST uses the session time zone" {
     .to_equal(Date(@value.Date::new(year=2020, month=1, day=1)))
     soft
     .expect(failure_of("CAST(TIME '12:00:00' AS TIMESTAMP)"))
-    .to_equal("unsupported")
+    .to_equal("data")
   })
 }
 

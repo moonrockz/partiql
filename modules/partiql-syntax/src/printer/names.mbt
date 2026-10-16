@@ -160,3 +160,17 @@ fn scale_text(p : Int32?, s : Int32?) -> String {
     (a, _) => precision_text(a)
   }
 }
+
+///|
+/// The source text of a clock function.
+fn current_text(kind : @ast.CurrentKind, precision : Int32?) -> String {
+  let name = match kind {
+    Date => "CURRENT_DATE"
+    Time => "CURRENT_TIME"
+    Timestamp => "CURRENT_TIMESTAMP"
+  }
+  match precision {
+    Some(p) => "\{name}(\{p})"
+    None => name
+  }
+}

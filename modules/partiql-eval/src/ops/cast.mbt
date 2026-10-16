@@ -152,6 +152,7 @@ pub fn cast(
   v : @value.Value,
   target : CastTarget,
   zone~ : ZoneOffset = ZoneOffset::utc(),
+  today~ : () -> @value.Date raise OpFailure = no_clock_today,
 ) -> @value.Value raise OpFailure {
   let x = boxed(v)
   if x is (Null | Missing) {
@@ -168,10 +169,19 @@ pub fn cast(
     Date => to_date(x, zone)
     Time(precision~, zone=with_zone) => to_time(x, precision, with_zone, zone)
     Timestamp(precision~, zone=with_zone) =>
-      to_timestamp(x, precision, with_zone, zone)
+      to_timestamp(x, precision, with_zone, zone, today)
     Interval(q) => to_interval(x, q)
     List | Bag | Tuple => to_collection(x, target)
     Map(key~, key_type~, value~, value_type~) =>
-      to_map(x, key, key_type, value, value_type, zone)
+      to_map(x, key, key_type, value, value_type, zone, today)
   }
+}
+
+///|
+/// The date CAST of TIME to TIMESTAMP takes when the evaluator gives no
+/// clock (spec session-clock §5.6).
+fn no_clock_today() -> @value.Date raise OpFailure {
+  raise DataFailure(
+    "CAST of TIME to TIMESTAMP needs a clock: pass clock~ to evaluate",
+  )
 }

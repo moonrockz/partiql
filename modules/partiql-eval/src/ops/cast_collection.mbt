@@ -25,6 +25,7 @@ fn to_map(
   value : CastTarget,
   value_type : @value.MapType,
   zone : ZoneOffset,
+  today : () -> @value.Date raise OpFailure,
 ) -> @value.Value raise OpFailure {
   let entries : Array[(@value.Value, @value.Value)] = match x {
     Tuple(t) => {
@@ -38,8 +39,8 @@ fn to_map(
   }
   let out : Array[(@value.Value, @value.Value)] = []
   for entry in entries {
-    let k = cast(entry.0, key, zone~)
-    let v = cast(entry.1, value, zone~)
+    let k = cast(entry.0, key, zone~, today~)
+    let v = cast(entry.1, value, zone~, today~)
     if v is Missing {
       continue
     }

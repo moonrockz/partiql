@@ -2,7 +2,7 @@
 pub using @plan {type Mode, type EvalError}
 
 ///|
-pub using @ops {type ZoneOffset}
+pub using @ops {type ZoneOffset, type Clock}
 
 ///|
 /// The global bindings of an evaluation: names to values.
@@ -45,18 +45,20 @@ pub fn Bindings::of_ion(value : @ion_core.IonValue) -> Bindings raise EvalError 
 
 ///|
 /// Evaluates a statement. A form that this version does not evaluate raises
-/// `Unsupported`. `zone` is the session time zone of CAST (default UTC).
+/// `Unsupported`. `zone` is the session time zone of CAST (default UTC); `clock` gives the
+/// statement time of the clock functions (default none: they fail).
 pub fn evaluate(
   statement : @syntax.Statement,
   env~ : Bindings,
   mode~ : Mode = Permissive,
   zone~ : ZoneOffset = ZoneOffset::utc(),
+  clock? : Clock,
 ) -> @value.Value raise EvalError {
   match statement {
     Query(q) =>
       @interp.run(
         @lower.lower_query(q),
-        @interp.Ctx::new(env.entries, mode~, zone~),
+        @interp.Ctx::new(env.entries, mode~, zone~, clock?),
       )
     Error(span) =>
       raise Unsupported(message="a statement that could not be read", span~)
@@ -70,11 +72,12 @@ pub fn evaluate_text(
   env~ : Bindings,
   mode~ : Mode = Permissive,
   zone~ : ZoneOffset = ZoneOffset::utc(),
+  clock? : Clock,
 ) -> @value.Value raise EvalError {
   let statement = try @syntax.parse(source) catch {
     err => raise Syntax(err)
   } noraise {
     s => s
   }
-  evaluate(statement, env~, mode~, zone~)
+  evaluate(statement, env~, mode~, zone~, clock?)
 }

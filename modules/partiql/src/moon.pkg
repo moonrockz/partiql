@@ -4,6 +4,7 @@ import {
   "moonrockz/partiql/cli",
   "moonbitlang/core/env",
   "moonbitlang/x/sys",
+  "moonbitlang/x/time",
   "moonbitlang/x/fs",
   "moonbitlang/async",
   "moonbitlang/async/stdio",

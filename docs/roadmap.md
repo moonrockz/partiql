@@ -143,11 +143,14 @@ Its parts, in this order:
   SQL month-end overflow and the 0001-9999 year range for datetime
   arithmetic. The `eval` conformance check passes 9601 of 9960 assertions;
   240 are not applicable (graph MATCH); 119 fail (see `conformance.md`).
-- **Session clock** (bead `partiql-d9i`): CURRENT_DATE, CURRENT_TIME,
-  CURRENT_TIMESTAMP and UTCNOW, then a static error for unknown function
-  names (bead `partiql-5se.5.4`).
+- **Session clock (done)** (bead `partiql-d9i`): CURRENT_DATE, CURRENT_TIME,
+  CURRENT_TIMESTAMP and UTCNOW with an injected clock (the CLI is the
+  composition root), and CAST of TIME to TIMESTAMP.
+- **Unknown function names** (bead `partiql-5se.5.4`): a static error instead
+  of `Unsupported`.
 
-M4e, M4c, M4d1, M4d2 and M4d3 are done. The next part is the session clock.
+M4e, M4c, M4d1, M4d2, M4d3 and the session clock are done. The next part is
+partiql-5se.5.4.
 
 Graph MATCH evaluation and `?` parameters come after M4. A REPL is not part
 of M4.

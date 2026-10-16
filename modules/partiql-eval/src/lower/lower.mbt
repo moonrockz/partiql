@@ -369,6 +369,14 @@ fn lower_at(
     Values(rows) => BagOf(lower_all(rows, scope, depth), span)
     GraphMatch(_) => unsupported("graph MATCH (later)", span)
     Parameter => unsupported("a parameter (later)", span)
+    CurrentDatetime(kind, precision~) => {
+      let f : @plan.Function = match kind {
+        Date => CurrentDate
+        Time => CurrentTime(clock_precision(precision, 0, span))
+        Timestamp => CurrentTimestamp(clock_precision(precision, 6, span))
+      }
+      Call(f, [], span)
+    }
     Error => raise DataError(message="a broken expression", span~)
     Path(base, steps) =>
       match key_prefix(base, steps, span, scope) {

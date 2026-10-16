@@ -116,6 +116,7 @@ fn ast_operands(e : @ast.Expr) -> Array[@ast.Expr] {
     Lit(_)
     | VarRef(_, ..)
     | Parameter
+    | CurrentDatetime(_, ..)
     | Error
     | Query(_)
     | GraphMatch(_)
@@ -248,6 +249,7 @@ fn shell(e : @ast.Expr) -> @ast.Expr {
     Lit(_)
     | VarRef(_, ..)
     | Parameter
+    | CurrentDatetime(_, ..)
     | Error
     | Query(_)
     | GraphMatch(_)

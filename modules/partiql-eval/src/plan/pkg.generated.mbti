@@ -101,6 +101,10 @@ pub(all) enum Function {
   Overlaps
   ToString
   ToTimestamp
+  CurrentDate
+  CurrentTime(Int)
+  CurrentTimestamp(Int)
+  UtcNow
 } derive(Eq, @debug.Debug)
 pub fn Function::name(Self) -> String
 

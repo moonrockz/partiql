@@ -67,3 +67,17 @@ test "README datetime example" {
   )
   @expect.expect(value).to_equal(@value.Value::String("March 16, 2024"))
 }
+
+///|
+/// Mirrors the clock example of README.mbt.md. Keep the two in step.
+test "README clock example" {
+  let clock = @eval.Clock::fixed(@time.date_time(2026, 10, 16, hour=9))
+  let value = @eval.evaluate_text(
+    "CURRENT_DATE",
+    env=@eval.Bindings::empty(),
+    clock~,
+  )
+  @expect.expect(value).to_equal(
+    @value.Value::Date(@value.Date::new(year=2026, month=10, day=16)),
+  )
+}

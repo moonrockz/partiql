@@ -12,6 +12,7 @@ test "query --data t=F -e t prints back the value of F" {
         write_file: (_, _) => (),
         read_stdin: () => "",
         color_default: false,
+        clock: None,
       }
       let outcome = @cli.run(["query", "--data", "t=v.ion", "-e", "t"], io~)
       let back = @text.read_ion_datagram(outcome.stdout) catch {

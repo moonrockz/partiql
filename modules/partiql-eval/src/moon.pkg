@@ -19,4 +19,5 @@ import {
   "moonbitlang/core/quickcheck",
   "moonbitlang/core/quickcheck/splitmix",
   "moonbitlang/core/debug",
+  "moonbitlang/x/time",
 } for "test"

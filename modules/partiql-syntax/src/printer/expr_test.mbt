@@ -155,3 +155,14 @@ test "error nodes print as a comment" {
     .to_equal("/* error */")
   })
 }
+
+///|
+test "clock functions print" {
+  check_prints([
+    ("current_date", "CURRENT_DATE"),
+    ("CURRENT_TIME", "CURRENT_TIME"),
+    ("current_time ( 3 )", "CURRENT_TIME(3)"),
+    ("CURRENT_TIMESTAMP(6)", "CURRENT_TIMESTAMP(6)"),
+    ("CURRENT_DATE - INTERVAL '1' DAY", "CURRENT_DATE - INTERVAL '1' DAY"),
+  ])
+}

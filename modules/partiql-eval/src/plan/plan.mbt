@@ -347,6 +347,11 @@ pub(all) enum Function {
   Overlaps
   ToString
   ToTimestamp
+  /// The clock functions (spec session-clock §4); the precision is resolved.
+  CurrentDate
+  CurrentTime(Int32)
+  CurrentTimestamp(Int32)
+  UtcNow
 } derive(Debug, Eq)
 
 ///|
@@ -380,5 +385,9 @@ pub fn Function::name(self : Function) -> String {
     Overlaps => "OVERLAPS"
     ToString => "TO_STRING"
     ToTimestamp => "TO_TIMESTAMP"
+    CurrentDate => "CURRENT_DATE"
+    CurrentTime(_) => "CURRENT_TIME"
+    CurrentTimestamp(_) => "CURRENT_TIMESTAMP"
+    UtcNow => "UTCNOW"
   }
 }

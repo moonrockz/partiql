@@ -37,6 +37,7 @@ fn builtin(id : @ast.Identifier) -> (@plan.Function, Arity)? {
     "LOWER" => Some((Lower, Exactly(1)))
     "TO_STRING" => Some((ToString, Exactly(2)))
     "TO_TIMESTAMP" => Some((ToTimestamp, Between(1, 2)))
+    "UTCNOW" => Some((UtcNow, Exactly(0)))
     _ => None
   }
 }
@@ -108,4 +109,22 @@ fn check_date_part(
   if f is (TimezoneHour | TimezoneMinute) {
     raise DataError(message="\{name} does not take a time zone field", span~)
   }
+}
+
+///|
+/// The precision of CURRENT_TIME or CURRENT_TIMESTAMP: the default when it is
+/// not given (TIME 0, TIMESTAMP 6, SQL-92 6.1); 0 to 9.
+fn clock_precision(
+  p : Int32?,
+  default : Int32,
+  span : @ast.Span,
+) -> Int32 raise @plan.EvalError {
+  let n = p.unwrap_or(default)
+  if n < 0 || n > 9 {
+    raise DataError(
+      message="a fractional seconds precision out of range",
+      span~,
+    )
+  }
+  n
 }

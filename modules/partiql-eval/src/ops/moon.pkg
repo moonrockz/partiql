@@ -6,6 +6,7 @@ import {
   "moonrockz/partiql-value" @value,
   "moonrockz/ion/ion" @ion_core,
   "moonbitlang/core/bigint",
+  "moonbitlang/x/time",
   "moonbitlang/core/string",
   "moonbitlang/core/double",
   "moonbitlang/core/debug",

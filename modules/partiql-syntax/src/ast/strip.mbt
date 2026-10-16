@@ -61,7 +61,7 @@ fn strip_step(s : PathStep, fold : Bool) -> PathStep {
 ///|
 fn strip_expr(e : Expr, fold : Bool) -> Expr {
   let kind : ExprKind = match e.kind {
-    Lit(_) | Parameter | Error => e.kind
+    Lit(_) | Parameter | Error | CurrentDatetime(_, ..) => e.kind
     VarRef(i, qualified~) => VarRef(strip_ident(i, fold), qualified~)
     Path(b, steps) =>
       Path(strip_expr(b, fold), steps.map(x => strip_step(x, fold)))
