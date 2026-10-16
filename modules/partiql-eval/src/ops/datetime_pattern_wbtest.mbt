@@ -165,7 +165,7 @@ test "TO_TIMESTAMP parses with a pattern" {
     .expect(parse_ts("2020 DECEMBER 31 11 PM", "y MMMM d h a"))
     .to_equal(stamp_of(2020, 12, 31, 23, 0, 0, 0, 0, 0))
     soft
-    .expect(parse_ts("2020-01-01 00:00:00 z", "y-M-d H:m:s X"))
+    .expect(parse_ts("2020-01-01 00:00:00 Z", "y-M-d H:m:s X"))
     .to_equal(stamp_of(2020, 1, 1, 0, 0, 0, 0, 0, 0))
     soft
     .expect(parse_ts("2020年", "y'年'"))
@@ -256,6 +256,44 @@ test "TO_TIMESTAMP: S x n reads exactly n digits" {
         )
       }),
     )
+    .to_equal("data")
+  })
+}
+
+///|
+test "TO_TIMESTAMP: only month names and AM/PM ignore case" {
+  // KDOC: "Month names and AM/PM specifiers are case-insensitive."
+  @expect.expect_all(soft => {
+    soft
+    .expect(failure(() => parse_ts("2020-01-01t00", "yyyy-MM-dd'T'HH")))
+    .to_equal("data")
+    soft
+    .expect(parse_ts("2020-01-01T00", "yyyy-MM-dd'T'HH"))
+    .to_equal(stamp_of(2020, 1, 1, 0, 0, 0, 0, 0, 0))
+    soft
+    .expect(failure(() => parse_ts("2020 1 1 0 z", "y M d H X")))
+    .to_equal("data")
+  })
+}
+
+///|
+test "TO_TIMESTAMP: XXXX and XXXXX accept zero offset seconds" {
+  // KDOC: '+08:00:00' parses; '+08:00:01' is not on a minute boundary.
+  @expect.expect_all(soft => {
+    soft
+    .expect(parse_ts("2020 1 1 0 +08:00:00", "y M d H XXXXX"))
+    .to_equal(stamp_of(2020, 1, 1, 0, 0, 0, 0, 0, 480))
+    soft
+    .expect(parse_ts("2020 1 1 0 +080000", "y M d H XXXX"))
+    .to_equal(stamp_of(2020, 1, 1, 0, 0, 0, 0, 0, 480))
+    soft
+    .expect(parse_ts("2020 1 1 0 -05:30:00", "y M d H xxxxx"))
+    .to_equal(stamp_of(2020, 1, 1, 0, 0, 0, 0, 0, -330))
+    soft
+    .expect(failure(() => parse_ts("2020 1 1 0 +08:00:01", "y M d H XXXXX")))
+    .to_equal("data")
+    soft
+    .expect(failure(() => parse_ts("2020 1 1 0 +08:00:00", "y M d H XXX")))
     .to_equal("data")
   })
 }

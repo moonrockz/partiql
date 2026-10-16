@@ -398,21 +398,40 @@ fn Scan::number(
 }
 
 ///|
-/// Whether the text at the cursor starts with `word`, ignoring ASCII case;
-/// consumes it when it does.
-fn Scan::word(self : Scan, word : String) -> Bool {
+/// How text compares: KDOC makes only month names and AM/PM case-insensitive;
+/// quoted text, separators and the offset `Z` match exactly.
+priv enum Letters {
+  Exact
+  AnyCase
+}
+
+///|
+/// Whether the text at the cursor starts with `word`; consumes it when it
+/// does.
+fn Scan::accept(self : Scan, word : String, letters : Letters) -> Bool {
   let w = word.to_array()
   if self.pos + w.length() > self.chars.length() {
     return false
   }
   for i, c in w {
     let t = self.chars[self.pos + i]
-    if t != c && t.to_ascii_lowercase() != c.to_ascii_lowercase() {
+    let same = match letters {
+      Exact => t == c
+      AnyCase => t == c || t.to_ascii_lowercase() == c.to_ascii_lowercase()
+    }
+    if !same {
       return false
     }
   }
   self.pos += w.length()
   true
+}
+
+///|
+fn Scan::next_is_digit(self : Scan) -> Bool {
+  self.pos < self.chars.length() &&
+  self.chars[self.pos] >= '0' &&
+  self.chars[self.pos] <= '9'
 }
 
 ///|
@@ -422,33 +441,36 @@ fn Scan::offset(
   width : Int32,
   text : String,
 ) -> Int32 raise OpFailure {
-  if zulu && self.word("Z") {
+  if zulu && self.accept("Z", Exact) {
     return 0
   }
-  let sign = if self.word("+") {
+  let sign = if self.accept("+", Exact) {
     1
-  } else if self.word("-") {
+  } else if self.accept("-", Exact) {
     -1
   } else {
     raise no_match(text)
   }
   let hours = self.number(Fixed(2), text)
   let minutes = match width {
-    1 =>
-      if self.pos < self.chars.length() &&
-        self.chars[self.pos] >= '0' &&
-        self.chars[self.pos] <= '9' {
-        self.number(Fixed(2), text)
-      } else {
-        0L
-      }
+    1 => if self.next_is_digit() { self.number(Fixed(2), text) } else { 0L }
     2 | 4 => self.number(Fixed(2), text)
     _ => {
-      if !self.word(":") {
+      if !self.accept(":", Exact) {
         raise no_match(text)
       }
       self.number(Fixed(2), text)
     }
+  }
+  // XXXX and XXXXX (and x) may carry seconds, which must be 0 (KDOC: an
+  // offset must land on a minute boundary).
+  let seconds = match width {
+    4 if self.next_is_digit() => self.number(Fixed(2), text)
+    5 if self.accept(":", Exact) => self.number(Fixed(2), text)
+    _ => 0L
+  }
+  if seconds != 0L {
+    raise DataFailure("'\{text}' has an offset that is not whole minutes")
   }
   if hours > 23L || minutes > 59L {
     raise DataFailure("'\{text}' has an offset out of range")
@@ -486,8 +508,8 @@ fn parse_with_pattern(
         let mut found = false
         for i, name in month_names {
           let short = name.view(end_offset=3).to_owned()
-          if (token is Month(4) && scan.word(name)) ||
-            (token is Month(3) && scan.word(short)) {
+          if (token is Month(4) && scan.accept(name, AnyCase)) ||
+            (token is Month(3) && scan.accept(short, AnyCase)) {
             month = (i + 1).to_int64()
             found = true
             break
@@ -501,9 +523,9 @@ fn parse_with_pattern(
       Day(w) => day = scan.number(letters_width(w), text)
       Hour24(w) | Hour12(w) => hour = scan.number(letters_width(w), text)
       AmPm =>
-        pm = if scan.word("AM") {
+        pm = if scan.accept("AM", AnyCase) {
           Some(false)
-        } else if scan.word("PM") {
+        } else if scan.accept("PM", AnyCase) {
           Some(true)
         } else {
           raise no_match(text)
@@ -524,7 +546,7 @@ fn parse_with_pattern(
         fraction = true
       }
       Offset(zulu~, width~) => offset = scan.offset(zulu, width, text)
-      Literal(s) => if !scan.word(s) { raise no_match(text) }
+      Literal(s) => if !scan.accept(s, Exact) { raise no_match(text) }
     }
   }
   if scan.pos != scan.chars.length() {
