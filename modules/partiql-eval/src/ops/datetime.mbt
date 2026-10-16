@@ -62,6 +62,19 @@ fn month_length(year : Int32, month : Int32) -> Int32 {
 }
 
 ///|
+/// A date that a datetime operation may give: SQL and Ion allow years
+/// 0001-9999 (spec M4d3 §5). Values read from data keep the value model's
+/// range; results are checked.
+fn checked_date(d : @value.Date) -> @value.Date raise OpFailure {
+  if d.year < 1 || d.year > 9999 {
+    raise DataFailure(
+      "datetime field overflow: year \{d.year} is outside 0001-9999",
+    )
+  }
+  d
+}
+
+///|
 /// Days beyond which a date is out of range anyway; it keeps the arithmetic
 /// inside Int64.
 let max_day_number : Int64 = 400000000000L
@@ -72,9 +85,10 @@ fn date_of_days(days : Int64) -> @value.Date raise OpFailure {
     raise DataFailure("a date out of range")
   }
   let (year, month, day) = civil_from_days(days)
-  @value.Date::new(year~, month~, day~) catch {
+  let d = @value.Date::new(year~, month~, day~) catch {
     _ => raise DataFailure("a date out of range")
   }
+  checked_date(d)
 }
 
 ///|
@@ -83,7 +97,8 @@ fn date_days(d : @value.Date) -> Int64 {
 }
 
 ///|
-/// The date `months` later; the day is cut back to the end of a shorter month.
+/// The date `months` later. A day that the target month lacks is a datetime
+/// field overflow (SQL-92 6.14 GR 4; spec M4d3 §5).
 fn date_add_months(
   d : @value.Date,
   months : Int64,
@@ -98,12 +113,19 @@ fn date_add_months(
     years = years - 1L
     rest = rest + 12L
   }
-  if years.abs() > 2000000000L {
-    raise DataFailure("a date out of range")
+  if years < 1L || years > 9999L {
+    raise DataFailure(
+      "datetime field overflow: year \{years} is outside 0001-9999",
+    )
   }
   let year = years.to_int()
   let month = rest.to_int() + 1
-  @value.Date::new(year~, month~, day=d.day.min(month_length(year, month))) catch {
+  if d.day > month_length(year, month) {
+    raise DataFailure(
+      "datetime field overflow: \{year}-\{month} has no day \{d.day}",
+    )
+  }
+  @value.Date::new(year~, month~, day=d.day) catch {
     _ => raise DataFailure("a date out of range")
   }
 }

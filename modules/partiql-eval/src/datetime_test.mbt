@@ -164,9 +164,16 @@ test "date and timestamp plus and minus an interval" {
     soft
     .expect(ev("DATE '2025-01-01' + INTERVAL '1-1' YEAR TO MONTH"))
     .to_equal(date(2026, 2, 1))
+    // SQL 6.14 "datetime field overflow": February has no 31st.
     soft
-    .expect(ev("INTERVAL '1' MONTH + DATE '2025-01-31'"))
+    .expect(failure_of("INTERVAL '1' MONTH + DATE '2025-01-31'"))
+    .to_equal("data")
+    soft
+    .expect(ev("INTERVAL '1' MONTH + DATE '2025-01-28'"))
     .to_equal(date(2025, 2, 28))
+    // A literal outside 0001-9999 is a static error.
+    soft.expect(failure_of("DATE '10000-01-01'", mode=Strict)).to_equal("data")
+    soft.expect(failure_of("DATE '10000-01-01'")).to_equal("data")
     soft
     .expect(ev("DATE '2025-01-01' - INTERVAL '1' DAY"))
     .to_equal(date(2024, 12, 31))

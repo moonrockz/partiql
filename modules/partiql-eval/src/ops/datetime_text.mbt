@@ -106,7 +106,11 @@ fn date_part(c : Cursor) -> @value.Date raise Error {
   let month = c.fixed(2)
   c.expect('-')
   let day = c.fixed(2)
-  @value.Date::new(year=if negative { -year } else { year }, month~, day~)
+  let signed_year = if negative { -year } else { year }
+  if signed_year < 1 || signed_year > 9999 {
+    raise Reason("a year outside 0001-9999")
+  }
+  @value.Date::new(year=signed_year, month~, day~)
 }
 
 ///|

@@ -171,8 +171,9 @@ fn to_date(
   session : ZoneOffset,
 ) -> @value.Value raise OpFailure {
   match x {
-    Date(_) => x
-    Timestamp(ts) => Date(zoned_timestamp(ts, false, session).date)
+    Date(d) => Date(checked_date(d))
+    Timestamp(ts) =>
+      Date(checked_date(zoned_timestamp(ts, false, session).date))
     String(s) => {
       let text = trimmed(s)
       match keyword_literal(text) {
@@ -245,6 +246,7 @@ fn to_timestamp(
         "CAST of \{kind_name(x)} to \{target_name(Timestamp(precision~, zone=with_zone))}",
       )
   }
+  ignore(checked_date(ts.date))
   Timestamp(
     timestamp_precision(zoned_timestamp(ts, with_zone, session), precision),
   )
