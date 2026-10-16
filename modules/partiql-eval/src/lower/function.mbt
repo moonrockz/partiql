@@ -4,6 +4,7 @@
 /// How many arguments a built-in takes.
 priv enum Arity {
   Exactly(Int32)
+  Between(Int32, Int32)
   AnyCount
 }
 
@@ -34,6 +35,8 @@ fn builtin(id : @ast.Identifier) -> (@plan.Function, Arity)? {
     "TEXT_REPLACE" => Some((TextReplace, Exactly(3)))
     "UPPER" => Some((Upper, Exactly(1)))
     "LOWER" => Some((Lower, Exactly(1)))
+    "TO_STRING" => Some((ToString, Exactly(2)))
+    "TO_TIMESTAMP" => Some((ToTimestamp, Between(1, 2)))
     _ => None
   }
 }
@@ -65,6 +68,13 @@ fn scalar_call(
   if arity is Exactly(n) && args.length() != n {
     raise DataError(message="\{f.name()} takes \{arguments_text(n)}", span~)
   }
+  if arity is Between(low, high) &&
+    (args.length() < low || args.length() > high) {
+    raise DataError(
+      message="\{f.name()} takes \{low} to \{high} arguments",
+      span~,
+    )
+  }
   // A collection argument is not coerced from a subquery to a scalar
   // (spec M4d1 §3.4; partiql-tests size.ion:242, basic.ion:61).
   let lower_arg = match f {
@@ -85,4 +95,17 @@ fn special_call(
   span : @ast.Span,
 ) -> @plan.Expr raise @plan.EvalError {
   Call(f, args.map(x => lower_at(x, scope, depth)), span)
+}
+
+///|
+/// DATE_ADD and DATE_DIFF take the fields YEAR to SECOND; a time zone field
+/// is a static error (partiql-tests date_diff.ion:2009, :2020).
+fn check_date_part(
+  f : @ast.DatetimeField,
+  name : String,
+  span : @ast.Span,
+) -> Unit raise @plan.EvalError {
+  if f is (TimezoneHour | TimezoneMinute) {
+    raise DataError(message="\{name} does not take a time zone field", span~)
+  }
 }

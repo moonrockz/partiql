@@ -1,0 +1,169 @@
+///|
+test "EXTRACT evaluates" {
+  @expect.expect_all(soft => {
+    soft.expect(ev("EXTRACT(YEAR FROM DATE '2024-02-29')")).to_equal(Int(2024))
+    soft
+    .expect(
+      ev(
+        "EXTRACT(TIMEZONE_MINUTE FROM TIME WITH TIME ZONE '01:23:45.678-06:30')",
+      ),
+    )
+    .to_equal(Int(-30))
+    soft
+    .expect(ev("EXTRACT(SECOND FROM TIME '01:23:45.678')"))
+    .to_equal(dec("45.678"))
+    soft.expect(ev("EXTRACT(HOUR FROM DATE '2024-02-29')")).to_equal(Missing)
+    soft
+    .expect(failure_of("EXTRACT(HOUR FROM DATE '2024-02-29')", mode=Strict))
+    .to_equal("type")
+    soft.expect(ev("EXTRACT(YEAR FROM NULL)")).to_equal(Null)
+    soft.expect(ev("EXTRACT(YEAR FROM MISSING)")).to_equal(Missing)
+  })
+}
+
+///|
+test "datetime function calls: static checks" {
+  @expect.expect_all(soft => {
+    for
+      source in [
+        "DATE_ADD(TIMEZONE_HOUR, 1, TIMESTAMP '2020-01-01 00:00:00+00:00')", "DATE_DIFF(TIMEZONE_MINUTE, DATE '2020-01-01', DATE '2020-01-02')",
+        "TO_STRING(DATE '2020-01-01')", "TO_STRING(DATE '2020-01-01', 'y', 'M')",
+        "TO_TIMESTAMP()", "TO_TIMESTAMP('a', 'b', 'c')", "TO_STRING(DISTINCT DATE '2020-01-01', 'y')",
+      ] {
+      soft.expect((source, failure_of(source))).to_equal((source, "data"))
+      soft
+      .expect((source, failure_of(source, mode=Strict)))
+      .to_equal((source, "data"))
+    }
+  })
+}
+
+///|
+test "DATE_ADD evaluates" {
+  @expect.expect_all(soft => {
+    // An Ion literal evaluates to the boxed Ion value, so compare with `=`.
+    soft
+    .expect(ev("DATE_ADD(month, 1, `2010T`) = `2010-02T`"))
+    .to_equal(Bool(true))
+    soft
+    .expect(ev("DATE_ADD(day, -1, DATE '2024-03-01')"))
+    .to_equal(ev("DATE '2024-02-29'"))
+    soft
+    .expect(failure_of("DATE_ADD(month, 1, DATE '2025-01-31')", mode=Strict))
+    .to_equal("data")
+    soft.expect(ev("DATE_ADD(year, NULL, MISSING)")).to_equal(Missing)
+  })
+}
+
+///|
+test "DATE_DIFF evaluates" {
+  @expect.expect_all(soft => {
+    soft
+    .expect(
+      ev("DATE_DIFF(hour, DATE '2025-01-15', TIMESTAMP '2025-01-14 12:30:45')"),
+    )
+    .to_equal(Int(-11))
+    soft
+    .expect(
+      ev("DATE_DIFF(day, `2017-01-02T01:00+10:00`, `2017-01-02T01:00+00:00`)"),
+    )
+    .to_equal(Int(0))
+    soft
+    .expect(
+      ev(
+        "DATE_DIFF(hour, TIME '08:15:45', TIME WITH TIME ZONE '08:15:45+02:00')",
+      ),
+    )
+    .to_equal(Int(-2))
+    soft
+    .expect(
+      failure_of(
+        "DATE_DIFF(hour, TIME '08:15:45', DATE '2020-01-01')",
+        mode=Strict,
+      ),
+    )
+    .to_equal("type")
+  })
+}
+
+///|
+test "OVERLAPS evaluates" {
+  @expect.expect_all(soft => {
+    soft
+    .expect(
+      ev(
+        "[DATE '2023-01-01', DATE '2023-01-31'] OVERLAPS [DATE '2023-01-31', DATE '2023-02-28']",
+      ),
+    )
+    .to_equal(Bool(false))
+    soft
+    .expect(
+      ev(
+        "(DATE '2023-01-01', INTERVAL '10' DAY) OVERLAPS (DATE '2023-01-05', DATE '2023-01-06')",
+      ),
+    )
+    .to_equal(Bool(true))
+    soft.expect(ev("NULL OVERLAPS MISSING")).to_equal(Missing)
+    soft
+    .expect(
+      failure_of(
+        "[1, 2] OVERLAPS [DATE '2023-01-01', DATE '2023-01-02']",
+        mode=Strict,
+      ),
+    )
+    .to_equal("type")
+  })
+}
+
+///|
+test "OVERLAPS uses the session zone for values without an offset" {
+  guard @eval.ZoneOffset::new(-300) is Some(minus_five) else { fail("offset") }
+  // 10:00-11:00 local at -05:00 is 15:00-16:00 UTC.
+  let source = "[TIMESTAMP '2020-01-01 10:00:00', TIMESTAMP '2020-01-01 11:00:00'] OVERLAPS [TIMESTAMP '2020-01-01 15:30:00+00:00', TIMESTAMP '2020-01-01 15:45:00+00:00']"
+  @expect.expect_all(soft => {
+    soft.expect(ev(source)).to_equal(Bool(false))
+    soft
+    .expect(
+      @eval.evaluate_text(source, env=@eval.Bindings::empty(), zone=minus_five),
+    )
+    .to_equal(Bool(true))
+  })
+}
+
+///|
+test "TO_STRING evaluates" {
+  @expect.expect_all(soft => {
+    soft
+    .expect(
+      ev("TO_STRING(`2017-01-02T03:04:05.006+07:08`, 'y-M-d H:m:s.SSS XXX')"),
+    )
+    .to_equal(String("2017-1-2 3:4:5.006 +07:08"))
+    soft.expect(ev("TO_STRING(`0986T`, 'X')")).to_equal(String("Z"))
+    soft
+    .expect(failure_of("TO_STRING(`2017T`, 'not_a_pattern')", mode=Permissive))
+    .to_equal("data")
+  })
+}
+
+///|
+test "TO_TIMESTAMP evaluates" {
+  @expect.expect_all(soft => {
+    soft
+    .expect(
+      ev(
+        "TO_TIMESTAMP('1 1 1 0 0 0 10', 'y M d H m s SS') = `0001-01-01T00:00:00.1-00:00`",
+      ),
+    )
+    .to_equal(Bool(true))
+    soft
+    .expect(failure_of("TO_TIMESTAMP('2020', 'G')", mode=Permissive))
+    .to_equal("data")
+    soft
+    .expect(
+      ev(
+        "TO_TIMESTAMP(TO_STRING(TIMESTAMP '2020-02-29 23:59:58.5+05:30', 'yyyy-MM-dd HH:mm:ss.S XXX'), 'yyyy-MM-dd HH:mm:ss.S XXX')",
+      ),
+    )
+    .to_equal(ev("TIMESTAMP '2020-02-29 23:59:58.5+05:30'"))
+  })
+}

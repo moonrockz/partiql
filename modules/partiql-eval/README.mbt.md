@@ -66,6 +66,17 @@ let value = @eval.evaluate_text(
 guard value == @value.Value::Decimal(@ion.Decimal::parse("3.14"))
 ```
 
+The datetime functions follow SQL where it defines them (EXTRACT, OVERLAPS)
+and the PartiQL format patterns for TO_STRING and TO_TIMESTAMP:
+
+```moonbit
+let value = @eval.evaluate_text(
+  "TO_STRING(DATE_ADD(day, 30, DATE '2024-02-15'), 'MMMM d, yyyy')",
+  env=@eval.Bindings::empty(),
+)
+guard value == @value.Value::String("March 16, 2024")
+```
+
 Pass `mode=@eval.Mode::Strict` to make a type error raise instead of giving
 `MISSING`.
 
@@ -86,7 +97,8 @@ evaluates the built-in functions `CHAR_LENGTH`, `OCTET_LENGTH`, `BIT_LENGTH`,
 `ABS`, `MOD`, `SIZE`, `CARDINALITY`, `EXISTS`, `TUPLEUNION` and the `MAP_`
 functions. It evaluates `CAST` to every type except `SEXP` and `ARRAY<T>`;
 `evaluate` takes the session time zone of `CAST` as `zone~` (default UTC).
-The datetime functions follow in a later release. A form that is not
+It evaluates the datetime functions `EXTRACT`, `DATE_ADD`, `DATE_DIFF`,
+`OVERLAPS`, `TO_STRING` and `TO_TIMESTAMP`. A form that is not
 supported yet raises `EvalError::Unsupported`, never a wrong answer.
 
 ## Errors

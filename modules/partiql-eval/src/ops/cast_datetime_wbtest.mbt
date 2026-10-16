@@ -156,13 +156,13 @@ test "cast to TIMESTAMP: dates, carry and zones" {
       day_of(9999, 12, 31),
       tm(23, 59, 59, 999900000, 4, None),
     )
+    // The carry leaves 0001-9999 (spec M4d3 §5).
+    let carried = @value.Value::Timestamp(last)
     soft
-    .expect(cast(Timestamp(last), Timestamp(precision=Some(3), zone=false)))
-    .to_equal(
-      Timestamp(
-        @value.Timestamp::new(day_of(10000, 1, 1), tm(0, 0, 0, 0, 3, None)),
-      ),
+    .expect(
+      failure(() => cast(carried, Timestamp(precision=Some(3), zone=false))),
     )
+    .to_equal("data")
     let early = @value.Timestamp::new(
       day_of(2020, 1, 1),
       tm(1, 0, 0, 0, 0, Some(120)),

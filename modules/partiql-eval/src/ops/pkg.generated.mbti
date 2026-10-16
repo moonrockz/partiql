@@ -39,6 +39,12 @@ pub fn concat(@partiql-value.Value, @partiql-value.Value) -> @partiql-value.Valu
 
 pub fn count_values(Iter[@partiql-value.Value], distinct~ : Bool) -> @partiql-value.Value raise OpFailure
 
+pub fn date_add(@ast.DatetimeField, Array[@partiql-value.Value]) -> @partiql-value.Value raise OpFailure
+
+pub fn date_diff(@ast.DatetimeField, Array[@partiql-value.Value], zone~ : ZoneOffset) -> @partiql-value.Value raise OpFailure
+
+pub fn datetime_to_string(Array[@partiql-value.Value]) -> @partiql-value.Value raise OpFailure
+
 pub fn div(@partiql-value.Value, @partiql-value.Value) -> @partiql-value.Value raise OpFailure
 
 pub fn equal(@partiql-value.Value, @partiql-value.Value) -> @partiql-value.Value
@@ -46,6 +52,8 @@ pub fn equal(@partiql-value.Value, @partiql-value.Value) -> @partiql-value.Value
 pub fn every_values(Iter[@partiql-value.Value], distinct~ : Bool) -> @partiql-value.Value raise OpFailure
 
 pub fn exists(Array[@partiql-value.Value]) -> @partiql-value.Value raise OpFailure
+
+pub fn extract(@ast.DatetimeField, Array[@partiql-value.Value]) -> @partiql-value.Value raise OpFailure
 
 pub fn field(@partiql-value.Value, String, delimited~ : Bool) -> @partiql-value.Value raise OpFailure
 
@@ -99,6 +107,8 @@ pub fn octet_length(Array[@partiql-value.Value]) -> @partiql-value.Value raise O
 
 pub fn or_(@partiql-value.Value, @partiql-value.Value) -> @partiql-value.Value raise OpFailure
 
+pub fn overlaps(Array[@partiql-value.Value], zone~ : ZoneOffset) -> @partiql-value.Value raise OpFailure
+
 pub fn overlay(Array[@partiql-value.Value]) -> @partiql-value.Value raise OpFailure
 
 pub fn parse_date(String) -> @partiql-value.Date raise OpFailure
@@ -130,6 +140,8 @@ pub fn substring(Array[@partiql-value.Value]) -> @partiql-value.Value raise OpFa
 pub fn sum_values(Iter[@partiql-value.Value], distinct~ : Bool) -> @partiql-value.Value raise OpFailure
 
 pub fn text_replace(Array[@partiql-value.Value]) -> @partiql-value.Value raise OpFailure
+
+pub fn text_to_timestamp(Array[@partiql-value.Value]) -> @partiql-value.Value raise OpFailure
 
 pub fn trim(@ast.TrimSpec, Array[@partiql-value.Value]) -> @partiql-value.Value raise OpFailure
 

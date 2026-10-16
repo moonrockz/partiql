@@ -340,6 +340,13 @@ pub(all) enum Function {
   TextReplace
   Upper
   Lower
+  /// The datetime functions (spec M4d3). The field is part of the call.
+  Extract(@ast.DatetimeField)
+  DateAdd(@ast.DatetimeField)
+  DateDiff(@ast.DatetimeField)
+  Overlaps
+  ToString
+  ToTimestamp
 } derive(Debug, Eq)
 
 ///|
@@ -367,5 +374,11 @@ pub fn Function::name(self : Function) -> String {
     TextReplace => "TEXT_REPLACE"
     Upper => "UPPER"
     Lower => "LOWER"
+    Extract(_) => "EXTRACT"
+    DateAdd(_) => "DATE_ADD"
+    DateDiff(_) => "DATE_DIFF"
+    Overlaps => "OVERLAPS"
+    ToString => "TO_STRING"
+    ToTimestamp => "TO_TIMESTAMP"
   }
 }

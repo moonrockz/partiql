@@ -132,8 +132,8 @@ files, so the codec must accept both.
 After M1 (data model), M1b (MAP and graph), M2 (parser), M2b (graph
 MATCH), M3a (printer), M3b (pretty layout), M3d (error recovery), M4a
 (expression evaluation), M4b1 (query evaluation core), M4b2 (queries,
-part two), M4c (grouping and aggregates), M4d1 (built-in functions) and
-M4d2 (CAST):
+part two), M4c (grouping and aggregates), M4d1 (built-in functions), M4d2
+(CAST) and M4d3 (datetime functions):
 
 | Check | Passed | Total | N/A |
 |---|---|---|---|
@@ -144,7 +144,7 @@ M4d2 (CAST):
 | `print-roundtrip` | 5310 | 5313 | 3 |
 | `pretty-roundtrip` | 5310 | 5313 | 3 |
 | `recovery` | 5410 | 5410 | 0 |
-| `eval` | 7507 | 9960 | 2346 |
+| `eval` | 9601 | 9960 | 240 |
 
 The 3 `eval-parse` failures are corpus defects (bead `partiql-zhj.9`):
 
@@ -158,12 +158,12 @@ The 3 `eval-parse` failures are corpus defects (bead `partiql-zhj.9`):
 
 ### The `eval` check
 
-Of 9960 assertions, 7507 pass and 2346 are not applicable: they need the
-datetime functions, FULL JOIN, graph MATCH or `?`, which later parts of M4
-add. 107 fail. M4b1 raised the passes from 2952 to 3719, M4b2 raised them
+Of 9960 assertions, 9601 pass and 240 are not applicable: they need graph
+MATCH, which comes after M4 (the eval corpus has no FULL JOIN and no `?`
+statement). 119 fail. M4b1 raised the passes from 2952 to 3719, M4b2 raised them
 to 4043 (324 more), with the `eval-equiv` cases now evaluated, M4c raised
-them to 5211 (1168 more), M4d1 raised them to 7287 (2076 more), and M4d2
-raised them to 7507 (220 more). To list the
+them to 5211 (1168 more), M4d1 raised them to 7287 (2076 more), M4d2
+raised them to 7507 (220 more), and M4d3 raised them to 9601 (2094 more). To list the
 failures, run `PARTIQL_CONFORMANCE_SHOW=eval mise run test:conformance`. Each
 case fails in both modes, except where a reason below says otherwise. The
 reasons:
@@ -329,9 +329,10 @@ across numeric types" (M4b1) now pass:
 - **DATE against Ion timestamp (2 ids).** `map.ion` "map_keys with date keys"
   (line 850): see "DATE against Ion timestamp" above.
 
-The groups add up to 107 ids (44 from M4b1: 6 + 3 + 1 + 6 + 14 + 4 + 4 + 2 +
+The groups add up to 119 ids (44 from M4b1: 6 + 3 + 1 + 6 + 14 + 4 + 4 + 2 +
 3 + 1; 24 from M4b2: 17 + 5 + 2; 30 from M4c: 8 + 4 + 2 + 12 + 4; 8 from
-M4d1: 4 + 2 + 2; and 1 from M4d2, see "CAST").
+M4d1: 4 + 2 + 2; 1 from M4d2, see "CAST"; and 12 from M4d3, see "Datetime
+functions").
 
 ### CAST
 
@@ -395,6 +396,44 @@ a valid approximate literal whose value is out of the range of INT, a data
 error in both modes, as the extended `int.ion` overflow cases expect (the
 evaluator reads it as the exact number 20000000000). The evaluator follows
 SQL.
+
+### Datetime functions
+
+M4d3 evaluates EXTRACT, DATE_ADD, DATE_DIFF, OVERLAPS, TO_STRING and
+TO_TIMESTAMP. The specification does not define them, so SQL decides EXTRACT
+(SQL-92 6.6) and OVERLAPS (8.11), and the corpus and the partiql-lang-kotlin
+documentation decide the others:
+
+- **EXTRACT** gives an integer, except SECOND: a decimal whose scale is the
+  precision of the value. TIMEZONE_HOUR and TIMEZONE_MINUTE carry the sign of
+  the offset. A field the source does not have is a type error. Interval
+  values keep only their class (year-month or day-time), so EXTRACT reads the
+  normalized fields: `EXTRACT(HOUR FROM INTERVAL '27' HOUR)` is 3, where SQL
+  gives 27.
+- **DATE_ADD** adds whole units of the field and keeps the type, precision
+  and offset of the value. A field the type lacks (`DATE_ADD(hour, 1, DATE
+  ...)`) is a type error (SQL 6.14).
+- **DATE_DIFF** counts whole elapsed units, toward zero, from day to second,
+  and complete calendar months for month and year (as Java `ChronoUnit`).
+- **OVERLAPS** is SQL-92 8.11 in three-valued logic, on lists or bags of two
+  elements.
+- **TO_STRING and TO_TIMESTAMP** use the PartiQL format patterns (`y`, `yy`,
+  `yyyy`, `M`..`MMMMM`, `d`, `H`, `h`, `a`, `m`, `s`, `S`, `n`, `X`, `x`,
+  quoted text), with English names. A bad pattern, or text that does not
+  match, is a data error in both modes.
+- **Values without an offset** are in the session time zone (`evaluate`
+  `zone~`, default UTC) for DATE_DIFF and OVERLAPS.
+- **Arithmetic** follows SQL since M4d3: a year-month step onto a day the
+  month lacks (`DATE '2025-01-31' + INTERVAL '1' MONTH`) is a data error, not
+  the month end, and every datetime result must be in years 0001-9999.
+
+12 datetime assertions fail:
+
+- `extract.ion:495` (2 assertions) uses `TIME (2) WITH TIME ZONE '01:23:45.678'`
+  without an offset, which `time.ion` and `timestamp.ion` require to fail.
+- Five `date_add_invalid` tests in the extended corpus (10 assertions) expect
+  a WITH TIME ZONE input to lose its offset and the years 19998 and -1 to be
+  valid, as partiql-lang-kotlin v1 does.
 
 Every corpus value passes `codec`, including the `$map` (M1b MAP) and
 `$graph` (M1b graph) values.

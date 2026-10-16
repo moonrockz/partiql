@@ -138,10 +138,16 @@ Its parts, in this order:
   step, implied names and MAP literal types. The `eval` conformance check
   passes 7507 of 9960 assertions; 2346 are not applicable; 107 fail (see
   `conformance.md`).
-- **M4d3: datetime functions** (bead `partiql-5se.5.3`): EXTRACT, DATE_ADD,
-  DATE_DIFF, OVERLAPS and the other datetime functions.
+- **M4d3 (done): datetime functions** (bead `partiql-5se.5.3`). EXTRACT,
+  DATE_ADD, DATE_DIFF, OVERLAPS, TO_STRING and TO_TIMESTAMP, in both modes;
+  SQL month-end overflow and the 0001-9999 year range for datetime
+  arithmetic. The `eval` conformance check passes 9601 of 9960 assertions;
+  240 are not applicable (graph MATCH); 119 fail (see `conformance.md`).
+- **Session clock** (bead `partiql-d9i`): CURRENT_DATE, CURRENT_TIME,
+  CURRENT_TIMESTAMP and UTCNOW, then a static error for unknown function
+  names (bead `partiql-5se.5.4`).
 
-M4e, M4c, M4d1 and M4d2 are done. The next part is M4d3.
+M4e, M4c, M4d1, M4d2 and M4d3 are done. The next part is the session clock.
 
 Graph MATCH evaluation and `?` parameters come after M4. A REPL is not part
 of M4.

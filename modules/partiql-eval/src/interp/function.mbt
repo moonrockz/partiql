@@ -4,6 +4,7 @@
 fn call(
   f : @plan.Function,
   args : Array[@value.Value],
+  zone : @ops.ZoneOffset,
 ) -> @value.Value raise @ops.OpFailure {
   match f {
     CharLength => @ops.char_length(args)
@@ -27,5 +28,11 @@ fn call(
     TextReplace => @ops.text_replace(args)
     Upper => @ops.upper(args)
     Lower => @ops.lower(args)
+    Extract(field) => @ops.extract(field, args)
+    DateAdd(field) => @ops.date_add(field, args)
+    DateDiff(field) => @ops.date_diff(field, args, zone~)
+    Overlaps => @ops.overlaps(args, zone~)
+    ToString => @ops.datetime_to_string(args)
+    ToTimestamp => @ops.text_to_timestamp(args)
   }
 }
