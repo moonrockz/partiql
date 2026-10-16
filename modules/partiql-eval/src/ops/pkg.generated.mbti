@@ -47,6 +47,8 @@ pub fn every_values(Iter[@partiql-value.Value], distinct~ : Bool) -> @partiql-va
 
 pub fn exists(Array[@partiql-value.Value]) -> @partiql-value.Value raise OpFailure
 
+pub fn extract(@ast.DatetimeField, Array[@partiql-value.Value]) -> @partiql-value.Value raise OpFailure
+
 pub fn field(@partiql-value.Value, String, delimited~ : Bool) -> @partiql-value.Value raise OpFailure
 
 pub fn greater(@partiql-value.Value, @partiql-value.Value) -> @partiql-value.Value raise OpFailure

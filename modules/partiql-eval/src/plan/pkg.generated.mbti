@@ -95,6 +95,12 @@ pub(all) enum Function {
   TextReplace
   Upper
   Lower
+  Extract(@ast.DatetimeField)
+  DateAdd(@ast.DatetimeField)
+  DateDiff(@ast.DatetimeField)
+  Overlaps
+  ToString
+  ToTimestamp
 } derive(Eq, @debug.Debug)
 pub fn Function::name(Self) -> String
 

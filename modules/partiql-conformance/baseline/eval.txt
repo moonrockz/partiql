@@ -157,6 +157,38 @@ eval/ion/primitives/functions/exists.ion::exists::exists valid cases{param:"`{a:
 eval/ion/primitives/functions/exists.ion::exists::exists valid cases{param:"`{a: null}`",result:true}#error
 eval/ion/primitives/functions/exists.ion::exists::exists valid cases{param:"`{}`",result:false}#coerce
 eval/ion/primitives/functions/exists.ion::exists::exists valid cases{param:"`{}`",result:false}#error
+eval/ion/primitives/functions/extract.ion::extract::extract_timestamp::EXTRACT(DAY FROM `2000-01-02T03:04:05.67Z`)#coerce
+eval/ion/primitives/functions/extract.ion::extract::extract_timestamp::EXTRACT(DAY FROM `2000-01-02T03:04:05.67Z`)#error
+eval/ion/primitives/functions/extract.ion::extract::extract_timestamp::EXTRACT(HOUR FROM `2000-01-02T03:04:05.67Z`)#coerce
+eval/ion/primitives/functions/extract.ion::extract::extract_timestamp::EXTRACT(HOUR FROM `2000-01-02T03:04:05.67Z`)#error
+eval/ion/primitives/functions/extract.ion::extract::extract_timestamp::EXTRACT(MINUTE FROM `2000-01-02T03:04:05.67Z`)#coerce
+eval/ion/primitives/functions/extract.ion::extract::extract_timestamp::EXTRACT(MINUTE FROM `2000-01-02T03:04:05.67Z`)#error
+eval/ion/primitives/functions/extract.ion::extract::extract_timestamp::EXTRACT(MONTH FROM `2000-01-02T03:04:05.67Z`)#coerce
+eval/ion/primitives/functions/extract.ion::extract::extract_timestamp::EXTRACT(MONTH FROM `2000-01-02T03:04:05.67Z`)#error
+eval/ion/primitives/functions/extract.ion::extract::extract_timestamp::EXTRACT(SECOND FROM `2000-01-02T03:04:05.67Z`)#coerce
+eval/ion/primitives/functions/extract.ion::extract::extract_timestamp::EXTRACT(SECOND FROM `2000-01-02T03:04:05.67Z`)#error
+eval/ion/primitives/functions/extract.ion::extract::extract_timestamp::EXTRACT(YEAR FROM `2000-01-02T03:04:05.67Z`)#coerce
+eval/ion/primitives/functions/extract.ion::extract::extract_timestamp::EXTRACT(YEAR FROM `2000-01-02T03:04:05.67Z`)#error
+eval/ion/primitives/functions/extract.ion::extract::extract_timestamp_offset::EXTRACT(DAY FROM `2000-01-02T03:04:05.67+08:09`)#coerce
+eval/ion/primitives/functions/extract.ion::extract::extract_timestamp_offset::EXTRACT(DAY FROM `2000-01-02T03:04:05.67+08:09`)#error
+eval/ion/primitives/functions/extract.ion::extract::extract_timestamp_offset::EXTRACT(HOUR FROM `2000-01-02T03:04:05.67+08:09`)#coerce
+eval/ion/primitives/functions/extract.ion::extract::extract_timestamp_offset::EXTRACT(HOUR FROM `2000-01-02T03:04:05.67+08:09`)#error
+eval/ion/primitives/functions/extract.ion::extract::extract_timestamp_offset::EXTRACT(MINUTE FROM `2000-01-02T03:04:05.67+08:09`)#coerce
+eval/ion/primitives/functions/extract.ion::extract::extract_timestamp_offset::EXTRACT(MINUTE FROM `2000-01-02T03:04:05.67+08:09`)#error
+eval/ion/primitives/functions/extract.ion::extract::extract_timestamp_offset::EXTRACT(MONTH FROM `2000-01-02T03:04:05.67+08:09`)#coerce
+eval/ion/primitives/functions/extract.ion::extract::extract_timestamp_offset::EXTRACT(MONTH FROM `2000-01-02T03:04:05.67+08:09`)#error
+eval/ion/primitives/functions/extract.ion::extract::extract_timestamp_offset::EXTRACT(SECOND FROM `2000-01-02T03:04:05.67+08:09`)#coerce
+eval/ion/primitives/functions/extract.ion::extract::extract_timestamp_offset::EXTRACT(SECOND FROM `2000-01-02T03:04:05.67+08:09`)#error
+eval/ion/primitives/functions/extract.ion::extract::extract_timestamp_offset::EXTRACT(TIMEZONE_HOUR FROM `2000-01-02T03:04:05.67+08:09`)#coerce
+eval/ion/primitives/functions/extract.ion::extract::extract_timestamp_offset::EXTRACT(TIMEZONE_HOUR FROM `2000-01-02T03:04:05.67+08:09`)#error
+eval/ion/primitives/functions/extract.ion::extract::extract_timestamp_offset::EXTRACT(TIMEZONE_HOUR FROM `2000-01-02T03:04:05.67-08:09`)#coerce
+eval/ion/primitives/functions/extract.ion::extract::extract_timestamp_offset::EXTRACT(TIMEZONE_HOUR FROM `2000-01-02T03:04:05.67-08:09`)#error
+eval/ion/primitives/functions/extract.ion::extract::extract_timestamp_offset::EXTRACT(TIMEZONE_MINUTE FROM `2000-01-02T03:04:05.67+08:09`)#coerce
+eval/ion/primitives/functions/extract.ion::extract::extract_timestamp_offset::EXTRACT(TIMEZONE_MINUTE FROM `2000-01-02T03:04:05.67+08:09`)#error
+eval/ion/primitives/functions/extract.ion::extract::extract_timestamp_offset::EXTRACT(TIMEZONE_MINUTE FROM `2000-01-02T03:04:05.67-08:09`)#coerce
+eval/ion/primitives/functions/extract.ion::extract::extract_timestamp_offset::EXTRACT(TIMEZONE_MINUTE FROM `2000-01-02T03:04:05.67-08:09`)#error
+eval/ion/primitives/functions/extract.ion::extract::extract_timestamp_offset::EXTRACT(YEAR FROM `2000-01-02T03:04:05.67+08:09`)#coerce
+eval/ion/primitives/functions/extract.ion::extract::extract_timestamp_offset::EXTRACT(YEAR FROM `2000-01-02T03:04:05.67+08:09`)#error
 eval/ion/primitives/null.ion::null::null comparison{sql:"`null.blob` = MISSING",result:null}#coerce
 eval/ion/primitives/null.ion::null::null comparison{sql:"`null.blob` = MISSING",result:null}#error
 eval/ion/primitives/null.ion::null::null comparison{sql:"`null.blob` = NULL",result:null}#coerce
@@ -1478,6 +1510,118 @@ eval/primitives/functions/exists.ion::exists::exists valid cases{param:"[null]",
 eval/primitives/functions/exists.ion::exists::exists valid cases{param:"[null]",result:true}#error
 eval/primitives/functions/exists.ion::exists::exists valid cases{param:"{}",result:false}#coerce
 eval/primitives/functions/exists.ion::exists::exists valid cases{param:"{}",result:false}#error
+eval/primitives/functions/extract.ion::extract::extract_date::EXTRACT(DAY FROM DATE '2000-01-02')#coerce
+eval/primitives/functions/extract.ion::extract::extract_date::EXTRACT(DAY FROM DATE '2000-01-02')#error
+eval/primitives/functions/extract.ion::extract::extract_date::EXTRACT(DAY FROM INTERVAL '3 4:5:6.789' DAY TO SECOND)#coerce
+eval/primitives/functions/extract.ion::extract::extract_date::EXTRACT(DAY FROM INTERVAL '3 4:5:6.789' DAY TO SECOND)#error
+eval/primitives/functions/extract.ion::extract::extract_date::EXTRACT(MONTH FROM DATE '2000-01-02')#coerce
+eval/primitives/functions/extract.ion::extract::extract_date::EXTRACT(MONTH FROM DATE '2000-01-02')#error
+eval/primitives/functions/extract.ion::extract::extract_date::EXTRACT(MONTH FROM INTERVAL '3-4' YEAR TO MONTH)#coerce
+eval/primitives/functions/extract.ion::extract::extract_date::EXTRACT(MONTH FROM INTERVAL '3-4' YEAR TO MONTH)#error
+eval/primitives/functions/extract.ion::extract::extract_date::EXTRACT(YEAR FROM DATE '2000-01-02')#coerce
+eval/primitives/functions/extract.ion::extract::extract_date::EXTRACT(YEAR FROM DATE '2000-01-02')#error
+eval/primitives/functions/extract.ion::extract::extract_date::EXTRACT(YEAR FROM INTERVAL '3-4' YEAR TO MONTH)#coerce
+eval/primitives/functions/extract.ion::extract::extract_date::EXTRACT(YEAR FROM INTERVAL '3-4' YEAR TO MONTH)#error
+eval/primitives/functions/extract.ion::extract::extract_null_propagation::EXTRACT(DAY FROM NULL)#coerce
+eval/primitives/functions/extract.ion::extract::extract_null_propagation::EXTRACT(DAY FROM NULL)#error
+eval/primitives/functions/extract.ion::extract::extract_null_propagation::EXTRACT(HOUR FROM NULL)#coerce
+eval/primitives/functions/extract.ion::extract::extract_null_propagation::EXTRACT(HOUR FROM NULL)#error
+eval/primitives/functions/extract.ion::extract::extract_null_propagation::EXTRACT(MINUTE FROM NULL)#coerce
+eval/primitives/functions/extract.ion::extract::extract_null_propagation::EXTRACT(MINUTE FROM NULL)#error
+eval/primitives/functions/extract.ion::extract::extract_null_propagation::EXTRACT(MONTH FROM NULL)#coerce
+eval/primitives/functions/extract.ion::extract::extract_null_propagation::EXTRACT(MONTH FROM NULL)#error
+eval/primitives/functions/extract.ion::extract::extract_null_propagation::EXTRACT(SECOND FROM NULL)#coerce
+eval/primitives/functions/extract.ion::extract::extract_null_propagation::EXTRACT(SECOND FROM NULL)#error
+eval/primitives/functions/extract.ion::extract::extract_null_propagation::EXTRACT(TIMEZONE_HOUR FROM NULL)#coerce
+eval/primitives/functions/extract.ion::extract::extract_null_propagation::EXTRACT(TIMEZONE_HOUR FROM NULL)#error
+eval/primitives/functions/extract.ion::extract::extract_null_propagation::EXTRACT(TIMEZONE_MINUTE FROM NULL)#coerce
+eval/primitives/functions/extract.ion::extract::extract_null_propagation::EXTRACT(TIMEZONE_MINUTE FROM NULL)#error
+eval/primitives/functions/extract.ion::extract::extract_null_propagation::EXTRACT(YEAR FROM NULL)#coerce
+eval/primitives/functions/extract.ion::extract::extract_null_propagation::EXTRACT(YEAR FROM NULL)#error
+eval/primitives/functions/extract.ion::extract::extract_time::EXTRACT(HOUR FROM INTERVAL '3 4:5:6.789' DAY TO SECOND)#coerce
+eval/primitives/functions/extract.ion::extract::extract_time::EXTRACT(HOUR FROM INTERVAL '3 4:5:6.789' DAY TO SECOND)#error
+eval/primitives/functions/extract.ion::extract::extract_time::EXTRACT(HOUR FROM TIME '01:23:45.678')#coerce
+eval/primitives/functions/extract.ion::extract::extract_time::EXTRACT(HOUR FROM TIME '01:23:45.678')#error
+eval/primitives/functions/extract.ion::extract::extract_time::EXTRACT(MINUTE FROM INTERVAL '3 4:5:6.789' DAY TO SECOND)#coerce
+eval/primitives/functions/extract.ion::extract::extract_time::EXTRACT(MINUTE FROM INTERVAL '3 4:5:6.789' DAY TO SECOND)#error
+eval/primitives/functions/extract.ion::extract::extract_time::EXTRACT(MINUTE FROM TIME '01:23:45.678')#coerce
+eval/primitives/functions/extract.ion::extract::extract_time::EXTRACT(MINUTE FROM TIME '01:23:45.678')#error
+eval/primitives/functions/extract.ion::extract::extract_time::EXTRACT(SECOND FROM INTERVAL '3 4:5:6.789' DAY TO SECOND)#coerce
+eval/primitives/functions/extract.ion::extract::extract_time::EXTRACT(SECOND FROM INTERVAL '3 4:5:6.789' DAY TO SECOND)#error
+eval/primitives/functions/extract.ion::extract::extract_time::EXTRACT(SECOND FROM TIME '01:23:45.678')#coerce
+eval/primitives/functions/extract.ion::extract::extract_time::EXTRACT(SECOND FROM TIME '01:23:45.678')#error
+eval/primitives/functions/extract.ion::extract::extract_time_precision::EXTRACT(DAY FROM INTERVAL '3 4:5:6.789' DAY TO SECOND(2))#coerce
+eval/primitives/functions/extract.ion::extract::extract_time_precision::EXTRACT(DAY FROM INTERVAL '3 4:5:6.789' DAY TO SECOND(2))#error
+eval/primitives/functions/extract.ion::extract::extract_time_precision::EXTRACT(HOUR FROM INTERVAL '3 4:5:6.789' DAY TO SECOND(2))#coerce
+eval/primitives/functions/extract.ion::extract::extract_time_precision::EXTRACT(HOUR FROM INTERVAL '3 4:5:6.789' DAY TO SECOND(2))#error
+eval/primitives/functions/extract.ion::extract::extract_time_precision::EXTRACT(HOUR FROM TIME (2) '01:23:45.678')#coerce
+eval/primitives/functions/extract.ion::extract::extract_time_precision::EXTRACT(HOUR FROM TIME (2) '01:23:45.678')#error
+eval/primitives/functions/extract.ion::extract::extract_time_precision::EXTRACT(MINUTE FROM INTERVAL '3 4:5:6.789' DAY TO SECOND(2))#coerce
+eval/primitives/functions/extract.ion::extract::extract_time_precision::EXTRACT(MINUTE FROM INTERVAL '3 4:5:6.789' DAY TO SECOND(2))#error
+eval/primitives/functions/extract.ion::extract::extract_time_precision::EXTRACT(MINUTE FROM TIME (2) '01:23:45.678')#coerce
+eval/primitives/functions/extract.ion::extract::extract_time_precision::EXTRACT(MINUTE FROM TIME (2) '01:23:45.678')#error
+eval/primitives/functions/extract.ion::extract::extract_time_precision::EXTRACT(SECOND FROM INTERVAL '3 4:5:6.789' DAY TO SECOND(2))#coerce
+eval/primitives/functions/extract.ion::extract::extract_time_precision::EXTRACT(SECOND FROM INTERVAL '3 4:5:6.789' DAY TO SECOND(2))#error
+eval/primitives/functions/extract.ion::extract::extract_time_precision::EXTRACT(SECOND FROM TIME (2) '01:23:45.678')#coerce
+eval/primitives/functions/extract.ion::extract::extract_time_precision::EXTRACT(SECOND FROM TIME (2) '01:23:45.678')#error
+eval/primitives/functions/extract.ion::extract::extract_time_precision_with_time_zone::EXTRACT(MINUTE FROM TIME (2) WITH TIME ZONE '01:23:45.678-06:30')#coerce
+eval/primitives/functions/extract.ion::extract::extract_time_precision_with_time_zone::EXTRACT(MINUTE FROM TIME (2) WITH TIME ZONE '01:23:45.678-06:30')#error
+eval/primitives/functions/extract.ion::extract::extract_time_precision_with_time_zone::EXTRACT(SECOND FROM TIME (2) WITH TIME ZONE '01:23:45.678-06:30')#coerce
+eval/primitives/functions/extract.ion::extract::extract_time_precision_with_time_zone::EXTRACT(SECOND FROM TIME (2) WITH TIME ZONE '01:23:45.678-06:30')#error
+eval/primitives/functions/extract.ion::extract::extract_time_precision_with_time_zone::EXTRACT(TIMEZONE_HOUR FROM TIME (2) WITH TIME ZONE '01:23:45.678-06:30')#coerce
+eval/primitives/functions/extract.ion::extract::extract_time_precision_with_time_zone::EXTRACT(TIMEZONE_HOUR FROM TIME (2) WITH TIME ZONE '01:23:45.678-06:30')#error
+eval/primitives/functions/extract.ion::extract::extract_time_precision_with_time_zone::EXTRACT(TIMEZONE_MINUTE FROM TIME (2) WITH TIME ZONE '01:23:45.678-06:30')#coerce
+eval/primitives/functions/extract.ion::extract::extract_time_precision_with_time_zone::EXTRACT(TIMEZONE_MINUTE FROM TIME (2) WITH TIME ZONE '01:23:45.678-06:30')#error
+eval/primitives/functions/extract.ion::extract::extract_time_with_time_zone::EXTRACT(HOUR FROM TIME WITH TIME ZONE '01:23:45.678-06:30')#coerce
+eval/primitives/functions/extract.ion::extract::extract_time_with_time_zone::EXTRACT(HOUR FROM TIME WITH TIME ZONE '01:23:45.678-06:30')#error
+eval/primitives/functions/extract.ion::extract::extract_time_with_time_zone::EXTRACT(MINUTE FROM TIME WITH TIME ZONE '01:23:45.678-06:30')#coerce
+eval/primitives/functions/extract.ion::extract::extract_time_with_time_zone::EXTRACT(MINUTE FROM TIME WITH TIME ZONE '01:23:45.678-06:30')#error
+eval/primitives/functions/extract.ion::extract::extract_time_with_time_zone::EXTRACT(SECOND FROM TIME WITH TIME ZONE '01:23:45.678-06:30')#coerce
+eval/primitives/functions/extract.ion::extract::extract_time_with_time_zone::EXTRACT(SECOND FROM TIME WITH TIME ZONE '01:23:45.678-06:30')#error
+eval/primitives/functions/extract.ion::extract::extract_time_with_time_zone::EXTRACT(TIMEZONE_HOUR FROM TIME WITH TIME ZONE '01:23:45.678-06:30')#coerce
+eval/primitives/functions/extract.ion::extract::extract_time_with_time_zone::EXTRACT(TIMEZONE_HOUR FROM TIME WITH TIME ZONE '01:23:45.678-06:30')#error
+eval/primitives/functions/extract.ion::extract::extract_time_with_time_zone::EXTRACT(TIMEZONE_MINUTE FROM TIME WITH TIME ZONE '01:23:45.678-06:30')#coerce
+eval/primitives/functions/extract.ion::extract::extract_time_with_time_zone::EXTRACT(TIMEZONE_MINUTE FROM TIME WITH TIME ZONE '01:23:45.678-06:30')#error
+eval/primitives/functions/extract.ion::extract::missing_propagation::EXTRACT(DAY FROM MISSING)#coerce
+eval/primitives/functions/extract.ion::extract::missing_propagation::EXTRACT(DAY FROM MISSING)#error
+eval/primitives/functions/extract.ion::extract::missing_propagation::EXTRACT(HOUR FROM MISSING)#coerce
+eval/primitives/functions/extract.ion::extract::missing_propagation::EXTRACT(HOUR FROM MISSING)#error
+eval/primitives/functions/extract.ion::extract::missing_propagation::EXTRACT(MINUTE FROM MISSING)#coerce
+eval/primitives/functions/extract.ion::extract::missing_propagation::EXTRACT(MINUTE FROM MISSING)#error
+eval/primitives/functions/extract.ion::extract::missing_propagation::EXTRACT(MONTH FROM MISSING)#coerce
+eval/primitives/functions/extract.ion::extract::missing_propagation::EXTRACT(MONTH FROM MISSING)#error
+eval/primitives/functions/extract.ion::extract::missing_propagation::EXTRACT(SECOND FROM MISSING)#coerce
+eval/primitives/functions/extract.ion::extract::missing_propagation::EXTRACT(SECOND FROM MISSING)#error
+eval/primitives/functions/extract.ion::extract::missing_propagation::EXTRACT(TIMEZONE_HOUR FROM MISSING)#coerce
+eval/primitives/functions/extract.ion::extract::missing_propagation::EXTRACT(TIMEZONE_HOUR FROM MISSING)#error
+eval/primitives/functions/extract.ion::extract::missing_propagation::EXTRACT(TIMEZONE_MINUTE FROM MISSING)#coerce
+eval/primitives/functions/extract.ion::extract::missing_propagation::EXTRACT(TIMEZONE_MINUTE FROM MISSING)#error
+eval/primitives/functions/extract.ion::extract::missing_propagation::EXTRACT(YEAR FROM MISSING)#coerce
+eval/primitives/functions/extract.ion::extract::missing_propagation::EXTRACT(YEAR FROM MISSING)#error
+eval/primitives/functions/extract.ion::extract_invalid::invalid extract day from time with time zone#coerce
+eval/primitives/functions/extract.ion::extract_invalid::invalid extract day from time with time zone#error
+eval/primitives/functions/extract.ion::extract_invalid::invalid extract day from time#coerce
+eval/primitives/functions/extract.ion::extract_invalid::invalid extract day from time#error
+eval/primitives/functions/extract.ion::extract_invalid::invalid extract day from year to month interval#coerce
+eval/primitives/functions/extract.ion::extract_invalid::invalid extract day from year to month interval#error
+eval/primitives/functions/extract.ion::extract_invalid::invalid extract hour from year to month interval#coerce
+eval/primitives/functions/extract.ion::extract_invalid::invalid extract hour from year to month interval#error
+eval/primitives/functions/extract.ion::extract_invalid::invalid extract minute from year to month interval#coerce
+eval/primitives/functions/extract.ion::extract_invalid::invalid extract minute from year to month interval#error
+eval/primitives/functions/extract.ion::extract_invalid::invalid extract month from day to second interval#coerce
+eval/primitives/functions/extract.ion::extract_invalid::invalid extract month from day to second interval#error
+eval/primitives/functions/extract.ion::extract_invalid::invalid extract month from time with time zone#coerce
+eval/primitives/functions/extract.ion::extract_invalid::invalid extract month from time with time zone#error
+eval/primitives/functions/extract.ion::extract_invalid::invalid extract month from time#coerce
+eval/primitives/functions/extract.ion::extract_invalid::invalid extract month from time#error
+eval/primitives/functions/extract.ion::extract_invalid::invalid extract second from year to month interval#coerce
+eval/primitives/functions/extract.ion::extract_invalid::invalid extract second from year to month interval#error
+eval/primitives/functions/extract.ion::extract_invalid::invalid extract year from day to second interval#coerce
+eval/primitives/functions/extract.ion::extract_invalid::invalid extract year from day to second interval#error
+eval/primitives/functions/extract.ion::extract_invalid::invalid extract year from time with time zone#coerce
+eval/primitives/functions/extract.ion::extract_invalid::invalid extract year from time with time zone#error
+eval/primitives/functions/extract.ion::extract_invalid::invalid extract year from time#coerce
+eval/primitives/functions/extract.ion::extract_invalid::invalid extract year from time#error
 eval/primitives/functions/lower.ion::lower::lower null and missing propagation{param:"missing"}#coerce
 eval/primitives/functions/lower.ion::lower::lower null and missing propagation{param:"missing"}#error
 eval/primitives/functions/lower.ion::lower::lower null and missing propagation{param:"null"}#coerce
@@ -7315,6 +7459,10 @@ extended/eval/primitives/cast.ion::cast-to-int::cast to int valid cases{value:"`
 extended/eval/primitives/cast.ion::cast-to-int::cast to int valid cases{value:"`1.5e0`",result:2}#error
 extended/eval/primitives/cast.ion::cast-to-int::cast to int valid cases{value:"`1.9e0`",result:2}#coerce
 extended/eval/primitives/cast.ion::cast-to-int::cast to int valid cases{value:"`1.9e0`",result:2}#error
+extended/eval/primitives/functions/date_diff.ion::date_diff_invalid::date_diff invalid arguments{time_part:"timezone_hour"}#coerce
+extended/eval/primitives/functions/date_diff.ion::date_diff_invalid::date_diff invalid arguments{time_part:"timezone_hour"}#error
+extended/eval/primitives/functions/date_diff.ion::date_diff_invalid::date_diff invalid arguments{time_part:"timezone_minute"}#coerce
+extended/eval/primitives/functions/date_diff.ion::date_diff_invalid::date_diff invalid arguments{time_part:"timezone_minute"}#error
 extended/eval/primitives/functions/size.ion::size::size null and missing propagation{param:"missing"}#coerce
 extended/eval/primitives/functions/size.ion::size::size null and missing propagation{param:"missing"}#error
 extended/eval/primitives/functions/size.ion::size::size null and missing propagation{param:"null"}#coerce

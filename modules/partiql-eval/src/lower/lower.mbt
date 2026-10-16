@@ -456,8 +456,16 @@ fn lower_at(
         span,
       )
     Cast(x, t) => Cast(lower_at(x, scope, depth), target(t, span), span)
-    Overlaps(_, _) | Extract(_, _) | DateAdd(_, _, _) | DateDiff(_, _, _) =>
-      unsupported("a function call (M4d)", span)
+    Extract(f, x) => special_call(Extract(f), [x], scope, depth, span)
+    DateAdd(f, n, x) => {
+      check_date_part(f, "DATE_ADD", span)
+      special_call(DateAdd(f), [n, x], scope, depth, span)
+    }
+    DateDiff(f, a, b) => {
+      check_date_part(f, "DATE_DIFF", span)
+      special_call(DateDiff(f), [a, b], scope, depth, span)
+    }
+    Overlaps(x, y) => special_call(Overlaps, [x, y], scope, depth, span)
     Call(id, args, quantifier~) =>
       match aggregate_function(id) {
         Some((kind, true)) =>

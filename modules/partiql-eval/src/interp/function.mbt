@@ -4,6 +4,7 @@
 fn call(
   f : @plan.Function,
   args : Array[@value.Value],
+  zone : @ops.ZoneOffset,
 ) -> @value.Value raise @ops.OpFailure {
   match f {
     CharLength => @ops.char_length(args)
@@ -27,5 +28,10 @@ fn call(
     TextReplace => @ops.text_replace(args)
     Upper => @ops.upper(args)
     Lower => @ops.lower(args)
+    Extract(field) => @ops.extract(field, args)
+    DateAdd(_) | DateDiff(_) | Overlaps | ToString | ToTimestamp => {
+      ignore(zone)
+      raise @ops.OpFailure::Unsupported("\{f.name()} is not supported yet")
+    }
   }
 }
