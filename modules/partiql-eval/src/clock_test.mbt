@@ -211,3 +211,44 @@ test "clock functions: static checks" {
     }
   })
 }
+
+///|
+test "CAST of TIME to TIMESTAMP takes CURRENT_DATE" {
+  let clock = Some(@eval.Clock::fixed(utc(2026, 10, 16, 23, 30, 0, 0)))
+  @expect.expect_all(soft => {
+    soft
+    .expect(
+      ev_clock(
+        "CAST(TIME '12:00:00' AS TIMESTAMP) = TIMESTAMP '2026-10-16 12:00:00'", clock,
+      ),
+    )
+    .to_equal(Bool(true))
+    soft
+    .expect(
+      ev_clock(
+        "CAST(TIME WITH TIME ZONE '12:00:00+05:00' AS TIMESTAMP WITH TIME ZONE) = TIMESTAMP '2026-10-16 12:00:00+05:00'",
+        clock,
+      ),
+    )
+    .to_equal(Bool(true))
+    // The date is CURRENT_DATE in the session zone.
+    soft
+    .expect(
+      ev_clock(
+        "CAST(TIME '01:00:00' AS TIMESTAMP) = TIMESTAMP '2026-10-17 01:00:00'",
+        clock,
+        zone=offset(330),
+      ),
+    )
+    .to_equal(Bool(true))
+    let outcome = try
+      ev_clock("CAST(TIME '12:00:00' AS TIMESTAMP)", None, mode=Strict)
+    catch {
+      DataError(message~, ..) => message
+      _ => "other"
+    } noraise {
+      _ => "none"
+    }
+    soft.expect(outcome.contains("pass clock~ to evaluate")).to_be_true()
+  })
+}

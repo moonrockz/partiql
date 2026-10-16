@@ -548,7 +548,11 @@ fn eval(
     }
     Cast(x, t, span) => {
       let v = eval(x, env, ctx)
-      typed(ctx.mode, span, () => @ops.cast(v, t, zone=ctx.zone))
+      typed(ctx.mode, span, () => {
+        @ops.cast(v, t, zone=ctx.zone, today=() => {
+          clock_now(ctx, "CAST of TIME to TIMESTAMP", ctx.zone, 0).date
+        })
+      })
     }
     Call(f, args, span) => {
       let values = args.map(x => eval(x, env, ctx))

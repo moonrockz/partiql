@@ -176,7 +176,7 @@ test "cast to TIMESTAMP: dates, carry and zones" {
     )
     soft
     .expect(failure(() => cast(Time(midnight), plain_stamp)))
-    .to_equal("unsupported")
+    .to_equal("data")
     soft
     .expect(cast(String("2020-01-01T10:00:00"), plain_stamp))
     .to_equal(

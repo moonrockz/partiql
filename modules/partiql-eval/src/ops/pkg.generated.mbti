@@ -32,7 +32,7 @@ pub fn bool_test(@partiql-value.Value, Bool?, negated~ : Bool) -> Bool
 
 pub fn cardinality(Array[@partiql-value.Value]) -> @partiql-value.Value raise OpFailure
 
-pub fn cast(@partiql-value.Value, CastTarget, zone? : ZoneOffset) -> @partiql-value.Value raise OpFailure
+pub fn cast(@partiql-value.Value, CastTarget, zone? : ZoneOffset, today? : () -> @partiql-value.Date raise OpFailure) -> @partiql-value.Value raise OpFailure
 
 pub fn char_length(Array[@partiql-value.Value]) -> @partiql-value.Value raise OpFailure
 

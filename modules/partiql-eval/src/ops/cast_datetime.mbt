@@ -214,12 +214,13 @@ fn to_time(
 }
 
 ///|
-/// TIME to TIMESTAMP needs CURRENT_DATE, which this version does not have.
+/// TIME to TIMESTAMP takes the date from CURRENT_DATE (SQL-92 6.10 GR 11).
 fn to_timestamp(
   x : @value.Value,
   precision : Int32?,
   with_zone : Bool,
   session : ZoneOffset,
+  today : () -> @value.Date raise OpFailure,
 ) -> @value.Value raise OpFailure {
   let ts = match x {
     Timestamp(ts) => ts
@@ -239,8 +240,9 @@ fn to_timestamp(
         None => parse_timestamp(text, None, false)
       }
     }
-    Time(_) =>
-      raise Unsupported("CAST of TIME to TIMESTAMP needs the current date")
+    // The date is CURRENT_DATE; the time and its offset are the value's
+    // (SQL-92 6.10 GR 11).
+    Time(t) => @value.Timestamp::new(today(), t)
     _ =>
       raise TypeFailure(
         "CAST of \{kind_name(x)} to \{target_name(Timestamp(precision~, zone=with_zone))}",
