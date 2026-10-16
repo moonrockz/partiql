@@ -74,6 +74,11 @@ dependency.
 | [`moonbitlang/x`](https://mooncakes.io/docs/moonbitlang/x) | Official standard library extensions (fs, sys, path, time, codec, encoding, etc.) |
 | [`moonbitlang/async`](https://mooncakes.io/docs/moonbitlang/async) | Official async runtime (tasks, I/O, process, HTTP); native target preferred |
 
+`partiql-eval` uses `moonbitlang/x/time` for the `Clock` type of the session
+clock. The library never reads a wall clock; the CLI's `src/main.mbt` is the
+composition root that builds the real clock (`@env.now()`) and passes it
+through `Io`.
+
 `moonbitlang/core` comes with the toolchain. `moonbitlang/x` and
 `moonbitlang/async` are versioned on mooncakes.io, so keep them on the latest
 release when you bump the toolchain.

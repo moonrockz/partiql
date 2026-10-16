@@ -19,7 +19,7 @@ fn ev_clock(
   zone~ : @eval.ZoneOffset = @eval.ZoneOffset::utc(),
   mode~ : @eval.Mode = Permissive,
 ) -> @value.Value raise @eval.EvalError {
-  @eval.evaluate_text(source, env=@eval.Bindings::empty(), mode~, zone~, clock~)
+  @eval.evaluate_text(source, env=@eval.Bindings::empty(), mode~, zone~, clock?)
 }
 
 ///|

@@ -435,6 +435,20 @@ documentation decide the others:
   a WITH TIME ZONE input to lose its offset and the years 19998 and -1 to be
   valid, as partiql-lang-kotlin v1 does.
 
+### Session clock
+
+CURRENT_DATE, CURRENT_TIME [(p)], CURRENT_TIMESTAMP [(p)] and UTCNOW() read a
+clock that the caller injects (`evaluate` `clock~`, a `Clock` returning a
+`moonbitlang/x/time` `ZonedDateTime`); the library never reads the wall
+clock, and the `partiql` CLI is the composition root that passes the real one.
+All references in one statement see one instant (SQL-92 6.8), read at most
+once and only when the statement uses a clock function. CURRENT_TIME and
+CURRENT_TIMESTAMP carry the session offset (default precisions 0 and 6;
+fractions are cut); UTCNOW() is at offset 0 with precision 6, as in
+partiql-lang-kotlin v1. CAST of TIME to TIMESTAMP takes the date from
+CURRENT_DATE (SQL-92 6.10). Without a clock these are data errors. The corpus
+has no test of them.
+
 Every corpus value passes `codec`, including the `$map` (M1b MAP) and
 `$graph` (M1b graph) values.
 

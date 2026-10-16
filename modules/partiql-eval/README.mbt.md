@@ -77,6 +77,20 @@ let value = @eval.evaluate_text(
 guard value == @value.Value::String("March 16, 2024")
 ```
 
+The clock functions (`CURRENT_DATE`, `CURRENT_TIME`, `CURRENT_TIMESTAMP`,
+`UTCNOW`) read a clock that you inject; the library never reads the wall
+clock:
+
+```moonbit
+let clock = @eval.Clock::fixed(@time.date_time(2026, 10, 16, hour=9))
+let value = @eval.evaluate_text(
+  "CURRENT_DATE",
+  env=@eval.Bindings::empty(),
+  clock~,
+)
+guard value == @value.Value::Date(@value.Date::new(year=2026, month=10, day=16))
+```
+
 Pass `mode=@eval.Mode::Strict` to make a type error raise instead of giving
 `MISSING`.
 
@@ -98,7 +112,9 @@ evaluates the built-in functions `CHAR_LENGTH`, `OCTET_LENGTH`, `BIT_LENGTH`,
 functions. It evaluates `CAST` to every type except `SEXP` and `ARRAY<T>`;
 `evaluate` takes the session time zone of `CAST` as `zone~` (default UTC).
 It evaluates the datetime functions `EXTRACT`, `DATE_ADD`, `DATE_DIFF`,
-`OVERLAPS`, `TO_STRING` and `TO_TIMESTAMP`. A form that is not
+`OVERLAPS`, `TO_STRING` and `TO_TIMESTAMP`, and the clock functions
+`CURRENT_DATE`, `CURRENT_TIME`, `CURRENT_TIMESTAMP` and `UTCNOW` (with an
+injected `clock~`). A form that is not
 supported yet raises `EvalError::Unsupported`, never a wrong answer.
 
 ## Errors

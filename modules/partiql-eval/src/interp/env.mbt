@@ -17,7 +17,7 @@ pub fn Ctx::new(
   globals : Array[(String, @value.Value)],
   mode~ : @plan.Mode,
   zone~ : @ops.ZoneOffset = @ops.ZoneOffset::utc(),
-  clock~ : @ops.Clock? = None,
+  clock? : @ops.Clock,
 ) -> Ctx {
   { globals, mode, zone, clock, instant: None, failure: None, }
 }

@@ -54,7 +54,7 @@ fn query_command(m : @argparse.Matches, io : Io, color : Bool) -> Outcome {
   for script in scripts {
     let (input, statements) = script
     for statement in statements {
-      let value = @eval.evaluate(statement, env~, mode~, clock=io.clock) catch {
+      let value = @eval.evaluate(statement, env~, mode~, clock?=io.clock) catch {
         e => {
           errors.write_string(eval_error_text(e, input, color))
           return finish(out, errors)

@@ -52,13 +52,13 @@ pub fn evaluate(
   env~ : Bindings,
   mode~ : Mode = Permissive,
   zone~ : ZoneOffset = ZoneOffset::utc(),
-  clock~ : Clock? = None,
+  clock? : Clock,
 ) -> @value.Value raise EvalError {
   match statement {
     Query(q) =>
       @interp.run(
         @lower.lower_query(q),
-        @interp.Ctx::new(env.entries, mode~, zone~, clock~),
+        @interp.Ctx::new(env.entries, mode~, zone~, clock?),
       )
     Error(span) =>
       raise Unsupported(message="a statement that could not be read", span~)
@@ -72,12 +72,12 @@ pub fn evaluate_text(
   env~ : Bindings,
   mode~ : Mode = Permissive,
   zone~ : ZoneOffset = ZoneOffset::utc(),
-  clock~ : Clock? = None,
+  clock? : Clock,
 ) -> @value.Value raise EvalError {
   let statement = try @syntax.parse(source) catch {
     err => raise Syntax(err)
   } noraise {
     s => s
   }
-  evaluate(statement, env~, mode~, zone~, clock~)
+  evaluate(statement, env~, mode~, zone~, clock?)
 }

@@ -20,7 +20,7 @@ pub struct Ctx {
   clock : @ops.Clock?
   // private fields
 }
-pub fn Ctx::new(Array[(String, @partiql-value.Value)], mode~ : @plan.Mode, zone? : @ops.ZoneOffset, clock? : @ops.Clock?) -> Self
+pub fn Ctx::new(Array[(String, @partiql-value.Value)], mode~ : @plan.Mode, zone? : @ops.ZoneOffset, clock? : @ops.Clock) -> Self
 
 // Type aliases
 

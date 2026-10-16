@@ -10,9 +10,9 @@ import {
 }
 
 // Values
-pub fn evaluate(@ast.Statement, env~ : Bindings, mode? : @plan.Mode, zone? : @ops.ZoneOffset, clock? : @ops.Clock?) -> @partiql-value.Value raise @plan.EvalError
+pub fn evaluate(@ast.Statement, env~ : Bindings, mode? : @plan.Mode, zone? : @ops.ZoneOffset, clock? : @ops.Clock) -> @partiql-value.Value raise @plan.EvalError
 
-pub fn evaluate_text(String, env~ : Bindings, mode? : @plan.Mode, zone? : @ops.ZoneOffset, clock? : @ops.Clock?) -> @partiql-value.Value raise @plan.EvalError
+pub fn evaluate_text(String, env~ : Bindings, mode? : @plan.Mode, zone? : @ops.ZoneOffset, clock? : @ops.Clock) -> @partiql-value.Value raise @plan.EvalError
 
 // Errors
 
