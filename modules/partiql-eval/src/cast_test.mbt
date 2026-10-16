@@ -78,9 +78,6 @@ test "CAST to groups of later tasks is unsupported for now" {
   // Pins the intermediate state. Each later task deletes its line: Task 4
   // STRING, Task 6 DATE, Task 7 INTERVAL; Task 8 deletes the test.
   @expect.expect_all(soft => {
-    soft
-    .expect(failure_of("CAST('2020-01-01' AS DATE)"))
-    .to_equal("unsupported")
     soft.expect(failure_of("CAST(1 AS INTERVAL DAY)")).to_equal("unsupported")
     soft.expect(failure_of("CAST([1] AS BAG)")).to_equal("unsupported")
   })
@@ -106,5 +103,27 @@ test "CAST to text" {
     .expect(failure_of("CAST(12345 AS CHAR(3))", mode=Strict))
     .to_equal("data")
     soft.expect(ev("CAST(`null.int` AS STRING)")).to_equal(Null)
+  })
+}
+
+///|
+test "CAST uses the session time zone" {
+  guard @eval.ZoneOffset::new(330) is Some(india) else { fail("offset") }
+  let source = "CAST(TIME '12:00:00' AS TIME WITH TIME ZONE)"
+  let at_utc = @eval.evaluate_text(source, env=@eval.Bindings::empty())
+  let at_india = @eval.evaluate_text(
+    source,
+    env=@eval.Bindings::empty(),
+    zone=india,
+  )
+  @expect.expect_all(soft => {
+    soft.expect(at_utc is Time({ offset: Some(0), .. })).to_be_true()
+    soft.expect(at_india is Time({ offset: Some(330), .. })).to_be_true()
+    soft
+    .expect(ev("CAST('2020-01-01' AS DATE)"))
+    .to_equal(Date(@value.Date::new(year=2020, month=1, day=1)))
+    soft
+    .expect(failure_of("CAST(TIME '12:00:00' AS TIMESTAMP)"))
+    .to_equal("unsupported")
   })
 }

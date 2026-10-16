@@ -1,5 +1,6 @@
 import {
   "moonrockz/partiql-eval/plan",
+  "moonrockz/partiql-eval/ops",
   "moonrockz/partiql-eval/lower",
   "moonrockz/partiql-eval/interp",
   "moonrockz/partiql-syntax" @syntax,

@@ -31,7 +31,7 @@ pub fn bool_test(@partiql-value.Value, Bool?, negated~ : Bool) -> Bool
 
 pub fn cardinality(Array[@partiql-value.Value]) -> @partiql-value.Value raise OpFailure
 
-pub fn cast(@partiql-value.Value, CastTarget) -> @partiql-value.Value raise OpFailure
+pub fn cast(@partiql-value.Value, CastTarget, zone? : ZoneOffset) -> @partiql-value.Value raise OpFailure
 
 pub fn char_length(Array[@partiql-value.Value]) -> @partiql-value.Value raise OpFailure
 
@@ -186,6 +186,12 @@ pub(all) enum TextKind {
   Varchar(Int)
   String
 } derive(Eq, @debug.Debug)
+
+pub struct ZoneOffset {
+  minutes : Int
+} derive(Eq, @debug.Debug)
+pub fn ZoneOffset::new(Int) -> Self?
+pub fn ZoneOffset::utc() -> Self
 
 // Type aliases
 

@@ -533,7 +533,7 @@ fn eval(
     }
     Cast(x, t, span) => {
       let v = eval(x, env, ctx)
-      typed(ctx.mode, span, () => @ops.cast(v, t))
+      typed(ctx.mode, span, () => @ops.cast(v, t, zone=ctx.zone))
     }
     Call(f, args, span) => {
       let values = args.map(x => eval(x, env, ctx))

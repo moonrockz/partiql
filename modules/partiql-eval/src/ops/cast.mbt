@@ -61,6 +61,29 @@ pub(all) enum CastTarget {
 } derive(Eq, Debug)
 
 ///|
+/// The session time zone displacement in minutes east of UTC, −18:00 to
+/// +18:00 (spec M4d2 §4.4).
+pub struct ZoneOffset {
+  minutes : Int32
+} derive(Eq, Debug)
+
+///|
+pub fn ZoneOffset::utc() -> ZoneOffset {
+  { minutes: 0, }
+}
+
+///|
+/// The displacement of `minutes` east of UTC, or `None` outside −18:00 to
+/// +18:00.
+pub fn ZoneOffset::new(minutes : Int32) -> ZoneOffset? {
+  if minutes >= -1080 && minutes <= 1080 {
+    Some({ minutes, })
+  } else {
+    None
+  }
+}
+
+///|
 /// The SQL name of a value's kind, for messages.
 fn kind_name(x : @value.Value) -> String {
   match x {
@@ -124,10 +147,11 @@ fn target_name(t : CastTarget) -> String {
 ///|
 /// `CAST(v AS target)` (spec M4d2 §4.2): an Ion value is unboxed; NULL and
 /// MISSING stay as they are; ANY gives the operand; then the target group
-/// decides by the kind of the value.
+/// decides by the kind of the value. `zone` is the session time zone.
 pub fn cast(
   v : @value.Value,
   target : CastTarget,
+  zone~ : ZoneOffset = ZoneOffset::utc(),
 ) -> @value.Value raise OpFailure {
   let x = boxed(v)
   if x is (Null | Missing) {
@@ -141,6 +165,10 @@ pub fn cast(
     Float(width) => to_float_target(x, width)
     Text(kind) => to_text(x, kind)
     Clob | Blob => to_lob(x, target)
+    Date => to_date(x, zone)
+    Time(precision~, zone=with_zone) => to_time(x, precision, with_zone, zone)
+    Timestamp(precision~, zone=with_zone) =>
+      to_timestamp(x, precision, with_zone, zone)
     _ =>
       raise Unsupported("CAST to \{target_name(target)} is not supported yet")
   }
