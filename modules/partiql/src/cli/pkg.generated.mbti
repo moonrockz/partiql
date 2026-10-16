@@ -3,6 +3,7 @@ package "moonrockz/partiql/cli"
 
 import {
   "moonbitlang/core/debug",
+  "moonrockz/partiql-eval/ops",
 }
 
 // Values
@@ -20,6 +21,7 @@ pub(all) struct Io {
   write_file : (String, String) -> Unit raise
   read_stdin : () -> String raise
   color_default : Bool
+  clock : @ops.Clock?
 }
 pub fn Io::unavailable() -> Self
 

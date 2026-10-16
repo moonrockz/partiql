@@ -28,6 +28,13 @@ async fn main {
       }
     },
     color_default: stderr_is_terminal() && @env.get_env_var("NO_COLOR") is None,
+    // The only wall clock in the project: the library gets it injected.
+    clock: Some({
+      now: () => {
+        let ms = @env.now().reinterpret_as_int64()
+        @time.unix(ms / 1000L, nanosecond=(ms % 1000L).to_int() * 1000000)
+      },
+    }),
   }
   let outcome = @cli.run(args, io~)
   if outcome.stdout != "" {

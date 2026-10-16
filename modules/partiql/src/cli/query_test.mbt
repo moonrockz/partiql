@@ -1,5 +1,9 @@
 ///|
-fn query_io(files : Map[String, String], stdin~ : String = "") -> @cli.Io {
+fn query_io(
+  files : Map[String, String],
+  stdin~ : String = "",
+  clock~ : @eval.Clock? = None,
+) -> @cli.Io {
   {
     read_file: path => {
       match files.get(path) {
@@ -10,6 +14,7 @@ fn query_io(files : Map[String, String], stdin~ : String = "") -> @cli.Io {
     write_file: (_, _) => fail("query never writes files"),
     read_stdin: () => stdin,
     color_default: false,
+    clock,
   }
 }
 
@@ -356,5 +361,38 @@ test "query usage errors" {
     soft
     .expect(query(["--data", "t=-"]).stderr)
     .to_contain("only one input can read stdin")
+  })
+}
+
+///|
+test "query reads the injected clock once per statement" {
+  let calls = Ref(0)
+  let clock : @eval.Clock = {
+    now: () => {
+      calls.val += 1
+      @time.date_time(2026, 10, 16, hour=12)
+    },
+  }
+  let io = query_io({}, clock=Some(clock))
+  @expect.expect_all(soft => {
+    let out = query(
+      ["--compact", "-e", "CURRENT_DATE = DATE '2026-10-16'"],
+      io~,
+    )
+    soft.expect(out.stdout).to_equal("true\n")
+    soft.expect(calls.val).to_equal(1)
+    ignore(query(["--compact", "-e", "CURRENT_DATE; 1; UTCNOW()"], io~))
+    soft.expect(calls.val).to_equal(3)
+    ignore(query(["--compact", "-e", "1 + 1"], io~))
+    soft.expect(calls.val).to_equal(3)
+  })
+}
+
+///|
+test "query without a clock reports the clock function" {
+  let out = query(["-e", "CURRENT_DATE"])
+  @expect.expect_all(soft => {
+    soft.expect(out.status).to_equal(1)
+    soft.expect(out.stderr.contains("needs a clock")).to_be_true()
   })
 }

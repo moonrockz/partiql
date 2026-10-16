@@ -15,6 +15,7 @@ fn fake_io(
     write_file: (path, text) => written.set(path, text),
     read_stdin: () => stdin,
     color_default: false,
+    clock: None,
   }
   (io, written)
 }

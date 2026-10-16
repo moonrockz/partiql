@@ -14,6 +14,7 @@ fn io_with(
     write_file: (_, _) => (),
     read_stdin: () => stdin,
     color_default: color,
+    clock: None,
   }
 }
 

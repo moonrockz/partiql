@@ -70,6 +70,9 @@ pub(all) struct Io {
   /// Whether colour is on when `--color` is `auto` (stderr is a terminal and
   /// `NO_COLOR` is unset).
   color_default : Bool
+  /// The clock of the clock functions (CURRENT_DATE, ...): `main` passes the
+  /// real one, tests a fixed one, and `None` makes them fail.
+  clock : @eval.Clock?
 }
 
 ///|
@@ -80,6 +83,7 @@ pub fn Io::unavailable() -> Io {
     write_file: (_, _) => fail("file access is not available"),
     read_stdin: () => fail("stdin is not available"),
     color_default: false,
+    clock: None,
   }
 }
 
