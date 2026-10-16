@@ -483,7 +483,7 @@ fn lower_at(
           match builtin(id) {
             Some((f, arity)) =>
               scalar_call(f, arity, args, quantifier, scope, depth, span)
-            None => unsupported("a function call (M4d)", span)
+            None => raise unknown_function(id)
           }
       }
     CallStar(id) =>
@@ -495,7 +495,7 @@ fn lower_at(
           match builtin(id) {
             Some((f, _)) =>
               raise DataError(message="\{f.name()} does not take *", span~)
-            None => unsupported("a function call (M4d)", span)
+            None => raise unknown_function(id)
           }
       }
   }

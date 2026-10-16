@@ -128,3 +128,10 @@ fn clock_precision(
   }
   n
 }
+
+///|
+/// A call to a name that is neither an aggregate nor a built-in: a static
+/// error (SQL: no such routine), at the name.
+fn unknown_function(id : @ast.Identifier) -> @plan.EvalError {
+  DataError(message="unknown function \{id.text}", span=id.span)
+}

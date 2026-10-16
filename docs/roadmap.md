@@ -146,11 +146,12 @@ Its parts, in this order:
 - **Session clock (done)** (bead `partiql-d9i`): CURRENT_DATE, CURRENT_TIME,
   CURRENT_TIMESTAMP and UTCNOW with an injected clock (the CLI is the
   composition root), and CAST of TIME to TIMESTAMP.
-- **Unknown function names** (bead `partiql-5se.5.4`): a static error instead
-  of `Unsupported`.
+- **Unknown function names (done)** (bead `partiql-5se.5.4`): a static
+  `DataError` instead of `Unsupported`, now that the built-in catalog is
+  complete.
 
-M4e, M4c, M4d1, M4d2, M4d3 and the session clock are done. The next part is
-partiql-5se.5.4.
+M4e, M4c and M4d (M4d1, M4d2, M4d3, the session clock and unknown function
+names) are done.
 
 Graph MATCH evaluation and `?` parameters come after M4. A REPL is not part
 of M4.
