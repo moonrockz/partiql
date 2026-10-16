@@ -139,6 +139,8 @@ pub fn cast(
     Integer(width) => to_integer(x, width)
     Decimal(scale) => to_decimal_target(x, scale)
     Float(width) => to_float_target(x, width)
+    Text(kind) => to_text(x, kind)
+    Clob | Blob => to_lob(x, target)
     _ =>
       raise Unsupported("CAST to \{target_name(target)} is not supported yet")
   }

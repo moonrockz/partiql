@@ -78,11 +78,33 @@ test "CAST to groups of later tasks is unsupported for now" {
   // Pins the intermediate state. Each later task deletes its line: Task 4
   // STRING, Task 6 DATE, Task 7 INTERVAL; Task 8 deletes the test.
   @expect.expect_all(soft => {
-    soft.expect(failure_of("CAST(1 AS STRING)")).to_equal("unsupported")
     soft
     .expect(failure_of("CAST('2020-01-01' AS DATE)"))
     .to_equal("unsupported")
     soft.expect(failure_of("CAST(1 AS INTERVAL DAY)")).to_equal("unsupported")
     soft.expect(failure_of("CAST([1] AS BAG)")).to_equal("unsupported")
+  })
+}
+
+///|
+test "CAST to text" {
+  @expect.expect_all(soft => {
+    soft.expect(ev("CAST(1.50 AS STRING)")).to_equal(String("1.50"))
+    soft.expect(ev("CAST(TRUE AS VARCHAR)")).to_equal(String("TRUE"))
+    soft.expect(ev("CAST('abcdef' AS VARCHAR(3))")).to_equal(String("abc"))
+    soft.expect(ev("CAST('ab' AS CHAR(4))")).to_equal(String("ab  "))
+    soft.expect(ev("CAST('ab' AS CHAR)")).to_equal(String("a"))
+    soft.expect(ev("CAST(`abc` AS SYMBOL)")).to_equal(String("abc"))
+    soft
+    .expect(ev("CAST(DATE '2007-10-10' AS STRING)"))
+    .to_equal(String("2007-10-10"))
+    soft
+    .expect(ev("CAST(TIME WITH TIME ZONE '23:12:12.1267-05:30' AS STRING)"))
+    .to_equal(String("23:12:12.1267-05:30"))
+    soft.expect(ev("CHAR_LENGTH(CAST('😀' AS CHAR(3)))")).to_equal(Int(3))
+    soft
+    .expect(failure_of("CAST(12345 AS CHAR(3))", mode=Strict))
+    .to_equal("data")
+    soft.expect(ev("CAST(`null.int` AS STRING)")).to_equal(Null)
   })
 }
