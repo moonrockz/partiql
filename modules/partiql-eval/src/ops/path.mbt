@@ -3,9 +3,12 @@
 /// applies the mode rule (spec M4a §4): a `TypeFailure` is MISSING in
 /// permissive mode and a type error in strict mode; a `DataFailure` (a bad
 /// value of the right type, such as a division by zero) is an error in both.
+/// `Unsupported` marks a valid operation that this version does not evaluate
+/// (spec M4d2 §4.1).
 pub(all) suberror OpFailure {
   TypeFailure(String)
   DataFailure(String)
+  Unsupported(String)
 } derive(Debug, Eq)
 
 ///|

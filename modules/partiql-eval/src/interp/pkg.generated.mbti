@@ -2,6 +2,7 @@
 package "moonrockz/partiql-eval/interp"
 
 import {
+  "moonrockz/partiql-eval/ops",
   "moonrockz/partiql-eval/plan",
   "moonrockz/partiql-value",
 }
@@ -15,9 +16,10 @@ pub fn run(@plan.Expr, Ctx) -> @partiql-value.Value raise @plan.EvalError
 pub struct Ctx {
   globals : Array[(String, @partiql-value.Value)]
   mode : @plan.Mode
+  zone : @ops.ZoneOffset
   // private fields
 }
-pub fn Ctx::new(Array[(String, @partiql-value.Value)], mode~ : @plan.Mode) -> Self
+pub fn Ctx::new(Array[(String, @partiql-value.Value)], mode~ : @plan.Mode, zone? : @ops.ZoneOffset) -> Self
 
 // Type aliases
 

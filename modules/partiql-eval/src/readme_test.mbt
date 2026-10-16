@@ -45,3 +45,15 @@ test "README function example" {
   )
   @expect.expect(value).to_equal(@value.Value::String("STRASSE"))
 }
+
+///|
+/// Mirrors the CAST example of README.mbt.md. Keep the two in step.
+test "README CAST example" {
+  let value = @eval.evaluate_text(
+    "CAST('3.14159' AS DECIMAL(4, 2))",
+    env=@eval.Bindings::empty(),
+  )
+  @expect.expect(value).to_equal(
+    @value.Value::Decimal(@ion.Decimal::parse("3.14")),
+  )
+}

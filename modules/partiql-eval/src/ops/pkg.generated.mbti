@@ -31,6 +31,8 @@ pub fn bool_test(@partiql-value.Value, Bool?, negated~ : Bool) -> Bool
 
 pub fn cardinality(Array[@partiql-value.Value]) -> @partiql-value.Value raise OpFailure
 
+pub fn cast(@partiql-value.Value, CastTarget, zone? : ZoneOffset) -> @partiql-value.Value raise OpFailure
+
 pub fn char_length(Array[@partiql-value.Value]) -> @partiql-value.Value raise OpFailure
 
 pub fn concat(@partiql-value.Value, @partiql-value.Value) -> @partiql-value.Value raise OpFailure
@@ -55,6 +57,8 @@ pub fn in_(@partiql-value.Value, @partiql-value.Value) -> @partiql-value.Value r
 
 pub fn index(@partiql-value.Value, @partiql-value.Value, named~ : Bool) -> @partiql-value.Value raise OpFailure
 
+pub fn interval_qualifier_valid(@ast.IntervalQualifier) -> Bool
+
 pub fn is_type(@partiql-value.Value, @ast.DataType) -> @partiql-value.Value raise OpFailure
 
 pub fn less(@partiql-value.Value, @partiql-value.Value) -> @partiql-value.Value raise OpFailure
@@ -72,6 +76,8 @@ pub fn map_entries(Array[@partiql-value.Value]) -> @partiql-value.Value raise Op
 pub fn map_get(Array[@partiql-value.Value]) -> @partiql-value.Value raise OpFailure
 
 pub fn map_keys(Array[@partiql-value.Value]) -> @partiql-value.Value raise OpFailure
+
+pub fn map_type_of(@ast.DataType) -> @partiql-value.MapType?
 
 pub fn map_values(Array[@partiql-value.Value]) -> @partiql-value.Value raise OpFailure
 
@@ -95,7 +101,15 @@ pub fn or_(@partiql-value.Value, @partiql-value.Value) -> @partiql-value.Value r
 
 pub fn overlay(Array[@partiql-value.Value]) -> @partiql-value.Value raise OpFailure
 
+pub fn parse_date(String) -> @partiql-value.Date raise OpFailure
+
 pub fn parse_decimal(String) -> @ion.Decimal?
+
+pub fn parse_interval(String, negative~ : Bool, qualifier~ : @ast.IntervalQualifier) -> @partiql-value.Value raise OpFailure
+
+pub fn parse_time(String, Int?, Bool) -> @partiql-value.Time raise OpFailure
+
+pub fn parse_timestamp(String, Int?, Bool) -> @partiql-value.Timestamp raise OpFailure
 
 pub fn position(Array[@partiql-value.Value]) -> @partiql-value.Value raise OpFailure
 
@@ -127,9 +141,57 @@ pub fn upper(Array[@partiql-value.Value]) -> @partiql-value.Value raise OpFailur
 pub(all) suberror OpFailure {
   TypeFailure(String)
   DataFailure(String)
+  Unsupported(String)
 } derive(Eq, @debug.Debug)
 
 // Types and methods
+pub(all) enum CastTarget {
+  Any
+  Bool
+  Integer(IntWidth)
+  Decimal(Scale)
+  Float(FloatWidth)
+  Text(TextKind)
+  Clob
+  Blob
+  Date
+  Time(precision~ : Int?, zone~ : Bool)
+  Timestamp(precision~ : Int?, zone~ : Bool)
+  Interval(@ast.IntervalQualifier)
+  List
+  Bag
+  Tuple
+  Map(key~ : CastTarget, key_type~ : @partiql-value.MapType, value~ : CastTarget, value_type~ : @partiql-value.MapType)
+} derive(Eq, @debug.Debug)
+
+pub(all) enum FloatWidth {
+  Real
+  Double
+} derive(Eq, @debug.Debug)
+
+pub(all) enum IntWidth {
+  Bits8
+  Bits16
+  Bits32
+  Bits64
+} derive(Eq, @debug.Debug)
+
+pub(all) enum Scale {
+  Unconstrained
+  Fixed(precision~ : Int, scale~ : Int)
+} derive(Eq, @debug.Debug)
+
+pub(all) enum TextKind {
+  Char(Int)
+  Varchar(Int)
+  String
+} derive(Eq, @debug.Debug)
+
+pub struct ZoneOffset {
+  minutes : Int
+} derive(Eq, @debug.Debug)
+pub fn ZoneOffset::new(Int) -> Self?
+pub fn ZoneOffset::utc() -> Self
 
 // Type aliases
 

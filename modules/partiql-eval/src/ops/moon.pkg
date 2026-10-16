@@ -2,10 +2,14 @@
 
 import {
   "moonrockz/partiql-syntax/ast",
+  "moonrockz/partiql-syntax/parser",
   "moonrockz/partiql-value" @value,
   "moonrockz/ion/ion" @ion_core,
   "moonbitlang/core/bigint",
   "moonbitlang/core/string",
+  "moonbitlang/core/double",
+  "moonbitlang/core/debug",
+  "moonbitlang/core/encoding/utf8",
   "moonbit-community/unicode-data/case_mapping",
   "moonbit-community/unicode-data/lowercase",
   "moonbit-community/unicode-data/uppercase",

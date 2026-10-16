@@ -8,6 +8,7 @@ fn failure(f : () -> @value.Value raise OpFailure) -> String {
   try f() catch {
     TypeFailure(_) => "type"
     DataFailure(_) => "data"
+    Unsupported(_) => "unsupported"
   } noraise {
     _ => "none"
   }

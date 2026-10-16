@@ -54,6 +54,18 @@ let value = @eval.evaluate_text(
 guard value == @value.Value::String("STRASSE")
 ```
 
+`CAST` converts a value to a type. A text that is not a valid literal of the
+type gives `MISSING` (a `TypeError` in strict mode); a value out of the range
+of the type raises a `DataError` in both modes:
+
+```moonbit
+let value = @eval.evaluate_text(
+  "CAST('3.14159' AS DECIMAL(4, 2))",
+  env=@eval.Bindings::empty(),
+)
+guard value == @value.Value::Decimal(@ion.Decimal::parse("3.14"))
+```
+
 Pass `mode=@eval.Mode::Strict` to make a type error raise instead of giving
 `MISSING`.
 
@@ -72,9 +84,10 @@ operations (`UNION`, `INTERSECT` and `EXCEPT`, with `ALL`, `OUTER` and
 evaluates the built-in functions `CHAR_LENGTH`, `OCTET_LENGTH`, `BIT_LENGTH`,
 `UPPER`, `LOWER`, `TRIM`, `SUBSTRING`, `POSITION`, `OVERLAY`, `TEXT_REPLACE`,
 `ABS`, `MOD`, `SIZE`, `CARDINALITY`, `EXISTS`, `TUPLEUNION` and the `MAP_`
-functions. `CAST` and the datetime functions follow in later releases. A
-form that is not supported yet raises `EvalError::Unsupported`, never a wrong
-answer.
+functions. It evaluates `CAST` to every type except `SEXP` and `ARRAY<T>`;
+`evaluate` takes the session time zone of `CAST` as `zone~` (default UTC).
+The datetime functions follow in a later release. A form that is not
+supported yet raises `EvalError::Unsupported`, never a wrong answer.
 
 ## Errors
 

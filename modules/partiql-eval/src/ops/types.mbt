@@ -99,7 +99,8 @@ fn interval_fits(v : @value.Value, q : @ast.IntervalQualifier) -> Bool {
 }
 
 ///|
-fn map_type_of(t : @ast.DataType) -> @value.MapType? {
+/// The map type a type name declares, if it is one (RFC 0104).
+pub fn map_type_of(t : @ast.DataType) -> @value.MapType? {
   match t {
     Bool => Some(@value.MapType::Bool)
     TinyInt => Some(@value.MapType::TinyInt)

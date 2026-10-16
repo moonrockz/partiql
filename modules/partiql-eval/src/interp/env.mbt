@@ -1,10 +1,11 @@
 ///|
-/// The context of one evaluation: the global bindings, the mode, and the
-/// error of a relation's iterator, which `pull` and `each` raise (see
-/// relation.mbt).
+/// The context of one evaluation: the global bindings, the mode, the session
+/// time zone (spec M4d2 §4.4), and the error of a relation's iterator, which
+/// `pull` and `each` raise (see relation.mbt).
 pub struct Ctx {
   globals : Array[(String, @value.Value)]
   mode : @plan.Mode
+  zone : @ops.ZoneOffset
   priv mut failure : @plan.EvalError?
 }
 
@@ -12,8 +13,9 @@ pub struct Ctx {
 pub fn Ctx::new(
   globals : Array[(String, @value.Value)],
   mode~ : @plan.Mode,
+  zone~ : @ops.ZoneOffset = @ops.ZoneOffset::utc(),
 ) -> Ctx {
-  { globals, mode, failure: None, }
+  { globals, mode, zone, failure: None, }
 }
 
 ///|

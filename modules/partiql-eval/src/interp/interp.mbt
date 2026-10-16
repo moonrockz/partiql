@@ -45,6 +45,7 @@ fn implicit(
       let found = @ops.field(v, name, delimited~) catch {
         TypeFailure(_) => Missing
         DataFailure(message) => raise DataError(message~, span~)
+        Unsupported(message) => raise Unsupported(message~, span~)
       }
       if !(found is Missing) {
         return found
@@ -73,6 +74,7 @@ fn typed(
         Strict => raise TypeError(message~, span~)
       }
     DataFailure(message) => raise DataError(message~, span~)
+    Unsupported(message) => raise Unsupported(message~, span~)
   }
 }
 
@@ -98,6 +100,7 @@ fn expand(
         Strict => raise TypeError(message~, span~)
       }
     DataFailure(message) => raise DataError(message~, span~)
+    Unsupported(message) => raise Unsupported(message~, span~)
   } noraise {
     items => items
   }
@@ -165,8 +168,13 @@ fn navigate(
       typed(ctx.mode, span, () => @ops.field(v, name, delimited~))
     Index(e) => {
       let i = eval(e, env, ctx)
-      // A string literal, also an Ion one, names a field.
-      let named = e is Const(c, _) && unboxed(c) is String(_)
+      // A string literal, also an Ion one, or a CAST to a character string
+      // names a field (spec paths.adoc:64-68).
+      let named = match e {
+        Const(c, _) => unboxed(c) is String(_)
+        Cast(_, Text(_), _) => true
+        _ => false
+      }
       typed(ctx.mode, span, () => @ops.index(v, i, named~))
     }
     AllElements | AllFields => v
@@ -269,9 +277,11 @@ fn widen(v : @value.Value, t : @value.MapType) -> @value.Value {
 ///|
 /// `MAP { k: v, ... }`: a NULL or MISSING key drops the entry (permissive) or
 /// is the result (strict); a repeated key keeps the last value (permissive) or
-/// is an error (strict). The key and value types are inferred.
+/// is an error (strict). The key and value types are those the plan declares, else inferred.
 fn run_map(
   entries : Array[(@plan.Expr, @plan.Expr)],
+  declared_key : @value.MapType?,
+  declared_value : @value.MapType?,
   env : Env,
   ctx : Ctx,
   span : @ast.Span,
@@ -290,11 +300,18 @@ fn run_map(
     }
     pairs.push((key, value))
   }
-  let key_type = match common_type(pairs.map(p => p.0)) {
-    Dynamic if pairs.is_empty() => @value.MapType::String
-    t => t
+  let key_type = match declared_key {
+    Some(t) => t
+    None =>
+      match common_type(pairs.map(p => p.0)) {
+        Dynamic if pairs.is_empty() => @value.MapType::String
+        t => t
+      }
   }
-  let value_type = common_type(pairs.map(p => p.1))
+  let value_type = match declared_value {
+    Some(t) => t
+    None => common_type(pairs.map(p => p.1))
+  }
   // Duplicates are found after widening and lowering, as `MapValue::new` does.
   let unique : Array[(@value.Value, @value.Value)] = []
   for pair in pairs {
@@ -452,7 +469,8 @@ fn eval(
       let v = unboxed(eval(x, env, ctx))
       Bool((v is Missing) != negated)
     }
-    MapOf(entries, span) => run_map(entries, env, ctx, span)
+    MapOf(entries, key_type~, value_type~, span) =>
+      run_map(entries, key_type, value_type, env, ctx, span)
     Unary(op, x, span) => {
       let v = eval(x, env, ctx)
       typed(ctx.mode, span, () => @ops.neg(v, negate=op is Neg))
@@ -527,6 +545,10 @@ fn eval(
       } else {
         x
       }
+    }
+    Cast(x, t, span) => {
+      let v = eval(x, env, ctx)
+      typed(ctx.mode, span, () => @ops.cast(v, t, zone=ctx.zone))
     }
     Call(f, args, span) => {
       let values = args.map(x => eval(x, env, ctx))

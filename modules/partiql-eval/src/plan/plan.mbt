@@ -30,7 +30,14 @@ pub(all) enum Expr {
   ListOf(Array[Expr], @ast.Span)
   BagOf(Array[Expr], @ast.Span)
   TupleOf(Array[(Expr, Expr)], @ast.Span)
-  MapOf(Array[(Expr, Expr)], @ast.Span)
+  /// `MAP { k: v, ... }`. A key or value type that every entry declares by
+  /// CAST is known at lowering (spec M4d2 §3.3); otherwise it is inferred.
+  MapOf(
+    Array[(Expr, Expr)],
+    key_type~ : @value.MapType?,
+    value_type~ : @value.MapType?,
+    @ast.Span
+  )
   Path(Expr, Array[Step], @ast.Span)
   IsNull(Expr, negated~ : Bool, @ast.Span)
   IsMissing(Expr, negated~ : Bool, @ast.Span)
@@ -56,6 +63,8 @@ pub(all) enum Expr {
   /// A built-in scalar function (spec M4d1 §2), with its arguments in the
   /// positions `Function` documents.
   Call(Function, Array[Expr], @ast.Span)
+  /// `CAST(e AS T)` with its resolved target (spec M4d2 §3).
+  Cast(Expr, @ops.CastTarget, @ast.Span)
   /// A FROM variable, by the name it was declared with.
   Local(String, @ast.Span)
   /// A name in a FROM source: the global of that name if there is one, else
@@ -224,7 +233,7 @@ pub fn Expr::span(self : Expr) -> @ast.Span {
     | ListOf(_, span)
     | BagOf(_, span)
     | TupleOf(_, span)
-    | MapOf(_, span)
+    | MapOf(_, key_type=_, value_type=_, span)
     | Path(_, _, span)
     | IsNull(_, negated=_, span)
     | IsMissing(_, negated=_, span)
@@ -242,6 +251,7 @@ pub fn Expr::span(self : Expr) -> @ast.Span {
     | Coalesce(_, span)
     | NullIf(_, _, span)
     | Call(_, _, span)
+    | Cast(_, _, span)
     | Local(_, span)
     | GlobalOrLocal(_, variable=_, delimited=_, span)
     | Implicit(_, delimited=_, locals=_, span)
