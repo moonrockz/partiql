@@ -45,6 +45,7 @@ fn implicit(
       let found = @ops.field(v, name, delimited~) catch {
         TypeFailure(_) => Missing
         DataFailure(message) => raise DataError(message~, span~)
+        Unsupported(message) => raise Unsupported(message~, span~)
       }
       if !(found is Missing) {
         return found
@@ -73,6 +74,7 @@ fn typed(
         Strict => raise TypeError(message~, span~)
       }
     DataFailure(message) => raise DataError(message~, span~)
+    Unsupported(message) => raise Unsupported(message~, span~)
   }
 }
 
@@ -98,6 +100,7 @@ fn expand(
         Strict => raise TypeError(message~, span~)
       }
     DataFailure(message) => raise DataError(message~, span~)
+    Unsupported(message) => raise Unsupported(message~, span~)
   } noraise {
     items => items
   }

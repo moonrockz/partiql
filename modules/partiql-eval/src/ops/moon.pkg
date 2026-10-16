@@ -6,6 +6,7 @@ import {
   "moonrockz/ion/ion" @ion_core,
   "moonbitlang/core/bigint",
   "moonbitlang/core/string",
+  "moonbitlang/core/double",
   "moonbit-community/unicode-data/case_mapping",
   "moonbit-community/unicode-data/lowercase",
   "moonbit-community/unicode-data/uppercase",
