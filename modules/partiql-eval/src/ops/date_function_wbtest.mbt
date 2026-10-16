@@ -113,3 +113,113 @@ test "DATE_ADD failures" {
     soft.expect(failure(() => add_of(Day, String("1"), Null))).to_equal("type")
   })
 }
+
+///|
+fn diff_of(
+  field : @ast.DatetimeField,
+  a : @value.Value,
+  b : @value.Value,
+  zone~ : ZoneOffset = ZoneOffset::utc(),
+) -> @value.Value raise OpFailure {
+  date_diff(field, [a, b], zone~)
+}
+
+///|
+test "DATE_DIFF day to second: elapsed units toward zero" {
+  @expect.expect_all(soft => {
+    // date_diff.ion:2287 and :1538.
+    soft
+    .expect(diff_of(Hour, on_day(2025, 1, 15), at(2025, 1, 14, 12, 0, 0, None)))
+    .to_equal(Int(-12))
+    soft
+    .expect(
+      diff_of(
+        Day,
+        at(2017, 1, 2, 1, 0, 0, Some(600)),
+        at(2017, 1, 2, 1, 0, 0, Some(0)),
+      ),
+    )
+    .to_equal(Int(0))
+    soft
+    .expect(
+      diff_of(
+        Hour,
+        at(2017, 1, 2, 1, 0, 0, Some(600)),
+        at(2017, 1, 2, 1, 0, 0, Some(0)),
+      ),
+    )
+    .to_equal(Int(10))
+    soft
+    .expect(diff_of(Day, on_day(2016, 2, 1), on_day(2016, 3, 1)))
+    .to_equal(Int(29))
+    soft
+    .expect(diff_of(Minute, clock_at(8, 15), clock_at(6, 0)))
+    .to_equal(Int(-135))
+    soft
+    .expect(failure(() => diff_of(Day, clock_at(8, 15), clock_at(6, 0))))
+    .to_equal("type")
+    soft
+    .expect(failure(() => diff_of(Hour, clock_at(8, 15), on_day(2020, 1, 1))))
+    .to_equal("type")
+  })
+}
+
+///|
+test "DATE_DIFF months and years count complete months" {
+  @expect.expect_all(soft => {
+    soft
+    .expect(diff_of(Month, on_day(2025, 1, 31), on_day(2025, 2, 28)))
+    .to_equal(Int(0))
+    soft
+    .expect(diff_of(Month, on_day(2025, 1, 15), on_day(2025, 3, 15)))
+    .to_equal(Int(2))
+    soft
+    .expect(diff_of(Month, on_day(2025, 3, 15), on_day(2025, 1, 16)))
+    .to_equal(Int(-1))
+    soft
+    .expect(diff_of(Month, on_day(2025, 3, 15), on_day(2025, 1, 15)))
+    .to_equal(Int(-2))
+    soft
+    .expect(diff_of(Year, on_day(2020, 2, 29), on_day(2021, 2, 28)))
+    .to_equal(Int(0))
+    soft
+    .expect(diff_of(Year, on_day(2020, 2, 29), on_day(2024, 2, 29)))
+    .to_equal(Int(4))
+    soft
+    .expect(
+      diff_of(
+        Month,
+        at(2025, 1, 15, 12, 0, 0, None),
+        at(2025, 2, 15, 11, 0, 0, None),
+      ),
+    )
+    .to_equal(Int(0))
+  })
+}
+
+///|
+test "DATE_DIFF puts values without an offset in the session zone" {
+  let plus_two = zone_of(120)
+  @expect.expect_all(soft => {
+    // 00:00 local at +02:00 is 22:00 UTC the day before.
+    soft
+    .expect(
+      diff_of(
+        Hour,
+        at(2020, 1, 1, 0, 0, 0, None),
+        at(2020, 1, 1, 0, 0, 0, Some(0)),
+        zone=plus_two,
+      ),
+    )
+    .to_equal(Int(2))
+    soft
+    .expect(
+      diff_of(
+        Hour,
+        at(2020, 1, 1, 0, 0, 0, None),
+        at(2020, 1, 1, 0, 0, 0, Some(0)),
+      ),
+    )
+    .to_equal(Int(0))
+  })
+}

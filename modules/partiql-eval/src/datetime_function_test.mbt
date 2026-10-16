@@ -54,3 +54,34 @@ test "DATE_ADD evaluates" {
     soft.expect(ev("DATE_ADD(year, NULL, MISSING)")).to_equal(Missing)
   })
 }
+
+///|
+test "DATE_DIFF evaluates" {
+  @expect.expect_all(soft => {
+    soft
+    .expect(
+      ev("DATE_DIFF(hour, DATE '2025-01-15', TIMESTAMP '2025-01-14 12:30:45')"),
+    )
+    .to_equal(Int(-11))
+    soft
+    .expect(
+      ev("DATE_DIFF(day, `2017-01-02T01:00+10:00`, `2017-01-02T01:00+00:00`)"),
+    )
+    .to_equal(Int(0))
+    soft
+    .expect(
+      ev(
+        "DATE_DIFF(hour, TIME '08:15:45', TIME WITH TIME ZONE '08:15:45+02:00')",
+      ),
+    )
+    .to_equal(Int(-2))
+    soft
+    .expect(
+      failure_of(
+        "DATE_DIFF(hour, TIME '08:15:45', DATE '2020-01-01')",
+        mode=Strict,
+      ),
+    )
+    .to_equal("type")
+  })
+}

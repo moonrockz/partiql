@@ -41,6 +41,8 @@ pub fn count_values(Iter[@partiql-value.Value], distinct~ : Bool) -> @partiql-va
 
 pub fn date_add(@ast.DatetimeField, Array[@partiql-value.Value]) -> @partiql-value.Value raise OpFailure
 
+pub fn date_diff(@ast.DatetimeField, Array[@partiql-value.Value], zone~ : ZoneOffset) -> @partiql-value.Value raise OpFailure
+
 pub fn div(@partiql-value.Value, @partiql-value.Value) -> @partiql-value.Value raise OpFailure
 
 pub fn equal(@partiql-value.Value, @partiql-value.Value) -> @partiql-value.Value
