@@ -53,8 +53,8 @@ fn not_a_number(text : String) -> OpFailure {
 /// A number from SQL text: leading and trailing spaces (U+0020 only) are
 /// trimmed, then an optional sign and one of: `0x`/`0o`/`0b` digits (an
 /// integer); digits with an optional fraction (an exact decimal); the same
-/// with an exponent (an approximate number, SQL `<approximate numeric
-/// literal>`); `nan`, `inf` (any case; only `inf` takes a sign).
+/// with an exponent (also exact, as a PartiQL number literal); `nan`, `inf`
+/// (any case; only `inf` takes a sign), the only approximate forms.
 fn numeric_text(text : String) -> Num raise OpFailure {
   let chars = text.trim(chars=" ").to_owned().to_array()
   let n = chars.length()
@@ -112,32 +112,37 @@ fn numeric_text(text : String) -> Num raise OpFailure {
     if exponent.is_empty() || end != n {
       raise not_a_number(text)
     }
-    let mantissa_whole = if whole.is_empty() { "0" } else { whole }
-    let mantissa_fraction = if fraction.is_empty() { "0" } else { fraction }
-    let sign = if negative { "-" } else { "" }
-    let clean = "\{sign}\{mantissa_whole}.\{mantissa_fraction}e\{exponent_sign}\{exponent}"
-    // The syntax is checked above, so a failure here is a range error.
-    let out_of_range = DataFailure(
-      "'\{text}' is out of the range of DOUBLE PRECISION",
-    )
-    let f = @string.parse_double(clean) catch { _ => raise out_of_range }
-    if f.is_inf() {
-      raise out_of_range
+    // An exponent does not make the number approximate: PartiQL reads a
+    // number literal with an exponent as a DECIMAL, so the digits stay
+    // exact and each target rounds once (spec M4d2 §4.3).
+    let magnitude = @bigint.BigInt::from_string(exponent)
+    let shift = (if exponent_sign == "-" { -magnitude } else { magnitude }) -
+      @bigint.BigInt::from_int(fraction.length())
+    if shift.compare_int(2147483647) > 0 || shift.compare_int(-2147483648) < 0 {
+      raise DataFailure("the exponent of '\{text}' is out of range")
     }
-    return Approx(f)
+    return Exact(signed_decimal(negative, whole + fraction, shift.to_int()))
   }
   if j != n {
     raise not_a_number(text)
   }
-  let coefficient = @bigint.BigInt::from_string(whole + fraction)
-  Exact(
-    @ion_core.Decimal::new(
-      if negative {
-        -coefficient
-      } else {
-        coefficient
-      },
-      -fraction.length(),
-    ),
+  Exact(signed_decimal(negative, whole + fraction, -fraction.length()))
+}
+
+///|
+/// The decimal `digits` × 10^`exponent`, negated when `negative`.
+fn signed_decimal(
+  negative : Bool,
+  digits : String,
+  exponent : Int32,
+) -> @ion_core.Decimal {
+  let coefficient = @bigint.BigInt::from_string(digits)
+  @ion_core.Decimal::new(
+    if negative {
+      -coefficient
+    } else {
+      coefficient
+    },
+    exponent,
   )
 }

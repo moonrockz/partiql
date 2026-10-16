@@ -347,7 +347,9 @@ from SQL, then the corpus, then partiql-lang-kotlin:
   in both modes. `CAST(x AS NULL)` and `CAST(x AS MISSING)` are static errors.
 - **Numbers.** Rounding is half to even. Text is read as an SQL numeric
   literal (with `0x`, `0o`, `0b` and `_` separators, SQL:2023), so
-  `CAST('1.5' AS INT)` is 2. BOOL and numbers convert both ways (the corpus
+  `CAST('1.5' AS INT)` is 2. A number with an exponent stays exact, as a
+  PartiQL number literal does (`1e3` is a DECIMAL), so every target rounds
+  once and the text of a decimal reads back without loss. BOOL and numbers convert both ways (the corpus
   needs BOOL to integers; SQL has neither): zero is FALSE, NaN is a type
   error. A bare `DECIMAL` keeps the scale of the value (38 digits);
   `DECIMAL(p)` has scale 0. A float casts to DECIMAL as the decimal of its
@@ -382,8 +384,9 @@ from SQL, then the corpus, then partiql-lang-kotlin:
 One CAST assertion fails: `cast.ion` "cast to int invalid values" with
 `'2e10'` (`cast('2e10' as INT)`) expects MISSING in permissive mode. In SQL `'2e10'` is
 a valid approximate literal whose value is out of the range of INT, a data
-error in both modes, as the extended `int.ion` overflow cases expect. The
-evaluator follows SQL.
+error in both modes, as the extended `int.ion` overflow cases expect (the
+evaluator reads it as the exact number 20000000000). The evaluator follows
+SQL.
 
 Every corpus value passes `codec`, including the `$map` (M1b MAP) and
 `$graph` (M1b graph) values.

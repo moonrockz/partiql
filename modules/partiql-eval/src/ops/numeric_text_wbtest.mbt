@@ -39,17 +39,27 @@ test "numeric_text: prefixed integers" {
 }
 
 ///|
-test "numeric_text: approximate forms" {
+test "numeric_text: exponent forms are exact, as PartiQL number literals" {
   @expect.expect_all(soft => {
-    soft.expect(parsed("1.5e-3")).to_equal("approx 0.0015")
-    soft.expect(parsed("2E10")).to_equal("approx 20000000000")
-    soft.expect(parsed("-1e+2")).to_equal("approx -100")
+    soft.expect(parsed("1.5e-3")).to_equal("exact 15e-4")
+    soft.expect(parsed("2E10")).to_equal("exact 2e10")
+    soft.expect(parsed("-1e+2")).to_equal("exact -1e2")
+    soft.expect(parsed(".5E1")).to_equal("exact 5e0")
+    soft.expect(parsed("1e-400")).to_equal("exact 1e-400")
+    soft.expect(parsed("1e400")).to_equal("exact 1e400")
+    soft.expect(parsed("1e1_0")).to_equal("exact 1e10")
+    soft.expect(parsed("1e99999999999999999999")).to_equal("data")
+    soft.expect(parsed("1e-99999999999999999999")).to_equal("data")
+  })
+}
+
+///|
+test "numeric_text: NaN and infinity are approximate" {
+  @expect.expect_all(soft => {
     soft.expect(parsed("NaN")).to_equal("approx NaN")
     soft.expect(parsed("inf")).to_equal("approx Infinity")
     soft.expect(parsed("+INF")).to_equal("approx Infinity")
     soft.expect(parsed("-Inf")).to_equal("approx -Infinity")
-    soft.expect(parsed("1e-400")).to_equal("approx 0")
-    soft.expect(parsed("1e400")).to_equal("data")
   })
 }
 

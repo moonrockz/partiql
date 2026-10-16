@@ -208,3 +208,25 @@ test "cast of a float to an integer uses its exact value" {
     .to_equal("data")
   })
 }
+
+///|
+test "exponent text keeps its digits" {
+  let digits = "1.2345678901234567890123456789012345678E47"
+  @expect.expect_all(soft => {
+    soft
+    .expect(cast(String(digits), Decimal(Unconstrained)))
+    .to_equal(d("1.2345678901234567890123456789012345678d47"))
+    // Halfway in binary64 but above it in exact decimal: rounds up once.
+    soft
+    .expect(cast(String("1.00000005960464477539062500001e0"), Float(Real)))
+    .to_equal(Float(Float::from_double(1.0 + 1.0 / 8388608.0).to_double()))
+    soft
+    .expect(failure(() => cast(String("1e400"), Float(Double))))
+    .to_equal("data")
+    soft
+    .expect(cast(String("1e400"), Decimal(Unconstrained)))
+    .to_equal(d("1d400"))
+    soft.expect(failure(() => cast(String("2e10"), int32))).to_equal("data")
+    soft.expect(cast(String("2.5e0"), int32)).to_equal(Int(2))
+  })
+}
