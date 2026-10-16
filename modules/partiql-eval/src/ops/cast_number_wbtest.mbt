@@ -195,3 +195,16 @@ test "cast to REAL rounds once from an exact value" {
     soft.expect(cast(d(above), Float(Real))).to_equal(Float(one_up))
   })
 }
+
+///|
+test "cast of a float to an integer uses its exact value" {
+  // -2^63 is a double; its shortest text (-9223372036854776000) is not.
+  @expect.expect_all(soft => {
+    soft
+    .expect(cast(Float(-9223372036854775808.0), int64))
+    .to_equal(Int(-9223372036854775808L))
+    soft
+    .expect(failure(() => cast(Float(9223372036854775808.0), int64)))
+    .to_equal("data")
+  })
+}

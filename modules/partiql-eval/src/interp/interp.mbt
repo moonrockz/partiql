@@ -531,6 +531,10 @@ fn eval(
         x
       }
     }
+    Cast(x, t, span) => {
+      let v = eval(x, env, ctx)
+      typed(ctx.mode, span, () => @ops.cast(v, t))
+    }
     Call(f, args, span) => {
       let values = args.map(x => eval(x, env, ctx))
       typed(ctx.mode, span, () => call(f, values))

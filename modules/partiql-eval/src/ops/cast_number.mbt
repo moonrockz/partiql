@@ -98,7 +98,14 @@ fn to_integer(
   let name = target_name(Integer(width))
   let n = match numeric_source(x, name) {
     Whole(n) => n
-    other => decimal_to_integer(exact_of(other))
+    Exact(d) => decimal_to_integer(d)
+    // The exact binary value: the shortest text of -2^63 is not -2^63.
+    Approx(f) => {
+      if f.is_nan() || f.is_inf() {
+        raise DataFailure("NaN or infinity is out of the range of \{name}")
+      }
+      decimal_to_integer(exact_decimal(f))
+    }
   }
   let (low, high) = width_range(width)
   if n.compare_int64(low) < 0 || n.compare_int64(high) > 0 {

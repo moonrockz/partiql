@@ -110,19 +110,7 @@ fn type_test(
         span~,
       )
     Interval(q) => {
-      ignore(interval_fields(q)) catch {
-        _ =>
-          raise DataError(
-            message="an interval qualifier that is not valid",
-            span~,
-          )
-      }
-      if q.fractional_precision is Some(f) && (f < 0 || f > 9) {
-        raise DataError(message="a fractional precision out of range", span~)
-      }
-      if q.start_precision is Some(p) && p < 1 {
-        raise DataError(message="a leading precision out of range", span~)
-      }
+      check_qualifier(q, span)
       t
     }
     _ => t
@@ -461,11 +449,9 @@ fn lower_at(
         depth,
         span,
       )
-    Overlaps(_, _)
-    | Cast(_, _)
-    | Extract(_, _)
-    | DateAdd(_, _, _)
-    | DateDiff(_, _, _) => unsupported("a function call (M4d)", span)
+    Cast(x, t) => Cast(lower_at(x, scope, depth), target(t, span), span)
+    Overlaps(_, _) | Extract(_, _) | DateAdd(_, _, _) | DateDiff(_, _, _) =>
+      unsupported("a function call (M4d)", span)
     Call(id, args, quantifier~) =>
       match aggregate_function(id) {
         Some((kind, true)) =>

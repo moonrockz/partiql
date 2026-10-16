@@ -56,6 +56,8 @@ pub(all) enum Expr {
   /// A built-in scalar function (spec M4d1 §2), with its arguments in the
   /// positions `Function` documents.
   Call(Function, Array[Expr], @ast.Span)
+  /// `CAST(e AS T)` with its resolved target (spec M4d2 §3).
+  Cast(Expr, @ops.CastTarget, @ast.Span)
   /// A FROM variable, by the name it was declared with.
   Local(String, @ast.Span)
   /// A name in a FROM source: the global of that name if there is one, else
@@ -242,6 +244,7 @@ pub fn Expr::span(self : Expr) -> @ast.Span {
     | Coalesce(_, span)
     | NullIf(_, _, span)
     | Call(_, _, span)
+    | Cast(_, _, span)
     | Local(_, span)
     | GlobalOrLocal(_, variable=_, delimited=_, span)
     | Implicit(_, delimited=_, locals=_, span)

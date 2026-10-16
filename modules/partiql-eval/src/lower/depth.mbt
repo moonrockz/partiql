@@ -123,6 +123,7 @@ fn push_operands(
     | Subquery(x, _, _)
     | BoolTest(x, _, negated=_, _)
     | IsType(x, _, negated=_, _)
+    | Cast(x, _, _)
     | CollAggregate(_, distinct=_, x, _)
     | Aggregate(_, distinct=_, x, members=_, group=_, _) => push(x)
     Binary(_, _, _, _) | And(_, _, _) | Or(_, _, _) => {

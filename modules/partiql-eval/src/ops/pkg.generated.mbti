@@ -75,6 +75,8 @@ pub fn map_get(Array[@partiql-value.Value]) -> @partiql-value.Value raise OpFail
 
 pub fn map_keys(Array[@partiql-value.Value]) -> @partiql-value.Value raise OpFailure
 
+pub fn map_type_of(@ast.DataType) -> @partiql-value.MapType?
+
 pub fn map_values(Array[@partiql-value.Value]) -> @partiql-value.Value raise OpFailure
 
 pub fn max_values(Iter[@partiql-value.Value], distinct~ : Bool) -> @partiql-value.Value raise OpFailure

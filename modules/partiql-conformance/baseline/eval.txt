@@ -91,6 +91,24 @@ eval-equiv/spec-tests.ion::section-6::equiv tupleunion with select list[0]#coerc
 eval-equiv/spec-tests.ion::section-6::equiv tupleunion with select list[0]#error
 eval-equiv/spec-tests.ion::section-6::equiv tupleunion with select list[1]#coerce
 eval-equiv/spec-tests.ion::section-6::equiv tupleunion with select list[1]#error
+eval/ion/primitives/cast.ion::cast-to-int::cast to int valid cases{value:" `\"100\"` ",result:100}#coerce
+eval/ion/primitives/cast.ion::cast-to-int::cast to int valid cases{value:" `\"100\"` ",result:100}#error
+eval/ion/primitives/cast.ion::cast-to-int::cast to int valid cases{value:"`-9223372036854775808e0`",result:-9223372036854775808}#coerce
+eval/ion/primitives/cast.ion::cast-to-int::cast to int valid cases{value:"`-9223372036854775808e0`",result:-9223372036854775808}#error
+eval/ion/primitives/cast.ion::cast_invalid::cast to int invalid target type{value:" `{{\"1\"}}` ",target:"CLOB"}#coerce
+eval/ion/primitives/cast.ion::cast_invalid::cast to int invalid target type{value:" `{{\"1\"}}` ",target:"CLOB"}#error
+eval/ion/primitives/cast.ion::cast_invalid::cast to int invalid target type{value:" `{{\"\"}}` ",target:"CLOB"}#coerce
+eval/ion/primitives/cast.ion::cast_invalid::cast to int invalid target type{value:" `{{\"\"}}` ",target:"CLOB"}#error
+eval/ion/primitives/cast.ion::cast_invalid::cast to int invalid target type{value:"`()`",target:"SEXP"}#coerce
+eval/ion/primitives/cast.ion::cast_invalid::cast to int invalid target type{value:"`()`",target:"SEXP"}#error
+eval/ion/primitives/cast.ion::cast_invalid::cast to int invalid target type{value:"`(1 2)`",target:"SEXP"}#coerce
+eval/ion/primitives/cast.ion::cast_invalid::cast to int invalid target type{value:"`(1 2)`",target:"SEXP"}#error
+eval/ion/primitives/cast.ion::cast_invalid::cast to int invalid target type{value:"`(1)`",target:"SEXP"}#coerce
+eval/ion/primitives/cast.ion::cast_invalid::cast to int invalid target type{value:"`(1)`",target:"SEXP"}#error
+eval/ion/primitives/cast.ion::cast_invalid::cast to int invalid target type{value:"`2017T`",target:"TIMESTAMP"}#coerce
+eval/ion/primitives/cast.ion::cast_invalid::cast to int invalid target type{value:"`2017T`",target:"TIMESTAMP"}#error
+eval/ion/primitives/cast.ion::cast_invalid::cast to int invalid target type{value:"`{{}}`",target:"BLOB"}#coerce
+eval/ion/primitives/cast.ion::cast_invalid::cast to int invalid target type{value:"`{{}}`",target:"BLOB"}#error
 eval/ion/primitives/functions/abs.ion::abs::ABS(`+inf`) special value#coerce
 eval/ion/primitives/functions/abs.ion::abs::ABS(`+inf`) special value#error
 eval/ion/primitives/functions/abs.ion::abs::ABS(`-0.0000`) preserve scale#coerce
@@ -353,6 +371,111 @@ eval/primitives/bool.ion::bool::boolean literals{sql:"false",r:false}#coerce
 eval/primitives/bool.ion::bool::boolean literals{sql:"false",r:false}#error
 eval/primitives/bool.ion::bool::boolean literals{sql:"true",r:true}#coerce
 eval/primitives/bool.ion::bool::boolean literals{sql:"true",r:true}#error
+eval/primitives/cast.ion::cast-to-int::cast to int valid cases{value:"'+0'",result:0}#coerce
+eval/primitives/cast.ion::cast-to-int::cast to int valid cases{value:"'+0'",result:0}#error
+eval/primitives/cast.ion::cast-to-int::cast to int valid cases{value:"'+00'",result:0}#coerce
+eval/primitives/cast.ion::cast-to-int::cast to int valid cases{value:"'+00'",result:0}#error
+eval/primitives/cast.ion::cast-to-int::cast to int valid cases{value:"'+01'",result:1}#coerce
+eval/primitives/cast.ion::cast-to-int::cast to int valid cases{value:"'+01'",result:1}#error
+eval/primitives/cast.ion::cast-to-int::cast to int valid cases{value:"'+0b010'",result:2}#coerce
+eval/primitives/cast.ion::cast-to-int::cast to int valid cases{value:"'+0b010'",result:2}#error
+eval/primitives/cast.ion::cast-to-int::cast to int valid cases{value:"'+0b10'",result:2}#coerce
+eval/primitives/cast.ion::cast-to-int::cast to int valid cases{value:"'+0b10'",result:2}#error
+eval/primitives/cast.ion::cast-to-int::cast to int valid cases{value:"'+0x0A'",result:10}#coerce
+eval/primitives/cast.ion::cast-to-int::cast to int valid cases{value:"'+0x0A'",result:10}#error
+eval/primitives/cast.ion::cast-to-int::cast to int valid cases{value:"'+0xA'",result:10}#coerce
+eval/primitives/cast.ion::cast-to-int::cast to int valid cases{value:"'+0xA'",result:10}#error
+eval/primitives/cast.ion::cast-to-int::cast to int valid cases{value:"'+1'",result:1}#coerce
+eval/primitives/cast.ion::cast-to-int::cast to int valid cases{value:"'+1'",result:1}#error
+eval/primitives/cast.ion::cast-to-int::cast to int valid cases{value:"'-0'",result:0}#coerce
+eval/primitives/cast.ion::cast-to-int::cast to int valid cases{value:"'-0'",result:0}#error
+eval/primitives/cast.ion::cast-to-int::cast to int valid cases{value:"'-00'",result:0}#coerce
+eval/primitives/cast.ion::cast-to-int::cast to int valid cases{value:"'-00'",result:0}#error
+eval/primitives/cast.ion::cast-to-int::cast to int valid cases{value:"'-01'",result:-1}#coerce
+eval/primitives/cast.ion::cast-to-int::cast to int valid cases{value:"'-01'",result:-1}#error
+eval/primitives/cast.ion::cast-to-int::cast to int valid cases{value:"'-0b010'",result:-2}#coerce
+eval/primitives/cast.ion::cast-to-int::cast to int valid cases{value:"'-0b010'",result:-2}#error
+eval/primitives/cast.ion::cast-to-int::cast to int valid cases{value:"'-0b10'",result:-2}#coerce
+eval/primitives/cast.ion::cast-to-int::cast to int valid cases{value:"'-0b10'",result:-2}#error
+eval/primitives/cast.ion::cast-to-int::cast to int valid cases{value:"'-0x0A'",result:-10}#coerce
+eval/primitives/cast.ion::cast-to-int::cast to int valid cases{value:"'-0x0A'",result:-10}#error
+eval/primitives/cast.ion::cast-to-int::cast to int valid cases{value:"'-0xA'",result:-10}#coerce
+eval/primitives/cast.ion::cast-to-int::cast to int valid cases{value:"'-0xA'",result:-10}#error
+eval/primitives/cast.ion::cast-to-int::cast to int valid cases{value:"'-1'",result:-1}#coerce
+eval/primitives/cast.ion::cast-to-int::cast to int valid cases{value:"'-1'",result:-1}#error
+eval/primitives/cast.ion::cast-to-int::cast to int valid cases{value:"'0'",result:0}#coerce
+eval/primitives/cast.ion::cast-to-int::cast to int valid cases{value:"'0'",result:0}#error
+eval/primitives/cast.ion::cast-to-int::cast to int valid cases{value:"'00'",result:0}#coerce
+eval/primitives/cast.ion::cast-to-int::cast to int valid cases{value:"'00'",result:0}#error
+eval/primitives/cast.ion::cast-to-int::cast to int valid cases{value:"'01'",result:1}#coerce
+eval/primitives/cast.ion::cast-to-int::cast to int valid cases{value:"'01'",result:1}#error
+eval/primitives/cast.ion::cast-to-int::cast to int valid cases{value:"'0B10'",result:2}#coerce
+eval/primitives/cast.ion::cast-to-int::cast to int valid cases{value:"'0B10'",result:2}#error
+eval/primitives/cast.ion::cast-to-int::cast to int valid cases{value:"'0XA'",result:10}#coerce
+eval/primitives/cast.ion::cast-to-int::cast to int valid cases{value:"'0XA'",result:10}#error
+eval/primitives/cast.ion::cast-to-int::cast to int valid cases{value:"'0b010'",result:2}#coerce
+eval/primitives/cast.ion::cast-to-int::cast to int valid cases{value:"'0b010'",result:2}#error
+eval/primitives/cast.ion::cast-to-int::cast to int valid cases{value:"'0b10'",result:2}#coerce
+eval/primitives/cast.ion::cast-to-int::cast to int valid cases{value:"'0b10'",result:2}#error
+eval/primitives/cast.ion::cast-to-int::cast to int valid cases{value:"'0x0A'",result:10}#coerce
+eval/primitives/cast.ion::cast-to-int::cast to int valid cases{value:"'0x0A'",result:10}#error
+eval/primitives/cast.ion::cast-to-int::cast to int valid cases{value:"'0xA'",result:10}#coerce
+eval/primitives/cast.ion::cast-to-int::cast to int valid cases{value:"'0xA'",result:10}#error
+eval/primitives/cast.ion::cast-to-int::cast to int valid cases{value:"'1'",result:1}#coerce
+eval/primitives/cast.ion::cast-to-int::cast to int valid cases{value:"'1'",result:1}#error
+eval/primitives/cast.ion::cast-to-int::cast to int valid cases{value:"-1",result:-1}#coerce
+eval/primitives/cast.ion::cast-to-int::cast to int valid cases{value:"-1",result:-1}#error
+eval/primitives/cast.ion::cast-to-int::cast to int valid cases{value:"-9223372036854775808",result:-9223372036854775808}#coerce
+eval/primitives/cast.ion::cast-to-int::cast to int valid cases{value:"-9223372036854775808",result:-9223372036854775808}#error
+eval/primitives/cast.ion::cast-to-int::cast to int valid cases{value:"-9223372036854775808.0",result:-9223372036854775808}#coerce
+eval/primitives/cast.ion::cast-to-int::cast to int valid cases{value:"-9223372036854775808.0",result:-9223372036854775808}#error
+eval/primitives/cast.ion::cast-to-int::cast to int valid cases{value:"0",result:0}#coerce
+eval/primitives/cast.ion::cast-to-int::cast to int valid cases{value:"0",result:0}#error
+eval/primitives/cast.ion::cast-to-int::cast to int valid cases{value:"1",result:1}#coerce
+eval/primitives/cast.ion::cast-to-int::cast to int valid cases{value:"1",result:1}#error
+eval/primitives/cast.ion::cast-to-int::cast to int valid cases{value:"9223372036854775807",result:9223372036854775807}#coerce
+eval/primitives/cast.ion::cast-to-int::cast to int valid cases{value:"9223372036854775807",result:9223372036854775807}#error
+eval/primitives/cast.ion::cast-to-int::cast to int valid cases{value:"9223372036854775807.0",result:9223372036854775807}#coerce
+eval/primitives/cast.ion::cast-to-int::cast to int valid cases{value:"9223372036854775807.0",result:9223372036854775807}#error
+eval/primitives/cast.ion::cast-to-int::cast to int valid cases{value:"false",result:0}#coerce
+eval/primitives/cast.ion::cast-to-int::cast to int valid cases{value:"false",result:0}#error
+eval/primitives/cast.ion::cast-to-int::cast to int valid cases{value:"true",result:1}#coerce
+eval/primitives/cast.ion::cast-to-int::cast to int valid cases{value:"true",result:1}#error
+eval/primitives/cast.ion::cast-to-missing::cast to MISSING valid cases{value:"MISSING"}#coerce
+eval/primitives/cast.ion::cast-to-missing::cast to MISSING valid cases{value:"MISSING"}#error
+eval/primitives/cast.ion::cast-to-missing::cast to MISSING valid cases{value:"NULL"}#coerce
+eval/primitives/cast.ion::cast-to-missing::cast to MISSING valid cases{value:"NULL"}#error
+eval/primitives/cast.ion::cast-to-null::cast to NULL valid cases{value:"MISSING"}#coerce
+eval/primitives/cast.ion::cast-to-null::cast to NULL valid cases{value:"MISSING"}#error
+eval/primitives/cast.ion::cast-to-null::cast to NULL valid cases{value:"NULL"}#coerce
+eval/primitives/cast.ion::cast-to-null::cast to NULL valid cases{value:"NULL"}#error
+eval/primitives/cast.ion::cast_invalid::cast to int invalid target type{value:"<<1, 2>>",target:"BAG"}#coerce
+eval/primitives/cast.ion::cast_invalid::cast to int invalid target type{value:"<<1, 2>>",target:"BAG"}#error
+eval/primitives/cast.ion::cast_invalid::cast to int invalid target type{value:"<<1>>",target:"BAG"}#coerce
+eval/primitives/cast.ion::cast_invalid::cast to int invalid target type{value:"<<1>>",target:"BAG"}#error
+eval/primitives/cast.ion::cast_invalid::cast to int invalid target type{value:"<<>>",target:"BAG"}#coerce
+eval/primitives/cast.ion::cast_invalid::cast to int invalid target type{value:"<<>>",target:"BAG"}#error
+eval/primitives/cast.ion::cast_invalid::cast to int invalid target type{value:"[1, 2]",target:"LIST"}#coerce
+eval/primitives/cast.ion::cast_invalid::cast to int invalid target type{value:"[1, 2]",target:"LIST"}#error
+eval/primitives/cast.ion::cast_invalid::cast to int invalid target type{value:"[1]",target:"LIST"}#coerce
+eval/primitives/cast.ion::cast_invalid::cast to int invalid target type{value:"[1]",target:"LIST"}#error
+eval/primitives/cast.ion::cast_invalid::cast to int invalid target type{value:"[]",target:"LIST"}#coerce
+eval/primitives/cast.ion::cast_invalid::cast to int invalid target type{value:"[]",target:"LIST"}#error
+eval/primitives/cast.ion::cast_invalid::cast to int invalid target type{value:"{'a': '12'}",target:"STRUCT"}#coerce
+eval/primitives/cast.ion::cast_invalid::cast to int invalid target type{value:"{'a': '12'}",target:"STRUCT"}#error
+eval/primitives/cast.ion::cast_invalid::cast to int invalid target type{value:"{'a': 1}",target:"STRUCT"}#coerce
+eval/primitives/cast.ion::cast_invalid::cast to int invalid target type{value:"{'a': 1}",target:"STRUCT"}#error
+eval/primitives/cast.ion::cast_invalid::cast to int invalid target type{value:"{}",target:"STRUCT"}#coerce
+eval/primitives/cast.ion::cast_invalid::cast to int invalid target type{value:"{}",target:"STRUCT"}#error
+eval/primitives/cast.ion::cast_invalid::cast to int invalid values{value:"'00b10'",target:"STRING"}#coerce
+eval/primitives/cast.ion::cast_invalid::cast to int invalid values{value:"'00b10'",target:"STRING"}#error
+eval/primitives/cast.ion::cast_invalid::cast to int invalid values{value:"'00xA'",target:"STRING"}#coerce
+eval/primitives/cast.ion::cast_invalid::cast to int invalid values{value:"'00xA'",target:"STRING"}#error
+eval/primitives/cast.ion::cast_invalid::cast to int invalid values{value:"'123456A'",target:"STRING"}#coerce
+eval/primitives/cast.ion::cast_invalid::cast to int invalid values{value:"'123456A'",target:"STRING"}#error
+eval/primitives/cast.ion::cast_invalid::cast to int invalid values{value:"'2e10'",target:"STRING"}#error
+eval/primitives/cast.ion::cast_invalid::cast to int invalid values{value:"'hello'",target:"STRING"}#coerce
+eval/primitives/cast.ion::cast_invalid::cast to int invalid values{value:"'hello'",target:"STRING"}#error
 eval/primitives/coll-aggregate-function.ion::coll_agg_in_select::selectValueCollAggregate#coerce
 eval/primitives/coll-aggregate-function.ion::coll_agg_in_select::selectValueCollAggregate#error
 eval/primitives/coll-aggregate-function.ion::coll_any::COLL_ANY all non-bool, non-unknown#coerce
@@ -3061,12 +3184,16 @@ eval/primitives/map.ion::map::access map from environment variable with nonexist
 eval/primitives/map.ion::map::access map from environment variable with nonexistent key returns missing#error
 eval/primitives/map.ion::map::access map from environment variable#coerce
 eval/primitives/map.ion::map::access map from environment variable#error
+eval/primitives/map.ion::map::access map with bigint key#coerce
+eval/primitives/map.ion::map::access map with bigint key#error
 eval/primitives/map.ion::map::access map with boolean key#coerce
 eval/primitives/map.ion::map::access map with boolean key#error
 eval/primitives/map.ion::map::access map with cross-type cast integer to decimal key#coerce
 eval/primitives/map.ion::map::access map with cross-type cast integer to decimal key#error
 eval/primitives/map.ion::map::access map with date key#coerce
 eval/primitives/map.ion::map::access map with date key#error
+eval/primitives/map.ion::map::access map with explicit cast to different precision#coerce
+eval/primitives/map.ion::map::access map with explicit cast to different precision#error
 eval/primitives/map.ion::map::access map with integer key not found returns missing#coerce
 eval/primitives/map.ion::map::access map with integer key not found returns missing#error
 eval/primitives/map.ion::map::access map with integer key returns the value#coerce
@@ -3186,6 +3313,8 @@ eval/primitives/map.ion::map::map_contains_key with decimal key returns false wh
 eval/primitives/map.ion::map::map_contains_key with decimal key returns false when absent#error
 eval/primitives/map.ion::map::map_contains_key with decimal key returns true#coerce
 eval/primitives/map.ion::map::map_contains_key with decimal key returns true#error
+eval/primitives/map.ion::map::map_contains_key with explicit cast to different precision#coerce
+eval/primitives/map.ion::map::map_contains_key with explicit cast to different precision#error
 eval/primitives/map.ion::map::map_contains_key with incompatible string key on integer-keyed map returns false#coerce
 eval/primitives/map.ion::map::map_contains_key with incompatible string key on integer-keyed map returns false#error
 eval/primitives/map.ion::map::map_contains_key with integer key returns true#coerce
@@ -3216,6 +3345,8 @@ eval/primitives/map.ion::map::map_get with date key returns the value#coerce
 eval/primitives/map.ion::map::map_get with date key returns the value#error
 eval/primitives/map.ion::map::map_get with decimal key returns the value#coerce
 eval/primitives/map.ion::map::map_get with decimal key returns the value#error
+eval/primitives/map.ion::map::map_get with explicit cast to different precision#coerce
+eval/primitives/map.ion::map::map_get with explicit cast to different precision#error
 eval/primitives/map.ion::map::map_get with incompatible string key on integer-keyed map fails#coerce
 eval/primitives/map.ion::map::map_get with incompatible string key on integer-keyed map fails#error
 eval/primitives/map.ion::map::map_get with integer key returns the value#coerce
@@ -5791,6 +5922,8 @@ eval/query/group-by/group-by.ion::group-by-test::SELECT VALUE { 'someGBE': someG
 eval/query/group-by/group-by.ion::group-by-test::SELECT VALUE { 'someGBE': someGBE } FROM simple_1_col_1_group GROUP BY col1 + 1 AS someGBE#error
 eval/query/group-by/group-by.ion::group-by-test::SELECT VALUE { 'someGBE': someGBE } FROM string_groups GROUP BY col1 || 'a' AS someGBE#coerce
 eval/query/group-by/group-by.ion::group-by-test::SELECT VALUE { 'someGBE': someGBE } FROM string_groups GROUP BY col1 || 'a' AS someGBE#error
+eval/query/group-by/group-by.ion::group-by-test::SELECT VALUE { 'someGBE': someGBE } FROM string_numbers GROUP BY CAST(num AS INT) AS someGBE#coerce
+eval/query/group-by/group-by.ion::group-by-test::SELECT VALUE { 'someGBE': someGBE } FROM string_numbers GROUP BY CAST(num AS INT) AS someGBE#error
 eval/query/group-by/group-by.ion::group-by-test::SELECT VALUE { 'someMissing': someMissing } FROM simple_1_col_1_group GROUP BY MISSING AS someMissing#coerce
 eval/query/group-by/group-by.ion::group-by-test::SELECT VALUE { 'someMissing': someMissing } FROM simple_1_col_1_group GROUP BY MISSING AS someMissing#error
 eval/query/group-by/group-by.ion::group-by-test::SELECT VALUE { 'someNull': someNull } FROM simple_1_col_1_group GROUP BY NULL AS someNull#coerce
@@ -5839,6 +5972,8 @@ eval/query/group-by/group-by.ion::group-by-test::SELECT someGBE FROM simple_1_co
 eval/query/group-by/group-by.ion::group-by-test::SELECT someGBE FROM simple_1_col_1_group GROUP BY col1 + 1 AS someGBE#error
 eval/query/group-by/group-by.ion::group-by-test::SELECT someGBE FROM string_groups GROUP BY col1 || 'a' AS someGBE#coerce
 eval/query/group-by/group-by.ion::group-by-test::SELECT someGBE FROM string_groups GROUP BY col1 || 'a' AS someGBE#error
+eval/query/group-by/group-by.ion::group-by-test::SELECT someGBE FROM string_numbers GROUP BY CAST(num AS INT) AS someGBE#coerce
+eval/query/group-by/group-by.ion::group-by-test::SELECT someGBE FROM string_numbers GROUP BY CAST(num AS INT) AS someGBE#error
 eval/query/group-by/group-by.ion::group-by-test::SELECT someMissing FROM simple_1_col_1_group GROUP BY MISSING AS someMissing#coerce
 eval/query/group-by/group-by.ion::group-by-test::SELECT someMissing FROM simple_1_col_1_group GROUP BY MISSING AS someMissing#error
 eval/query/group-by/group-by.ion::group-by-test::SELECT someNull FROM simple_1_col_1_group GROUP BY NULL AS someNull#coerce
@@ -7067,6 +7202,8 @@ eval/spec-tests.ion::section-6::tuple constructor and mistyped attribute name#co
 eval/spec-tests.ion::section-6::tuple constructor and mistyped attribute name#error
 eval/spec-tests.ion::section-6::unpivot with pivot to analyze attribute names#coerce
 eval/spec-tests.ion::section-6::unpivot with pivot to analyze attribute names#error
+eval/spec-tests.ion::section-7::cast and operations with missing argument#coerce
+eval/spec-tests.ion::section-7::cast and operations with missing argument#error
 eval/spec-tests.ion::section-7::data type mismatch in comparison expression#coerce
 eval/spec-tests.ion::section-7::data type mismatch in comparison expression#error
 eval/spec-tests.ion::section-7::data type mismatch in logical expression#error
@@ -7111,6 +7248,44 @@ eval/spec-tests.ion::section-8::null and true#error
 eval/spec-tests.ion::section-8::null is missing#coerce
 eval/spec-tests.ion::section-8::null is missing#error
 eval/spec-tests.ion::section-9::inner select evaluating to collection with more than one element#coerce
+extended/eval/primitives/basic.ion::arithmetic with mixed type::function call with mixed StaticType#coerce
+extended/eval/primitives/basic.ion::arithmetic with mixed type::function call with mixed StaticType#error
+extended/eval/primitives/cast.ion::cast-to-int::cast to int valid cases{value:"-1.1",result:-1}#coerce
+extended/eval/primitives/cast.ion::cast-to-int::cast to int valid cases{value:"-1.1",result:-1}#error
+extended/eval/primitives/cast.ion::cast-to-int::cast to int valid cases{value:"-1.5",result:-2}#coerce
+extended/eval/primitives/cast.ion::cast-to-int::cast to int valid cases{value:"-1.5",result:-2}#error
+extended/eval/primitives/cast.ion::cast-to-int::cast to int valid cases{value:"-1.9",result:-2}#coerce
+extended/eval/primitives/cast.ion::cast-to-int::cast to int valid cases{value:"-1.9",result:-2}#error
+extended/eval/primitives/cast.ion::cast-to-int::cast to int valid cases{value:"0.1",result:0}#coerce
+extended/eval/primitives/cast.ion::cast-to-int::cast to int valid cases{value:"0.1",result:0}#error
+extended/eval/primitives/cast.ion::cast-to-int::cast to int valid cases{value:"0.5",result:0}#coerce
+extended/eval/primitives/cast.ion::cast-to-int::cast to int valid cases{value:"0.5",result:0}#error
+extended/eval/primitives/cast.ion::cast-to-int::cast to int valid cases{value:"0.9",result:1}#coerce
+extended/eval/primitives/cast.ion::cast-to-int::cast to int valid cases{value:"0.9",result:1}#error
+extended/eval/primitives/cast.ion::cast-to-int::cast to int valid cases{value:"1.1",result:1}#coerce
+extended/eval/primitives/cast.ion::cast-to-int::cast to int valid cases{value:"1.1",result:1}#error
+extended/eval/primitives/cast.ion::cast-to-int::cast to int valid cases{value:"1.5",result:2}#coerce
+extended/eval/primitives/cast.ion::cast-to-int::cast to int valid cases{value:"1.5",result:2}#error
+extended/eval/primitives/cast.ion::cast-to-int::cast to int valid cases{value:"1.9",result:2}#coerce
+extended/eval/primitives/cast.ion::cast-to-int::cast to int valid cases{value:"1.9",result:2}#error
+extended/eval/primitives/cast.ion::cast-to-int::cast to int valid cases{value:"`-1.1e0`",result:-1}#coerce
+extended/eval/primitives/cast.ion::cast-to-int::cast to int valid cases{value:"`-1.1e0`",result:-1}#error
+extended/eval/primitives/cast.ion::cast-to-int::cast to int valid cases{value:"`-1.5e0`",result:-2}#coerce
+extended/eval/primitives/cast.ion::cast-to-int::cast to int valid cases{value:"`-1.5e0`",result:-2}#error
+extended/eval/primitives/cast.ion::cast-to-int::cast to int valid cases{value:"`-1.9e0`",result:-2}#coerce
+extended/eval/primitives/cast.ion::cast-to-int::cast to int valid cases{value:"`-1.9e0`",result:-2}#error
+extended/eval/primitives/cast.ion::cast-to-int::cast to int valid cases{value:"`0.1e0`",result:0}#coerce
+extended/eval/primitives/cast.ion::cast-to-int::cast to int valid cases{value:"`0.1e0`",result:0}#error
+extended/eval/primitives/cast.ion::cast-to-int::cast to int valid cases{value:"`0.5e0`",result:0}#coerce
+extended/eval/primitives/cast.ion::cast-to-int::cast to int valid cases{value:"`0.5e0`",result:0}#error
+extended/eval/primitives/cast.ion::cast-to-int::cast to int valid cases{value:"`0.9e0`",result:1}#coerce
+extended/eval/primitives/cast.ion::cast-to-int::cast to int valid cases{value:"`0.9e0`",result:1}#error
+extended/eval/primitives/cast.ion::cast-to-int::cast to int valid cases{value:"`1.1e0`",result:1}#coerce
+extended/eval/primitives/cast.ion::cast-to-int::cast to int valid cases{value:"`1.1e0`",result:1}#error
+extended/eval/primitives/cast.ion::cast-to-int::cast to int valid cases{value:"`1.5e0`",result:2}#coerce
+extended/eval/primitives/cast.ion::cast-to-int::cast to int valid cases{value:"`1.5e0`",result:2}#error
+extended/eval/primitives/cast.ion::cast-to-int::cast to int valid cases{value:"`1.9e0`",result:2}#coerce
+extended/eval/primitives/cast.ion::cast-to-int::cast to int valid cases{value:"`1.9e0`",result:2}#error
 extended/eval/primitives/functions/size.ion::size::size null and missing propagation{param:"missing"}#coerce
 extended/eval/primitives/functions/size.ion::size::size null and missing propagation{param:"missing"}#error
 extended/eval/primitives/functions/size.ion::size::size null and missing propagation{param:"null"}#coerce
@@ -7207,6 +7382,18 @@ extended/eval/primitives/int.ion::division_by_zero_error::divide by zero{sql:"1 
 extended/eval/primitives/int.ion::division_by_zero_error::divide by zero{sql:"1 % 0"}#error
 extended/eval/primitives/int.ion::division_by_zero_error::divide by zero{sql:"1 / 0"}#coerce
 extended/eval/primitives/int.ion::division_by_zero_error::divide by zero{sql:"1 / 0"}#error
+extended/eval/primitives/int.ion::int_overflow_error::cast to int overflow / underflow{value:"'-92233720368547758070'",target:"STRING"}#coerce
+extended/eval/primitives/int.ion::int_overflow_error::cast to int overflow / underflow{value:"'-92233720368547758070'",target:"STRING"}#error
+extended/eval/primitives/int.ion::int_overflow_error::cast to int overflow / underflow{value:"'92233720368547758070'",target:"STRING"}#coerce
+extended/eval/primitives/int.ion::int_overflow_error::cast to int overflow / underflow{value:"'92233720368547758070'",target:"STRING"}#error
+extended/eval/primitives/int.ion::int_overflow_error::cast to int overflow / underflow{value:"-2e100",target:"DECIMAL"}#coerce
+extended/eval/primitives/int.ion::int_overflow_error::cast to int overflow / underflow{value:"-2e100",target:"DECIMAL"}#error
+extended/eval/primitives/int.ion::int_overflow_error::cast to int overflow / underflow{value:"2e100",target:"DECIMAL"}#coerce
+extended/eval/primitives/int.ion::int_overflow_error::cast to int overflow / underflow{value:"2e100",target:"DECIMAL"}#error
+extended/eval/primitives/int.ion::int_overflow_error::cast to int overflow / underflow{value:"`-2e100`",target:"FLOAT"}#coerce
+extended/eval/primitives/int.ion::int_overflow_error::cast to int overflow / underflow{value:"`-2e100`",target:"FLOAT"}#error
+extended/eval/primitives/int.ion::int_overflow_error::cast to int overflow / underflow{value:"`2e100`",target:"FLOAT"}#coerce
+extended/eval/primitives/int.ion::int_overflow_error::cast to int overflow / underflow{value:"`2e100`",target:"FLOAT"}#error
 extended/eval/primitives/int.ion::int_overflow_error::int overflow and underflow conditions{sql:"-9223372036854775809"}#coerce
 extended/eval/primitives/int.ion::int_overflow_error::int overflow and underflow conditions{sql:"-9223372036854775809"}#error
 extended/eval/primitives/int.ion::int_overflow_error::int overflow and underflow conditions{sql:"9223372036854775808"}#coerce
@@ -7281,6 +7468,8 @@ extended/eval/query/group-by/group-by.ion::select-star-group-by::SELECT * FROM s
 extended/eval/query/group-by/group-by.ion::select-star-group-by::SELECT * FROM string_groups GROUP BY col1 || 'a' AS someGBE#error
 extended/eval/query/group-by/group-by.ion::select-star-group-by::SELECT * FROM string_groups GROUP BY col1 || 'a'#coerce
 extended/eval/query/group-by/group-by.ion::select-star-group-by::SELECT * FROM string_groups GROUP BY col1 || 'a'#error
+extended/eval/query/group-by/group-by.ion::select-star-group-by::SELECT * FROM string_numbers GROUP BY CAST(num AS INT) AS someGBE#coerce
+extended/eval/query/group-by/group-by.ion::select-star-group-by::SELECT * FROM string_numbers GROUP BY CAST(num AS INT) AS someGBE#error
 extended/eval/query/group-by/group-by.ion::select-star-group-by::SELECT * with GROUP BY and GROUP AS#coerce
 extended/eval/query/group-by/group-by.ion::select-star-group-by::SELECT * with GROUP BY and GROUP AS#error
 extended/eval/query/group-by/group-by.ion::select-star-group-by::SELECT * with GROUP BY#coerce

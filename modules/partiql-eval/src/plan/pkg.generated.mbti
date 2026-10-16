@@ -3,6 +3,7 @@ package "moonrockz/partiql-eval/plan"
 
 import {
   "moonbitlang/core/debug",
+  "moonrockz/partiql-eval/ops",
   "moonrockz/partiql-syntax/ast",
   "moonrockz/partiql-value",
 }
@@ -57,6 +58,7 @@ pub(all) enum Expr {
   Coalesce(Array[Expr], @ast.Span)
   NullIf(Expr, Expr, @ast.Span)
   Call(Function, Array[Expr], @ast.Span)
+  Cast(Expr, @ops.CastTarget, @ast.Span)
   Local(String, @ast.Span)
   GlobalOrLocal(String, variable~ : String, delimited~ : Bool, @ast.Span)
   Implicit(String, delimited~ : Bool, locals~ : Array[String], @ast.Span)
