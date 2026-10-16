@@ -84,10 +84,10 @@ test "CAST to text" {
     soft.expect(ev("CAST(`abc` AS SYMBOL)")).to_equal(String("abc"))
     soft
     .expect(ev("CAST(DATE '2007-10-10' AS STRING)"))
-    .to_equal(String("2007-10-10"))
+    .to_equal(String("DATE '2007-10-10'"))
     soft
     .expect(ev("CAST(TIME WITH TIME ZONE '23:12:12.1267-05:30' AS STRING)"))
-    .to_equal(String("23:12:12.1267-05:30"))
+    .to_equal(String("TIME '23:12:12.1267-05:30'"))
     soft.expect(ev("CHAR_LENGTH(CAST('😀' AS CHAR(3)))")).to_equal(Int(3))
     soft
     .expect(failure_of("CAST(12345 AS CHAR(3))", mode=Strict))
@@ -216,5 +216,48 @@ test "CHAR and VARCHAR lengths have an upper limit" {
     soft.expect(failure_of("CAST(1 AS CHAR(10485761))")).to_equal("data")
     soft.expect(failure_of("CAST(1 AS VARCHAR(10485761))")).to_equal("data")
     soft.expect(failure_of("CAST('a' AS VARCHAR(10485760))")).to_equal("ok")
+  })
+}
+
+///|
+test "CAST reads SQL datetime and interval literals" {
+  // SQL 6.13: text is read by the rules for <literal> (and, since SQL:1999,
+  // as an unquoted string under the target's fields).
+  let new_year = @value.Value::Date(@value.Date::new(year=2020, month=1, day=1))
+  @expect.expect_all(soft => {
+    soft.expect(ev("CAST('DATE ''2020-01-01''' AS DATE)")).to_equal(new_year)
+    soft.expect(ev("CAST(' date ''2020-01-01'' ' AS DATE)")).to_equal(new_year)
+    soft
+    .expect(ev("CAST(CAST(INTERVAL '5' SECOND AS STRING) AS INTERVAL SECOND)"))
+    .to_equal(ev("INTERVAL '5' SECOND"))
+    soft
+    .expect(ev("CAST('INTERVAL ''1'' DAY' AS INTERVAL HOUR)"))
+    .to_equal(ev("INTERVAL '24' HOUR"))
+    soft
+    .expect(ev("CAST('INTERVAL ''1-2'' YEAR TO MONTH' AS INTERVAL MONTH)"))
+    .to_equal(ev("INTERVAL '14' MONTH"))
+    soft
+    .expect(ev("CAST('TIME WITH TIME ZONE ''12:00:00+01:00''' AS TIME)"))
+    .to_equal(ev("TIME '11:00:00'"))
+    soft
+    .expect(
+      ev("CAST(CAST(TIMESTAMP '2020-01-01 12:00:00.5' AS STRING) AS TIMESTAMP)"),
+    )
+    .to_equal(ev("TIMESTAMP '2020-01-01 12:00:00.5'"))
+    // A literal of another kind or class is not a value of the target.
+    for
+      source in [
+        "CAST('INTERVAL ''1'' DAY' AS INTERVAL MONTH)", "CAST('TIMESTAMP ''2020-01-01 00:00:00''' AS DATE)",
+        "CAST('1 + 2' AS DATE)", "CAST('DATE ''x''' AS DATE)", "CAST('DATE' AS DATE)",
+      ] {
+      soft
+      .expect((source, failure_of(source, mode=Strict)))
+      .to_equal((source, "type"))
+    }
+    soft
+    .expect(
+      failure_of("CAST('INTERVAL ''100'' DAY(3)' AS INTERVAL DAY)", mode=Strict),
+    )
+    .to_equal("data")
   })
 }

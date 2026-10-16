@@ -68,18 +68,34 @@ test "datetime and interval text" {
     soft.expect(time_text(utc)).to_equal("00:00:00+00:00")
     soft
     .expect(display_text(Timestamp(@value.Timestamp::new(day, time))))
-    .to_equal(Some("2026-03-07 01:02:03.45-05:30"))
+    .to_equal(Some("TIMESTAMP '2026-03-07 01:02:03.45-05:30'"))
     soft
     .expect(display_text(IntervalYM(@value.IntervalYM::new(-14L))))
-    .to_equal(Some("-1-2"))
+    .to_equal(Some("INTERVAL '-1-2' YEAR TO MONTH"))
     soft
     .expect(
       display_text(IntervalDT(@value.IntervalDT::new(273906L, 500000000L))),
     )
-    .to_equal(Some("3 04:05:06.5"))
+    .to_equal(Some("INTERVAL '3 04:05:06.5' DAY TO SECOND"))
     soft
     .expect(display_text(IntervalDT(@value.IntervalDT::new(-1L, 0L))))
-    .to_equal(Some("-0 00:00:01"))
+    .to_equal(Some("INTERVAL '-0 00:00:01' DAY TO SECOND"))
+    // SQL 6.13: the text of a datetime or interval is an SQL <literal>.
+    soft.expect(display_text(Date(day))).to_equal(Some("DATE '2026-03-07'"))
+    soft
+    .expect(display_text(Time(time)))
+    .to_equal(Some("TIME '01:02:03.45-05:30'"))
+    // Precisions beyond the defaults (leading 2, fraction 6) are written out,
+    // so that the literal reads back.
+    soft
+    .expect(display_text(IntervalDT(@value.IntervalDT::new(123L * 86400L, 0L))))
+    .to_equal(Some("INTERVAL '123 00:00:00' DAY(3) TO SECOND"))
+    soft
+    .expect(display_text(IntervalDT(@value.IntervalDT::new(0L, 123456789L))))
+    .to_equal(Some("INTERVAL '0 00:00:00.123456789' DAY TO SECOND(9)"))
+    soft
+    .expect(display_text(IntervalYM(@value.IntervalYM::new(1800L))))
+    .to_equal(Some("INTERVAL '150-0' YEAR(3) TO MONTH"))
     soft.expect(display_text(Bool(true))).to_equal(Some("TRUE"))
     soft.expect(display_text(List([]))).to_equal(None)
   })

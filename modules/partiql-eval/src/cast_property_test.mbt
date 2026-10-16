@@ -138,6 +138,13 @@ test "law: CAST through STRING and back gives the value" {
     ),
     ("INTERVAL '1-2' YEAR TO MONTH", "INTERVAL YEAR TO MONTH"),
     ("INTERVAL '-3 04:05:06.5' DAY TO SECOND", "INTERVAL DAY TO SECOND"),
+    ("INTERVAL '5' SECOND", "INTERVAL SECOND"),
+    ("INTERVAL '1.5' SECOND", "INTERVAL SECOND"),
+    ("INTERVAL '13' MONTH", "INTERVAL MONTH"),
+    ("INTERVAL '25' HOUR", "INTERVAL HOUR"),
+    ("INTERVAL '-90' MINUTE", "INTERVAL MINUTE"),
+    ("INTERVAL '2' YEAR", "INTERVAL YEAR"),
+    ("TIME (0) '12:00:00'", "TIME"),
   ]
   let rs = @splitmix.RandomState(seed=11UL)
   for _ in 0..<200 {

@@ -113,17 +113,31 @@ fn time_text(t : @value.Time) -> String {
 }
 
 ///|
-/// `Y-M`, with a leading `-` when negative.
+/// `(k)` when `n` has more digits than the default precision `default`.
+fn precision_text(digits : Int32, default : Int32) -> String {
+  if digits > default {
+    "(\{digits})"
+  } else {
+    ""
+  }
+}
+
+///|
+/// `INTERVAL 'Y-M' YEAR TO MONTH`, with a leading `-` in the string when
+/// negative. The value keeps only its class, so the literal names the whole
+/// class; a leading precision above the default 2 is written out.
 fn ym_text(i : @value.IntervalYM) -> String {
   let months = big64(i.months)
   let sign = if is_negative_int(months) { "-" } else { "" }
   let m = abs_int(months)
-  "\{sign}\{m / 12N}-\{m % 12N}"
+  let years = m / 12N
+  "INTERVAL '\{sign}\{years}-\{m % 12N}' YEAR\{precision_text(digit_count(years), 2)} TO MONTH"
 }
 
 ///|
-/// `D HH:MM:SS[.f]` with the fewest fraction digits, and a leading `-` when
-/// negative.
+/// `INTERVAL 'D HH:MM:SS[.f]' DAY TO SECOND` with the fewest fraction digits,
+/// a leading `-` in the string when negative, and the leading (default 2)
+/// and fractional (default 6) precisions written out when larger.
 fn dt_text(i : @value.IntervalDT) -> String {
   let n = dt_nanos(i)
   let sign = if is_negative_int(n) { "-" } else { "" }
@@ -132,20 +146,21 @@ fn dt_text(i : @value.IntervalDT) -> String {
   let rest = (a % nanos_per_day).to_int64()
   let seconds = rest / 1000000000L
   let nanos = (rest % 1000000000L).to_int()
+  let digits = if nanos == 0 { 0 } else { needed_precision(nanos) }
   let fraction = if nanos == 0 {
     ""
   } else {
-    "." +
-    padded(nanos.to_int64(), 9)
-    .view(end_offset=needed_precision(nanos))
-    .to_owned()
+    "." + padded(nanos.to_int64(), 9).view(end_offset=digits).to_owned()
   }
-  "\{sign}\{days} \{padded(seconds / 3600L, 2)}:\{padded(seconds % 3600L / 60L, 2)}:\{padded(seconds % 60L, 2)}\{fraction}"
+  let clock = "\{padded(seconds / 3600L, 2)}:\{padded(seconds % 3600L / 60L, 2)}:\{padded(seconds % 60L, 2)}"
+  "INTERVAL '\{sign}\{days} \{clock}\{fraction}' DAY\{precision_text(digit_count(days), 2)} TO SECOND\{precision_text(digits, 6)}"
 }
 
 ///|
 /// The text of a scalar value as CAST to a character string gives it (spec
-/// M4d2 §5.5); `None` for a kind that has no text.
+/// M4d2 §5.5); `None` for a kind that has no text. A datetime or interval is
+/// an SQL <literal> (SQL 6.13: "the shortest character string that conforms
+/// to the definition of <literal>"), so that CAST reads it back.
 fn display_text(x : @value.Value) -> String? {
   match x {
     Bool(b) => Some(if b { "TRUE" } else { "FALSE" })
@@ -153,9 +168,10 @@ fn display_text(x : @value.Value) -> String? {
     BigInt(n) => Some(n.to_string())
     Decimal(d) => Some(decimal_text(d))
     Float(f) => Some(float_text(f))
-    Date(d) => Some(date_text(d))
-    Time(t) => Some(time_text(t))
-    Timestamp(ts) => Some(date_text(ts.date) + " " + time_text(ts.time))
+    Date(d) => Some("DATE '\{date_text(d)}'")
+    Time(t) => Some("TIME '\{time_text(t)}'")
+    Timestamp(ts) =>
+      Some("TIMESTAMP '\{date_text(ts.date)} \{time_text(ts.time)}'")
     IntervalYM(i) => Some(ym_text(i))
     IntervalDT(i) => Some(dt_text(i))
     _ => None

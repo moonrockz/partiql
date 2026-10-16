@@ -2,6 +2,7 @@
 
 import {
   "moonrockz/partiql-syntax/ast",
+  "moonrockz/partiql-syntax/parser",
   "moonrockz/partiql-value" @value,
   "moonrockz/ion/ion" @ion_core,
   "moonbitlang/core/bigint",

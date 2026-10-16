@@ -92,6 +92,12 @@ fn to_interval(
     // Read the literal with room for any digits, then cast it, so that a
     // leading field that is too long is an overflow (SQL 22015), not a
     // text that is not valid.
+    String(s) if keyword_literal(trimmed(s)) is Some(literal) =>
+      match literal {
+        Interval(body, negative~, qualifier~) =>
+          interval_to_interval(parse_interval(body, negative~, qualifier~), q)
+        _ => raise TypeFailure("'\{s}' is not an INTERVAL literal")
+      }
     String(s) => {
       let wide : @ast.IntervalQualifier = {
         ..q,

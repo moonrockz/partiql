@@ -358,9 +358,17 @@ from SQL, then the corpus, then partiql-lang-kotlin:
   from the exact value.
 - **Text.** BOOL is `TRUE`/`FALSE`; a decimal keeps its scale (scientific
   form outside the range of `DECIMAL(38)`); a float is in SQL form (`1.5E0`;
-  `nan`, `+inf`, `-inf`); datetimes and intervals are the unquoted literal
-  strings. `CHAR(n)` pads with spaces; character text is cut to `n` code
-  points.
+  `nan`, `+inf`, `-inf`); a datetime or an interval is an SQL `<literal>`, as
+  SQL 6.13 requires ("the shortest character string that conforms to the
+  definition of `<literal>`"): `DATE '2007-10-10'`, `TIME '12:00:00.5'`,
+  `INTERVAL '0 00:00:05' DAY TO SECOND`. An interval value keeps only its
+  class, so its literal names the whole class (YEAR TO MONTH or DAY TO
+  SECOND). Most engines and partiql-lang-kotlin print the bare string; no
+  corpus test covers it. Text casts to a datetime or interval as such a
+  literal (read with its own qualifier, then cast to the target) or, since
+  SQL:1999, as a bare string under the target's fields, so the text of every
+  datetime and interval reads back. `CHAR(n)` pads with spaces; character
+  text is cut to `n` code points.
 - **LOBs.** STRING to CLOB is UTF-8; CLOB to STRING decodes UTF-8; CLOB and
   BLOB convert to each other; no LOB converts to a number, BOOL or datetime
   (as `ion/primitives/cast.ion` requires).

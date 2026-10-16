@@ -7,6 +7,28 @@ fn trimmed(s : String) -> String {
 }
 
 ///|
+/// The SQL <literal> that `text` spells when it starts with a keyword
+/// (`DATE '2020-01-01'`, `INTERVAL '1' DAY`); `None` for a bare string. SQL
+/// 6.13 reads CAST text by the rules for <literal>; since SQL:1999 a bare
+/// string under the target's fields is valid too. Text that starts with a
+/// keyword but is not a datetime or interval literal is not valid.
+fn keyword_literal(text : String) -> @ast.Literal? raise OpFailure {
+  guard text.get_char(0) is Some(c) && (c is ('a'..<='z') || c is ('A'..<='Z')) else {
+    return None
+  }
+  let e = @parser.parse_expression(text) catch {
+    _ => raise TypeFailure("'\{text}' is not a literal")
+  }
+  match e.kind {
+    Lit(Date(_) as l)
+    | Lit(Time(_, ..) as l)
+    | Lit(Timestamp(_, ..) as l)
+    | Lit(Interval(_, ..) as l) => Some(l)
+    _ => raise TypeFailure("'\{text}' is not a datetime or interval literal")
+  }
+}
+
+///|
 fn minutes_nanos(minutes : Int32) -> @bigint.BigInt {
   big64(minutes.to_int64() * 60L) * nanos_per_second
 }
@@ -151,7 +173,14 @@ fn to_date(
   match x {
     Date(_) => x
     Timestamp(ts) => Date(zoned_timestamp(ts, false, session).date)
-    String(s) => Date(parse_date(trimmed(s)))
+    String(s) => {
+      let text = trimmed(s)
+      match keyword_literal(text) {
+        Some(Date(body)) => Date(parse_date(body))
+        Some(_) => raise TypeFailure("'\{text}' is not a DATE literal")
+        None => Date(parse_date(text))
+      }
+    }
     _ => raise TypeFailure("CAST of \{kind_name(x)} to DATE")
   }
 }
@@ -166,7 +195,15 @@ fn to_time(
   let t = match x {
     Time(t) => t
     Timestamp(ts) => ts.time
-    String(s) => parse_time(trimmed(s), None, false)
+    String(s) => {
+      let text = trimmed(s)
+      match keyword_literal(text) {
+        Some(Time(body, precision~, with_tz~)) =>
+          parse_time(body, precision, with_tz)
+        Some(_) => raise TypeFailure("'\{text}' is not a TIME literal")
+        None => parse_time(text, None, false)
+      }
+    }
     _ =>
       raise TypeFailure(
         "CAST of \{kind_name(x)} to \{target_name(Time(precision~, zone=with_zone))}",
@@ -192,7 +229,15 @@ fn to_timestamp(
           _ => raise DataFailure("a time out of range")
         },
       )
-    String(s) => parse_timestamp(trimmed(s), None, false)
+    String(s) => {
+      let text = trimmed(s)
+      match keyword_literal(text) {
+        Some(Timestamp(body, precision~, with_tz~)) =>
+          parse_timestamp(body, precision, with_tz)
+        Some(_) => raise TypeFailure("'\{text}' is not a TIMESTAMP literal")
+        None => parse_timestamp(text, None, false)
+      }
+    }
     Time(_) =>
       raise Unsupported("CAST of TIME to TIMESTAMP needs the current date")
     _ =>
