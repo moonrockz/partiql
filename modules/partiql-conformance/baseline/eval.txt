@@ -7459,6 +7459,198 @@ extended/eval/primitives/cast.ion::cast-to-int::cast to int valid cases{value:"`
 extended/eval/primitives/cast.ion::cast-to-int::cast to int valid cases{value:"`1.5e0`",result:2}#error
 extended/eval/primitives/cast.ion::cast-to-int::cast to int valid cases{value:"`1.9e0`",result:2}#coerce
 extended/eval/primitives/cast.ion::cast-to-int::cast to int valid cases{value:"`1.9e0`",result:2}#error
+extended/eval/primitives/functions/date_add.ion::date_add_invalid::date_add with explicit timestamp with out time zone#coerce
+extended/eval/primitives/functions/date_add.ion::date_add_invalid::date_add with explicit timestamp with out time zone#error
+extended/eval/primitives/functions/date_add.ion::date_add_invalid::date_add with timestamp negative#coerce
+extended/eval/primitives/functions/date_add.ion::date_add_invalid::date_add with timestamp negative#error
+extended/eval/primitives/functions/date_add.ion::date_add_invalid::date_add with timestamp#coerce
+extended/eval/primitives/functions/date_add.ion::date_add_invalid::date_add with timestamp#error
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add null and missing propagation{time_part:year,quantity:"missing",timestamp:"`2017T`",result:(success missing::null)}#coerce
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add null and missing propagation{time_part:year,quantity:"missing",timestamp:"`2017T`",result:(success missing::null)}#error
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add null and missing propagation{time_part:year,quantity:"missing",timestamp:"null",result:(success missing::null)}#coerce
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add null and missing propagation{time_part:year,quantity:"missing",timestamp:"null",result:(success missing::null)}#error
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add null and missing propagation{time_part:year,quantity:"null",timestamp:"`2017T`",result:(success null)}#coerce
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add null and missing propagation{time_part:year,quantity:"null",timestamp:"`2017T`",result:(success null)}#error
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add null and missing propagation{time_part:year,quantity:"null",timestamp:"missing",result:(success missing::null)}#coerce
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add null and missing propagation{time_part:year,quantity:"null",timestamp:"missing",result:(success missing::null)}#error
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add null and missing propagation{time_part:year,quantity:1,timestamp:"missing",result:(success missing::null)}#coerce
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add null and missing propagation{time_part:year,quantity:1,timestamp:"missing",result:(success missing::null)}#error
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add null and missing propagation{time_part:year,quantity:1,timestamp:"null",result:(success null)}#coerce
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add null and missing propagation{time_part:year,quantity:1,timestamp:"null",result:(success null)}#error
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:day,quantity:-1,timestamp:"2017-02-03T",result:(success 2017-02-02)}#coerce
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:day,quantity:-1,timestamp:"2017-02-03T",result:(success 2017-02-02)}#error
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:day,quantity:-1,timestamp:"2017-02-03T04:05:06.007Z",result:(success 2017-02-02T04:05:06.007Z)}#coerce
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:day,quantity:-1,timestamp:"2017-02-03T04:05:06.007Z",result:(success 2017-02-02T04:05:06.007Z)}#error
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:day,quantity:-1,timestamp:"2017-02-03T04:05:06Z",result:(success 2017-02-02T04:05:06Z)}#coerce
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:day,quantity:-1,timestamp:"2017-02-03T04:05:06Z",result:(success 2017-02-02T04:05:06Z)}#error
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:day,quantity:-1,timestamp:"2017-02-03T04:05Z",result:(success 2017-02-02T04:05Z)}#coerce
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:day,quantity:-1,timestamp:"2017-02-03T04:05Z",result:(success 2017-02-02T04:05Z)}#error
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:day,quantity:-1,timestamp:"2017-02T",result:(success 2017-01-31)}#coerce
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:day,quantity:-1,timestamp:"2017-02T",result:(success 2017-01-31)}#error
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:day,quantity:-1,timestamp:"2017T",result:(success 2016-12-31)}#coerce
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:day,quantity:-1,timestamp:"2017T",result:(success 2016-12-31)}#error
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:day,quantity:1,timestamp:"2017-01-02T",result:(success 2017-01-03)}#coerce
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:day,quantity:1,timestamp:"2017-01-02T",result:(success 2017-01-03)}#error
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:day,quantity:1,timestamp:"2017-01-02T03:04:05.006Z",result:(success 2017-01-03T03:04:05.006Z)}#coerce
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:day,quantity:1,timestamp:"2017-01-02T03:04:05.006Z",result:(success 2017-01-03T03:04:05.006Z)}#error
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:day,quantity:1,timestamp:"2017-01-02T03:04:05Z",result:(success 2017-01-03T03:04:05Z)}#coerce
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:day,quantity:1,timestamp:"2017-01-02T03:04:05Z",result:(success 2017-01-03T03:04:05Z)}#error
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:day,quantity:1,timestamp:"2017-01-02T03:04Z",result:(success 2017-01-03T03:04Z)}#coerce
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:day,quantity:1,timestamp:"2017-01-02T03:04Z",result:(success 2017-01-03T03:04Z)}#error
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:day,quantity:1,timestamp:"2017-01T",result:(success 2017-01-02)}#coerce
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:day,quantity:1,timestamp:"2017-01T",result:(success 2017-01-02)}#error
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:day,quantity:1,timestamp:"2017T",result:(success 2017-01-02)}#coerce
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:day,quantity:1,timestamp:"2017T",result:(success 2017-01-02)}#error
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:day,quantity:35,timestamp:"2017-01T",result:(success 2017-02-05)}#coerce
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:day,quantity:35,timestamp:"2017-01T",result:(success 2017-02-05)}#error
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:day,quantity:420,timestamp:"2017T",result:(success 2018-02-25)}#coerce
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:day,quantity:420,timestamp:"2017T",result:(success 2018-02-25)}#error
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:hour,quantity:-1,timestamp:"2017-02-03T",result:(success 2017-02-02T23:00-00:00)}#coerce
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:hour,quantity:-1,timestamp:"2017-02-03T",result:(success 2017-02-02T23:00-00:00)}#error
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:hour,quantity:-1,timestamp:"2017-02-03T04:05:06.007Z",result:(success 2017-02-03T03:05:06.007Z)}#coerce
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:hour,quantity:-1,timestamp:"2017-02-03T04:05:06.007Z",result:(success 2017-02-03T03:05:06.007Z)}#error
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:hour,quantity:-1,timestamp:"2017-02-03T04:05:06Z",result:(success 2017-02-03T03:05:06Z)}#coerce
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:hour,quantity:-1,timestamp:"2017-02-03T04:05:06Z",result:(success 2017-02-03T03:05:06Z)}#error
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:hour,quantity:-1,timestamp:"2017-02-03T04:05Z",result:(success 2017-02-03T03:05Z)}#coerce
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:hour,quantity:-1,timestamp:"2017-02-03T04:05Z",result:(success 2017-02-03T03:05Z)}#error
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:hour,quantity:-1,timestamp:"2017-02T",result:(success 2017-01-31T23:00-00:00)}#coerce
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:hour,quantity:-1,timestamp:"2017-02T",result:(success 2017-01-31T23:00-00:00)}#error
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:hour,quantity:-1,timestamp:"2017T",result:(success 2016-12-31T23:00-00:00)}#coerce
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:hour,quantity:-1,timestamp:"2017T",result:(success 2016-12-31T23:00-00:00)}#error
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:hour,quantity:1,timestamp:"2017-01-02T",result:(success 2017-01-02T01:00-00:00)}#coerce
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:hour,quantity:1,timestamp:"2017-01-02T",result:(success 2017-01-02T01:00-00:00)}#error
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:hour,quantity:1,timestamp:"2017-01-02T03:04:05.006Z",result:(success 2017-01-02T04:04:05.006Z)}#coerce
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:hour,quantity:1,timestamp:"2017-01-02T03:04:05.006Z",result:(success 2017-01-02T04:04:05.006Z)}#error
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:hour,quantity:1,timestamp:"2017-01-02T03:04:05Z",result:(success 2017-01-02T04:04:05Z)}#coerce
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:hour,quantity:1,timestamp:"2017-01-02T03:04:05Z",result:(success 2017-01-02T04:04:05Z)}#error
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:hour,quantity:1,timestamp:"2017-01-02T03:04Z",result:(success 2017-01-02T04:04Z)}#coerce
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:hour,quantity:1,timestamp:"2017-01-02T03:04Z",result:(success 2017-01-02T04:04Z)}#error
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:hour,quantity:1,timestamp:"2017-01T",result:(success 2017-01-01T01:00-00:00)}#coerce
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:hour,quantity:1,timestamp:"2017-01T",result:(success 2017-01-01T01:00-00:00)}#error
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:hour,quantity:1,timestamp:"2017T",result:(success 2017-01-01T01:00-00:00)}#coerce
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:hour,quantity:1,timestamp:"2017T",result:(success 2017-01-01T01:00-00:00)}#error
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:hour,quantity:10080,timestamp:"2017T",result:(success 2018-02-25T00:00-00:00)}#coerce
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:hour,quantity:10080,timestamp:"2017T",result:(success 2018-02-25T00:00-00:00)}#error
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:hour,quantity:24,timestamp:"2017-02-03T",result:(success 2017-02-04T00:00-00:00)}#coerce
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:hour,quantity:24,timestamp:"2017-02-03T",result:(success 2017-02-04T00:00-00:00)}#error
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:hour,quantity:840,timestamp:"2017-01T",result:(success 2017-02-05T00:00-00:00)}#coerce
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:hour,quantity:840,timestamp:"2017-01T",result:(success 2017-02-05T00:00-00:00)}#error
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:minute,quantity:-1,timestamp:"2017-02-03T",result:(success 2017-02-02T23:59-00:00)}#coerce
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:minute,quantity:-1,timestamp:"2017-02-03T",result:(success 2017-02-02T23:59-00:00)}#error
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:minute,quantity:-1,timestamp:"2017-02-03T04:05:06.007Z",result:(success 2017-02-03T04:04:06.007Z)}#coerce
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:minute,quantity:-1,timestamp:"2017-02-03T04:05:06.007Z",result:(success 2017-02-03T04:04:06.007Z)}#error
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:minute,quantity:-1,timestamp:"2017-02-03T04:05:06Z",result:(success 2017-02-03T04:04:06Z)}#coerce
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:minute,quantity:-1,timestamp:"2017-02-03T04:05:06Z",result:(success 2017-02-03T04:04:06Z)}#error
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:minute,quantity:-1,timestamp:"2017-02-03T04:05Z",result:(success 2017-02-03T04:04Z)}#coerce
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:minute,quantity:-1,timestamp:"2017-02-03T04:05Z",result:(success 2017-02-03T04:04Z)}#error
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:minute,quantity:-1,timestamp:"2017-02T",result:(success 2017-01-31T23:59-00:00)}#coerce
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:minute,quantity:-1,timestamp:"2017-02T",result:(success 2017-01-31T23:59-00:00)}#error
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:minute,quantity:-1,timestamp:"2017T",result:(success 2016-12-31T23:59-00:00)}#coerce
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:minute,quantity:-1,timestamp:"2017T",result:(success 2016-12-31T23:59-00:00)}#error
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:minute,quantity:1,timestamp:"2017-01-02T",result:(success 2017-01-02T00:01-00:00)}#coerce
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:minute,quantity:1,timestamp:"2017-01-02T",result:(success 2017-01-02T00:01-00:00)}#error
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:minute,quantity:1,timestamp:"2017-01-02T03:04:05.006Z",result:(success 2017-01-02T03:05:05.006Z)}#coerce
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:minute,quantity:1,timestamp:"2017-01-02T03:04:05.006Z",result:(success 2017-01-02T03:05:05.006Z)}#error
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:minute,quantity:1,timestamp:"2017-01-02T03:04:05Z",result:(success 2017-01-02T03:05:05Z)}#coerce
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:minute,quantity:1,timestamp:"2017-01-02T03:04:05Z",result:(success 2017-01-02T03:05:05Z)}#error
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:minute,quantity:1,timestamp:"2017-01-02T03:04Z",result:(success 2017-01-02T03:05Z)}#coerce
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:minute,quantity:1,timestamp:"2017-01-02T03:04Z",result:(success 2017-01-02T03:05Z)}#error
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:minute,quantity:1,timestamp:"2017-01T",result:(success 2017-01-01T00:01-00:00)}#coerce
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:minute,quantity:1,timestamp:"2017-01T",result:(success 2017-01-01T00:01-00:00)}#error
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:minute,quantity:1,timestamp:"2017T",result:(success 2017-01-01T00:01-00:00)}#coerce
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:minute,quantity:1,timestamp:"2017T",result:(success 2017-01-01T00:01-00:00)}#error
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:minute,quantity:1440,timestamp:"2017-02-03T",result:(success 2017-02-04T00:00-00:00)}#coerce
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:minute,quantity:1440,timestamp:"2017-02-03T",result:(success 2017-02-04T00:00-00:00)}#error
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:minute,quantity:50400,timestamp:"2017-01T",result:(success 2017-02-05T00:00-00:00)}#coerce
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:minute,quantity:50400,timestamp:"2017-01T",result:(success 2017-02-05T00:00-00:00)}#error
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:minute,quantity:60,timestamp:"2017-02-04T05:06Z",result:(success 2017-02-04T06:06Z)}#coerce
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:minute,quantity:60,timestamp:"2017-02-04T05:06Z",result:(success 2017-02-04T06:06Z)}#error
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:minute,quantity:604800,timestamp:"2017T",result:(success 2018-02-25T00:00-00:00)}#coerce
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:minute,quantity:604800,timestamp:"2017T",result:(success 2018-02-25T00:00-00:00)}#error
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:month,quantity:-1,timestamp:"2017-02-03T",result:(success 2017-01-03)}#coerce
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:month,quantity:-1,timestamp:"2017-02-03T",result:(success 2017-01-03)}#error
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:month,quantity:-1,timestamp:"2017-02-03T04:05:06.007Z",result:(success 2017-01-03T04:05:06.007Z)}#coerce
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:month,quantity:-1,timestamp:"2017-02-03T04:05:06.007Z",result:(success 2017-01-03T04:05:06.007Z)}#error
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:month,quantity:-1,timestamp:"2017-02-03T04:05:06Z",result:(success 2017-01-03T04:05:06Z)}#coerce
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:month,quantity:-1,timestamp:"2017-02-03T04:05:06Z",result:(success 2017-01-03T04:05:06Z)}#error
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:month,quantity:-1,timestamp:"2017-02-03T04:05Z",result:(success 2017-01-03T04:05Z)}#coerce
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:month,quantity:-1,timestamp:"2017-02-03T04:05Z",result:(success 2017-01-03T04:05Z)}#error
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:month,quantity:-1,timestamp:"2017-02T",result:(success 2017-01T)}#coerce
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:month,quantity:-1,timestamp:"2017-02T",result:(success 2017-01T)}#error
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:month,quantity:-1,timestamp:"2017T",result:(success 2016-12T)}#coerce
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:month,quantity:-1,timestamp:"2017T",result:(success 2016-12T)}#error
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:month,quantity:1,timestamp:"2017-01-02T",result:(success 2017-02-02)}#coerce
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:month,quantity:1,timestamp:"2017-01-02T",result:(success 2017-02-02)}#error
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:month,quantity:1,timestamp:"2017-01-02T03:04:05.006Z",result:(success 2017-02-02T03:04:05.006Z)}#coerce
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:month,quantity:1,timestamp:"2017-01-02T03:04:05.006Z",result:(success 2017-02-02T03:04:05.006Z)}#error
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:month,quantity:1,timestamp:"2017-01-02T03:04:05Z",result:(success 2017-02-02T03:04:05Z)}#coerce
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:month,quantity:1,timestamp:"2017-01-02T03:04:05Z",result:(success 2017-02-02T03:04:05Z)}#error
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:month,quantity:1,timestamp:"2017-01-02T03:04Z",result:(success 2017-02-02T03:04Z)}#coerce
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:month,quantity:1,timestamp:"2017-01-02T03:04Z",result:(success 2017-02-02T03:04Z)}#error
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:month,quantity:1,timestamp:"2017-01T",result:(success 2017-02T)}#coerce
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:month,quantity:1,timestamp:"2017-01T",result:(success 2017-02T)}#error
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:month,quantity:1,timestamp:"2017T",result:(success 2017-02T)}#coerce
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:month,quantity:1,timestamp:"2017T",result:(success 2017-02T)}#error
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:month,quantity:12,timestamp:"2017T",result:(success 2018-01T)}#coerce
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:month,quantity:12,timestamp:"2017T",result:(success 2018-01T)}#error
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:second,quantity:-1,timestamp:"2017-02-03T",result:(success 2017-02-02T23:59:59-00:00)}#coerce
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:second,quantity:-1,timestamp:"2017-02-03T",result:(success 2017-02-02T23:59:59-00:00)}#error
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:second,quantity:-1,timestamp:"2017-02-03T04:05:06.007Z",result:(success 2017-02-03T04:05:05.007Z)}#coerce
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:second,quantity:-1,timestamp:"2017-02-03T04:05:06.007Z",result:(success 2017-02-03T04:05:05.007Z)}#error
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:second,quantity:-1,timestamp:"2017-02-03T04:05:06Z",result:(success 2017-02-03T04:05:05Z)}#coerce
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:second,quantity:-1,timestamp:"2017-02-03T04:05:06Z",result:(success 2017-02-03T04:05:05Z)}#error
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:second,quantity:-1,timestamp:"2017-02-03T04:05Z",result:(success 2017-02-03T04:04:59Z)}#coerce
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:second,quantity:-1,timestamp:"2017-02-03T04:05Z",result:(success 2017-02-03T04:04:59Z)}#error
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:second,quantity:-1,timestamp:"2017-02T",result:(success 2017-01-31T23:59:59-00:00)}#coerce
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:second,quantity:-1,timestamp:"2017-02T",result:(success 2017-01-31T23:59:59-00:00)}#error
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:second,quantity:-1,timestamp:"2017T",result:(success 2016-12-31T23:59:59-00:00)}#coerce
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:second,quantity:-1,timestamp:"2017T",result:(success 2016-12-31T23:59:59-00:00)}#error
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:second,quantity:1,timestamp:"2017-01-02T",result:(success 2017-01-02T00:00:01-00:00)}#coerce
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:second,quantity:1,timestamp:"2017-01-02T",result:(success 2017-01-02T00:00:01-00:00)}#error
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:second,quantity:1,timestamp:"2017-01-02T03:04:05.006Z",result:(success 2017-01-02T03:04:06.006Z)}#coerce
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:second,quantity:1,timestamp:"2017-01-02T03:04:05.006Z",result:(success 2017-01-02T03:04:06.006Z)}#error
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:second,quantity:1,timestamp:"2017-01-02T03:04:05Z",result:(success 2017-01-02T03:04:06Z)}#coerce
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:second,quantity:1,timestamp:"2017-01-02T03:04:05Z",result:(success 2017-01-02T03:04:06Z)}#error
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:second,quantity:1,timestamp:"2017-01-02T03:04Z",result:(success 2017-01-02T03:04:01Z)}#coerce
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:second,quantity:1,timestamp:"2017-01-02T03:04Z",result:(success 2017-01-02T03:04:01Z)}#error
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:second,quantity:1,timestamp:"2017-01T",result:(success 2017-01-01T00:00:01-00:00)}#coerce
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:second,quantity:1,timestamp:"2017-01T",result:(success 2017-01-01T00:00:01-00:00)}#error
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:second,quantity:1,timestamp:"2017T",result:(success 2017-01-01T00:00:01-00:00)}#coerce
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:second,quantity:1,timestamp:"2017T",result:(success 2017-01-01T00:00:01-00:00)}#error
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:second,quantity:3024000,timestamp:"2017-01T",result:(success 2017-02-05T00:00:00-00:00)}#coerce
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:second,quantity:3024000,timestamp:"2017-01T",result:(success 2017-02-05T00:00:00-00:00)}#error
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:second,quantity:3600,timestamp:"2017-02-04T05:06Z",result:(success 2017-02-04T06:06:00Z)}#coerce
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:second,quantity:3600,timestamp:"2017-02-04T05:06Z",result:(success 2017-02-04T06:06:00Z)}#error
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:second,quantity:36288000,timestamp:"2017T",result:(success 2018-02-25T00:00:00-00:00)}#coerce
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:second,quantity:36288000,timestamp:"2017T",result:(success 2018-02-25T00:00:00-00:00)}#error
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:second,quantity:60,timestamp:"2017-02-04T05:06Z",result:(success 2017-02-04T05:07:00Z)}#coerce
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:second,quantity:60,timestamp:"2017-02-04T05:06Z",result:(success 2017-02-04T05:07:00Z)}#error
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:second,quantity:86400,timestamp:"2017-02-03T",result:(success 2017-02-04T00:00:00-00:00)}#coerce
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:second,quantity:86400,timestamp:"2017-02-03T",result:(success 2017-02-04T00:00:00-00:00)}#error
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:year,quantity:-1,timestamp:"2017-02-03T",result:(success 2016-02-03)}#coerce
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:year,quantity:-1,timestamp:"2017-02-03T",result:(success 2016-02-03)}#error
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:year,quantity:-1,timestamp:"2017-02-03T04:05:06.007Z",result:(success 2016-02-03T04:05:06.007Z)}#coerce
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:year,quantity:-1,timestamp:"2017-02-03T04:05:06.007Z",result:(success 2016-02-03T04:05:06.007Z)}#error
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:year,quantity:-1,timestamp:"2017-02-03T04:05:06Z",result:(success 2016-02-03T04:05:06Z)}#coerce
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:year,quantity:-1,timestamp:"2017-02-03T04:05:06Z",result:(success 2016-02-03T04:05:06Z)}#error
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:year,quantity:-1,timestamp:"2017-02-03T04:05Z",result:(success 2016-02-03T04:05Z)}#coerce
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:year,quantity:-1,timestamp:"2017-02-03T04:05Z",result:(success 2016-02-03T04:05Z)}#error
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:year,quantity:-1,timestamp:"2017-02T",result:(success 2016-02T)}#coerce
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:year,quantity:-1,timestamp:"2017-02T",result:(success 2016-02T)}#error
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:year,quantity:-1,timestamp:"2017T",result:(success 2016T)}#coerce
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:year,quantity:-1,timestamp:"2017T",result:(success 2016T)}#error
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:year,quantity:1,timestamp:"2017-01-02T",result:(success 2018-01-02)}#coerce
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:year,quantity:1,timestamp:"2017-01-02T",result:(success 2018-01-02)}#error
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:year,quantity:1,timestamp:"2017-01-02T03:04:05.006Z",result:(success 2018-01-02T03:04:05.006Z)}#coerce
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:year,quantity:1,timestamp:"2017-01-02T03:04:05.006Z",result:(success 2018-01-02T03:04:05.006Z)}#error
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:year,quantity:1,timestamp:"2017-01-02T03:04:05Z",result:(success 2018-01-02T03:04:05Z)}#coerce
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:year,quantity:1,timestamp:"2017-01-02T03:04:05Z",result:(success 2018-01-02T03:04:05Z)}#error
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:year,quantity:1,timestamp:"2017-01-02T03:04Z",result:(success 2018-01-02T03:04Z)}#coerce
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:year,quantity:1,timestamp:"2017-01-02T03:04Z",result:(success 2018-01-02T03:04Z)}#error
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:year,quantity:1,timestamp:"2017-01T",result:(success 2018-01T)}#coerce
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:year,quantity:1,timestamp:"2017-01T",result:(success 2018-01T)}#error
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:year,quantity:1,timestamp:"2017T",result:(success 2018T)}#coerce
+extended/eval/primitives/functions/date_add.ion::date_add_valid::date_add valid cases{time_part:year,quantity:1,timestamp:"2017T",result:(success 2018T)}#error
 extended/eval/primitives/functions/date_diff.ion::date_diff_invalid::date_diff invalid arguments{time_part:"timezone_hour"}#coerce
 extended/eval/primitives/functions/date_diff.ion::date_diff_invalid::date_diff invalid arguments{time_part:"timezone_hour"}#error
 extended/eval/primitives/functions/date_diff.ion::date_diff_invalid::date_diff invalid arguments{time_part:"timezone_minute"}#coerce

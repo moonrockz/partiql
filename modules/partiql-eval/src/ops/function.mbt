@@ -22,6 +22,8 @@ priv enum Param {
   Integer
   /// A datetime (DATE, TIME, TIMESTAMP) or an interval.
   Temporal
+  /// A datetime: DATE, TIME or TIMESTAMP.
+  Datetime
 }
 
 ///|
@@ -40,6 +42,7 @@ fn Param::accepts(self : Param, v : @value.Value) -> Bool {
     (Integer, Int(_) | BigInt(_)) => true
     (Temporal, Date(_) | Time(_) | Timestamp(_)) => true
     (Temporal, IntervalYM(_) | IntervalDT(_)) => true
+    (Datetime, Date(_) | Time(_) | Timestamp(_)) => true
     _ => false
   }
 }

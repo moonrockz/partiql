@@ -37,3 +37,20 @@ test "datetime function calls: static checks" {
     }
   })
 }
+
+///|
+test "DATE_ADD evaluates" {
+  @expect.expect_all(soft => {
+    // An Ion literal evaluates to the boxed Ion value, so compare with `=`.
+    soft
+    .expect(ev("DATE_ADD(month, 1, `2010T`) = `2010-02T`"))
+    .to_equal(Bool(true))
+    soft
+    .expect(ev("DATE_ADD(day, -1, DATE '2024-03-01')"))
+    .to_equal(ev("DATE '2024-02-29'"))
+    soft
+    .expect(failure_of("DATE_ADD(month, 1, DATE '2025-01-31')", mode=Strict))
+    .to_equal("data")
+    soft.expect(ev("DATE_ADD(year, NULL, MISSING)")).to_equal(Missing)
+  })
+}

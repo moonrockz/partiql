@@ -29,7 +29,8 @@ fn call(
     Upper => @ops.upper(args)
     Lower => @ops.lower(args)
     Extract(field) => @ops.extract(field, args)
-    DateAdd(_) | DateDiff(_) | Overlaps | ToString | ToTimestamp => {
+    DateAdd(field) => @ops.date_add(field, args)
+    DateDiff(_) | Overlaps | ToString | ToTimestamp => {
       ignore(zone)
       raise @ops.OpFailure::Unsupported("\{f.name()} is not supported yet")
     }
