@@ -74,15 +74,6 @@ test "CAST target checks are static" {
 }
 
 ///|
-test "CAST to groups of later tasks is unsupported for now" {
-  // Pins the intermediate state. Each later task deletes its line: Task 4
-  // STRING, Task 6 DATE, Task 7 INTERVAL; Task 8 deletes the test.
-  @expect.expect_all(soft => {
-    soft.expect(failure_of("CAST([1] AS BAG)")).to_equal("unsupported")
-  })
-}
-
-///|
 test "CAST to text" {
   @expect.expect_all(soft => {
     soft.expect(ev("CAST(1.50 AS STRING)")).to_equal(String("1.50"))
@@ -142,5 +133,30 @@ test "CAST to INTERVAL" {
     soft
     .expect(failure_of("CAST(100 AS INTERVAL DAY)", mode=Strict))
     .to_equal("data")
+  })
+}
+
+///|
+test "CAST to collections and maps" {
+  @expect.expect_all(soft => {
+    soft.expect(ev("CAST([1, 2] AS BAG)")).to_equal(bag_of([Int(1), Int(2)]))
+    soft
+    .expect(ev("CAST({'a': 1, 'a': 2} AS MAP<STRING, INTEGER>)"))
+    .to_equal(ev("MAP {'a': 2}"))
+    soft.expect(ev("CAST({'a': 'x'} AS MAP<STRING, INT>)")).to_equal(Missing)
+    soft
+    .expect(failure_of("CAST({'a': 'x'} AS MAP<STRING, INT>)", mode=Strict))
+    .to_equal("type")
+    soft
+    .expect(failure_of("CAST(MAP {'a': 300} AS MAP<STRING, TINYINT>)"))
+    .to_equal("data")
+    soft
+    .expect(
+      failure_of("CAST(MAP {'a': 300} AS MAP<STRING, TINYINT>)", mode=Strict),
+    )
+    .to_equal("data")
+    // Elements of an Ion sexp stay Ion-boxed (shallow lowering, as for
+    // paths); they equal the PartiQL values.
+    soft.expect(ev("CAST(`(1 2)` AS LIST) = [1, 2]")).to_equal(Bool(true))
   })
 }

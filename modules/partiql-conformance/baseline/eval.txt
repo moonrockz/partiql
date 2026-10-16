@@ -3226,6 +3226,17 @@ eval/primitives/map.ion::map::cardinality of an empty map returns zero#coerce
 eval/primitives/map.ion::map::cardinality of an empty map returns zero#error
 eval/primitives/map.ion::map::cardinality of environment map#coerce
 eval/primitives/map.ion::map::cardinality of environment map#error
+eval/primitives/map.ion::map::cast MAP to MAP with different key type#coerce
+eval/primitives/map.ion::map::cast MAP to MAP with different key type#error
+eval/primitives/map.ion::map::cast MAP to MAP with different value type#coerce
+eval/primitives/map.ion::map::cast MAP to MAP with different value type#error
+eval/primitives/map.ion::map::cast empty struct to MAP#coerce
+eval/primitives/map.ion::map::cast empty struct to MAP#error
+eval/primitives/map.ion::map::cast struct to MAP with non-string key type fails in strict#error
+eval/primitives/map.ion::map::cast struct to MAP with string keys#coerce
+eval/primitives/map.ion::map::cast struct to MAP with string keys#error
+eval/primitives/map.ion::map::cast struct with duplicate keys to MAP keeps last value#coerce
+eval/primitives/map.ion::map::cast struct with duplicate keys to MAP keeps last value#error
 eval/primitives/map.ion::map::construct a map with all MISSING values produces empty map#coerce
 eval/primitives/map.ion::map::construct a map with all MISSING values produces empty map#error
 eval/primitives/map.ion::map::construct a map with boolean keys#coerce

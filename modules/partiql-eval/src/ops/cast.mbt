@@ -170,7 +170,8 @@ pub fn cast(
     Timestamp(precision~, zone=with_zone) =>
       to_timestamp(x, precision, with_zone, zone)
     Interval(q) => to_interval(x, q)
-    _ =>
-      raise Unsupported("CAST to \{target_name(target)} is not supported yet")
+    List | Bag | Tuple => to_collection(x, target)
+    Map(key~, key_type~, value~, value_type~) =>
+      to_map(x, key, key_type, value, value_type, zone)
   }
 }
