@@ -169,6 +169,7 @@ pub fn cast(
     Time(precision~, zone=with_zone) => to_time(x, precision, with_zone, zone)
     Timestamp(precision~, zone=with_zone) =>
       to_timestamp(x, precision, with_zone, zone)
+    Interval(q) => to_interval(x, q)
     _ =>
       raise Unsupported("CAST to \{target_name(target)} is not supported yet")
   }

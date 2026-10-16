@@ -78,7 +78,6 @@ test "CAST to groups of later tasks is unsupported for now" {
   // Pins the intermediate state. Each later task deletes its line: Task 4
   // STRING, Task 6 DATE, Task 7 INTERVAL; Task 8 deletes the test.
   @expect.expect_all(soft => {
-    soft.expect(failure_of("CAST(1 AS INTERVAL DAY)")).to_equal("unsupported")
     soft.expect(failure_of("CAST([1] AS BAG)")).to_equal("unsupported")
   })
 }
@@ -125,5 +124,23 @@ test "CAST uses the session time zone" {
     soft
     .expect(failure_of("CAST(TIME '12:00:00' AS TIMESTAMP)"))
     .to_equal("unsupported")
+  })
+}
+
+///|
+test "CAST to INTERVAL" {
+  @expect.expect_all(soft => {
+    soft
+    .expect(ev("CAST(INTERVAL '13' MONTH AS INTERVAL YEAR TO MONTH)"))
+    .to_equal(ev("INTERVAL '1-1' YEAR TO MONTH"))
+    soft
+    .expect(ev("CAST(INTERVAL '1.123456789' SECOND AS INTERVAL SECOND(3, 3))"))
+    .to_equal(ev("INTERVAL '1.123' SECOND"))
+    soft
+    .expect(ev("CAST(2 AS INTERVAL HOUR)"))
+    .to_equal(ev("INTERVAL '2' HOUR"))
+    soft
+    .expect(failure_of("CAST(100 AS INTERVAL DAY)", mode=Strict))
+    .to_equal("data")
   })
 }

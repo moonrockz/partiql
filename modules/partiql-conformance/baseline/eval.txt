@@ -449,6 +449,16 @@ eval/primitives/cast.ion::cast-to-null::cast to NULL valid cases{value:"MISSING"
 eval/primitives/cast.ion::cast-to-null::cast to NULL valid cases{value:"MISSING"}#error
 eval/primitives/cast.ion::cast-to-null::cast to NULL valid cases{value:"NULL"}#coerce
 eval/primitives/cast.ion::cast-to-null::cast to NULL valid cases{value:"NULL"}#error
+eval/primitives/cast.ion::cast_invalid::CAST INTERVAL DAY to INTERVAL DAY with precision#coerce
+eval/primitives/cast.ion::cast_invalid::CAST INTERVAL DAY to INTERVAL DAY with precision#error
+eval/primitives/cast.ion::cast_invalid::CAST INTERVAL HOUR to INTERVAL DAY TO HOUR#coerce
+eval/primitives/cast.ion::cast_invalid::CAST INTERVAL HOUR to INTERVAL DAY TO HOUR#error
+eval/primitives/cast.ion::cast_invalid::CAST INTERVAL MONTH to INTERVAL YEAR TO MONTH#coerce
+eval/primitives/cast.ion::cast_invalid::CAST INTERVAL MONTH to INTERVAL YEAR TO MONTH#error
+eval/primitives/cast.ion::cast_invalid::CAST INTERVAL SECOND with fractional precision#coerce
+eval/primitives/cast.ion::cast_invalid::CAST INTERVAL SECOND with fractional precision#error
+eval/primitives/cast.ion::cast_invalid::CAST INTERVAL YEAR to INTERVAL YEAR with precision#coerce
+eval/primitives/cast.ion::cast_invalid::CAST INTERVAL YEAR to INTERVAL YEAR with precision#error
 eval/primitives/cast.ion::cast_invalid::cast to int invalid target type{value:"<<1, 2>>",target:"BAG"}#coerce
 eval/primitives/cast.ion::cast_invalid::cast to int invalid target type{value:"<<1, 2>>",target:"BAG"}#error
 eval/primitives/cast.ion::cast_invalid::cast to int invalid target type{value:"<<1>>",target:"BAG"}#coerce
