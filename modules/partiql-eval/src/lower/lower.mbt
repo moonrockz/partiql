@@ -310,13 +310,21 @@ fn lower_at(
       raise DataError(message="expression is too deep", span~)
     Lit(l) => Const(literal(l, span), span)
     VarRef(id, qualified~) =>
-      match scope.resolve(id) {
-        Some((name, is_with)) =>
+      match
+        scope.resolve(id, defer_ambiguity=scope.globals_first && !qualified) {
+        Some((Bound(name), is_with)) =>
           if scope.globals_first && !qualified && !is_with {
-            GlobalOrLocal(id.text, variable=name, delimited=id.delimited, span)
+            GlobalOrLocal(
+              id.text,
+              variable=Bound(name),
+              delimited=id.delimited,
+              span,
+            )
           } else {
             Local(name, span)
           }
+        Some((Ambiguous(_) as variable, _)) =>
+          GlobalOrLocal(id.text, variable~, delimited=id.delimited, span)
         None =>
           if scope.aggregates is Allowed(g) &&
             g.hidden.iter().any(name => names_variable(id, name)) {

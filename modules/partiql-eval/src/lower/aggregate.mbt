@@ -511,7 +511,7 @@ fn keyed(
   let pending = [e]
   while pending.pop() is Some(x) {
     if x.kind is VarRef(id, qualified=false) {
-      globals.push((id.text, id.delimited))
+      globals.push((id.text, id.delimited, id.span))
     }
     pending.append(ast_operands(x))
   }

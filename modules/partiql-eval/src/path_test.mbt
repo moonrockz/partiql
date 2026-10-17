@@ -210,3 +210,83 @@ test "decimal rounding is half to even and renormalizes a carry" {
     .to_equal(d("1." + "0".repeat(37)))
   })
 }
+
+///|
+test "explicit repeated fields fail only in strict mode" {
+  @expect.expect_all(soft => {
+    for
+      source in [
+        "{'a':1,'a':2}.a", "{'a':1,'A':2}.a", "{'a':1,'a':2}.\"a\"", "{'a':1,'a':2}['a']",
+        "{'a':1,'a':2}[CAST('a' AS STRING)]", "`{a:1,a:2}`.a", "`{a:1,a:2}`['a']",
+        "[{'a':1,'a':2}][*].a",
+      ] {
+      soft
+      .expect(ev_env(source, "{}").lower())
+      .to_equal(
+        if source.has_prefix("[") {
+          Bag(@value.Bag::new([Int(1)]))
+        } else {
+          Int(1)
+        },
+      )
+      soft
+      .expect_call(() => ev_env(source, "{}", mode=Strict), label=source)
+      .to_raise_matching(
+        e => {
+          e
+          is @eval.EvalError::TypeError(
+            message="field a is ambiguous: the tuple has 2 matching fields",
+            ..
+          )
+        },
+        description="ambiguous field TypeError",
+      )
+    }
+    for mode in [@eval.Mode::Permissive, Strict] {
+      soft.expect(ev_env("{'a':1,'A':2}.\"a\"", "{}", mode~)).to_equal(Int(1))
+      soft.expect(ev_env("{'a':1,'A':2}['A']", "{}", mode~)).to_equal(Int(2))
+    }
+  })
+}
+
+///|
+test "implicit lookup stops at the first tuple with matching fields" {
+  @expect.expect_all(soft => {
+    for
+      source in [
+        "SELECT VALUE a FROM [{'a':1,'a':2}] AS t, [{'a':3}] AS u", "SELECT VALUE A FROM [{'a':1,'A':2}] AS t",
+        "SELECT VALUE CAST(\"a\" AS INT) FROM `[{a:1,a:2}]` AS t",
+      ] {
+      soft
+      .expect(ev_env(source, "{}").lower())
+      .to_equal(Bag(@value.Bag::new([Int(1)])))
+      soft
+      .expect_call(() => ev_env(source, "{}", mode=Strict), label=source)
+      .to_raise_matching(
+        e => e is @eval.EvalError::TypeError(..),
+        description="ambiguous field TypeError",
+      )
+    }
+    for mode in [@eval.Mode::Permissive, Strict] {
+      soft
+      .expect(
+        ev_env("SELECT VALUE \"a\" FROM [{'a':1,'A':2}] AS t", "{}", mode~),
+      )
+      .to_equal(Bag(@value.Bag::new([Int(1)])))
+      soft
+      .expect(
+        ev_env(
+          "SELECT VALUE a FROM t, u",
+          "{t:[{a:null}],u:[{a:3}],a:4}",
+          mode~,
+        ).lower(),
+      )
+      .to_equal(Bag(@value.Bag::new([Null])))
+      soft
+      .expect(
+        ev_env("SELECT VALUE a FROM [0] AS t, [{'a':3}] AS u", "{}", mode~),
+      )
+      .to_equal(Bag(@value.Bag::new([Int(3)])))
+    }
+  })
+}

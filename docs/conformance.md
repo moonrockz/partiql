@@ -133,7 +133,7 @@ After M1 (data model), M1b (MAP and graph), M2 (parser), M2b (graph
 MATCH), M3a (printer), M3b (pretty layout), M3d (error recovery), M4a
 (expression evaluation), M4b1 (query evaluation core), M4b2 (queries,
 part two), M4c (grouping and aggregates), M4d1 (built-in functions), M4d2
-(CAST) and M4d3 (datetime functions):
+(CAST), M4d3 (datetime functions) and ambiguous lookup checks:
 
 | Check | Passed | Total | N/A |
 |---|---|---|---|
@@ -144,7 +144,7 @@ part two), M4c (grouping and aggregates), M4d1 (built-in functions), M4d2
 | `print-roundtrip` | 5310 | 5313 | 3 |
 | `pretty-roundtrip` | 5310 | 5313 | 3 |
 | `recovery` | 5410 | 5410 | 0 |
-| `eval` | 9601 | 9960 | 240 |
+| `eval` | 9604 | 9960 | 240 |
 
 The 3 `eval-parse` failures are corpus defects (bead `partiql-zhj.9`):
 
@@ -158,12 +158,13 @@ The 3 `eval-parse` failures are corpus defects (bead `partiql-zhj.9`):
 
 ### The `eval` check
 
-Of 9960 assertions, 9601 pass and 240 are not applicable: they need graph
+Of 9960 assertions, 9604 pass and 240 are not applicable: they need graph
 MATCH, which comes after M4 (the eval corpus has no FULL JOIN and no `?`
-statement). 119 fail. M4b1 raised the passes from 2952 to 3719, M4b2 raised them
+statement). 116 fail. M4b1 raised the passes from 2952 to 3719, M4b2 raised them
 to 4043 (324 more), with the `eval-equiv` cases now evaluated, M4c raised
 them to 5211 (1168 more), M4d1 raised them to 7287 (2076 more), M4d2
-raised them to 7507 (220 more), and M4d3 raised them to 9601 (2094 more). To list the
+raised them to 7507 (220 more), M4d3 raised them to 9601 (2094 more), and
+ambiguous lookup checks raised them to 9604 (3 more). To list the
 failures, run `PARTIQL_CONFORMANCE_SHOW=eval mise run test:conformance`. Each
 case fails in both modes, except where a reason below says otherwise. The
 reasons:
@@ -211,10 +212,6 @@ reasons:
   the harness does not treat a DATE and a midnight UTC TIMESTAMP as equal.
   "map_keys with date keys" fails for the same reason since M4d1 (counted
   under M4d1).
-- **Ambiguous names in strict mode (3 ids).** "repeated field on Ion struct is
-  ambiguous" (2 ids) and "path expression with ambiguous table alias
-  (lowercase, unquoted)" expect a failure when two names differ only in case.
-  The evaluator takes the first match.
 - **`a.*.*.*.*` in strict mode (1 id).** `pathUnpivotWildCardOverStructMultiple`
   expects a failure. Every `.*` step applies to a tuple, so the evaluator
   succeeds; the corpus expectation is taken as an artifact.
@@ -329,10 +326,32 @@ across numeric types" (M4b1) now pass:
 - **DATE against Ion timestamp (2 ids).** `map.ion` "map_keys with date keys"
   (line 850): see "DATE against Ion timestamp" above.
 
-The groups add up to 119 ids (44 from M4b1: 6 + 3 + 1 + 6 + 14 + 4 + 4 + 2 +
-3 + 1; 24 from M4b2: 17 + 5 + 2; 30 from M4c: 8 + 4 + 2 + 12 + 4; 8 from
+The groups add up to 116 ids (41 from M4b1: 6 + 3 + 1 + 6 + 14 + 4 + 4 + 2 +
+1; 24 from M4b2: 17 + 5 + 2; 30 from M4c: 8 + 4 + 2 + 12 + 4; 8 from
 M4d1: 4 + 2 + 2; 1 from M4d2, see "CAST"; and 12 from M4d3, see "Datetime
 functions").
+
+### Ambiguous lookups
+
+A regular identifier ignores ASCII case; a double-quoted identifier matches
+exactly. A name matching different spellings in the winning scope frame is a
+`DataError` in both modes. Lowering detects variable ambiguity even over an
+empty source; evaluation checks globals. In a FROM source, globals precede
+earlier FROM variables, so local ambiguity is checked at evaluation only if
+no global matches. WITH bindings precede globals, and `@name` selects only a
+local variable. Inner frames shadow outer frames,
+exact repeated LET names keep the later binding, and exact repeated globals
+keep the first binding. ORDER BY output names remain a fallback to variables
+inside a non-bare sort key.
+
+Every matching tuple field counts, including exact repeats. Strict mode raises
+`TypeError` for repeated matches; permissive mode returns the first match.
+The rule applies to explicit paths, named subscripts and implicit attributes,
+and to both tuples and Ion structs. Implicit lookup uses the first variable
+whose tuple has a match. The literal `[{repeated:1, repeated:2}]` fails because
+its keys are references to an undefined variable. Its failure does not test
+repeated fields; the Ion literal `` `[{repeated:1, repeated:2}]` `` reaches that
+lookup.
 
 ### CAST
 

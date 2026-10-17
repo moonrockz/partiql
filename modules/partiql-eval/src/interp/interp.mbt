@@ -1,17 +1,56 @@
 ///|
+priv enum GlobalMatch {
+  NoGlobal
+  Global(@value.Value)
+  Ambiguous(Array[String])
+}
+
+///|
 fn find_global(
   globals : Array[(String, @value.Value)],
   name : String,
   delimited : Bool,
-) -> @value.Value? {
+) -> GlobalMatch {
   let wanted = if delimited { name } else { name.to_lower() }
-  for entry in globals {
-    let key = if delimited { entry.0 } else { entry.0.to_lower() }
+  let names = []
+  let mut first = None
+  for (spelling, value) in globals {
+    let key = if delimited { spelling } else { spelling.to_lower() }
     if key == wanted {
-      return Some(entry.1)
+      if first is None {
+        first = Some(value)
+      }
+      if !names.contains(spelling) {
+        names.push(spelling)
+      }
     }
   }
-  None
+  if names.length() > 1 {
+    Ambiguous(names)
+  } else {
+    match first {
+      Some(value) => Global(value)
+      None => NoGlobal
+    }
+  }
+}
+
+///|
+/// Turn a global match into a value only after checking distinct spellings.
+fn GlobalMatch::value(
+  self : GlobalMatch,
+  name : String,
+  span : @ast.Span,
+) -> @value.Value? raise @plan.EvalError {
+  match self {
+    NoGlobal => None
+    Global(value) => Some(value)
+    Ambiguous(names) =>
+      raise DataError(
+        message="\{name} is ambiguous: it names \{names.join(" and ")}; write the name in double quotes",
+        span~,
+      )
+  }
 }
 
 ///|
@@ -21,7 +60,7 @@ fn lookup(
   delimited : Bool,
   span : @ast.Span,
 ) -> @value.Value raise @plan.EvalError {
-  match find_global(globals, name, delimited) {
+  match find_global(globals, name, delimited).value(name, span) {
     Some(v) => v
     None => raise DataError(message="undefined variable \{name}", span~)
   }
@@ -42,17 +81,24 @@ fn implicit(
 ) -> @value.Value raise @plan.EvalError {
   for variable in locals {
     if env.find(variable) is Some(v) {
-      let found = @ops.field(v, name, delimited~) catch {
-        TypeFailure(_) => Missing
-        DataFailure(message) => raise DataError(message~, span~)
-        Unsupported(message) => raise Unsupported(message~, span~)
-      }
-      if !(found is Missing) {
-        return found
+      if unboxed(v) is Tuple(t) {
+        match @ops.field_match(t, name, delimited~) {
+          NoField => ()
+          One(value) => return value
+          Many(value, count~) =>
+            match ctx.mode {
+              Permissive => return value
+              Strict =>
+                raise TypeError(
+                  message="field \{name} is ambiguous: the tuple has \{count} matching fields",
+                  span~,
+                )
+            }
+        }
       }
     }
   }
-  if find_global(ctx.globals, name, delimited) is Some(v) {
+  if find_global(ctx.globals, name, delimited).value(name, span) is Some(v) {
     return v
   }
   typed(ctx.mode, span, () => raise TypeFailure("undefined variable \{name}"))
@@ -165,7 +211,9 @@ fn navigate(
 ) -> @value.Value raise @plan.EvalError {
   match step {
     Field(name, delimited~) =>
-      typed(ctx.mode, span, () => @ops.field(v, name, delimited~))
+      typed(ctx.mode, span, () => {
+        @ops.field(v, name, delimited~, unique=ctx.mode is Strict)
+      })
     Index(e) => {
       let i = eval(e, env, ctx)
       // A string literal, also an Ion one, or a CAST to a character string
@@ -175,7 +223,9 @@ fn navigate(
         Cast(_, Text(_), _) => true
         _ => false
       }
-      typed(ctx.mode, span, () => @ops.index(v, i, named~))
+      typed(ctx.mode, span, () => {
+        @ops.index(v, i, named~, unique=ctx.mode is Strict)
+      })
     }
     AllElements | AllFields => v
   }
@@ -559,12 +609,21 @@ fn eval(
       typed(ctx.mode, span, () => call(f, values, ctx))
     }
     GlobalOrLocal(name, variable~, delimited~, span) =>
-      match find_global(ctx.globals, name, delimited) {
+      match find_global(ctx.globals, name, delimited).value(name, span) {
         Some(v) => v
         None =>
-          match env.find(variable) {
-            Some(v) => v
-            None => raise DataError(message="undefined variable \{name}", span~)
+          match variable {
+            Bound(variable) =>
+              match env.find(variable) {
+                Some(v) => v
+                None =>
+                  raise DataError(message="undefined variable \{name}", span~)
+              }
+            Ambiguous(names) =>
+              raise DataError(
+                message="\{name} is ambiguous: it names \{names.join(" and ")}; write the name in double quotes",
+                span~,
+              )
           }
       }
     Implicit(name, delimited~, locals~, span) =>
@@ -584,7 +643,9 @@ fn eval(
     Aggregate(kind, distinct~, arg, members~, group~, span) =>
       aggregate(kind, distinct, arg, members, group, env, ctx, span)
     GlobalsFirst(globals, key~, otherwise~, _) =>
-      if globals.iter().any(g => find_global(ctx.globals, g.0, g.1) is Some(_)) {
+      if globals
+        .iter()
+        .any(g => find_global(ctx.globals, g.0, g.1).value(g.0, g.2) is Some(_)) {
         eval(otherwise, env, ctx)
       } else {
         eval(key, env, ctx)

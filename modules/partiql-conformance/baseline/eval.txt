@@ -293,6 +293,8 @@ eval/ion/primitives/operators/nary-operators.ion::nary::equalListDifferentTypesT
 eval/ion/primitives/operators/nary-operators.ion::nary::equalListDifferentTypesTrue#error
 eval/ion/primitives/operators/nary-operators.ion::nary::listDifferentTypesDifferentOrderFalse#coerce
 eval/ion/primitives/operators/nary-operators.ion::nary::listDifferentTypesDifferentOrderFalse#error
+eval/ion/primitives/path.ion::repeated-field-on-struct::repeated field on Ion struct is ambiguous{identifier:" \"repeated\" ",cn:10,bn:"repeated"}#error
+eval/ion/primitives/path.ion::repeated-field-on-struct::repeated field on Ion struct is ambiguous{identifier:"REPEATED",cn:9,bn:"REPEATED"}#error
 eval/ion/primitives/symbol.ion::empty-symbol::Empty Symbol in table (with Ion data)#coerce
 eval/ion/primitives/symbol.ion::empty-symbol::Empty Symbol in table (with Ion data)#error
 eval/ion/query/group-by/group-by.ion::simple-group-by-fail::GROUP AS binding referenced in FROM clause (Ion timestamp)#coerce
@@ -6009,6 +6011,7 @@ eval/primitives/path.ion::pathUnpivotMissing::unpivotMissingWithAsAndAt#coerce
 eval/primitives/path.ion::pathUnpivotMissing::unpivotMissingWithAsAndAt#error
 eval/primitives/path.ion::pathUnpivotMissing::unpivotStructWithMissingField#coerce
 eval/primitives/path.ion::pathUnpivotMissing::unpivotStructWithMissingField#error
+eval/primitives/path.ion::repeated-field-on-struct::path expression with ambiguous table alias (lowercase, unquoted)#error
 eval/primitives/path.ion::repeated-field-on-struct::repeated field on struct is ambiguous{identifier:" \"repeated\" ",cn:10,bn:"repeated"}#error
 eval/primitives/path.ion::repeated-field-on-struct::repeated field on struct is ambiguous{identifier:"REPEATED",cn:9,bn:"REPEATED"}#error
 eval/primitives/string.ion::string::concatenation with non-nulls{Cyrillic Alphabet Concatenation Test - Split at Position 33}#coerce
