@@ -388,24 +388,8 @@ fn decode_plain(x : @ion_core.IonValue) -> @value.Value raise CodecError {
     String(s) => String(s)
     Clob(bytes) => Clob(bytes)
     Blob(bytes) => Blob(bytes)
-    List(items) => {
-      let out : Array[@value.Value] = []
-      for item in items {
-        out.push(from_ion(item))
-      }
-      List(out)
-    }
+    List(_) | Struct(_) => raise Malformed("expected a scalar")
     Sexp(_) => raise Malformed("an s-expression is only valid inside $ion")
-    Struct(fields) => {
-      let out : Array[(String, @value.Value)] = []
-      for field in fields {
-        guard field.name().text() is Some(name) else {
-          raise Malformed("struct field without a name")
-        }
-        out.push((name, from_ion(field.value())))
-      }
-      Tuple(@value.Tuple::new(out))
-    }
   }
 }
 
@@ -414,20 +398,21 @@ fn decode_plain(x : @ion_core.IonValue) -> @value.Value raise CodecError {
 /// Ion timestamp (how partiql-tests writes `$map::date::...` keys) is a date.
 /// Any other form, including `$timestamp`, decodes as usual, so encoded maps
 /// round-trip.
-fn decode_typed(
+fn typed_child(
   declared : @value.MapType,
-  x : @ion_core.IonValue,
-) -> @value.Value raise CodecError {
-  match (declared, x.kind()) {
-    (Date, Timestamp(ts)) if !x.has_annotations() && ts.precision() == Day =>
-      Date(@value.timestamp_of_ion(ts).date)
-    _ => from_ion(x)
+  original : @ion_core.IonValue,
+  decoded : @value.Value,
+) -> @value.Value {
+  match (declared, original.kind()) {
+    (Date, Timestamp(ts)) if !original.has_annotations() &&
+      ts.precision() == Day => Date(@value.timestamp_of_ion(ts).date)
+    _ => decoded
   }
 }
 
 ///|
 /// `$map::<key type>::<value type>::[[k, v], ...]` (RFC 0104).
-fn decode_map(x : @ion_core.IonValue) -> @value.Value raise CodecError {
+fn decode_map(x : @ion_core.IonValue) -> DecodePlan raise CodecError {
   let names = x.annotations().map(token => token.text())
   guard names is [_, Some(k), Some(v)] else {
     raise Malformed("$map needs exactly a key type and a value type")
@@ -440,22 +425,33 @@ fn decode_map(x : @ion_core.IonValue) -> @value.Value raise CodecError {
   }
   let body = x.with_annotations([])
   if body.is_null() {
-    return Null
+    return Ready(Null)
   }
   guard body.kind() is List(items) else {
     raise Malformed("$map must annotate a list of [key, value] pairs")
   }
-  let entries : Array[(@value.Value, @value.Value)] = []
+  let pairs : Array[(@ion_core.IonValue, @ion_core.IonValue)] = []
+  let children = []
   for item in items {
     guard !item.has_annotations() && item.kind() is List([key, value]) else {
       raise Malformed("$map entry is not an unannotated [key, value] pair")
     }
-    entries.push((decode_typed(key_type, key), decode_typed(value_type, value)))
+    pairs.push((key, value))
+    children.push(key)
+    children.push(value)
   }
-  let map = @value.MapValue::new(key_type~, value_type~, entries) catch {
-    error => raise Malformed(@debug.to_string(error))
-  }
-  Map(map)
+  Children(children, values => {
+    let entries = pairs.mapi((i, pair) => {
+      (
+        typed_child(key_type, pair.0, values[2 * i]),
+        typed_child(value_type, pair.1, values[2 * i + 1]),
+      )
+    })
+    let map = @value.MapValue::new(key_type~, value_type~, entries) catch {
+      error => raise Malformed(@debug.to_string(error))
+    }
+    Map(map)
+  })
 }
 
 ///|
@@ -508,20 +504,6 @@ fn labels_of(
 }
 
 ///|
-fn payload_of(
-  f : Map[String, @ion_core.IonValue],
-) -> @value.Value? raise CodecError {
-  match f.get("payload") {
-    None => None
-    Some(x) =>
-      match from_ion(x) {
-        Missing => raise Malformed("a $graph payload must not be MISSING")
-        v => Some(v)
-      }
-  }
-}
-
-///|
 /// `(a -> b)`, `(a -- b)` or `(a <- b)`.
 fn ends_of(x : @ion_core.IonValue) -> @value.Ends raise CodecError {
   guard !x.has_annotations() && x.kind() is Sexp([a, op, b]) else {
@@ -555,41 +537,83 @@ fn graph_list(
 ///|
 /// `$graph::{nodes: [...], edges: [...]}` (the external graph format of
 /// RFC 0025).
-fn decode_graph(x : @ion_core.IonValue) -> @value.Value raise CodecError {
+fn decode_graph(x : @ion_core.IonValue) -> DecodePlan raise CodecError {
   if x.annotations().length() != 1 {
     raise Malformed("$graph takes no further annotations")
   }
   let f = field_map(x.with_annotations([]), "$graph")
   check_fields(f, ["nodes", "edges"], "$graph")
-  let nodes : Array[@value.GraphNode] = []
+  let children = []
+  fn payload_index(fields : Map[String, @ion_core.IonValue]) -> Int32? {
+    match fields.get("payload") {
+      None => None
+      Some(v) => {
+        let i = children.length()
+        children.push(v)
+        Some(i)
+      }
+    }
+  }
+  let nodes : Array[(@value.GraphNode, Int32?)] = []
   for item in graph_list(f, "nodes") {
     let n = graph_element_fields(item, "node", ["id", "labels", "payload"])
     nodes.push(
-      @value.GraphNode::new(
-        id=graph_id(required(n, "id", "$graph node"), "$graph node id"),
-        labels=labels_of(n),
-        payload=payload_of(n),
+      (
+        @value.GraphNode::new(
+          id=graph_id(required(n, "id", "$graph node"), "$graph node id"),
+          labels=labels_of(n),
+        ),
+        payload_index(n),
       ),
     )
   }
-  let edges : Array[@value.GraphEdge] = []
+  let edges : Array[(@value.GraphEdge, Int32?)] = []
   for item in graph_list(f, "edges") {
     let e = graph_element_fields(item, "edge", [
       "id", "labels", "payload", "ends",
     ])
     edges.push(
-      @value.GraphEdge::new(
-        id=graph_id(required(e, "id", "$graph edge"), "$graph edge id"),
-        ends=ends_of(required(e, "ends", "$graph edge")),
-        labels=labels_of(e),
-        payload=payload_of(e),
+      (
+        @value.GraphEdge::new(
+          id=graph_id(required(e, "id", "$graph edge"), "$graph edge id"),
+          ends=ends_of(required(e, "ends", "$graph edge")),
+          labels=labels_of(e),
+        ),
+        payload_index(e),
       ),
     )
   }
-  let graph = @value.GraphValue::new(nodes, edges) catch {
-    error => raise Malformed(@debug.to_string(error))
-  }
-  Graph(graph)
+  Children(children, values => {
+    fn payload(index : Int32?) -> @value.Value? raise CodecError {
+      match index {
+        None => None
+        Some(i) =>
+          match values[i] {
+            Missing => raise Malformed("a $graph payload must not be MISSING")
+            v => Some(v)
+          }
+      }
+    }
+    let nodes = nodes.map(p => {
+      @value.GraphNode::new(
+        id=p.0.id,
+        labels=p.0.labels().to_owned(),
+        payload=payload(p.1),
+      )
+    })
+    let edges = edges.map(p => {
+      @value.GraphEdge::new(
+        id=p.0.id,
+        labels=p.0.labels().to_owned(),
+        ends=p.0.ends,
+        payload=payload(p.1),
+      )
+    })
+    let graph = @value.GraphValue::new(nodes, edges) catch {
+      error => raise Malformed(@debug.to_string(error))
+    }
+    Graph(graph)
+  })
 }
 
 ///|
@@ -599,17 +623,32 @@ fn without_first_annotation(x : @ion_core.IonValue) -> @ion_core.IonValue {
 }
 
 ///|
-/// Decodes a PartiQL-encoded Ion value.
-pub fn from_ion(x : @ion_core.IonValue) -> @value.Value raise CodecError {
+/// Decodes one level, deferring child decoding to the work stack.
+fn decode_plan(x : @ion_core.IonValue) -> DecodePlan raise CodecError {
   let annotations = x.annotations()
   if annotations.is_empty() {
-    return decode_plain(x)
+    return match x.kind() {
+      List(items) => Children(items, values => List(values))
+      Struct(fields) => {
+        let names = []
+        for f in fields {
+          guard f.name().text() is Some(name) else {
+            raise Malformed("struct field without a name")
+          }
+          names.push(name)
+        }
+        Children(fields.map(f => f.value()), values => {
+          Tuple(@value.Tuple::new(names.mapi((i, name) => (name, values[i]))))
+        })
+      }
+      _ => Ready(decode_plain(x))
+    }
   }
   guard annotations[0].text() is Some(form) else {
     raise Malformed("annotation without text")
   }
   if form == "$ion" {
-    return Ion(without_first_annotation(x))
+    return Ready(Ion(without_first_annotation(x)))
   }
   if form == "$map" {
     return decode_map(x)
@@ -624,26 +663,63 @@ pub fn from_ion(x : @ion_core.IonValue) -> @value.Value raise CodecError {
   match form {
     "$missing" =>
       if body.is_untyped_null() {
-        Missing
+        Ready(Missing)
       } else {
         raise Malformed("$missing must annotate null")
       }
     "$bag" =>
       match body.kind() {
-        List(items) => {
-          let out : Array[@value.Value] = []
-          for item in items {
-            out.push(from_ion(item))
-          }
-          Bag(@value.Bag::new(out))
-        }
+        List(items) => Children(items, values => Bag(@value.Bag::new(values)))
         _ => raise Malformed("$bag must annotate a list")
       }
-    "$date" => decode_date(body)
-    "$time" => decode_time(body)
-    "$timestamp" => decode_timestamp(body)
-    "$interval_ym" => decode_interval_ym(body)
-    "$interval_dt" => decode_interval_dt(body)
+    "$date" => Ready(decode_date(body))
+    "$time" => Ready(decode_time(body))
+    "$timestamp" => Ready(decode_timestamp(body))
+    "$interval_ym" => Ready(decode_interval_ym(body))
+    "$interval_dt" => Ready(decode_interval_dt(body))
     _ => raise Malformed("unknown annotation \{form}")
   }
+}
+
+///|
+priv enum DecodePlan {
+  Ready(@value.Value)
+  Children(
+    Array[@ion_core.IonValue],
+    (Array[@value.Value]) -> @value.Value raise CodecError
+  )
+}
+
+///|
+priv enum DecodeStep {
+  Visit(@ion_core.IonValue)
+  Build(Int32, (Array[@value.Value]) -> @value.Value raise CodecError)
+}
+
+///|
+/// Decodes PartiQL-encoded Ion without recursion through containers.
+pub fn from_ion(x : @ion_core.IonValue) -> @value.Value raise CodecError {
+  let work = [DecodeStep::Visit(x)]
+  let values = []
+  while work.pop() is Some(step) {
+    match step {
+      Visit(x) =>
+        match decode_plan(x) {
+          Ready(v) => values.push(v)
+          Children(children, build) => {
+            work.push(Build(children.length(), build))
+            for i = children.length() - 1; i >= 0; i = i - 1 {
+              work.push(Visit(children[i]))
+            }
+          }
+        }
+      Build(count, build) => {
+        let start = values.length() - count
+        let children = values[start:].to_owned()
+        values.truncate(start)
+        values.push(build(children))
+      }
+    }
+  }
+  values[0]
 }

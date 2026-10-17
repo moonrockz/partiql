@@ -43,19 +43,17 @@ pub impl Eq for IntervalDT with fn equal(a, b) {
 
 ///|
 pub impl Eq for Tuple with fn equal(a, b) {
-  match_multiset(a.fields[:], b.fields[:], (x, y) => x.0 == y.0 && x.1 == y.1)
+  Value::Tuple(a) == Value::Tuple(b)
 }
 
 ///|
 pub impl Eq for Bag with fn equal(a, b) {
-  match_multiset(a.items[:], b.items[:], (x, y) => x == y)
+  Value::Bag(a) == Value::Bag(b)
 }
 
 ///|
 pub impl Eq for MapValue with fn equal(a, b) {
-  a.key_type == b.key_type &&
-  a.value_type == b.value_type &&
-  match_multiset(a.entries[:], b.entries[:], (x, y) => x.0 == y.0 && x.1 == y.1)
+  Value::Map(a) == Value::Map(b)
 }
 
 ///|
@@ -70,12 +68,17 @@ pub impl Eq for Ends with fn equal(a, b) {
 
 ///|
 pub impl Eq for GraphValue with fn equal(a, b) {
-  same_graph(a, b, (x, y) => x == y)
+  Value::Graph(a) == Value::Graph(b)
 }
 
 ///|
 /// Structural identity (spec section 4.1).
 pub impl Eq for Value with fn equal(a, b) {
+  equal_values(a, b, identity=true)
+}
+
+///|
+fn identical_scalar(a : Value, b : Value) -> Bool {
   match (a, b) {
     (Null, Null) | (Missing, Missing) => true
     (Bool(x), Bool(y)) => x == y
@@ -90,13 +93,6 @@ pub impl Eq for Value with fn equal(a, b) {
     (Timestamp(x), Timestamp(y)) => x == y
     (IntervalYM(x), IntervalYM(y)) => x == y
     (IntervalDT(x), IntervalDT(y)) => x == y
-    (List(xs), List(ys)) =>
-      xs.length() == ys.length() &&
-      xs.iter().zip(ys.iter()).all(pair => pair.0 == pair.1)
-    (Bag(x), Bag(y)) => x == y
-    (Tuple(x), Tuple(y)) => x == y
-    (Map(x), Map(y)) => x == y
-    (Graph(x), Graph(y)) => x == y
     (Ion(x), Ion(y)) => x.equals(y)
     _ => false
   }

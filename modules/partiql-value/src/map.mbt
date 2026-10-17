@@ -85,7 +85,7 @@ pub struct MapValue {
   key_type : MapType
   value_type : MapType
   priv entries : Array[(Value, Value)]
-} derive(Debug)
+}
 
 ///|
 /// Whether a map with this key type can hold `key` (RFC 0104): the key is of

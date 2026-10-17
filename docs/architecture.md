@@ -59,12 +59,22 @@ graph TD
     BY). One concern per file (`value.mbt`, `tuple.mbt`, `bag.mbt`,
     `datetime.mbt`, `interval.mbt`, `map.mbt`, `graph.mbt`, `numeric.mbt`,
     `text.mbt`,
-    `identity.mbt`, `lower.mbt`, `equality.mbt`, `ordering.mbt`).
+    `identity.mbt`, `lower.mbt`, `equality.mbt`, `ordering.mbt`). Value
+    operations use explicit work stacks, so values built at runtime can be
+    deeper than the parser's nesting limit. `equivalence.mbt` handles
+    structural and grouping equality, including one-to-one matching of
+    unordered collections. `equivalent_by` lets evaluation supply its
+    datetime and absent-value rules. Ordering canonicalizes children from
+    leaves to root before sorting, then compares with a work stack, so sort
+    callbacks do not recurse through values. `traversal.mbt` provides
+    `Value::fold` for deep lowering, encoding and debug representations.
   - `ion`: the Ion codec in two modes: PartiQL-encoded (`from_ion`,
     `to_ion`, for partiql-tests data) and Ion-preserving (`from_ion_data`,
     `to_ion_data`, for Ion data; ADR 0005). Its default
     alias is `ion`, so it imports `moonrockz/ion/ion` as `@ion_core`.
-    Consumers import it as `@partiql_ion`.
+    Consumers import it as `@partiql_ion`. Both encoding and decoding use
+    work stacks, including map values and graph payloads; boxed Ion remains
+    exact in both modes.
   - `arbitrary`: quickcheck generators (`gen_value`, `ArbValue`, ...) and
     the property laws of the data model. Published so that later milestones
     can reuse the generators.
@@ -83,7 +93,9 @@ graph TD
   - `lexer`: tokens; keywords are words that the parser classifies;
     punctuation is one character per token and the parser composes `<<`,
     `<=`, `||` and similar operators from touching tokens; Ion literals are
-    scanned Ion-aware and checked with the Ion text reader. `lex_recovering`
+    scanned Ion-aware and checked with the Ion text reader. The reader caps
+    container nesting at 128 levels; deeper literals raise a `Syntax` error
+    before they can overflow the stack. `lex_recovering`
     records every lexical error and marks broken literals as `Invalid`
     tokens.
   - `parser`: recursive descent with a precedence ladder for expressions
@@ -163,10 +175,8 @@ graph TD
     refuses a plan above 200 levels with a `DataError`, so the evaluator
     does not overflow the stack. Chains of binary operators, AND and OR
     are lowered in a loop; an Ion literal counts one level per level of its
-    value. One known exception is outside this module:
-    the Ion text reader that scans Ion literals recurses per nesting level,
-    so a literal nested about 10,000 levels deep overflows the stack before
-    evaluation starts (moonrockz/ion#65, bead `partiql-5se.9`).
+    value. The Ion reader's separate 128-level limit protects literal parsing
+    before evaluation starts.
   - `ops`: the semantics of each operator as pure functions on values:
     numeric and decimal arithmetic, comparison, three-valued logic, LIKE,
     datetime and interval arithmetic, type tests and path steps. `=`

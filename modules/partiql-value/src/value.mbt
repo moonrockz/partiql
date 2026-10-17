@@ -34,7 +34,7 @@ pub(all) enum Value {
   /// A graph (RFC 0025).
   Graph(GraphValue)
   Ion(@ion_core.IonValue)
-} derive(Debug)
+}
 
 ///|
 /// Whether the value is `NULL` or `MISSING`.

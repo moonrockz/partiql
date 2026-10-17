@@ -14,7 +14,7 @@ pub struct GraphNode {
   id : String
   priv labels : Array[String]
   payload : Value?
-} derive(Debug)
+}
 
 ///|
 fn dedup_labels(labels : Array[String]) -> Array[String] {
@@ -43,7 +43,7 @@ pub struct GraphEdge {
   priv labels : Array[String]
   ends : Ends
   payload : Value?
-} derive(Debug)
+}
 
 ///|
 pub fn GraphEdge::new(
@@ -84,7 +84,7 @@ pub(all) suberror GraphError {
 pub struct GraphValue {
   priv nodes : Array[GraphNode]
   priv edges : Array[GraphEdge]
-} derive(Debug)
+}
 
 ///|
 pub fn GraphValue::new(
@@ -139,45 +139,4 @@ fn same_label_set(a : Array[String], b : Array[String]) -> Bool {
   // Labels are de-duplicated on construction, so equal sizes and inclusion
   // mean equal sets.
   a.length() == b.length() && a.iter().all(label => b.contains(label))
-}
-
-///|
-fn same_payload(a : Value?, b : Value?, same : (Value, Value) -> Bool) -> Bool {
-  match (a, b) {
-    (None, None) => true
-    (Some(x), Some(y)) => same(x, y)
-    _ => false
-  }
-}
-
-///|
-/// Id-based graph comparison: the same node and edge ids, and per id the
-/// same label set, ends and payload (payloads compared with `same`).
-fn same_graph(
-  a : GraphValue,
-  b : GraphValue,
-  same : (Value, Value) -> Bool,
-) -> Bool {
-  if a.nodes.length() != b.nodes.length() ||
-    a.edges.length() != b.edges.length() {
-    return false
-  }
-  for n in a.nodes {
-    guard b.nodes.search_by(m => m.id == n.id) is Some(k) else { return false }
-    let m = b.nodes[k]
-    if !same_label_set(n.labels, m.labels) ||
-      !same_payload(n.payload, m.payload, same) {
-      return false
-    }
-  }
-  for e in a.edges {
-    guard b.edges.search_by(f => f.id == e.id) is Some(k) else { return false }
-    let f = b.edges[k]
-    if !same_label_set(e.labels, f.labels) ||
-      !(e.ends == f.ends) ||
-      !same_payload(e.payload, f.payload, same) {
-      return false
-    }
-  }
-  true
 }

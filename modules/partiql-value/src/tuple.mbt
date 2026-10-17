@@ -3,7 +3,7 @@
 /// duplicate names are allowed; no value is MISSING.
 pub struct Tuple {
   priv fields : Array[(String, Value)]
-} derive(Debug)
+}
 
 ///|
 /// Builds a tuple. Pairs whose value is MISSING are dropped.

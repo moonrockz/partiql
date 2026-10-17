@@ -19,8 +19,13 @@ fn lowered(v : Value) -> Value? {
 }
 
 ///|
-/// The spec's `=` for two non-absent, lowered values (spec 4.2 rule 3).
-fn deep_equal(a : Value, b : Value) -> Bool {
+/// Grouping equivalence for scalars, including unlowerable boxed Ion.
+fn grouping_scalar(a : Value, b : Value) -> Bool {
+  match (a, b) {
+    (Null, Null) | (Missing, Missing) => return true
+    (Float(x), Float(y)) if x.is_nan() && y.is_nan() => return true
+    _ => ()
+  }
   match (num_of(a), num_of(b)) {
     (Some(x), Some(y)) =>
       return !(x is NaN) && !(y is NaN) && compare_num(x, y) == 0
@@ -46,21 +51,7 @@ fn deep_equal(a : Value, b : Value) -> Bool {
       }
     (IntervalYM(x), IntervalYM(y)) => x == y
     (IntervalDT(x), IntervalDT(y)) => x == y
-    (List(xs), List(ys)) =>
-      xs.length() == ys.length() &&
-      xs.iter().zip(ys.iter()).all(pair => eqg(pair.0, pair.1))
-    (Bag(x), Bag(y)) => match_multiset(x.items(), y.items(), eqg)
-    (Tuple(x), Tuple(y)) =>
-      match_multiset(x.fields(), y.fields(), (p, q) => {
-        p.0 == q.0 && eqg(p.1, q.1)
-      })
-    // Type parameters are ignored (RFC 0104 equality; Kotlin's comparator).
-    // Id-based; payloads compared with eqg (spec M1b section 4.2).
-    (Graph(x), Graph(y)) => same_graph(x, y, eqg)
-    (Map(x), Map(y)) =>
-      match_multiset(x.entries(), y.entries(), (p, q) => {
-        eqg(p.0, q.0) && eqg(p.1, q.1)
-      })
+    (Ion(x), Ion(y)) => Value::Ion(x) == Value::Ion(y)
     _ => false
   }
 }
@@ -74,7 +65,12 @@ pub fn sql_equals(a : Value, b : Value) -> Value {
       match (x, y) {
         (Missing, _) | (_, Missing) => Missing
         (Null, _) | (_, Null) => Null
-        _ => Bool(deep_equal(x, y))
+        _ =>
+          Bool(
+            !(x is Float(f) && f.is_nan()) &&
+            !(y is Float(f) && f.is_nan()) &&
+            eqg(x, y),
+          )
       }
     _ => Bool(a == b)
   }
@@ -84,16 +80,7 @@ pub fn sql_equals(a : Value, b : Value) -> Value {
 /// Grouping equivalence: NULL eqg NULL, MISSING eqg MISSING, NaN eqg NaN;
 /// otherwise the same as `=`.
 pub fn eqg(a : Value, b : Value) -> Bool {
-  match (lowered(a), lowered(b)) {
-    (Some(x), Some(y)) =>
-      match (x, y) {
-        (Null, Null) | (Missing, Missing) => true
-        (Null | Missing, _) | (_, Null | Missing) => false
-        (Float(p), Float(q)) if p.is_nan() && q.is_nan() => true
-        _ => deep_equal(x, y)
-      }
-    _ => a == b
-  }
+  equal_values(a, b, identity=false)
 }
 
 ///|

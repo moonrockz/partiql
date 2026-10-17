@@ -87,63 +87,21 @@ fn shallow(v : @value.Value) -> @value.Value {
 }
 
 ///|
-/// Whether `xs` and `ys` are the same multiset under `same`, an equivalence
-/// relation (then greedy matching is exact).
-fn[T] same_multiset(
-  xs : ArrayView[T],
-  ys : ArrayView[T],
-  same : (T, T) -> Bool,
-) -> Bool {
-  if xs.length() != ys.length() {
-    return false
-  }
-  let used = Array::make(ys.length(), false)
-  for x in xs {
-    let mut found = false
-    for j, y in ys {
-      if !used[j] && same(x, y) {
-        used[j] = true
-        found = true
-        break
-      }
-    }
-    if !found {
-      return false
-    }
-  }
-  true
-}
-
-///|
 /// The equality of two elements of a collection: the top-level `=` with the
 /// datetime rule, recursively, where NULL and MISSING are equal to each
 /// other (partiql-tests nary-operators.ion,
 /// `equalListDifferentTypesWithNullMissingEquivalenceTrue`) and NaN equals
 /// NaN. It is an equivalence relation.
 fn same(a : @value.Value, b : @value.Value) -> Bool {
-  let x = shallow(a)
-  let y = shallow(b)
-  match (x, y) {
-    (Null | Missing, Null | Missing) => true
-    (Null | Missing, _) | (_, Null | Missing) => false
-    (List(xs), List(ys)) =>
-      xs.length() == ys.length() &&
-      xs.iter().zip(ys.iter()).all(p => same(p.0, p.1))
-    (Bag(p), Bag(q)) => same_multiset(p.items(), q.items(), same)
-    (Tuple(p), Tuple(q)) =>
-      same_multiset(p.fields(), q.fields(), (f, g) => {
-        f.0 == g.0 && same(f.1, g.1)
-      })
-    (Map(p), Map(q)) =>
-      same_multiset(p.entries(), q.entries(), (e, f) => {
-        same(e.0, f.0) && same(e.1, f.1)
-      })
-    _ =>
-      match datetime_equal(x, y) {
-        Some(r) => r is Bool(true)
-        None => @value.eqg(x, y)
-      }
-  }
+  @value.equivalent_by(a, b, (x, y) => {
+    match (x, y) {
+      (Null | Missing, Null | Missing) => Some(true)
+      (Null | Missing, _) | (_, Null | Missing) => Some(false)
+      // Graph payloads retain grouping equivalence, as before.
+      (Graph(_), Graph(_)) => Some(@value.eqg(x, y))
+      _ => datetime_equal(x, y).map(r => r is Bool(true))
+    }
+  })
 }
 
 ///|

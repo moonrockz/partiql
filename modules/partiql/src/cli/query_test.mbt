@@ -37,7 +37,7 @@ test "query prints each result as Ion" {
     soft.expect(query(["-e", "MISSING"]).stdout).to_equal("$missing::null\n")
     soft
     .expect(query(["--compact", "-e", "1; [1, 2]; {'a': 1.50}"]).stdout)
-    .to_equal("1\n[1, 2]\n{a: 150d-2}\n")
+    .to_equal("1\n[1, 2]\n{a: 1.50}\n")
     soft
     .expect(
       query(
