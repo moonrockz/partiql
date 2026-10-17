@@ -398,11 +398,98 @@ test "query without a clock reports the clock function" {
 }
 
 ///|
-test "query help says the session time zone is UTC" {
-  // CURRENT_DATE and the other clock functions read the session zone; the
-  // CLI has no option for it yet (bead partiql-x69).
+test "query help describes --time-zone" {
   let help = @cli.run(["help", "query"])
-  @expect.expect(help.stdout).to_contain("The session time zone is UTC")
+  @expect.expect_all(soft => {
+    soft.expect(help.stdout).to_contain("--time-zone <time-zone>")
+    soft
+    .expect(help.stdout)
+    .to_contain("The session time zone is UTC unless --time-zone sets it")
+    soft
+    .expect(help.stdout)
+    .to_contain("partiql query --time-zone -08:00 -e 'CURRENT_TIMESTAMP'")
+  })
+}
+
+///|
+test "query --time-zone sets the session time zone" {
+  // 02:00 UTC on 16 October is still 15 October at -08:00.
+  let clock : @eval.Clock = {
+    now: () => @time.date_time(2026, 10, 16, hour=2),
+  }
+  let io = query_io({}, clock=Some(clock))
+  let run = (args : Array[String]) => query(["--compact", ..args], io~).stdout
+  let cast = "CAST(TIMESTAMP '2026-01-01 00:00:00' AS TIMESTAMP WITH TIME ZONE)"
+  @expect.expect_all(soft => {
+    soft
+    .expect(run(["-e", "CURRENT_DATE = DATE '2026-10-16'"]))
+    .to_equal("true\n")
+    soft
+    .expect(
+      run(["--time-zone", "-08:00", "-e", "CURRENT_DATE = DATE '2026-10-15'"]),
+    )
+    .to_equal("true\n")
+    soft
+    .expect(
+      run([
+        "--time-zone", "-08:00", "-e", "EXTRACT(TIMEZONE_HOUR FROM CURRENT_TIMESTAMP)",
+      ]),
+    )
+    .to_equal("-8\n")
+    soft
+    .expect(
+      run([
+        "--time-zone",
+        "+05:30",
+        "-e",
+        "EXTRACT(TIMEZONE_HOUR FROM \{cast}); EXTRACT(TIMEZONE_MINUTE FROM \{cast})",
+      ]),
+    )
+    .to_equal("5\n30\n")
+    soft
+    .expect(
+      run([
+        "--time-zone",
+        "-05:30",
+        "-e",
+        "EXTRACT(TIMEZONE_MINUTE FROM \{cast})",
+      ]),
+    )
+    .to_equal("-30\n")
+    for zone in ["+00:00", "-00:00", "+18:00", "-18:00"] {
+      soft
+      .expect(query(["--time-zone", zone, "-e", "1"], io~).status, label=zone)
+      .to_equal(0)
+    }
+  })
+}
+
+///|
+test "query --time-zone usage errors" {
+  @expect.expect_all(soft => {
+    for
+      zone in [
+        "08:00", "+8:00", "+08", "+08:000", "+0800", "+19:00", "+18:01", "+05:60",
+        "UTC", "Z", "", "+aa:bb",
+      ] {
+      let outcome = query(["--time-zone", zone, "-e", "1"])
+      soft.expect(outcome.status, label=zone).to_equal(2)
+      soft.expect(outcome.stdout, label=zone).to_equal("")
+      soft
+      .expect(outcome.stderr, label=zone)
+      .to_equal(
+        "partiql query: --time-zone needs an offset +HH:MM or -HH:MM from -18:00 to +18:00, found '\{zone}'\nRun 'partiql help query' for more information.\n",
+      )
+      // A run that ends in a usage error never waits for stdin.
+      soft
+      .expect(@cli.reads_stdin(["query", "--time-zone", zone]), label=zone)
+      .to_be_false()
+    }
+    soft.expect(query(["-e", "1", "--time-zone"]).status).to_equal(2)
+    soft
+    .expect(@cli.reads_stdin(["query", "--time-zone", "+01:00"]))
+    .to_be_true()
+  })
 }
 
 ///|

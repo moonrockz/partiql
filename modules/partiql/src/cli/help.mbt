@@ -30,7 +30,9 @@ fn notes(path : ArrayView[String]) -> Array[String] {
   match path {
     ["query"] =>
       [
-        "The session time zone is UTC: CURRENT_DATE, CURRENT_TIME and", "CURRENT_TIMESTAMP read the system clock at offset +00:00.",
+        "The session time zone is UTC unless --time-zone sets it. CURRENT_DATE,",
+        "CURRENT_TIME and CURRENT_TIMESTAMP read the system clock at that offset,",
+        "and CAST uses it to add or remove a time zone.",
       ]
     _ => []
   }
