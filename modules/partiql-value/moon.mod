@@ -22,6 +22,6 @@ source = "src"
 warnings = "-implicit_impl_as_method"
 
 import {
-  "moonrockz/ion@0.4.0",
+  "moonrockz/ion@0.5.0",
   "moonrockz/expect@0.6.0",
 }
