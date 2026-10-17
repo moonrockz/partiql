@@ -12,6 +12,10 @@ fn query_command(m : @argparse.Matches, io : Io, color : Bool) -> Outcome {
     Ok(datas) => datas
     Err(text) => return usage(text)
   }
+  let zone = match zone_arg(m) {
+    Ok(zone) => zone
+    Err(text) => return usage(text)
+  }
   if query_stdin_readers(m) > 1 {
     return usage("only one input can read stdin")
   }
@@ -54,7 +58,7 @@ fn query_command(m : @argparse.Matches, io : Io, color : Bool) -> Outcome {
   for script in scripts {
     let (input, statements) = script
     for statement in statements {
-      let value = @eval.evaluate(statement, env~, mode~, clock?=io.clock) catch {
+      let value = @eval.evaluate(statement, env~, mode~, zone?, clock?=io.clock) catch {
         e => {
           errors.write_string(eval_error_text(e, input, color))
           return finish(out, errors)
@@ -144,7 +148,51 @@ fn query_stdin_readers(m : @argparse.Matches) -> Int32 {
 /// ends in a usage error (a bad `--data` value, two stdin readers) reads
 /// nothing, so it never waits for stdin.
 fn query_reads_stdin(m : @argparse.Matches) -> Bool {
-  data_args(m) is Ok(_) && query_stdin_readers(m) == 1
+  data_args(m) is Ok(_) && zone_arg(m) is Ok(_) && query_stdin_readers(m) == 1
+}
+
+///|
+/// The `--time-zone` offset, `None` when the option is absent, or the text
+/// of the usage error.
+fn zone_arg(m : @argparse.Matches) -> Result[@eval.ZoneOffset?, String] {
+  match m.values.get("time-zone") {
+    None | Some([]) => Ok(None)
+    Some(texts) => {
+      let text = texts[texts.length() - 1]
+      match zone_offset(text) {
+        Some(zone) => Ok(Some(zone))
+        None =>
+          Err(
+            "--time-zone needs an offset +HH:MM or -HH:MM from -18:00 to +18:00, found '\{text}'",
+          )
+      }
+    }
+  }
+}
+
+///|
+/// The offset that `text` spells as `+HH:MM` or `-HH:MM`, or `None`.
+fn zone_offset(text : String) -> @eval.ZoneOffset? {
+  let digit = (c : Char) => {
+    if c is ('0'..<='9') {
+      Some(c.to_int() - '0'.to_int())
+    } else {
+      None
+    }
+  }
+  let chars = text.to_array()
+  guard chars is [sign, h1, h2, ':', m1, m2] &&
+    sign is ('+' | '-') &&
+    digit(h1) is Some(a) &&
+    digit(h2) is Some(b) &&
+    digit(m1) is Some(c) &&
+    digit(m2) is Some(d) else {
+    return None
+  }
+  let minutes = c * 10 + d
+  guard minutes < 60 else { return None }
+  let total = (a * 10 + b) * 60 + minutes
+  @eval.ZoneOffset::new(if sign == '-' { -total } else { total })
 }
 
 ///|
