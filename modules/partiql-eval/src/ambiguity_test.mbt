@@ -188,3 +188,132 @@ test "quoted globals and exact repeats preserve first binding and local preceden
     }
   })
 }
+
+///|
+test "FROM sources find a global before ambiguous local spellings" {
+  let source = "SELECT VALUE y FROM [1] AS x, [2] AS X, x AS y"
+  @expect.expect_all(soft => {
+    for mode in [@eval.Mode::Permissive, Strict] {
+      soft
+      .expect(ev_env(source, "{x:[7]}", mode~))
+      .to_equal(Bag(@value.Bag::new([Int(7)])))
+    }
+  })
+}
+
+///|
+test "FROM source ambiguity uses the winning lookup tier" {
+  let source = "SELECT VALUE y FROM [[1]] AS x, [[2]] AS X, x AS y"
+  let bag = (v : @value.Value) => @value.Value::Bag(@value.Bag::new([v]))
+  @expect.expect_all(soft => {
+    for mode in [@eval.Mode::Permissive, Strict] {
+      soft
+      .expect(
+        ev_env("SELECT VALUE y FROM [] AS x, [] AS X, x AS y", "{}", mode~),
+      )
+      .to_equal(Bag(@value.Bag::new([])))
+      soft
+      .expect(
+        ev_env(
+          "SELECT VALUE y FROM [[1]] AS x, @x AS y",
+          "{x:[7],X:[8]}",
+          mode~,
+        ),
+      )
+      .to_equal(bag(Int(1)))
+      soft.expect(ev_env(source, "{X:[7]}", mode~)).to_equal(bag(Int(7)))
+      soft.expect(ev_env(source, "{x:[7],x:[8]}", mode~)).to_equal(bag(Int(7)))
+      for globals in ["{}", "{x:[7],X:[8]}"] {
+        soft
+        .expect_call(() => ev_env(source, globals, mode~), label=globals)
+        .to_raise_matching(
+          e => {
+            e is @eval.EvalError::DataError(message~, span~) &&
+            message ==
+            "x is ambiguous: it names x and X; write the name in double quotes" &&
+            source[span.start:span.end].to_owned() == "x"
+          },
+          description="ambiguity in the winning global or local tier",
+        )
+      }
+      soft
+      .expect(
+        ev_env(
+          "SELECT VALUE y FROM [[1]] AS x, [[2]] AS X, \"x\" AS y",
+          "{}",
+          mode~,
+        ),
+      )
+      .to_equal(bag(Int(1)))
+      soft
+      .expect(
+        ev_env(
+          "SELECT VALUE y FROM [[1]] AS x, [[2]] AS X, \"X\" AS y",
+          "{}",
+          mode~,
+        ),
+      )
+      .to_equal(bag(Int(2)))
+      soft
+      .expect(
+        ev_env(
+          "SELECT VALUE y FROM [[1]] AS x, [[2]] AS X, \"x\" AS y",
+          "{x:[7]}",
+          mode~,
+        ),
+      )
+      .to_equal(bag(Int(7)))
+      soft
+      .expect_call(() => {
+        ev_env(
+          "SELECT VALUE y FROM [] AS x, [] AS X, @x AS y",
+          "{x:[7]}",
+          mode~,
+        )
+      })
+      .to_raise_matching(
+        e => e is @eval.EvalError::DataError(..),
+        description="qualified locals are statically ambiguous even over empty input",
+      )
+      soft
+      .expect_call(() => {
+        ev_env(
+          "WITH x AS (SELECT VALUE 1 FROM [0]), X AS (SELECT VALUE 2 FROM [0]) SELECT VALUE y FROM x AS y",
+          "{x:[7]}",
+          mode~,
+        )
+      })
+      .to_raise_matching(
+        e => e is @eval.EvalError::DataError(..),
+        description="WITH ambiguity precedes globals",
+      )
+      soft
+      .expect(
+        ev_env(
+          "WITH x AS (SELECT VALUE 1 FROM [0]) SELECT VALUE y FROM x AS y",
+          "{x:[7],X:[8]}",
+          mode~,
+        ),
+      )
+      .to_equal(bag(Int(1)))
+      soft
+      .expect(
+        ev_env(
+          "SELECT VALUE (SELECT VALUE y FROM [[3]] AS x, x AS y) FROM [1] AS x, [2] AS X",
+          "{}",
+          mode~,
+        ),
+      )
+      .to_equal(bag(bag(Int(3))))
+      soft
+      .expect(
+        ev_env(
+          "SELECT VALUE (SELECT VALUE y FROM [[3]] AS x, x AS y) FROM [1] AS x, [2] AS X",
+          "{x:[7]}",
+          mode~,
+        ),
+      )
+      .to_equal(bag(bag(Int(7))))
+    }
+  })
+}

@@ -22,6 +22,13 @@ pub(all) enum Step {
 } derive(Debug)
 
 ///|
+/// The local fallback of a FROM source after global lookup has failed.
+pub(all) enum LocalLookup {
+  Bound(String)
+  Ambiguous(Array[String])
+} derive(Debug)
+
+///|
 /// A lowered scalar expression (spec M4a §3). Names are resolved, literals
 /// are values.
 pub(all) enum Expr {
@@ -68,9 +75,9 @@ pub(all) enum Expr {
   /// A FROM variable, by the name it was declared with.
   Local(String, @ast.Span)
   /// A name in a FROM source: the global of that name if there is one, else
-  /// the FROM variable `variable` (partiql-tests select.ion,
+  /// the local lookup `variable`, which may be ambiguous (partiql-tests select.ion,
   /// `joinWithShadowedGlobal`; `@name` selects the variable only).
-  GlobalOrLocal(String, variable~ : String, delimited~ : Bool, @ast.Span)
+  GlobalOrLocal(String, variable~ : LocalLookup, delimited~ : Bool, @ast.Span)
   /// A name that no variable declares, inside a query: the attribute of that
   /// name of the first tuple among the query variables `locals` (FROM AS and
   /// AT, and LET; innermost query first, each in declared order), else the

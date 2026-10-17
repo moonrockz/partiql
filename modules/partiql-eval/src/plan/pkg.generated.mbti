@@ -60,7 +60,7 @@ pub(all) enum Expr {
   Call(Function, Array[Expr], @ast.Span)
   Cast(Expr, @ops.CastTarget, @ast.Span)
   Local(String, @ast.Span)
-  GlobalOrLocal(String, variable~ : String, delimited~ : Bool, @ast.Span)
+  GlobalOrLocal(String, variable~ : LocalLookup, delimited~ : Bool, @ast.Span)
   Implicit(String, delimited~ : Bool, locals~ : Array[String], @ast.Span)
   Select(Rel, Projection, distinct~ : Bool, @ast.Span)
   Subquery(Expr, SubqueryUse, @ast.Span)
@@ -124,6 +124,11 @@ pub(all) enum JoinKind {
   Left
   Right
 } derive(Eq, @debug.Debug)
+
+pub(all) enum LocalLookup {
+  Bound(String)
+  Ambiguous(Array[String])
+} derive(@debug.Debug)
 
 pub(all) enum Mode {
   Permissive

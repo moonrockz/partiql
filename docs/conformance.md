@@ -336,7 +336,10 @@ functions").
 A regular identifier ignores ASCII case; a double-quoted identifier matches
 exactly. A name matching different spellings in the winning scope frame is a
 `DataError` in both modes. Lowering detects variable ambiguity even over an
-empty source; evaluation checks globals. Inner frames shadow outer frames,
+empty source; evaluation checks globals. In a FROM source, globals precede
+earlier FROM variables, so local ambiguity is checked at evaluation only if
+no global matches. WITH bindings precede globals, and `@name` selects only a
+local variable. Inner frames shadow outer frames,
 exact repeated LET names keep the later binding, and exact repeated globals
 keep the first binding. ORDER BY output names remain a fallback to variables
 inside a non-bare sort key.

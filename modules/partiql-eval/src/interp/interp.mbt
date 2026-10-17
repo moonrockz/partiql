@@ -612,9 +612,18 @@ fn eval(
       match find_global(ctx.globals, name, delimited).value(name, span) {
         Some(v) => v
         None =>
-          match env.find(variable) {
-            Some(v) => v
-            None => raise DataError(message="undefined variable \{name}", span~)
+          match variable {
+            Bound(variable) =>
+              match env.find(variable) {
+                Some(v) => v
+                None =>
+                  raise DataError(message="undefined variable \{name}", span~)
+              }
+            Ambiguous(names) =>
+              raise DataError(
+                message="\{name} is ambiguous: it names \{names.join(" and ")}; write the name in double quotes",
+                span~,
+              )
           }
       }
     Implicit(name, delimited~, locals~, span) =>

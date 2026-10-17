@@ -111,11 +111,13 @@ fn Scope::for_source(self : Scope) -> Scope {
 ///|
 /// The declared name of the innermost variable that `id` names: a regular
 /// identifier ignores case, a delimited one does not. Also whether that
-/// variable is a WITH binding.
+/// variable is a WITH binding. A FROM source may defer local ambiguity until
+/// global lookup fails; WITH bindings always precede globals.
 fn Scope::resolve(
   self : Scope,
   id : @ast.Identifier,
-) -> (String, Bool)? raise @plan.EvalError {
+  defer_ambiguity~ : Bool = false,
+) -> (@plan.LocalLookup, Bool)? raise @plan.EvalError {
   let mut scope = Some(self)
   let mut hidden : (Scope, Array[String])? = None
   while scope is Some(s) {
@@ -132,12 +134,12 @@ fn Scope::resolve(
           hidden = Some((s, matches))
         }
       } else {
-        return Some(s.resolved_name(id, matches))
+        return Some(s.resolved_name(id, matches, defer_ambiguity~))
       }
     }
     scope = s.outer
   }
-  hidden.map(pair => pair.0.resolved_name(id, pair.1))
+  hidden.map(pair => pair.0.resolved_name(id, pair.1, defer_ambiguity~))
 }
 
 ///|
@@ -146,15 +148,23 @@ fn Scope::resolved_name(
   self : Scope,
   id : @ast.Identifier,
   matches : Array[String],
-) -> (String, Bool) raise @plan.EvalError {
+  defer_ambiguity~ : Bool,
+) -> (@plan.LocalLookup, Bool) raise @plan.EvalError {
   if matches.length() > 1 {
+    // WITH bindings precede globals even in a FROM source.
+    if defer_ambiguity && !self.with_ {
+      return (Ambiguous(matches), false)
+    }
     raise DataError(
       message="\{id.text} is ambiguous: it names \{matches.join(" and ")}; write the name in double quotes",
       span=id.span,
     )
   }
   let name = matches[0]
-  (if self.outputs { @plan.output_variable(name) } else { name }, self.with_)
+  (
+    Bound(if self.outputs { @plan.output_variable(name) } else { name }),
+    self.with_,
+  )
 }
 
 ///|
