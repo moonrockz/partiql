@@ -127,8 +127,13 @@ pub(all) enum Expr {
   )
   /// A key expression in a FROM source: a name there finds a global before
   /// a variable, so `otherwise` (the expression without key variables) when
-  /// one of the names `globals` (name, delimited) is a global, else `key`.
-  GlobalsFirst(Array[(String, Bool)], key~ : Expr, otherwise~ : Expr, @ast.Span)
+  /// one of the names `globals` (name, delimited, span) is a global, else `key`.
+  GlobalsFirst(
+    Array[(String, Bool, @ast.Span)],
+    key~ : Expr,
+    otherwise~ : Expr,
+    @ast.Span
+  )
 } derive(Debug)
 
 ///|

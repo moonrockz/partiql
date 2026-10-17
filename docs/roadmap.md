@@ -150,6 +150,12 @@ Its parts, in this order:
   `DataError` instead of `Unsupported`, now that the built-in catalog is
   complete.
 
+- **Ambiguous lookups (done)** (bead `partiql-o42`): ambiguous names are
+  data errors in both modes; repeated tuple fields are type errors in strict
+  mode and keep the first match in permissive mode, including Ion structs.
+  The `eval` conformance check passes 9604 of 9960 assertions; 240 are not
+  applicable and 116 fail (see `conformance.md`).
+
 M4e, M4c and M4d (M4d1, M4d2, M4d3, the session clock and unknown function
 names) are done.
 

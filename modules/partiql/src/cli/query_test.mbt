@@ -244,16 +244,30 @@ test "query binds --env structs and merges the bindings" {
     soft
     .expect(query(["--env", "two.ion", "-e", "1"], io~))
     .to_equal(failed("partiql query: two.ion: --env needs one Ion struct\n"))
-    // Review focus 1: names that differ only in case are both bound; an
-    // unquoted name finds the first.
-    soft
-    .expect(
-      query(
-        ["--compact", "--data", "T=upper.ion", "--data", "t=n.ion", "-e", "t"],
-        io~,
-      ).stdout,
-    )
-    .to_equal("6\n")
+    // Different spellings stay bound, but a regular name must be unique.
+    for strict in [false, true] {
+      let flags = if strict { ["--strict"] } else { [] }
+      let bindings = ["--compact", "--data", "T=upper.ion", "--data", "t=n.ion"]
+      soft
+      .expect(query([..flags, ..bindings, "-e", "t"], io~))
+      .to_equal({
+        stdout: "",
+        stderr: (
+          #|error: data error: t is ambiguous: it names T and t; write the name in double quotes
+          #| --> <expr>:1:1
+          #|  |
+          #|1 | t
+          #|  | ^
+          #|
+        ),
+        status: 1,
+      })
+      for (name, output) in [("\"T\"", "6\n"), ("\"t\"", "5\n")] {
+        soft
+        .expect(query([..flags, ..bindings, "-e", name], io~))
+        .to_equal({ stdout: output, stderr: "", status: 0, })
+      }
+    }
   })
 }
 

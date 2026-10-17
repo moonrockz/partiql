@@ -69,7 +69,7 @@ pub(all) enum Expr {
   With(Array[(String, Expr)], Expr, @ast.Span)
   CollAggregate(AggregateKind, distinct~ : Bool, Expr, @ast.Span)
   Aggregate(AggregateKind, distinct~ : Bool, Expr, members~ : Array[String], group~ : String, @ast.Span)
-  GlobalsFirst(Array[(String, Bool)], key~ : Expr, otherwise~ : Expr, @ast.Span)
+  GlobalsFirst(Array[(String, Bool, @ast.Span)], key~ : Expr, otherwise~ : Expr, @ast.Span)
 } derive(@debug.Debug)
 pub fn Expr::span(Self) -> @ast.Span
 
