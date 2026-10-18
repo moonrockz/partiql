@@ -234,6 +234,7 @@ pub(all) enum Value {
 }
 pub fn[T : ToValue] Value::Value(T) -> Self
 pub fn[A] Value::fold(Self, (Self, Array[A]) -> A raise?, prepare? : (Self) -> Self) -> A raise?
+pub fn Value::from_tuple(Tuple) -> Self
 pub fn Value::integer(@bigint.BigInt) -> Self
 pub fn Value::is_absent(Self) -> Bool
 pub fn Value::lower(Self) -> Self raise LowerError

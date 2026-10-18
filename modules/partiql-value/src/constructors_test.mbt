@@ -1,4 +1,22 @@
 ///|
+test "from_tuple supplies the expected constructor type and preserves fields" {
+  let wrapped = @value.Value::from_tuple(
+    @value.Tuple([
+      ("a", @value.Value(1)),
+      ("a", @value.Value(2)),
+      ("missing", @value.Value::Missing),
+    ]),
+  )
+  guard wrapped is @value.Value::Tuple(tuple) else {
+    fail("expected a tuple value")
+  }
+  @expect.expect(tuple.fields().to_owned()).to_equal([
+    ("a", @value.Value(1)),
+    ("a", @value.Value(2)),
+  ])
+}
+
+///|
 test "Value constructor normalizes integers and keeps scalar kinds" {
   @expect.expect_all(soft => {
     soft.expect(@value.Value(42)).to_equal(@value.Value::Int(42L))

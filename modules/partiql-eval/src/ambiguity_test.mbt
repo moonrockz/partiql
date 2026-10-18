@@ -87,13 +87,17 @@ test "quoted names and inner frames preserve shadowing" {
       soft
       .expect(ev("SELECT 1 AS x, 2 AS X FROM [0] AS t ORDER BY \"x\"", mode~))
       .to_equal(
-        List([Tuple(@value.Tuple::Tuple([("x", Int(1)), ("X", Int(2))]))]),
+        List([
+          @value.Value::from_tuple(@value.Tuple([("x", Int(1)), ("X", Int(2))])),
+        ]),
       )
       // A non-bare sort key finds the variable before ambiguous output names.
       soft
       .expect(ev("SELECT 1 AS x, 2 AS X FROM [3] AS x ORDER BY x + 1", mode~))
       .to_equal(
-        List([Tuple(@value.Tuple::Tuple([("x", Int(1)), ("X", Int(2))]))]),
+        List([
+          @value.Value::from_tuple(@value.Tuple([("x", Int(1)), ("X", Int(2))])),
+        ]),
       )
       // The innermost frame decides even when an outer frame is ambiguous.
       soft

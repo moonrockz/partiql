@@ -64,6 +64,26 @@ test "bags and tuples" {
 }
 ```
 
+`Tuple(fields)` builds the domain tuple. `Value::from_tuple(tuple)` wraps it
+as a PartiQL value and is equivalent to `Value(tuple)`. Its concrete parameter
+type also makes the nested short constructor unambiguous:
+
+```mbt check
+test "build and wrap a tuple" {
+  let value = @value.Value::from_tuple(@value.Tuple([
+    ("a", @value.Value(1)), ("a", @value.Value(2)),
+  ]))
+  guard value is @value.Value::Tuple(tuple) else {
+    fail("expected a tuple value")
+  }
+  @expect.expect(tuple.get_all("a")).to_equal([@value.Value(1), @value.Value(2)])
+}
+```
+
+`Value::Tuple(tuple)` remains the enum variant used in patterns and may also
+be used for construction. That variant still shares the `Tuple` name, so a
+standalone `let tuple = @value.Tuple(fields)` needs a result type annotation.
+
 A tuple preserves duplicate names and drops MISSING fields. A bag keeps
 MISSING and duplicates. Bags retain the supplied backing array; copy it
 before construction if you will mutate it later. Tuple, map and graph

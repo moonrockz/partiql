@@ -271,7 +271,7 @@ fn run_tuple(
         }
     }
   }
-  Tuple(@value.Tuple::Tuple(out))
+  @value.Value::from_tuple(@value.Tuple(out))
 }
 
 ///|

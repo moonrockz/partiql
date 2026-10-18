@@ -39,12 +39,14 @@ test "an Ion string is a struct key" {
     for mode in [@eval.Mode::Permissive, Strict] {
       soft
       .expect(ev("{`\"k\"`: 1}", mode~))
-      .to_equal(Tuple(@value.Tuple::Tuple([("k", Int(1))])))
+      .to_equal(@value.Value::from_tuple(@value.Tuple([("k", Int(1))])))
       soft
       .expect(ev("{`k`: 1}", mode~))
-      .to_equal(Tuple(@value.Tuple::Tuple([("k", Int(1))])))
+      .to_equal(@value.Value::from_tuple(@value.Tuple([("k", Int(1))])))
     }
-    soft.expect(ev("{`1`: 1}")).to_equal(Tuple(@value.Tuple::Tuple([])))
+    soft
+    .expect(ev("{`1`: 1}"))
+    .to_equal(@value.Value::from_tuple(@value.Tuple([])))
     soft
     .expect_call(() => ev("{`1`: 1}", mode=Strict))
     .to_raise_matching(

@@ -112,7 +112,11 @@ test "long chains in a grouped query do not overflow the stack" {
       ),
     )
     .to_equal(
-      Bag(@value.Bag::Bag([Tuple(@value.Tuple::Tuple([("k", Int(1))]))])),
+      Bag(
+        @value.Bag::Bag([
+          @value.Value::from_tuple(@value.Tuple([("k", Int(1))])),
+        ]),
+      ),
     )
     soft
     .expect(ev("SELECT VALUE t.a\{ones} FROM [{'a': 1}] AS t GROUP BY t.a"))

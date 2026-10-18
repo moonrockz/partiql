@@ -74,7 +74,7 @@ test {
   @expect.expect(value ==
     @value.Value::Bag(
       @value.Bag::Bag([
-        Tuple(@value.Tuple::Tuple([("r", String("a")), ("total", Int(3))])),
+        @value.Value::from_tuple(@value.Tuple([("r", String("a")), ("total", Int(3))])),
       ]),
     )).to_be_true()
 }

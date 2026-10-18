@@ -20,7 +20,7 @@ test "literals and collections" {
     soft.expect(ev("<<1, 2>>")).to_equal(Bag(@value.Bag::Bag([Int(1), Int(2)])))
     soft
     .expect(ev("{'a': 1, 'b': MISSING}"))
-    .to_equal(Tuple(@value.Tuple::Tuple([("a", Int(1))])))
+    .to_equal(@value.Value::from_tuple(@value.Tuple([("a", Int(1))])))
   })
 }
 
@@ -61,7 +61,7 @@ test "bindings and struct keys" {
     )
     soft
     .expect(ev("{1: 2, 'a': 3}"))
-    .to_equal(Tuple(@value.Tuple::Tuple([("a", Int(3))])))
+    .to_equal(@value.Value::from_tuple(@value.Tuple([("a", Int(3))])))
     soft
     .expect_call(() => ev("{1: 2}", mode=Strict))
     .to_raise_matching(

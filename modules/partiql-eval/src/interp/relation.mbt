@@ -488,7 +488,7 @@ fn pivoted(rows : Array[@value.Value]) -> @value.Value {
       t.fields().each(f => fields.push(f))
     }
   }
-  Tuple(@value.Tuple::Tuple(fields))
+  @value.Value::from_tuple(@value.Tuple(fields))
 }
 
 ///|
@@ -554,7 +554,7 @@ fn project(
           add_fields(fields, v, i)
         }
       }
-      Tuple(@value.Tuple::Tuple(fields))
+      @value.Value::from_tuple(@value.Tuple(fields))
     }
     Pivot(value~, key~) => {
       // DISTINCT has no meaning for PIVOT: the parser does not take it, and
@@ -564,14 +564,14 @@ fn project(
       // A MISSING value, and in permissive mode a key that is not text,
       // leave the attribute out (the empty tuple).
       match (k, v) {
-        (_, Missing) => Tuple(@value.Tuple::Tuple([]))
-        (String(name), _) => Tuple(@value.Tuple::Tuple([(name, v)]))
+        (_, Missing) => @value.Value::from_tuple(@value.Tuple([]))
+        (String(name), _) => @value.Value::from_tuple(@value.Tuple([(name, v)]))
         _ => {
           typed(ctx.mode, key.span(), () => {
             raise TypeFailure("a PIVOT key must be text")
           })
           |> ignore
-          Tuple(@value.Tuple::Tuple([]))
+          @value.Value::from_tuple(@value.Tuple([]))
         }
       }
     }
@@ -590,7 +590,7 @@ fn project(
           AllFields(e) => add_fields(fields, eval(e, row, ctx), i)
         }
       }
-      Tuple(@value.Tuple::Tuple(fields))
+      @value.Value::from_tuple(@value.Tuple(fields))
     }
   }
 }

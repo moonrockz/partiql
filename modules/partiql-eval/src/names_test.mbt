@@ -6,7 +6,7 @@ fn names_env() -> @eval.Bindings {
     @value.Tuple::Tuple([
       ("t", List([Tuple(row1), Tuple(row2)])),
       ("a", Int(100)),
-      ("s", List([Tuple(@value.Tuple::Tuple([("x", Int(1))]))])),
+      ("s", List([@value.Value::from_tuple(@value.Tuple([("x", Int(1))]))])),
     ]),
   )
 }

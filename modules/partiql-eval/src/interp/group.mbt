@@ -103,7 +103,7 @@ fn group(
       groups.length() - 1
     }
     let fields = members.map(name => (name, row.find(name).unwrap_or(Missing)))
-    groups[at].1.push(Tuple(@value.Tuple::Tuple(fields)))
+    groups[at].1.push(@value.Value::from_tuple(@value.Tuple(fields)))
   })
   if grouping is All && groups.is_empty() {
     groups.push(([], []))

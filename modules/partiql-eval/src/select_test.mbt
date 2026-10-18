@@ -1,6 +1,6 @@
 ///|
 fn tuple(fields : Array[(String, @value.Value)]) -> @value.Value {
-  @value.Value::Tuple(@value.Tuple::Tuple(fields))
+  @value.Value::from_tuple(@value.Tuple(fields))
 }
 
 ///|

@@ -551,7 +551,7 @@ test "a key expression in a FROM source finds a global first" {
   let globals = @eval.Bindings::of_tuple(
     @value.Tuple::Tuple([
       ("x", List([Int(7)])),
-      ("t", Tuple(@value.Tuple::Tuple([("a", List([Int(9)]))]))),
+      ("t", @value.Value::from_tuple(@value.Tuple([("a", List([Int(9)]))]))),
     ]),
   )
   let with_globals = (source : String) => {

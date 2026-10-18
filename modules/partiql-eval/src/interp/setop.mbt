@@ -319,7 +319,7 @@ fn outer_projected(
         fields.push((column.name, v))
       }
     }
-    @value.Value::Tuple(@value.Tuple::Tuple(fields))
+    @value.Value::from_tuple(@value.Tuple(fields))
   })
 }
 
@@ -367,10 +367,8 @@ fn conform(
   }
   check_columns(names.length(), l, r, span)
   let tuple_of = (values : Array[@value.Value]) => {
-    @value.Value::Tuple(
-      @value.Tuple::Tuple(
-        Array::makei(names.length(), i => (names[i], values[i])),
-      ),
+    @value.Value::from_tuple(
+      @value.Tuple(Array::makei(names.length(), i => (names[i], values[i]))),
     )
   }
   (l.map(tuple_of), r.map(tuple_of))

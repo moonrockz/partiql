@@ -30,6 +30,24 @@ pub fn[T : ToValue] Value::Value(value : T) -> Value {
 }
 
 ///|
+/// Wrap an existing tuple as a PartiQL value, preserving its fields and duplicates.
+/// This is equivalent to `Value(tuple)` and does not rebuild the tuple.
+/// The concrete parameter type disambiguates a nested `Tuple(...)` constructor.
+///
+/// ```mbt check
+/// test {
+///   let value = @value.Value::from_tuple(@value.Tuple([("a", @value.Value(1))]))
+///   guard value is @value.Value::Tuple(tuple) else {
+///     fail("expected a tuple value")
+///   }
+///   @expect.expect(tuple.get_all("a")).to_equal([@value.Value(1)])
+/// }
+/// ```
+pub fn Value::from_tuple(tuple : Tuple) -> Value {
+  Tuple(tuple)
+}
+
+///|
 pub impl ToValue for Int32 with fn to_value(self) {
   Int(self.to_int64())
 }
@@ -101,7 +119,7 @@ pub impl ToValue for Bag with fn to_value(self) {
 
 ///|
 pub impl ToValue for Tuple with fn to_value(self) {
-  Tuple(self)
+  Value::from_tuple(self)
 }
 
 ///|

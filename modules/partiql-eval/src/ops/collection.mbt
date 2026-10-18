@@ -49,7 +49,7 @@ pub fn tuple_union(args : Array[@value.Value]) -> @value.Value raise OpFailure {
         _ => raise TypeFailure("TUPLEUNION of a value that is not a tuple")
       }
     }
-    Tuple(@value.Tuple::Tuple(fields))
+    @value.Value::from_tuple(@value.Tuple(fields))
   })
 }
 
@@ -131,6 +131,6 @@ pub fn map_values(args : Array[@value.Value]) -> @value.Value raise OpFailure {
 /// `MAP_ENTRIES(m)`: a bag of `{k, v}` tuples (partiql-tests map.ion:956).
 pub fn map_entries(args : Array[@value.Value]) -> @value.Value raise OpFailure {
   map_bag("MAP_ENTRIES", args, e => {
-    Tuple(@value.Tuple::Tuple([("k", e.0), ("v", e.1)]))
+    @value.Value::from_tuple(@value.Tuple([("k", e.0), ("v", e.1)]))
   })
 }

@@ -715,9 +715,7 @@ test "totality: OUTER and SQL set operations over two 100000-element bags" {
   }
   let tuples = (lo : Int32) => {
     Array::makei(n, i => {
-      @value.Value::Tuple(
-        @value.Tuple::Tuple([("a", Int((lo + i).to_int64()))]),
-      )
+      @value.Value::from_tuple(@value.Tuple([("a", Int((lo + i).to_int64()))]))
     })
   }
   let env = @eval.Bindings::of_tuple(
