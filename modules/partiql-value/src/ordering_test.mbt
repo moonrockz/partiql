@@ -10,17 +10,17 @@ fn sort_values(
 
 ///|
 test "rank of kinds" {
-  let date = @value.Date::new(year=2024, month=1, day=1)
-  let time = @value.Time::new(hour=1, minute=0, second=0)
+  let date = @value.Date::Date(year=2024, month=1, day=1)
+  let time = @value.Time::Time(hour=1, minute=0, second=0)
   let values : Array[@value.Value] = [
-    @value.Value::Bag(@value.Bag::new([])),
-    @value.Value::Tuple(@value.Tuple::new([])),
+    @value.Value::Bag(@value.Bag::Bag([])),
+    @value.Value::Tuple(@value.Tuple::Tuple([])),
     @value.Value::List([]),
     @value.Value::Blob(b""),
     @value.Value::String(""),
-    @value.Value::IntervalDT(@value.IntervalDT::new(0L, 0L)),
-    @value.Value::IntervalYM(@value.IntervalYM::new(0L)),
-    @value.Value::Timestamp(@value.Timestamp::new(date, time)),
+    @value.Value::IntervalDT(@value.IntervalDT::IntervalDT(0L, 0L)),
+    @value.Value::IntervalYM(@value.IntervalYM::IntervalYM(0L)),
+    @value.Value::Timestamp(@value.Timestamp::Timestamp(date, time)),
     @value.Value::Time(time),
     @value.Value::Date(date),
     i(0),
@@ -90,8 +90,8 @@ test "text by code point; lists lexicographic; bags sorted" {
       ),
     )
     .to_equal(-1)
-    let b1 = @value.Value::Bag(@value.Bag::new([i(2), i(1)]))
-    let b2 = @value.Value::Bag(@value.Bag::new([i(1), i(3)]))
+    let b1 = @value.Value::Bag(@value.Bag::Bag([i(2), i(1)]))
+    let b2 = @value.Value::Bag(@value.Bag::Bag([i(1), i(3)]))
     soft.expect(@value.compare(b1, b2, nulls=NullsFirst)).to_equal(-1)
   })
 }
@@ -99,14 +99,17 @@ test "text by code point; lists lexicographic; bags sorted" {
 ///|
 test "without time zone sorts first at equal fields" {
   @expect.expect_all(soft => {
-    let date = @value.Date::new(year=2024, month=1, day=1)
+    let date = @value.Date::Date(year=2024, month=1, day=1)
     let local_ts = @value.Value::Timestamp(
-      @value.Timestamp::new(date, @value.Time::new(hour=0, minute=0, second=0)),
+      @value.Timestamp::Timestamp(
+        date,
+        @value.Time::Time(hour=0, minute=0, second=0),
+      ),
     )
     let utc = @value.Value::Timestamp(
-      @value.Timestamp::new(
+      @value.Timestamp::Timestamp(
         date,
-        @value.Time::new(hour=0, minute=0, second=0, offset=Some(0)),
+        @value.Time::Time(hour=0, minute=0, second=0, offset=Some(0)),
       ),
     )
     soft.expect(@value.compare(local_ts, utc, nulls=NullsFirst)).to_equal(-1)

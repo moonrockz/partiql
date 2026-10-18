@@ -80,7 +80,7 @@ fn lower_ion(x : @ion_core.IonValue) -> Value raise LowerError {
           None => raise SymbolWithoutText
         }
       }
-      Tuple(Tuple::new(pairs))
+      Tuple(Tuple::Tuple(pairs))
     }
   }
 }
@@ -103,9 +103,9 @@ pub fn Value::lower_deep(self : Value) -> Value raise LowerError {
       let node = node.lower()
       match node {
         List(_) => List(children)
-        Bag(_) => Bag(Bag::new(children))
+        Bag(_) => Bag(Bag::Bag(children))
         Tuple(t) =>
-          Tuple(Tuple::new(t.fields().mapi((i, p) => (p.0, children[i]))))
+          Tuple(Tuple::Tuple(t.fields().mapi((i, p) => (p.0, children[i]))))
         Map(m) =>
           Map({
             key_type: m.key_type,

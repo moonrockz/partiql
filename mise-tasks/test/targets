@@ -4,5 +4,5 @@ set -euo pipefail
 
 for target in wasm wasm-gc js native; do
   echo "== $target"
-  moon test --target "$target"
+  mise run test:unit --target "$target"
 done

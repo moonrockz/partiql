@@ -148,7 +148,7 @@ test "binary inputs resolve shared field names through the caller catalog" {
   )
   let bytes = @binary.write_binary(raw)
   @expect.expect(@partiql_ion.read_bytes(bytes, catalog~)).to_equal([
-    @value.Value::Tuple(@value.Tuple::new([("a", Int(2))])),
+    @value.Value::Tuple(@value.Tuple::Tuple([("a", Int(2))])),
   ])
 }
 

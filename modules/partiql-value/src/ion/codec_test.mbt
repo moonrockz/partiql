@@ -24,7 +24,7 @@ test "plain ion maps to core values" {
     .to_equal(@value.Value::List([i(1), @value.Value::String("a")]))
     soft
     .expect(decode("{a: 1, b: $missing::null}"))
-    .to_equal(@value.Value::Tuple(@value.Tuple::new([("a", i(1))])))
+    .to_equal(@value.Value::Tuple(@value.Tuple::Tuple([("a", i(1))])))
     soft
     .expect(decode("123456789012345678901234567890"))
     .to_equal(@value.Value::integer(123456789012345678901234567890N))
@@ -37,15 +37,15 @@ test "annotated forms" {
     soft.expect(decode("$missing::null")).to_equal(@value.Value::Missing)
     soft
     .expect(decode("$bag::[1, 2]"))
-    .to_equal(@value.Value::Bag(@value.Bag::new([i(1), i(2)])))
+    .to_equal(@value.Value::Bag(@value.Bag::Bag([i(1), i(2)])))
     soft
     .expect(decode("$date::{year: 2022, month: 2, day: 22}"))
-    .to_equal(@value.Value::Date(@value.Date::new(year=2022, month=2, day=22)))
+    .to_equal(@value.Value::Date(@value.Date::Date(year=2022, month=2, day=22)))
     soft
     .expect(decode("$time::{hour: 2, minute: 30, second: 59.25, offset: 0}"))
     .to_equal(
       @value.Value::Time(
-        @value.Time::new(
+        @value.Time::Time(
           hour=2,
           minute=30,
           second=59,
@@ -58,14 +58,16 @@ test "annotated forms" {
     soft
     .expect(decode("$time::{hour: 2, minute: 30, second: 59., offset: null}"))
     .to_equal(
-      @value.Value::Time(@value.Time::new(hour=2, minute=30, second=59)),
+      @value.Value::Time(@value.Time::Time(hour=2, minute=30, second=59)),
     )
     soft
     .expect(decode("$interval_ym::{sign: \"-\", years: 1, months: 6}"))
-    .to_equal(@value.Value::IntervalYM(@value.IntervalYM::new(-18L)))
+    .to_equal(@value.Value::IntervalYM(@value.IntervalYM::IntervalYM(-18L)))
     soft
     .expect(decode("$interval_dt::{minutes: 90}"))
-    .to_equal(@value.Value::IntervalDT(@value.IntervalDT::new(5400L, 0L)))
+    .to_equal(
+      @value.Value::IntervalDT(@value.IntervalDT::IntervalDT(5400L, 0L)),
+    )
     match decode("$ion::a::(1 2)") {
       Ion(x) => soft.expect(x.equals(ion("a::(1 2)"))).to_be_true()
       other => fail("unexpected \{@debug.to_string(other)}")
@@ -166,7 +168,7 @@ test "seconds with extreme exponents decode or fail fast" {
     .expect(
       decode("$time::{hour: 1, minute: 0, second: 0d50000000, offset: null}"),
     )
-    .to_equal(@value.Value::Time(@value.Time::new(hour=1, minute=0, second=0)))
+    .to_equal(@value.Value::Time(@value.Time::Time(hour=1, minute=0, second=0)))
     soft
     .expect_call(() => {
       decode("$time::{hour: 1, minute: 0, second: 1d2147483647, offset: null}")
@@ -224,7 +226,7 @@ fn map_value(
   value_type : @value.MapType,
   pairs : Array[(@value.Value, @value.Value)],
 ) -> @value.Value raise {
-  @value.Value::Map(@value.MapValue::new(key_type~, value_type~, pairs))
+  @value.Value::Map(@value.MapValue(key_type~, value_type~, pairs))
 }
 
 ///|
@@ -262,7 +264,7 @@ test "$map values decode" {
 
 ///|
 test "$map date keys written as Ion timestamps decode to dates" {
-  let date = @value.Value::Date(@value.Date::new(year=2024, month=1, day=1))
+  let date = @value.Value::Date(@value.Date::Date(year=2024, month=1, day=1))
   @expect.expect(decode("$map::date::string::[[2024-01-01, \"new year\"]]")).to_equal(
     map_value(Date, String, [(date, @value.Value::String("new year"))]),
   )
@@ -312,12 +314,12 @@ test "$map date coercion applies only to day-precision timestamps" {
 ///|
 test "map timestamps in date positions round trip without coercion" {
   let ts = @value.Value::Timestamp(
-    @value.Timestamp::new(
-      @value.Date::new(year=2024, month=1, day=1),
-      @value.Time::new(hour=0, minute=0, second=0, offset=Some(0)),
+    @value.Timestamp::Timestamp(
+      @value.Date::Date(year=2024, month=1, day=1),
+      @value.Time::Time(hour=0, minute=0, second=0, offset=Some(0)),
     ),
   )
-  let date = @value.Value::Date(@value.Date::new(year=2024, month=1, day=1))
+  let date = @value.Value::Date(@value.Date::Date(year=2024, month=1, day=1))
   // A TIMESTAMP key is outside the DATE key family, so only values carry it.
   let m = map_value(Date, Date, [(date, ts)])
   @expect.expect_all(soft => {
@@ -353,12 +355,12 @@ fn graph_of(
   nodes : Array[@value.GraphNode],
   edges : Array[@value.GraphEdge],
 ) -> @value.Value raise {
-  @value.Value::Graph(@value.GraphValue::new(nodes, edges))
+  @value.Value::Graph(@value.GraphValue(nodes, edges))
 }
 
 ///|
 test "$graph values decode" {
-  let n1 = @value.GraphNode::new(id="n1", payload=Some(i(1)))
+  let n1 = @value.GraphNode(id="n1", payload=Some(i(1)))
   @expect.expect_all(soft => {
     soft
     .expect(decode("$graph::{nodes: [], edges: []}"))
@@ -371,7 +373,7 @@ test "$graph values decode" {
     )
     .to_equal(
       graph_of([n1], [
-        @value.GraphEdge::new(
+        @value.GraphEdge(
           id="d1",
           ends=Directed(from="n1", to="n1"),
           payload=Some(
@@ -389,10 +391,10 @@ test "$graph values decode" {
     .to_equal(
       graph_of(
         [
-          @value.GraphNode::new(id="a", labels=["City", "Country"]),
-          @value.GraphNode::new(id="b"),
+          @value.GraphNode(id="a", labels=["City", "Country"]),
+          @value.GraphNode(id="b"),
         ],
-        [@value.GraphEdge::new(id="e", labels=["l"], ends=Undirected("a", "b"))],
+        [@value.GraphEdge(id="e", labels=["l"], ends=Undirected("a", "b"))],
       ),
     )
     // `<-` is the reversed directed edge.
@@ -492,7 +494,7 @@ test "children of a navigated Ion container pass through exactly" {
 ///|
 test "computed values use the PartiQL-encoded forms" {
   let v = @value.Value::Bag(
-    @value.Bag::new([@value.Value::String("s"), @value.Value::Missing]),
+    @value.Bag::Bag([@value.Value::String("s"), @value.Value::Missing]),
   )
   @expect.expect(@partiql_ion.to_ion_data(v).equals(@partiql_ion.to_ion(v))).to_be_true()
 }
@@ -501,23 +503,20 @@ test "computed values use the PartiQL-encoded forms" {
 test "Ion data inside maps, graphs and bags passes through exactly" {
   let boxed = @value.Value::Ion(ion("a::(1 sym)"))
   let m = @value.Value::Map(
-    @value.MapValue::new(key_type=String, value_type=Dynamic, [
+    @value.MapValue(key_type=String, value_type=Dynamic, [
       (@value.Value::String("k"), boxed),
     ]),
   )
   let g = @value.Value::Graph(
-    @value.GraphValue::new(
-      [@value.GraphNode::new(id="n", payload=Some(boxed))],
-      [
-        @value.GraphEdge::new(
-          id="e",
-          ends=Undirected("n", "n"),
-          payload=Some(@value.Value::Ion(ion("null.int"))),
-        ),
-      ],
-    ),
+    @value.GraphValue([@value.GraphNode(id="n", payload=Some(boxed))], [
+      @value.GraphEdge(
+        id="e",
+        ends=Undirected("n", "n"),
+        payload=Some(@value.Value::Ion(ion("null.int"))),
+      ),
+    ]),
   )
-  let b = @value.Value::Bag(@value.Bag::new([boxed]))
+  let b = @value.Value::Bag(@value.Bag::Bag([boxed]))
   @expect.expect_all(soft => {
     soft
     .expect(

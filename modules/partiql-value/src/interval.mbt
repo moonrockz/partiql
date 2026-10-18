@@ -35,11 +35,17 @@ pub struct IntervalYM {
 } derive(Debug)
 
 ///|
-pub fn IntervalYM::new(months : Int64) -> IntervalYM raise IntervalError {
+/// Build a signed month count. Raise `IntervalError::Overflow` for Int64's
+/// minimum value, whose positive magnitude cannot be represented.
+#alias(new, deprecated="Use IntervalYM(...) instead")
+pub fn IntervalYM::IntervalYM(months : Int64) -> IntervalYM raise IntervalError {
   { months: fit_int64(big(months), "months"), }
 }
 
 ///|
+/// Combine `years * 12 + months`, then negate when `negative` is true.
+/// Parts may exceed their usual calendar ranges. Raise `IntervalError::Overflow`
+/// if the signed total or its magnitude does not fit Int64.
 pub fn IntervalYM::from_parts(
   negative~ : Bool,
   years~ : Int64,
@@ -50,6 +56,7 @@ pub fn IntervalYM::from_parts(
 }
 
 ///|
+/// Whether the signed month count is below zero. Zero is never negative.
 pub fn IntervalYM::is_negative(self : IntervalYM) -> Bool {
   self.months < 0L
 }
@@ -64,11 +71,13 @@ fn IntervalYM::magnitude(self : IntervalYM) -> Int64 {
 }
 
 ///|
+/// Whole years in the absolute magnitude of the interval.
 pub fn IntervalYM::years(self : IntervalYM) -> Int64 {
   self.magnitude() / 12L
 }
 
 ///|
+/// Remaining months in the absolute magnitude, in 0..11.
 pub fn IntervalYM::months_part(self : IntervalYM) -> Int64 {
   self.magnitude() % 12L
 }
@@ -99,7 +108,11 @@ fn normalize_dt(
 }
 
 ///|
-pub fn IntervalDT::new(
+/// Normalize `seconds + nanos / 10^9` to floor form, carrying excess or
+/// negative nanoseconds into seconds. Raise `IntervalError::Overflow` if
+/// the normalized seconds or their magnitude cannot fit Int64.
+#alias(new, deprecated="Use IntervalDT(...) instead")
+pub fn IntervalDT::IntervalDT(
   seconds : Int64,
   nanos : Int64,
 ) -> IntervalDT raise IntervalError {
@@ -107,6 +120,10 @@ pub fn IntervalDT::new(
 }
 
 ///|
+/// Combine day, hour, minute, second and nanosecond parts, then negate when
+/// `negative` is true. Normalize overflowing parts using exact arithmetic.
+/// Raise `IntervalError::Overflow` if the normalized seconds or their
+/// magnitude cannot fit Int64.
 pub fn IntervalDT::from_parts(
   negative~ : Bool,
   days~ : Int64,
@@ -127,6 +144,7 @@ pub fn IntervalDT::from_parts(
 }
 
 ///|
+/// Whether the interval is below zero, including negative fractional seconds.
 pub fn IntervalDT::is_negative(self : IntervalDT) -> Bool {
   self.seconds < 0L
 }
@@ -144,26 +162,31 @@ fn IntervalDT::magnitude(self : IntervalDT) -> (Int64, Int64) {
 }
 
 ///|
+/// Whole days in the absolute magnitude of the interval.
 pub fn IntervalDT::days(self : IntervalDT) -> Int64 {
   self.magnitude().0 / 86400L
 }
 
 ///|
+/// Remaining hours in the absolute magnitude, in 0..23.
 pub fn IntervalDT::hours(self : IntervalDT) -> Int64 {
   self.magnitude().0 % 86400L / 3600L
 }
 
 ///|
+/// Remaining minutes in the absolute magnitude, in 0..59.
 pub fn IntervalDT::minutes(self : IntervalDT) -> Int64 {
   self.magnitude().0 % 3600L / 60L
 }
 
 ///|
+/// Remaining whole seconds in the absolute magnitude, in 0..59.
 pub fn IntervalDT::seconds_part(self : IntervalDT) -> Int64 {
   self.magnitude().0 % 60L
 }
 
 ///|
+/// Fractional nanoseconds in the absolute magnitude, in 0..999999999.
 pub fn IntervalDT::nanos_part(self : IntervalDT) -> Int64 {
   self.magnitude().1
 }

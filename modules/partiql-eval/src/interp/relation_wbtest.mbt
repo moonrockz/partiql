@@ -45,7 +45,7 @@ let failing : @plan.Rel = Filter(
 
 ///|
 test "a failing input read through Filter raises the input's error" {
-  let ctx = Ctx::new([], mode=Strict)
+  let ctx = Ctx([], mode=Strict)
   let outer : @plan.Rel = Filter(failing, Const(Bool(true), at(9)), at(10))
   let it = relation(outer, Top, ctx)
   @expect.expect_all(soft => {
@@ -58,7 +58,7 @@ test "a failing input read through Filter raises the input's error" {
 
 ///|
 test "after an error, the same Ctx reads a later relation" {
-  let ctx = Ctx::new([], mode=Strict)
+  let ctx = Ctx([], mode=Strict)
   @expect.expect_all(soft => {
     soft
     .expect(raised(() => ignore(pull(relation(failing, Top, ctx), ctx))))
@@ -73,7 +73,7 @@ test "after an error, the same Ctx reads a later relation" {
 
 ///|
 test "of two errors in sequence, the first is reported" {
-  let ctx = Ctx::new([], mode=Strict)
+  let ctx = Ctx([], mode=Strict)
   let first = rows(ctx, () => raise fail_at(1))
   // A consumer that, like a join, goes on after its input ends.
   let second = rows(ctx, () => {

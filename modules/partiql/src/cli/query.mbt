@@ -340,7 +340,7 @@ fn load_bindings(
     }
     let value : @value.Value = match values {
       [v] => v
-      _ => Bag(@value.Bag::new(values))
+      _ => Bag(@value.Bag::Bag(values))
     }
     bind(d.file, d.name, value)
   }

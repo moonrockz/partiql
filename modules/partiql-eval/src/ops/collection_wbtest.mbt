@@ -1,12 +1,12 @@
 ///|
 fn tup(fields : Array[(String, @value.Value)]) -> @value.Value {
-  Tuple(@value.Tuple::new(fields))
+  Tuple(@value.Tuple::Tuple(fields))
 }
 
 ///|
 test "SIZE, CARDINALITY and EXISTS count every element" {
   let list = @value.Value::List([Null, Missing, Int(1)])
-  let bag = @value.Value::Bag(@value.Bag::new([]))
+  let bag = @value.Value::Bag(@value.Bag::Bag([]))
   let fields = tup([("a", Int(1)), ("a", Int(2))])
   @expect.expect_all(soft => {
     soft.expect(size([list])).to_equal(Int(3))
@@ -42,7 +42,7 @@ fn map_of(
   key_type : @value.MapType,
   entries : Array[(@value.Value, @value.Value)],
 ) -> @value.Value raise {
-  Map(@value.MapValue::new(key_type~, value_type=Dynamic, entries))
+  Map(@value.MapValue(key_type~, value_type=Dynamic, entries))
 }
 
 ///|
@@ -78,21 +78,21 @@ test "MAP_KEYS, MAP_VALUES and MAP_ENTRIES give bags in insertion order" {
   @expect.expect_all(soft => {
     soft
     .expect(map_keys([m]))
-    .to_equal(Bag(@value.Bag::new([String("x"), String("y")])))
+    .to_equal(Bag(@value.Bag::Bag([String("x"), String("y")])))
     soft
     .expect(map_values([m]))
-    .to_equal(Bag(@value.Bag::new([Int(1), Int(2)])))
+    .to_equal(Bag(@value.Bag::Bag([Int(1), Int(2)])))
     soft
     .expect(map_entries([m]))
     .to_equal(
       Bag(
-        @value.Bag::new([
+        @value.Bag::Bag([
           tup([("k", String("x")), ("v", Int(1))]),
           tup([("k", String("y")), ("v", Int(2))]),
         ]),
       ),
     )
-    soft.expect(map_keys([empty])).to_equal(Bag(@value.Bag::new([])))
+    soft.expect(map_keys([empty])).to_equal(Bag(@value.Bag::Bag([])))
     soft.expect(map_values([Null])).to_equal(Null)
   })
 }

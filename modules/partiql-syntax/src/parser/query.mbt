@@ -217,7 +217,7 @@ fn Parser::set_primary(self : Parser) -> @ast.Query raise @ast.ParseError {
 ///|
 /// Parses one statement from `source`: a query with an optional final `;`.
 pub fn parse_statement(source : String) -> @ast.Statement raise @ast.ParseError {
-  let p = Parser::new(@lexer.lex(source))
+  let p = Parser(@lexer.lex(source))
   p.reject_unsupported()
   let q = p.query()
   ignore(p.eat_punct(';'))
@@ -233,7 +233,7 @@ pub fn parse_statement(source : String) -> @ast.Statement raise @ast.ParseError 
 /// source. Empty statements are skipped; a script may have no statements.
 pub fn parse_script(source : String) -> @ast.Script raise @ast.ParseError {
   let (tokens, comments) = @lexer.lex_with_comments(source)
-  let p = Parser::new(tokens)
+  let p = Parser(tokens)
   let statements : Array[@ast.Statement] = []
   while !(p.peek().kind is End) {
     if p.eat_punct(';') {
@@ -255,7 +255,7 @@ pub fn parse_script(source : String) -> @ast.Script raise @ast.ParseError {
 /// order (at most 100).
 pub fn parse_script_recovering(source : String) -> @ast.Recovered {
   let (tokens, comments, lex_errors) = @lexer.lex_recovering(source)
-  let p = Parser::new(tokens)
+  let p = Parser(tokens)
   p.recovering = true
   p.lex_errors = lex_errors.length()
   for e in lex_errors {

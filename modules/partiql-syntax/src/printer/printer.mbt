@@ -11,7 +11,7 @@ priv struct Printer {
 }
 
 ///|
-fn Printer::new(comments : Array[@ast.Comment]) -> Printer {
+fn Printer::Printer(comments : Array[@ast.Comment]) -> Printer {
   { comments, next: 0, row_calls: false, }
 }
 
@@ -54,7 +54,7 @@ fn Printer::statement(self : Printer, s : @ast.Statement) -> Doc {
 /// The text of a statement, without comments: the canonical one-line form
 /// without `width`, the pretty layout at `width` with it (spec M3b).
 pub fn print(statement : @ast.Statement, width? : Int32) -> String {
-  let doc = Printer::new([]).statement(statement)
+  let doc = Printer([]).statement(statement)
   match width {
     None => render_flat(doc)
     Some(w) => render(doc, w)
@@ -89,7 +89,7 @@ pub fn print_script(script : @ast.Script, width? : Int32) -> String {
   if width is Some(w) {
     return pretty_script(script, w)
   }
-  let p = Printer::new(script.comments)
+  let p = Printer(script.comments)
   let docs : Array[Doc] = []
   for s in script.statements {
     docs.push(p.own_lines(statement_span(s)))
@@ -107,7 +107,7 @@ pub fn print_script(script : @ast.Script, width? : Int32) -> String {
 /// The pretty text of a script: each statement laid out on its own, with a
 /// blank line between two statements when either spans several lines.
 fn pretty_script(script : @ast.Script, width : Int32) -> String {
-  let p = Printer::new(script.comments)
+  let p = Printer(script.comments)
   let out = StringBuilder()
   let mut previous_multi = false
   for i, s in script.statements {

@@ -1,6 +1,6 @@
 ///|
 test "a session evaluates datagram elements in order without changing its bindings" {
-  let session = @eval.Session::new(
+  let session = @eval.Session(
     env=@eval.Bindings::of_pairs([("t", @value.Value::Int(99))]),
   )
   let values = @partiql_ion.read_text("{a: 3} {a: 1} {a: 2}")
@@ -19,7 +19,7 @@ test "a session evaluates datagram elements in order without changing its bindin
 
 ///|
 test "sessions share mode, zone and clock across statements and survive failures" {
-  let session = @eval.Session::new(
+  let session = @eval.Session(
     mode=Strict,
     env=@eval.Bindings::of_pairs([("a", @value.Value::Int(2))]),
   )
@@ -46,10 +46,10 @@ test "sessions share mode, zone and clock across statements and survive failures
 ///|
 test "session statements share the injected clock and zone" {
   let clock = @eval.Clock::fixed(@time.date_time(2026, 10, 16, hour=23))
-  let zone = @eval.ZoneOffset::new(120).unwrap()
-  let session = @eval.Session::new(clock~, zone~)
+  let zone = @eval.ZoneOffset::from_minutes(120).unwrap()
+  let session = @eval.Session(clock~, zone~)
   let tomorrow = @value.Value::Date(
-    @value.Date::new(year=2026, month=10, day=17),
+    @value.Date::Date(year=2026, month=10, day=17),
   )
   @expect.expect(session.evaluate_script("CURRENT_DATE; CURRENT_DATE")).to_equal([
       tomorrow, tomorrow,

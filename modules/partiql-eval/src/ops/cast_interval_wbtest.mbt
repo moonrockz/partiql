@@ -16,7 +16,7 @@ fn iq(
 ///|
 /// Total, so that a `failure` closure may call it: a bad input gives MISSING.
 fn months(n : Int64) -> @value.Value {
-  try @value.Value::IntervalYM(@value.IntervalYM::new(n)) catch {
+  try @value.Value::IntervalYM(@value.IntervalYM::IntervalYM(n)) catch {
     _ => Missing
   } noraise {
     v => v
@@ -25,7 +25,9 @@ fn months(n : Int64) -> @value.Value {
 
 ///|
 fn span_of(seconds : Int64, nanos : Int64) -> @value.Value {
-  try @value.Value::IntervalDT(@value.IntervalDT::new(seconds, nanos)) catch {
+  try
+    @value.Value::IntervalDT(@value.IntervalDT::IntervalDT(seconds, nanos))
+  catch {
     _ => Missing
   } noraise {
     v => v

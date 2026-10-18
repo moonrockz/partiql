@@ -50,11 +50,14 @@ fn ordered(
 }
 
 ///|
+/// The `<` predicate. Unbox Ion; propagate MISSING before NULL.
+/// Return false for NaN and raise `TypeFailure` for incomparable kinds.
 pub fn less(a : @value.Value, b : @value.Value) -> @value.Value raise OpFailure {
   ordered(a, b, c => c < 0)
 }
 
 ///|
+/// The `<=` predicate, with the same absence, NaN and type rules as `less`.
 pub fn less_eq(
   a : @value.Value,
   b : @value.Value,
@@ -63,6 +66,7 @@ pub fn less_eq(
 }
 
 ///|
+/// The `>` predicate, with the same absence, NaN and type rules as `less`.
 pub fn greater(
   a : @value.Value,
   b : @value.Value,
@@ -71,6 +75,7 @@ pub fn greater(
 }
 
 ///|
+/// The `>=` predicate, with the same absence, NaN and type rules as `less`.
 pub fn greater_eq(
   a : @value.Value,
   b : @value.Value,

@@ -39,12 +39,12 @@ test "an Ion string is a struct key" {
     for mode in [@eval.Mode::Permissive, Strict] {
       soft
       .expect(ev("{`\"k\"`: 1}", mode~))
-      .to_equal(Tuple(@value.Tuple::new([("k", Int(1))])))
+      .to_equal(Tuple(@value.Tuple::Tuple([("k", Int(1))])))
       soft
       .expect(ev("{`k`: 1}", mode~))
-      .to_equal(Tuple(@value.Tuple::new([("k", Int(1))])))
+      .to_equal(Tuple(@value.Tuple::Tuple([("k", Int(1))])))
     }
-    soft.expect(ev("{`1`: 1}")).to_equal(Tuple(@value.Tuple::new([])))
+    soft.expect(ev("{`1`: 1}")).to_equal(Tuple(@value.Tuple::Tuple([])))
     soft
     .expect_call(() => ev("{`1`: 1}", mode=Strict))
     .to_raise_matching(
@@ -61,7 +61,7 @@ test "Ion map keys are lowered before the key type is inferred" {
     .expect(ev("MAP {`1`: 'a', 2: 'b'}"))
     .to_equal(
       Map(
-        @value.MapValue::new(key_type=Integer, value_type=String, [
+        @value.MapValue(key_type=Integer, value_type=String, [
           (Int(1), String("a")),
           (Int(2), String("b")),
         ]),
@@ -71,7 +71,7 @@ test "Ion map keys are lowered before the key type is inferred" {
     .expect(ev("MAP {'a': `1`, 'b': 2}"))
     .to_equal(
       Map(
-        @value.MapValue::new(key_type=String, value_type=Integer, [
+        @value.MapValue(key_type=String, value_type=Integer, [
           (String("a"), Int(1)),
           (String("b"), Int(2)),
         ]),
@@ -81,7 +81,7 @@ test "Ion map keys are lowered before the key type is inferred" {
     .expect(ev("MAP {`1`: 'a', 1: 'b'}"))
     .to_equal(
       Map(
-        @value.MapValue::new(key_type=Integer, value_type=String, [
+        @value.MapValue(key_type=Integer, value_type=String, [
           (Int(1), String("b")),
         ]),
       ),

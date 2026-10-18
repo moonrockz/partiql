@@ -35,7 +35,7 @@ fn counting(calls : Ref[Int32]) -> @eval.Clock {
 
 ///|
 fn offset(minutes : Int32) -> @eval.ZoneOffset {
-  @eval.ZoneOffset::new(minutes).unwrap_or(@eval.ZoneOffset::utc())
+  @eval.ZoneOffset::from_minutes(minutes).unwrap_or(@eval.ZoneOffset::utc())
 }
 
 ///|

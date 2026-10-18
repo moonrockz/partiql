@@ -38,25 +38,22 @@ fn nested_containers(leaf : @value.Value, depth : Int32) -> @value.Value raise {
   for i in 0..<depth {
     v = match i % 6 {
       0 => List([v])
-      1 => Bag(@value.Bag::new([v]))
-      2 => Tuple(@value.Tuple::new([("a", v)]))
+      1 => Bag(@value.Bag::Bag([v]))
+      2 => Tuple(@value.Tuple::Tuple([("a", v)]))
       3 =>
         Map(
-          @value.MapValue::new(key_type=String, value_type=Dynamic, [
+          @value.MapValue(key_type=String, value_type=Dynamic, [
             (String("k"), v),
           ]),
         )
       4 =>
         Graph(
-          @value.GraphValue::new(
-            [@value.GraphNode::new(id="n", payload=Some(v))],
-            [],
-          ),
+          @value.GraphValue([@value.GraphNode(id="n", payload=Some(v))], []),
         )
       _ =>
         Graph(
-          @value.GraphValue::new([@value.GraphNode::new(id="n")], [
-            @value.GraphEdge::new(
+          @value.GraphValue([@value.GraphNode(id="n")], [
+            @value.GraphEdge(
               id="e",
               ends=Directed(from="n", to="n"),
               payload=Some(v),
@@ -92,7 +89,7 @@ test "all relations traverse 100000 mixed containers" {
 test "map construction reports a deeply nested invalid key" {
   let key = nested_list(Int(1), 100000)
   @expect.expect_call(() => {
-    @value.MapValue::new(key_type=String, value_type=Dynamic, [(key, Int(1))])
+    @value.MapValue(key_type=String, value_type=Dynamic, [(key, Int(1))])
   }).to_raise_matching(
     e => e is @value.MapError::InvalidKey(_),
     description="InvalidKey",
@@ -131,11 +128,11 @@ test "boxed Ion identity, lowering and debug traverse 100000 containers" {
 test "unordered matching and sorting compare deeply nested candidates" {
   let one = nested_list(Int(1), 100000)
   let two = nested_list(Int(2), 100000)
-  let a = @value.Value::Bag(@value.Bag::new([one, two]))
-  let b = @value.Value::Bag(@value.Bag::new([two, one]))
-  let c = @value.Value::Bag(@value.Bag::new([one, one]))
-  let t = @value.Value::Tuple(@value.Tuple::new([("a", one), ("a", two)]))
-  let u = @value.Value::Tuple(@value.Tuple::new([("a", two), ("a", one)]))
+  let a = @value.Value::Bag(@value.Bag::Bag([one, two]))
+  let b = @value.Value::Bag(@value.Bag::Bag([two, one]))
+  let c = @value.Value::Bag(@value.Bag::Bag([one, one]))
+  let t = @value.Value::Tuple(@value.Tuple::Tuple([("a", one), ("a", two)]))
+  let u = @value.Value::Tuple(@value.Tuple::Tuple([("a", two), ("a", one)]))
   @expect.expect_all(soft => {
     soft.expect(a == b).to_be_true()
     soft.expect(@value.eqg(a, b)).to_be_true()

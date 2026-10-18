@@ -10,7 +10,7 @@ priv struct Tally {
 }
 
 ///|
-fn Tally::new(check : String) -> Tally {
+fn Tally::Tally(check : String) -> Tally {
   { check, passed: [], failed: {}, not_applicable: 0, records: 0, }
 }
 
@@ -158,14 +158,14 @@ fn read_suite(path : String, file_id : String, syntax : Tally) -> Suite? {
 ///|
 test "partiql-tests" {
   require_data_root(data_roots[0])
-  let syntax = Tally::new("syntax")
-  let eval_parse = Tally::new("eval-parse")
-  let codec = Tally::new("codec")
-  let ion_roundtrip = Tally::new("ion-roundtrip")
-  let print_roundtrip = Tally::new("print-roundtrip")
-  let pretty_roundtrip = Tally::new("pretty-roundtrip")
-  let recovery = Tally::new("recovery")
-  let eval = Tally::new("eval")
+  let syntax = Tally("syntax")
+  let eval_parse = Tally("eval-parse")
+  let codec = Tally("codec")
+  let ion_roundtrip = Tally("ion-roundtrip")
+  let print_roundtrip = Tally("print-roundtrip")
+  let pretty_roundtrip = Tally("pretty-roundtrip")
+  let recovery = Tally("recovery")
+  let eval = Tally("eval")
   for root in data_roots {
     if !@fs.path_exists(root) {
       continue
@@ -240,14 +240,14 @@ test "a case with several evaluation assertions is checked once per statement" {
       ),
     ),
   )
-  let syntax = Tally::new("syntax")
-  let eval_parse = Tally::new("eval-parse")
-  let codec = Tally::new("codec")
-  let ion_roundtrip = Tally::new("ion-roundtrip")
-  let print_roundtrip = Tally::new("print-roundtrip")
-  let pretty_roundtrip = Tally::new("pretty-roundtrip")
-  let recovery = Tally::new("recovery")
-  let eval = Tally::new("eval")
+  let syntax = Tally("syntax")
+  let eval_parse = Tally("eval-parse")
+  let codec = Tally("codec")
+  let ion_roundtrip = Tally("ion-roundtrip")
+  let print_roundtrip = Tally("print-roundtrip")
+  let pretty_roundtrip = Tally("pretty-roundtrip")
+  let recovery = Tally("recovery")
+  let eval = Tally("eval")
   run_case(
     suite,
     suite.cases[0],
@@ -278,7 +278,7 @@ test "an equivalence class is evaluated once per statement" {
     ),
   )
   let case = suite.cases[0]
-  let eval = Tally::new("eval")
+  let eval = Tally("eval")
   record_eval(case, suite.statements_of(case), eval)
   @expect.expect_all(soft => {
     soft.expect(eval.records).to_equal(6)

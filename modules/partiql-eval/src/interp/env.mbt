@@ -13,7 +13,11 @@ pub struct Ctx {
 }
 
 ///|
-pub fn Ctx::new(
+/// Build a context for one statement with global bindings and a required mode.
+/// Default to UTC and no clock. Clock sampling and relation failure state
+/// start empty; create a fresh context for each statement.
+#alias(new, deprecated="Use Ctx(...) instead")
+pub fn Ctx::Ctx(
   globals : Array[(String, @value.Value)],
   mode~ : @plan.Mode,
   zone~ : @ops.ZoneOffset = @ops.ZoneOffset::utc(),

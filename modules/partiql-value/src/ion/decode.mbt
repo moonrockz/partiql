@@ -149,7 +149,7 @@ fn make_time(
   sec : (Int32, Int32, Int32),
   offset : Int32?,
 ) -> @value.Time raise CodecError {
-  @value.Time::new(
+  @value.Time::Time(
     hour~,
     minute~,
     second=sec.0,
@@ -167,7 +167,7 @@ fn make_date(
   month : Int32,
   day : Int32,
 ) -> @value.Date raise CodecError {
-  @value.Date::new(year~, month~, day~) catch {
+  @value.Date::Date(year~, month~, day~) catch {
     error => raise Malformed(@debug.to_string(error))
   }
 }
@@ -313,7 +313,7 @@ fn decode_timestamp(x : @ion_core.IonValue) -> @value.Value raise CodecError {
     seconds_of(required(f, "second", form), "\{form}.second"),
     offset_of(f.get("offset"), "\{form}.offset"),
   )
-  Timestamp(@value.Timestamp::new(date, time))
+  Timestamp(@value.Timestamp::Timestamp(date, time))
 }
 
 ///|
@@ -447,7 +447,7 @@ fn decode_map(x : @ion_core.IonValue) -> DecodePlan raise CodecError {
         typed_child(value_type, pair.1, values[2 * i + 1]),
       )
     })
-    let map = @value.MapValue::new(key_type~, value_type~, entries) catch {
+    let map = @value.MapValue(key_type~, value_type~, entries) catch {
       error => raise Malformed(@debug.to_string(error))
     }
     Map(map)
@@ -559,7 +559,7 @@ fn decode_graph(x : @ion_core.IonValue) -> DecodePlan raise CodecError {
     let n = graph_element_fields(item, "node", ["id", "labels", "payload"])
     nodes.push(
       (
-        @value.GraphNode::new(
+        @value.GraphNode(
           id=graph_id(required(n, "id", "$graph node"), "$graph node id"),
           labels=labels_of(n),
         ),
@@ -574,7 +574,7 @@ fn decode_graph(x : @ion_core.IonValue) -> DecodePlan raise CodecError {
     ])
     edges.push(
       (
-        @value.GraphEdge::new(
+        @value.GraphEdge(
           id=graph_id(required(e, "id", "$graph edge"), "$graph edge id"),
           ends=ends_of(required(e, "ends", "$graph edge")),
           labels=labels_of(e),
@@ -595,21 +595,21 @@ fn decode_graph(x : @ion_core.IonValue) -> DecodePlan raise CodecError {
       }
     }
     let nodes = nodes.map(p => {
-      @value.GraphNode::new(
+      @value.GraphNode(
         id=p.0.id,
         labels=p.0.labels().to_owned(),
         payload=payload(p.1),
       )
     })
     let edges = edges.map(p => {
-      @value.GraphEdge::new(
+      @value.GraphEdge(
         id=p.0.id,
         labels=p.0.labels().to_owned(),
         ends=p.0.ends,
         payload=payload(p.1),
       )
     })
-    let graph = @value.GraphValue::new(nodes, edges) catch {
+    let graph = @value.GraphValue(nodes, edges) catch {
       error => raise Malformed(@debug.to_string(error))
     }
     Graph(graph)
@@ -638,7 +638,7 @@ fn decode_plan(x : @ion_core.IonValue) -> DecodePlan raise CodecError {
           names.push(name)
         }
         Children(fields.map(f => f.value()), values => {
-          Tuple(@value.Tuple::new(names.mapi((i, name) => (name, values[i]))))
+          Tuple(@value.Tuple::Tuple(names.mapi((i, name) => (name, values[i]))))
         })
       }
       _ => Ready(decode_plain(x))
@@ -669,7 +669,7 @@ fn decode_plan(x : @ion_core.IonValue) -> DecodePlan raise CodecError {
       }
     "$bag" =>
       match body.kind() {
-        List(items) => Children(items, values => Bag(@value.Bag::new(values)))
+        List(items) => Children(items, values => Bag(@value.Bag::Bag(values)))
         _ => raise Malformed("$bag must annotate a list")
       }
     "$date" => Ready(decode_date(body))

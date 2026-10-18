@@ -32,7 +32,17 @@ fn help_outcome(path : ArrayView[String]) -> Outcome {
 }
 
 ///|
-/// Runs the command line. `args` excludes the program name.
+/// Run arguments excluding the program name, using only injected `io` for
+/// files, stdin and clock access. Return output without writing process streams.
+/// Status is 0 for success, 1 for input/evaluation failure, and 2 for usage
+/// errors. Binary stdout uses `stdout_bytes` with empty text `stdout`.
+///
+/// ```mbt check
+/// test {
+///   let result = @cli.run(["query", "--compact", "-e", "1 + 2"])
+///   @expect.expect((result.status, result.stdout)).to_equal((0, "3\n"))
+/// }
+/// ```
 pub fn run(args : ArrayView[String], io~ : Io = Io::unavailable()) -> Outcome {
   if args.is_empty() {
     return usage_error(help_text([]).unwrap_or(""))

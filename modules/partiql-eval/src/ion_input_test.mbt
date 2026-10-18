@@ -13,9 +13,9 @@ test "Ion text and binary bindings evaluate identically" {
     .to_equal(@eval.evaluate_text("b", env=binary_env))
     for
       (text, expected) in [
-        ("", @value.Value::Bag(@value.Bag::new([]))),
+        ("", @value.Value::Bag(@value.Bag::Bag([]))),
         ("1", Int(1)),
-        ("1 $missing::null", Bag(@value.Bag::new([Int(1), Missing]))),
+        ("1 $missing::null", Bag(@value.Bag::Bag([Int(1), Missing]))),
       ] {
       let env = @eval.Bindings::empty().with_data(
         "t",

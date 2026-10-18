@@ -68,6 +68,8 @@ fn decimal_sum(nums : Array[Num]) -> @ion_core.Decimal raise OpFailure {
 }
 
 ///|
+/// Count present values after unboxing Ion and dropping NULL and MISSING.
+/// With `distinct`, count each grouping-equivalent value once. Empty input gives zero.
 pub fn count_values(
   values : Iter[@value.Value],
   distinct~ : Bool,
@@ -131,6 +133,8 @@ fn extreme(xs : Array[@value.Value], better : (Int32) -> Bool) -> @value.Value {
 }
 
 ///|
+/// The least present value under PartiQL total ordering, or NULL for empty
+/// or entirely absent input. Unbox Ion and ignore NULL and MISSING.
 pub fn min_values(
   values : Iter[@value.Value],
   distinct~ : Bool,
@@ -139,6 +143,8 @@ pub fn min_values(
 }
 
 ///|
+/// The greatest present value under PartiQL total ordering, or NULL for empty
+/// or entirely absent input. Unbox Ion and ignore NULL and MISSING.
 pub fn max_values(
   values : Iter[@value.Value],
   distinct~ : Bool,

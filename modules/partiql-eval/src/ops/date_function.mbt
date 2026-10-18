@@ -37,7 +37,7 @@ fn add_units(
         Date(d) => Date(date_add_months(d, months.to_int64()))
         Timestamp(ts) =>
           Timestamp(
-            @value.Timestamp::new(
+            @value.Timestamp::Timestamp(
               date_add_months(ts.date, months.to_int64()),
               ts.time,
             ),
@@ -96,9 +96,9 @@ fn as_timestamp(v : @value.Value) -> @value.Timestamp raise OpFailure {
   match v {
     Timestamp(ts) => ts
     Date(d) =>
-      @value.Timestamp::new(
+      @value.Timestamp::Timestamp(
         d,
-        @value.Time::new(hour=0, minute=0, second=0, precision=0) catch {
+        @value.Time::Time(hour=0, minute=0, second=0, precision=0) catch {
           _ => raise DataFailure("a time out of range")
         },
       )

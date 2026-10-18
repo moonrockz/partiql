@@ -8,7 +8,7 @@ fn ex(
 
 ///|
 fn stamp(date : @value.Date, time : @value.Time) -> @value.Value {
-  Timestamp(@value.Timestamp::new(date, time))
+  Timestamp(@value.Timestamp::Timestamp(date, time))
 }
 
 ///|
@@ -42,14 +42,16 @@ test "EXTRACT from dates, times and timestamps" {
 
 ///|
 test "EXTRACT from intervals" {
-  let ym = @value.Value::IntervalYM(@value.IntervalYM::new(-14L))
+  let ym = @value.Value::IntervalYM(@value.IntervalYM::IntervalYM(-14L))
   let dt = @value.Value::IntervalDT(
-    @value.IntervalDT::new(
+    @value.IntervalDT::IntervalDT(
       -(3L * 86400L + 4L * 3600L + 5L * 60L + 6L),
       -780000000L,
     ),
   )
-  let fine = @value.Value::IntervalDT(@value.IntervalDT::new(1L, 123456789L))
+  let fine = @value.Value::IntervalDT(
+    @value.IntervalDT::IntervalDT(1L, 123456789L),
+  )
   @expect.expect_all(soft => {
     soft.expect(ex(Year, ym)).to_equal(Int(-1))
     soft.expect(ex(Month, ym)).to_equal(Int(-2))

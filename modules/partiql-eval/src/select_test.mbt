@@ -1,11 +1,11 @@
 ///|
 fn tuple(fields : Array[(String, @value.Value)]) -> @value.Value {
-  @value.Value::Tuple(@value.Tuple::new(fields))
+  @value.Value::Tuple(@value.Tuple::Tuple(fields))
 }
 
 ///|
 fn bag_of(items : Array[@value.Value]) -> @value.Value {
-  @value.Value::Bag(@value.Bag::new(items))
+  @value.Value::Bag(@value.Bag::Bag(items))
 }
 
 ///|

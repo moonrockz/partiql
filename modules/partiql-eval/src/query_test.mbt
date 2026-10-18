@@ -3,24 +3,24 @@ test "SELECT VALUE over a collection" {
   @expect.expect_all(soft => {
     soft
     .expect(ev("SELECT VALUE x FROM [1, 2, 3] AS x"))
-    .to_equal(Bag(@value.Bag::new([Int(1), Int(2), Int(3)])))
+    .to_equal(Bag(@value.Bag::Bag([Int(1), Int(2), Int(3)])))
     soft
     .expect(ev("SELECT VALUE x + 1 FROM <<1, 2>> AS x WHERE x > 1"))
-    .to_equal(Bag(@value.Bag::new([Int(3)])))
+    .to_equal(Bag(@value.Bag::Bag([Int(3)])))
     soft
     .expect(ev("SELECT VALUE x FROM [] AS x"))
-    .to_equal(Bag(@value.Bag::new([])))
+    .to_equal(Bag(@value.Bag::Bag([])))
     // The corpus keeps MISSING (spec-tests.ion, "bag element evaluates to
     // MISSING").
     soft
     .expect(ev("SELECT VALUE x FROM [1, MISSING, 3] AS x"))
-    .to_equal(Bag(@value.Bag::new([Int(1), Missing, Int(3)])))
+    .to_equal(Bag(@value.Bag::Bag([Int(1), Missing, Int(3)])))
     soft
     .expect(ev("SELECT VALUE x FROM [1, 2] AS x WHERE NULL"))
-    .to_equal(Bag(@value.Bag::new([])))
+    .to_equal(Bag(@value.Bag::Bag([])))
     soft
     .expect(ev("SELECT VALUE v FROM 1 AS v"))
-    .to_equal(Bag(@value.Bag::new([Int(1)])))
+    .to_equal(Bag(@value.Bag::Bag([Int(1)])))
     soft
     .expect_call(() => ev("SELECT VALUE v FROM 1 AS v", mode=Strict))
     .to_raise_matching(
@@ -29,7 +29,7 @@ test "SELECT VALUE over a collection" {
     )
     soft
     .expect(ev("SELECT VALUE x FROM [1] AS x WHERE 'a'"))
-    .to_equal(Bag(@value.Bag::new([])))
+    .to_equal(Bag(@value.Bag::Bag([])))
     soft
     .expect_call(() => ev("SELECT VALUE x FROM [1] AS x WHERE 'a'", mode=Strict))
     .to_raise_matching(
@@ -38,7 +38,7 @@ test "SELECT VALUE over a collection" {
     )
     soft
     .expect(ev("SELECT VALUE x FROM [1, 1] AS x GROUP BY x"))
-    .to_equal(Bag(@value.Bag::new([Int(1)])))
+    .to_equal(Bag(@value.Bag::Bag([Int(1)])))
   })
 }
 
@@ -48,7 +48,7 @@ test "a global collection and a local shadowing a global" {
   @expect.expect_all(soft => {
     soft
     .expect(@eval.evaluate_text("SELECT VALUE x FROM t AS x", env~))
-    .to_equal(Bag(@value.Bag::new([Int(1), Int(2)])))
+    .to_equal(Bag(@value.Bag::Bag([Int(1), Int(2)])))
     soft.expect(@eval.evaluate_text("x", env~)).to_equal(Int(99))
   })
 }
@@ -84,21 +84,21 @@ test "a FROM variable without AS and a correlated subquery" {
   @expect.expect_all(soft => {
     soft
     .expect(@eval.evaluate_text("SELECT VALUE T FROM t", env~))
-    .to_equal(Bag(@value.Bag::new([Int(1), Int(2)])))
+    .to_equal(Bag(@value.Bag::Bag([Int(1), Int(2)])))
     soft
     .expect(@eval.evaluate_text("SELECT VALUE u FROM s.u", env~))
-    .to_equal(Bag(@value.Bag::new([Int(3)])))
+    .to_equal(Bag(@value.Bag::Bag([Int(3)])))
     // `[1] + 1` is MISSING: one binding of `_1`.
     soft
     .expect(ev("SELECT VALUE _1 FROM [1] + 1"))
-    .to_equal(Bag(@value.Bag::new([Missing])))
+    .to_equal(Bag(@value.Bag::Bag([Missing])))
     soft
     .expect(
       ev(
         "SELECT VALUE (SELECT VALUE x + y FROM [10] AS y) FROM [1, 2] AS x WHERE x IN (SELECT VALUE z FROM [2] AS z)",
       ),
     )
-    .to_equal(Bag(@value.Bag::new([Bag(@value.Bag::new([Int(12)]))])))
+    .to_equal(Bag(@value.Bag::Bag([Bag(@value.Bag::Bag([Int(12)]))])))
   })
 }
 
@@ -109,7 +109,7 @@ test "AT binds a list position" {
     .expect(ev("SELECT VALUE [i, x] FROM ['a', 'b'] AS x AT i"))
     .to_equal(
       Bag(
-        @value.Bag::new([
+        @value.Bag::Bag([
           List([Int(0), String("a")]),
           List([Int(1), String("b")]),
         ]),
@@ -117,7 +117,7 @@ test "AT binds a list position" {
     )
     soft
     .expect(ev("SELECT VALUE i FROM <<'a'>> AS x AT i"))
-    .to_equal(Bag(@value.Bag::new([Missing])))
+    .to_equal(Bag(@value.Bag::Bag([Missing])))
     soft
     .expect_call(() => ev("SELECT VALUE i FROM <<'a'>> AS x AT i", mode=Strict))
     .to_raise_matching(

@@ -43,6 +43,8 @@ pub impl Eq for TokenKind with fn equal(a, b) {
 }
 
 ///|
+/// One lexical token and its half-open UTF-16 source span.
+/// The lexer includes a final EOF token at the end of the input.
 pub(all) struct Token {
   kind : TokenKind
   span : @ast.Span

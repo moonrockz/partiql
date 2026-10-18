@@ -21,6 +21,13 @@ pub fn parse_script_recovering(source : String) -> Recovered {
 /// Raises `ParseError::Syntax` for invalid input and `ParseError::Unsupported`
 /// for valid input that this version does not parse yet (DML and DDL
 /// statements such as INSERT or CREATE, which later milestones parse).
+///
+/// ```mbt check
+/// test {
+///   let statement = @syntax.parse("select value 1 + 2")
+///   @expect.expect(@syntax.print(statement)).to_equal("SELECT VALUE 1 + 2")
+/// }
+/// ```
 pub fn parse(source : String) -> Statement raise ParseError {
   @parser.parse_statement(source)
 }
@@ -48,6 +55,14 @@ pub fn print_script(script : Script, width? : Int32) -> String {
 ///|
 /// Parses `source` as a script and prints it, keeping the comments:
 /// canonical without `width`, the pretty layout at `width` with it.
+///
+/// ```mbt check
+/// test {
+///   @expect.expect(@syntax.format("select 1; select 2")).to_equal(
+///     "SELECT 1;\nSELECT 2;\n",
+///   )
+/// }
+/// ```
 pub fn format(source : String, width? : Int32) -> String raise ParseError {
   @printer.print_script(@parser.parse_script(source), width?)
 }

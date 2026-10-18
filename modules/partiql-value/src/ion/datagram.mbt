@@ -13,6 +13,8 @@ pub(all) suberror IonDataError {
 } derive(Debug)
 
 ///|
+/// A human-readable message, including every path for schema violations.
+/// Use the error variants when a caller needs to distinguish failure kinds.
 pub fn IonDataError::message(self : IonDataError) -> String {
   match self {
     Utf8 => "Ion text is not valid UTF-8"
@@ -123,6 +125,14 @@ pub fn read_text(
 
 ///|
 /// Detect binary Ion by its version marker, otherwise read strict UTF-8 text.
+///
+/// ```mbt check
+/// test {
+///   let values = @partiql_ion.read_text("1 $bag::[2, 3]")
+///   let binary = @partiql_ion.write_bytes(values)
+///   @expect.expect(@partiql_ion.read_bytes(binary)).to_equal(values)
+/// }
+/// ```
 pub fn read_bytes(
   source : BytesView,
   catalog? : @ion_core.Catalog,
