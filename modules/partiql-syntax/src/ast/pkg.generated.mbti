@@ -290,7 +290,7 @@ pub(all) enum Literal {
   Decimal(String)
   Float(String)
   String(String)
-  Ion(String, @ion.IonValue)
+  Ion(String, @ion.Ion)
   Date(String)
   Time(String, precision~ : Int?, with_tz~ : Bool)
   Timestamp(String, precision~ : Int?, with_tz~ : Bool)

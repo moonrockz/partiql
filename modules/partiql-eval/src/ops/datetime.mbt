@@ -330,7 +330,7 @@ fn exact_decimal(f : Double) -> @ion_core.Decimal raise OpFailure {
     exponent_bits - 1075
   }
   if mantissa == 0L {
-    return @ion_core.Decimal::new(0N, 0)
+    return @ion_core.Decimal::Decimal(0N, 0)
   }
   while mantissa % 2L == 0L {
     mantissa = mantissa / 2L
@@ -338,12 +338,12 @@ fn exact_decimal(f : Double) -> @ion_core.Decimal raise OpFailure {
   }
   let m = if negative { -big64(mantissa) } else { big64(mantissa) }
   if exponent >= 0 {
-    @ion_core.Decimal::new(
+    @ion_core.Decimal::Decimal(
       m * @bigint.BigInt::from_int(2).pow(@bigint.BigInt::from_int(exponent)),
       0,
     )
   } else {
-    @ion_core.Decimal::new(
+    @ion_core.Decimal::Decimal(
       m * @bigint.BigInt::from_int(5).pow(@bigint.BigInt::from_int(-exponent)),
       exponent,
     )
@@ -372,7 +372,7 @@ fn truncated(d : @ion_core.Decimal) -> @bigint.BigInt raise OpFailure {
 /// its exact binary value.
 fn factor(n : Num) -> @ion_core.Decimal raise OpFailure {
   match n {
-    Whole(w) => @ion_core.Decimal::new(w, 0)
+    Whole(w) => @ion_core.Decimal::Decimal(w, 0)
     Exact(d) => d
     Approx(f) => exact_decimal(f)
   }
@@ -404,14 +404,14 @@ fn scale_by(interval : @value.Value, n : Num) -> @value.Value raise OpFailure {
   match interval {
     IntervalYM(i) => {
       let product = decimal_mul(
-        @ion_core.Decimal::new(big64(i.months), 0),
+        @ion_core.Decimal::Decimal(big64(i.months), 0),
         factor(n),
       )
       scaled_ym(truncated(product))
     }
     IntervalDT(i) => {
       let product = decimal_mul(
-        @ion_core.Decimal::new(dt_nanos(i), 0),
+        @ion_core.Decimal::Decimal(dt_nanos(i), 0),
         factor(n),
       )
       let nanos = truncated(product)
@@ -428,7 +428,7 @@ fn divide_by(interval : @value.Value, n : Num) -> @value.Value raise OpFailure {
     IntervalYM(i) => {
       let divisor = factor(n)
       let quotient = decimal_div(
-        @ion_core.Decimal::new(big64(i.months), 0),
+        @ion_core.Decimal::Decimal(big64(i.months), 0),
         divisor,
       )
       scaled_ym(truncated(quotient))
@@ -436,7 +436,7 @@ fn divide_by(interval : @value.Value, n : Num) -> @value.Value raise OpFailure {
     IntervalDT(i) => {
       let divisor = factor(n)
       let quotient = decimal_div(
-        @ion_core.Decimal::new(dt_nanos(i), 0),
+        @ion_core.Decimal::Decimal(dt_nanos(i), 0),
         divisor,
       )
       scaled_dt(to_micros(truncated(quotient)))

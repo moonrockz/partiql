@@ -23,7 +23,7 @@ fn numeric_source(x : @value.Value, target : String) -> Num raise OpFailure {
 /// text (spec M4d2 §2, Q9); NaN and the infinities have no exact value.
 fn exact_of(n : Num) -> @ion_core.Decimal raise OpFailure {
   match n {
-    Whole(w) => @ion_core.Decimal::new(w, 0)
+    Whole(w) => @ion_core.Decimal::Decimal(w, 0)
     Exact(d) => d
     Approx(f) => {
       if f.is_nan() || f.is_inf() {
@@ -155,7 +155,7 @@ fn fixed_decimal(
 ) -> @ion_core.Decimal raise OpFailure {
   let c = d.coefficient()
   if c.is_zero() {
-    return @ion_core.Decimal::new(0N, -scale)
+    return @ion_core.Decimal::Decimal(0N, -scale)
   }
   let too_long = DataFailure(
     "a value out of the range of DECIMAL(\{precision},\{scale})",
@@ -176,7 +176,7 @@ fn fixed_decimal(
   if !rounded.is_zero() && digit_count(rounded) > precision {
     raise too_long
   }
-  @ion_core.Decimal::new(rounded, -scale)
+  @ion_core.Decimal::Decimal(rounded, -scale)
 }
 
 ///|

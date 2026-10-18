@@ -24,22 +24,17 @@ test "parse errors: Syntax for invalid input; graph MATCH parses" {
 }
 
 ///|
-test "Ion literals past the reader nesting limit raise Syntax" {
+test "Ion literals beyond the former reader limit parse and print" {
   @expect.expect_all(soft => {
     for (open, close) in [("[", "]"), ("(", ")"), ("{a:", "}"), ("a::[", "]")] {
-      let source = "`" + open.repeat(129) + "0" + close.repeat(129) + "`"
-      soft
-      .expect_call(() => @syntax.parse(source))
-      .to_raise_matching(
-        e => e is @syntax.ParseError::Syntax(_),
-        description="Syntax for excessive Ion nesting",
-      )
+      let source = "`" + open.repeat(1024) + "0" + close.repeat(1024) + "`"
+      soft.expect(@syntax.print(@syntax.parse(source))).to_equal(source)
     }
   })
 }
 
 ///|
-test "Ion literals at the reader nesting limit still parse and print" {
+test "Ion literals at the former reader limit still parse and print" {
   @expect.expect_all(soft => {
     for (open, close) in [("[", "]"), ("(", ")"), ("{a:", "}"), ("a::[", "]")] {
       let source = "`" + open.repeat(128) + "0" + close.repeat(128) + "`"
@@ -50,15 +45,15 @@ test "Ion literals at the reader nesting limit still parse and print" {
 }
 
 ///|
-test "very deep Ion literals report errors and recover to the next statement" {
+test "very deep malformed Ion literals report errors and recover to the next statement" {
   @expect.expect_all(soft => {
     for (open, close) in [("[", "]"), ("(", ")"), ("{a:", "}"), ("a::[", "]")] {
-      let literal = "`" + open.repeat(200000) + "0" + close.repeat(200000) + "`"
+      let literal = "`" + open.repeat(200000) + "0" + close.repeat(199999) + "`"
       let source = "SELECT " + literal + "; SELECT 2"
       let strict = try @syntax.parse(source) catch {
         e => e
       } noraise {
-        _ => fail("expected excessive Ion nesting to raise Syntax")
+        _ => fail("expected malformed Ion to raise Syntax")
       }
       soft
       .expect(

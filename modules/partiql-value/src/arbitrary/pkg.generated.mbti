@@ -19,7 +19,7 @@ pub fn gen_interval_dt(@splitmix.RandomState) -> @partiql-value.IntervalDT
 
 pub fn gen_interval_ym(@splitmix.RandomState) -> @partiql-value.IntervalYM
 
-pub fn gen_ion(Int, @splitmix.RandomState) -> @ion.IonValue
+pub fn gen_ion(Int, @splitmix.RandomState) -> @ion.Ion
 
 pub fn gen_map(Int, @splitmix.RandomState) -> @partiql-value.MapValue
 
@@ -37,7 +37,7 @@ pub fn has_nested_absent(@partiql-value.Value) -> Bool
 
 // Types and methods
 pub(all) struct ArbIon {
-  value : @ion.IonValue
+  value : @ion.Ion
 } derive(@debug.Debug)
 pub impl @quickcheck.Arbitrary for ArbIon
 pub impl @shrink.Shrink for ArbIon

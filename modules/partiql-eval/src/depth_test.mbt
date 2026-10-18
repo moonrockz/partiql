@@ -54,16 +54,12 @@ test "an expression at the depth limit evaluates on every target" {
 }
 
 ///|
-test "a deep Ion literal is a syntax error, not a stack overflow" {
+test "deep Ion literals evaluate and compare without a data nesting limit" {
   let ion = (n : Int32) => "`" + "[".repeat(n) + "]".repeat(n) + "`"
   @expect.expect_all(soft => {
-    soft
-    .expect_call(() => ev("\{ion(1000)} = \{ion(1000)}"))
-    .to_raise_matching(
-      e => e is @eval.EvalError::Syntax(_),
-      description="Syntax for excessive Ion nesting",
-    )
-    soft.expect(ev("\{ion(128)} = \{ion(128)}")).to_equal(Bool(true))
+    for n in [128, 1000, 100000] {
+      soft.expect(ev("\{ion(n)} = \{ion(n)}")).to_equal(Bool(true))
+    }
   })
 }
 

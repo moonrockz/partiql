@@ -106,12 +106,16 @@ fn check_codec(x : @ion.IonValue) -> Outcome {
       Fail("decode(encode(v)) differs from v")
     } else if !@partiql_ion.to_ion(v2).equals(once) {
       Fail("encoding is not a fixpoint")
+    } else if @partiql_ion.read_bytes(@partiql_ion.write_bytes([v])) != [v] {
+      Fail("binary datagram round-trip differs from v")
     } else {
       Pass
     }
   } catch {
-    Unsupported(reason) => Fail("unsupported: \{reason}")
-    Malformed(reason) => Fail("malformed: \{reason}")
+    @partiql_ion.CodecError::Unsupported(reason) =>
+      Fail("unsupported: \{reason}")
+    @partiql_ion.CodecError::Malformed(reason) => Fail("malformed: \{reason}")
+    e => Fail("Ion transport: " + @debug.to_string(e))
   }
 }
 

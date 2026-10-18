@@ -23,7 +23,7 @@ warnings = "-implicit_impl_as_method"
 import {
   "moonrockz/partiql-value@0.1.0",
   "moonrockz/partiql-syntax@0.1.0",
-  "moonrockz/ion@0.5.0",
+  "moonrockz/ion@0.6.0",
   "moonbitlang/x@0.5.5",
   "moonrockz/expect@0.6.0",
   "moonbit-community/unicode-data@0.6.0",

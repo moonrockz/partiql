@@ -61,7 +61,7 @@ test "nulls first or last; NULL and MISSING are equal" {
 test "numbers order by value across types" {
   let values : Array[@value.Value] = [
     @value.Value::Float(@double.infinity),
-    @value.Value::Decimal(@ion_core.Decimal::new(15N, -1)),
+    @value.Value::Decimal(@ion_core.Decimal::Decimal(15N, -1)),
     i(1),
     @value.Value::Float(@double.neg_infinity),
     @value.Value::Float(@double.not_a_number),

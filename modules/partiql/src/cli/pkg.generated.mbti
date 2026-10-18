@@ -17,6 +17,8 @@ pub let version : String
 
 // Types and methods
 pub(all) struct Io {
+  read_file_bytes : ((String) -> Bytes raise)?
+  read_stdin_bytes : (() -> Bytes raise)?
   read_file : (String) -> String raise
   write_file : (String, String) -> Unit raise
   read_stdin : () -> String raise
@@ -26,6 +28,7 @@ pub(all) struct Io {
 pub fn Io::unavailable() -> Self
 
 pub(all) struct Outcome {
+  stdout_bytes : Bytes?
   stdout : String
   stderr : String
   status : Int

@@ -44,7 +44,7 @@ fn to_double(n : Num) -> Double raise OpFailure {
 /// have none.
 fn to_decimal(n : Num) -> @ion_core.Decimal raise OpFailure {
   match n {
-    Whole(w) => @ion_core.Decimal::new(w, 0)
+    Whole(w) => @ion_core.Decimal::Decimal(w, 0)
     Exact(d) => d
     Approx(f) =>
       if f.is_nan() || f.is_inf() {
@@ -216,7 +216,7 @@ pub fn neg(v : @value.Value, negate~ : Bool) -> @value.Value raise OpFailure {
         Some(_) if !negate => x
         Some(Whole(n)) => whole_value(-n)
         Some(Exact(d)) =>
-          Decimal(@ion_core.Decimal::new(-d.coefficient(), d.exponent()))
+          Decimal(@ion_core.Decimal::Decimal(-d.coefficient(), d.exponent()))
         Some(Approx(f)) => Float(-f)
       }
   }
@@ -254,7 +254,9 @@ pub fn abs(args : Array[@value.Value]) -> @value.Value raise OpFailure {
         }
       BigInt(n) => if is_negative_int(n) { whole_value(-n) } else { v }
       Decimal(x) =>
-        Decimal(@ion_core.Decimal::new(abs_int(x.coefficient()), x.exponent()))
+        Decimal(
+          @ion_core.Decimal::Decimal(abs_int(x.coefficient()), x.exponent()),
+        )
       Float(f) => Float(f.abs())
       IntervalYM(i) if i.is_negative() => interval_abs(v)
       IntervalDT(i) if i.is_negative() => interval_abs(v)

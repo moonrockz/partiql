@@ -70,7 +70,7 @@ test "spec examples for =" {
 ///|
 test "numbers compare across types" {
   @expect.expect_all(soft => {
-    let one_dec = @value.Value::Decimal(@ion_core.Decimal::new(10N, -1))
+    let one_dec = @value.Value::Decimal(@ion_core.Decimal::Decimal(10N, -1))
     soft.expect(@value.sql_equals(i(1), one_dec)).to_equal(t)
     soft.expect(@value.sql_equals(i(1), @value.Value::Float(1.0))).to_equal(t)
     soft
@@ -155,7 +155,7 @@ test "eqg" {
 ///|
 test "group_key is shared by values that are eqg" {
   let dec = (c : BigInt, e : Int32) => {
-    @value.Value::Decimal(@ion_core.Decimal::new(c, e))
+    @value.Value::Decimal(@ion_core.Decimal::Decimal(c, e))
   }
   let one = @value.Value::Int(1)
   let bag = (items : Array[@value.Value]) => {

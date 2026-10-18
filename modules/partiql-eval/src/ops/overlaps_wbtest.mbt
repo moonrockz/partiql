@@ -108,10 +108,10 @@ test "OVERLAPS shape and type failures" {
 ///|
 test "OVERLAPS over Ion timestamps" {
   let a = @value.Value::Ion(
-    @ion_core.IonValue::timestamp(@ion_core.Timestamp::new(year=2020)),
+    @ion_core.IonValue::timestamp(@ion_core.Timestamp::Timestamp(year=2020)),
   )
   let b = @value.Value::Ion(
-    @ion_core.IonValue::timestamp(@ion_core.Timestamp::new(year=2022)),
+    @ion_core.IonValue::timestamp(@ion_core.Timestamp::Timestamp(year=2022)),
   )
   @expect.expect_all(soft => {
     soft
@@ -119,8 +119,12 @@ test "OVERLAPS over Ion timestamps" {
       ov(
         @value.Value::Ion(
           @ion_core.IonValue::list([
-            @ion_core.IonValue::timestamp(@ion_core.Timestamp::new(year=2020)),
-            @ion_core.IonValue::timestamp(@ion_core.Timestamp::new(year=2022)),
+            @ion_core.IonValue::timestamp(
+              @ion_core.Timestamp::Timestamp(year=2020),
+            ),
+            @ion_core.IonValue::timestamp(
+              @ion_core.Timestamp::Timestamp(year=2022),
+            ),
           ]),
         ),
         pair(a, b),

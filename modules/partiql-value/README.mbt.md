@@ -40,3 +40,27 @@ let symbol = @value.Value::Ion(@ion_core.IonValue::symbol("hello"))
 | `compare` | The ORDER BY total order, with `NullsFirst` or `NullsLast` |
 
 See `docs/architecture.md` and ADR 0005 in the repository.
+
+## Ion datagrams
+
+`moonrockz/partiql-value/ion` reads complete text and binary datagrams and
+writes arrays of values in either format. These APIs use the same
+PartiQL-encoded forms as `from_ion` and `to_ion`, including `$bag`, `$missing`
+and `$ion`. `read_bytes` detects the binary version marker, otherwise
+requiring valid UTF-8. `write_bytes` writes one binary datagram and its local
+symbol table. `write_text` writes one value per line with an optional
+`pretty=true` layout.
+
+```moonbit
+let values = @partiql_ion.read_text("1 $missing::null $bag::[2, 3] $ion::foo")
+let bytes = @partiql_ion.write_bytes(values)
+guard @partiql_ion.read_bytes(bytes) == values
+```
+
+The example runs in `src/ion/datagram_test.mbt`. Readers accept an optional
+Ion `catalog~` and `validation~`. Load a schema with
+`load_schema_bytes`, then construct `Validation::elements(schema, type_name)`
+or `Validation::document(schema, type_name)`. Raw Ion is validated before
+PartiQL decoding. Schema failures include every violation path. Schemas
+describe physical Ion types and annotations, rather than lowered PartiQL
+values. See [ADR 0007](../../docs/adr/0007-ion-datagrams-and-sessions.md).

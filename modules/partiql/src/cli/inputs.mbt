@@ -78,7 +78,16 @@ fn read_inputs(
 ///|
 fn finish(out : StringBuilder, errors : StringBuilder) -> Outcome {
   let stderr = errors.to_string()
-  { stdout: out.to_string(), stderr, status: if stderr == "" { 0 } else { 1 }, }
+  {
+    stdout_bytes: None,
+    stdout: out.to_string(),
+    stderr,
+    status: if stderr == "" {
+      0
+    } else {
+      1
+    },
+  }
 }
 
 ///|

@@ -8,6 +8,8 @@ test "query --data t=F -e t prints back the value of F" {
         _ => return false
       }
       let io : @cli.Io = {
+        read_file_bytes: None,
+        read_stdin_bytes: None,
         read_file: _ => text,
         write_file: (_, _) => (),
         read_stdin: () => "",

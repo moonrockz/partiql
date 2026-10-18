@@ -25,7 +25,7 @@ import {
   "moonrockz/partiql-syntax@0.1.0",
   "moonrockz/partiql-eval@0.1.0",
   "moonrockz/partiql-value@0.1.0",
-  "moonrockz/ion@0.5.0",
+  "moonrockz/ion@0.6.0",
   "moonbitlang/x@0.5.5",
   "moonbitlang/async@0.22.4",
   "moonrockz/expect@0.6.0",

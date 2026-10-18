@@ -105,8 +105,8 @@ test "boxed Ion identity, lowering and debug traverse 100000 containers" {
   let mut y = @ion_core.IonValue::int(2)
   for i in 0..<100000 {
     if i % 3 == 0 {
-      x = @ion_core.IonValue::from_fields([@ion_core.Field::new("a", x)])
-      y = @ion_core.IonValue::from_fields([@ion_core.Field::new("a", y)])
+      x = @ion_core.IonValue::from_fields([@ion_core.Field::Field("a", x)])
+      y = @ion_core.IonValue::from_fields([@ion_core.Field::Field("a", y)])
     } else if i % 3 == 1 {
       x = @ion_core.IonValue::list([x])
       y = @ion_core.IonValue::list([y])

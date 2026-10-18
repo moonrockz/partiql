@@ -42,7 +42,7 @@ pub fn gen_number(rs : @splitmix.RandomState) -> @value.Value {
         edge_int64s[pick(rs, edge_int64s.length())] / 1000L +
         pick(rs, 100).to_int64(),
       )
-      Decimal(@ion_core.Decimal::new(coefficient, pick(rs, 12) - 6))
+      Decimal(@ion_core.Decimal::Decimal(coefficient, pick(rs, 12) - 6))
     }
   }
 }

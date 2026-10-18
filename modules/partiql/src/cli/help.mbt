@@ -30,7 +30,11 @@ fn notes(path : ArrayView[String]) -> Array[String] {
   match path {
     ["query"] =>
       [
-        "The session time zone is UTC: CURRENT_DATE, CURRENT_TIME and", "CURRENT_TIMESTAMP read the system clock at offset +00:00.",
+        "Ion input is text or binary, detected by the binary version marker.", "--data binds 0 elements as an empty bag, 1 as-is, and many as a bag.",
+        "--each NAME runs the script for each element in order; empty data runs nothing.",
+        "--output-format binary writes raw bytes; --compact applies only to text.",
+        "Schemas validate raw PartiQL-encoded Ion before any statement runs.", "The session time zone is UTC: CURRENT_DATE, CURRENT_TIME and",
+        "CURRENT_TIMESTAMP read the system clock at offset +00:00.",
       ]
     _ => []
   }

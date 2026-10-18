@@ -47,7 +47,7 @@ test "map constructor rejects invalid keys" {
 
 ///|
 test "map constructor rejects keys that are eqg-equal" {
-  let one_decimal = @value.Value::Decimal(@ion_core.Decimal::new(10N, -1))
+  let one_decimal = @value.Value::Decimal(@ion_core.Decimal::Decimal(10N, -1))
   @expect.expect_all(soft => {
     soft
     .expect_call(() => {

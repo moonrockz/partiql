@@ -26,7 +26,7 @@ fn second_decimal(
 ) -> @ion_core.Decimal {
   let units = big64(seconds) * pow10(scale) +
     big64(nanos.to_int64()) / pow10(9 - scale)
-  @ion_core.Decimal::new(if negative { -units } else { units }, -scale)
+  @ion_core.Decimal::Decimal(if negative { -units } else { units }, -scale)
 }
 
 ///|

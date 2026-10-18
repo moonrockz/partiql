@@ -61,14 +61,14 @@ test "non-ion values are unchanged" {
 test "ion timestamps with huge fraction exponents lower quickly" {
   @expect.expect_all(soft => {
     for exponent in [-50000000, -2147483648] {
-      let ts = @ion_core.Timestamp::new(
+      let ts = @ion_core.Timestamp::Timestamp(
         year=2000,
         month=Some(1),
         day=Some(1),
         hour=Some(0),
         minute=Some(0),
         second=Some(0),
-        fraction=Some(@ion_core.Decimal::new(1N, exponent)),
+        fraction=Some(@ion_core.Decimal::Decimal(1N, exponent)),
         offset=Some(Known(0)),
       )
       let t = @value.timestamp_of_ion(ts)
