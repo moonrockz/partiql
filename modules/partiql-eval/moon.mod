@@ -2,7 +2,7 @@
 
 name = "moonrockz/partiql-eval"
 
-version = "0.1.0"
+version = "1.0.0"
 
 readme = "README.mbt.md"
 
@@ -21,8 +21,8 @@ source = "src"
 warnings = "-implicit_impl_as_method"
 
 import {
-  "moonrockz/partiql-value@0.1.0",
-  "moonrockz/partiql-syntax@0.1.0",
+  "moonrockz/partiql-value@1.0.0",
+  "moonrockz/partiql-syntax@1.0.0",
   "moonrockz/ion@0.6.0",
   "moonbitlang/x@0.5.5",
   "moonrockz/expect@0.6.0",

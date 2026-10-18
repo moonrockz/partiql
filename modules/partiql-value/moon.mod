@@ -3,7 +3,7 @@
 
 name = "moonrockz/partiql-value"
 
-version = "0.1.0"
+version = "1.0.0"
 
 readme = "README.mbt.md"
 
