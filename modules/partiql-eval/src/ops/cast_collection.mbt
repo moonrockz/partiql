@@ -9,7 +9,7 @@ fn to_collection(
     (List(_), List) | (Bag(_), Bag) | (Tuple(_), Tuple) => x
     // The stored order of the bag (RFC 0035).
     (Bag(b), List) => List(Array::from_iter(b.items().iter()))
-    (List(items), Bag) => Bag(@value.Bag::new(items))
+    (List(items), Bag) => Bag(@value.Bag::Bag(items))
     _ => raise TypeFailure("CAST of \{kind_name(x)} to \{target_name(target)}")
   }
 }
@@ -49,7 +49,7 @@ fn to_map(
       None => out.push((k, v))
     }
   }
-  let built = @value.MapValue::new(key_type~, value_type~, out) catch {
+  let built = @value.MapValue(key_type~, value_type~, out) catch {
     _ => raise TypeFailure("a MAP key that is not valid for its type")
   }
   Map(built)

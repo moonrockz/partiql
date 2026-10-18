@@ -41,7 +41,7 @@ test "same frame names with different spellings are statically ambiguous" {
 
 ///|
 test "quoted names and inner frames preserve shadowing" {
-  let bag = (v : @value.Value) => @value.Value::Bag(@value.Bag::new([v]))
+  let bag = (v : @value.Value) => @value.Value::Bag(@value.Bag::Bag([v]))
   @expect.expect_all(soft => {
     for mode in [@eval.Mode::Permissive, Strict] {
       soft
@@ -87,13 +87,13 @@ test "quoted names and inner frames preserve shadowing" {
       soft
       .expect(ev("SELECT 1 AS x, 2 AS X FROM [0] AS t ORDER BY \"x\"", mode~))
       .to_equal(
-        List([Tuple(@value.Tuple::new([("x", Int(1)), ("X", Int(2))]))]),
+        List([Tuple(@value.Tuple::Tuple([("x", Int(1)), ("X", Int(2))]))]),
       )
       // A non-bare sort key finds the variable before ambiguous output names.
       soft
       .expect(ev("SELECT 1 AS x, 2 AS X FROM [3] AS x ORDER BY x + 1", mode~))
       .to_equal(
-        List([Tuple(@value.Tuple::new([("x", Int(1)), ("X", Int(2))]))]),
+        List([Tuple(@value.Tuple::Tuple([("x", Int(1)), ("X", Int(2))]))]),
       )
       // The innermost frame decides even when an outer frame is ambiguous.
       soft
@@ -159,7 +159,7 @@ test "group key global precedence reports ambiguity at the identifier" {
 
 ///|
 test "quoted globals and exact repeats preserve first binding and local precedence" {
-  let bag = (v : @value.Value) => @value.Value::Bag(@value.Bag::new([v]))
+  let bag = (v : @value.Value) => @value.Value::Bag(@value.Bag::Bag([v]))
   @expect.expect_all(soft => {
     for mode in [@eval.Mode::Permissive, Strict] {
       soft.expect(ev_env("\"x\"", "{x:1,X:2,x:3}", mode~)).to_equal(Int(1))
@@ -196,7 +196,7 @@ test "FROM sources find a global before ambiguous local spellings" {
     for mode in [@eval.Mode::Permissive, Strict] {
       soft
       .expect(ev_env(source, "{x:[7]}", mode~))
-      .to_equal(Bag(@value.Bag::new([Int(7)])))
+      .to_equal(Bag(@value.Bag::Bag([Int(7)])))
     }
   })
 }
@@ -204,14 +204,14 @@ test "FROM sources find a global before ambiguous local spellings" {
 ///|
 test "FROM source ambiguity uses the winning lookup tier" {
   let source = "SELECT VALUE y FROM [[1]] AS x, [[2]] AS X, x AS y"
-  let bag = (v : @value.Value) => @value.Value::Bag(@value.Bag::new([v]))
+  let bag = (v : @value.Value) => @value.Value::Bag(@value.Bag::Bag([v]))
   @expect.expect_all(soft => {
     for mode in [@eval.Mode::Permissive, Strict] {
       soft
       .expect(
         ev_env("SELECT VALUE y FROM [] AS x, [] AS X, x AS y", "{}", mode~),
       )
-      .to_equal(Bag(@value.Bag::new([])))
+      .to_equal(Bag(@value.Bag::Bag([])))
       soft
       .expect(
         ev_env(

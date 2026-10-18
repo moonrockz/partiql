@@ -1,12 +1,12 @@
 ///|
 fn names_env() -> @eval.Bindings {
-  let row1 = @value.Tuple::new([("a", Int(1)), ("b", Int(2))])
-  let row2 = @value.Tuple::new([("a", Int(3))])
+  let row1 = @value.Tuple::Tuple([("a", Int(1)), ("b", Int(2))])
+  let row2 = @value.Tuple::Tuple([("a", Int(3))])
   @eval.Bindings::of_tuple(
-    @value.Tuple::new([
+    @value.Tuple::Tuple([
       ("t", List([Tuple(row1), Tuple(row2)])),
       ("a", Int(100)),
-      ("s", List([Tuple(@value.Tuple::new([("x", Int(1))]))])),
+      ("s", List([Tuple(@value.Tuple::Tuple([("x", Int(1))]))])),
     ]),
   )
 }
@@ -167,7 +167,7 @@ test "case and scope of implicit names" {
 ///|
 test "implicit name: variable attribute before global" {
   let env = @eval.Bindings::of_tuple(
-    @value.Tuple::new([("a", String("global-a"))]),
+    @value.Tuple::Tuple([("a", String("global-a"))]),
   )
   @expect.expect_all(soft => {
     soft
@@ -181,9 +181,9 @@ test "implicit name: variable attribute before global" {
 
 ///|
 test "a repeated FROM variable is an error" {
-  let items = @value.Tuple::new([("items", List([Int(1)]))])
+  let items = @value.Tuple::Tuple([("items", List([Int(1)]))])
   let env = @eval.Bindings::of_tuple(
-    @value.Tuple::new([
+    @value.Tuple::Tuple([
       ("s", Tuple(items)),
       ("u", Tuple(items)),
       ("t", List([Int(1)])),

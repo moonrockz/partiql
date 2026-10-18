@@ -85,7 +85,7 @@ fn date_of_days(days : Int64) -> @value.Date raise OpFailure {
     raise DataFailure("a date out of range")
   }
   let (year, month, day) = civil_from_days(days)
-  let d = @value.Date::new(year~, month~, day~) catch {
+  let d = @value.Date::Date(year~, month~, day~) catch {
     _ => raise DataFailure("a date out of range")
   }
   checked_date(d)
@@ -125,7 +125,7 @@ fn date_add_months(
       "datetime field overflow: \{year}-\{month} has no day \{d.day}",
     )
   }
-  @value.Date::new(year~, month~, day=d.day) catch {
+  @value.Date::Date(year~, month~, day=d.day) catch {
     _ => raise DataFailure("a date out of range")
   }
 }
@@ -144,7 +144,7 @@ fn dt_value(n : @bigint.BigInt) -> @value.Value raise OpFailure {
   }
   let rest = (n % nanos_per_second).to_int64()
   IntervalDT(
-    @value.IntervalDT::new(seconds.to_int64(), rest) catch {
+    @value.IntervalDT::IntervalDT(seconds.to_int64(), rest) catch {
       _ => raise DataFailure("an interval out of range")
     },
   )
@@ -156,7 +156,7 @@ fn ym_value(months : @bigint.BigInt) -> @value.Value raise OpFailure {
     raise DataFailure("an interval out of range")
   }
   IntervalYM(
-    @value.IntervalYM::new(months.to_int64()) catch {
+    @value.IntervalYM::IntervalYM(months.to_int64()) catch {
       _ => raise DataFailure("an interval out of range")
     },
   )
@@ -183,7 +183,7 @@ fn time_at(
 ) -> @value.Time raise OpFailure {
   let seconds = (rest / nanos_per_second).to_int()
   let nanos = (rest % nanos_per_second).to_int()
-  @value.Time::new(
+  @value.Time::Time(
     hour=seconds / 3600,
     minute=seconds % 3600 / 60,
     second=seconds % 60,
@@ -237,7 +237,7 @@ fn timestamp_shift(
   if !fits_int64(days) {
     raise DataFailure("a timestamp out of range")
   }
-  @value.Timestamp::new(
+  @value.Timestamp::Timestamp(
     date_of_days(days.to_int64()),
     time_at(rest, ts.time.precision, ts.time.offset),
   )
@@ -467,7 +467,7 @@ fn shift_datetime(
       Date(date_add_months(d, if negative { -i.months } else { i.months }))
     (Timestamp(ts), IntervalYM(i)) =>
       Timestamp(
-        @value.Timestamp::new(
+        @value.Timestamp::Timestamp(
           date_add_months(ts.date, if negative { -i.months } else { i.months }),
           ts.time,
         ),

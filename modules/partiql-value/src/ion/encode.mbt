@@ -49,9 +49,6 @@ fn sign_value(negative : Bool) -> @ion_core.IonValue {
 }
 
 ///|
-/// Encodes a value in canonical PartiQL-encoded Ion.
-
-///|
 /// Encodes a value in PartiQL-encoded Ion. A boxed Ion value is written as
 /// `$ion::x`.
 pub fn to_ion(v : @value.Value) -> @ion_core.IonValue {

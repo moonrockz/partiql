@@ -68,6 +68,7 @@ pub struct ZoneOffset {
 } derive(Eq, Debug)
 
 ///|
+/// The zero-minute offset, UTC.
 pub fn ZoneOffset::utc() -> ZoneOffset {
   { minutes: 0, }
 }
@@ -75,7 +76,8 @@ pub fn ZoneOffset::utc() -> ZoneOffset {
 ///|
 /// The displacement of `minutes` east of UTC, or `None` outside −18:00 to
 /// +18:00.
-pub fn ZoneOffset::new(minutes : Int32) -> ZoneOffset? {
+#alias(new, deprecated="Use ZoneOffset::from_minutes instead")
+pub fn ZoneOffset::from_minutes(minutes : Int32) -> ZoneOffset? {
   if minutes >= -1080 && minutes <= 1080 {
     Some({ minutes, })
   } else {

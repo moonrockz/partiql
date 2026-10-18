@@ -16,9 +16,9 @@ fn moment(
 ) -> @value.Value {
   try
     @value.Value::Timestamp(
-      @value.Timestamp::new(
-        @value.Date::new(year~, month~, day~),
-        @value.Time::new(hour~, minute~, second~, nanos~, precision=9, offset~),
+      @value.Timestamp::Timestamp(
+        @value.Date::Date(year~, month~, day~),
+        @value.Time::Time(hour~, minute~, second~, nanos~, precision=9, offset~),
       ),
     )
   catch {
@@ -82,7 +82,7 @@ test "TO_STRING formats every symbol" {
 ///|
 test "TO_STRING: types and fields the value lacks" {
   let date = try
-    @value.Value::Date(@value.Date::new(year=2020, month=3, day=4))
+    @value.Value::Date(@value.Date::Date(year=2020, month=3, day=4))
   catch {
     _ => @value.Value::Missing
   } noraise {
@@ -121,9 +121,9 @@ fn stamp_of(
 ) -> @value.Value {
   try
     @value.Value::Timestamp(
-      @value.Timestamp::new(
-        @value.Date::new(year~, month~, day~),
-        @value.Time::new(
+      @value.Timestamp::Timestamp(
+        @value.Date::Date(year~, month~, day~),
+        @value.Time::Time(
           hour~,
           minute~,
           second~,

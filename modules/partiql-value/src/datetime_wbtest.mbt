@@ -23,21 +23,21 @@ test "civil days and days are inverse (property)" {
 
 ///|
 test "timestamps with different offsets have the same instant" {
-  let date = Date::new(year=2024, month=1, day=1)
-  let a = Timestamp::new(
+  let date = Date::Date(year=2024, month=1, day=1)
+  let a = Timestamp::Timestamp(
     date,
-    Time::new(hour=0, minute=30, second=0, offset=Some(60)),
+    Time::Time(hour=0, minute=30, second=0, offset=Some(60)),
   )
-  let b = Timestamp::new(
-    Date::new(year=2023, month=12, day=31),
-    Time::new(hour=23, minute=30, second=0, offset=Some(0)),
+  let b = Timestamp::Timestamp(
+    Date::Date(year=2023, month=12, day=31),
+    Time::Time(hour=23, minute=30, second=0, offset=Some(0)),
   )
   @expect.expect(a.utc_key()).to_equal(b.utc_key())
 }
 
 ///|
 test "time with zone keys wrap at midnight" {
-  let t = Time::new(hour=0, minute=30, second=0, offset=Some(60))
+  let t = Time::Time(hour=0, minute=30, second=0, offset=Some(60))
   @expect.expect(t.utc_key()).to_equal((84600L, 0))
 }
 

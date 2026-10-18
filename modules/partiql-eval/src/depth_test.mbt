@@ -6,7 +6,7 @@ test "a long + chain evaluates without overflowing the stack" {
 
 ///|
 test "a long OR chain evaluates without overflowing the stack" {
-  let env = @eval.Bindings::of_tuple(@value.Tuple::new([("x", Int(99999))]))
+  let env = @eval.Bindings::of_tuple(@value.Tuple::Tuple([("x", Int(99999))]))
   let terms = Array::makei(100000, i => "x = \{i}")
   @expect.expect_all(soft => {
     soft
@@ -70,7 +70,7 @@ test "lateral FROM can compare values nested at runtime" {
     sources.push("[[v\{i - 1}]] AS v\{i}")
   }
   @expect.expect(ev("SELECT VALUE v2000 = v2000 FROM " + sources.join(", "))).to_equal(
-    Bag(@value.Bag::new([Bool(true)])),
+    Bag(@value.Bag::Bag([Bool(true)])),
   )
 }
 
@@ -80,7 +80,7 @@ test "global values can be nested 100000 levels" {
   for _ in 0..<100000 {
     v = List([v])
   }
-  let env = @eval.Bindings::of_tuple(@value.Tuple::new([("v", v)]))
+  let env = @eval.Bindings::of_tuple(@value.Tuple::Tuple([("v", v)]))
   @expect.expect_all(soft => {
     for mode in [@eval.Mode::Permissive, Strict] {
       soft
@@ -111,20 +111,22 @@ test "long chains in a grouped query do not overflow the stack" {
         terms.join(" OR "),
       ),
     )
-    .to_equal(Bag(@value.Bag::new([Tuple(@value.Tuple::new([("k", Int(1))]))])))
+    .to_equal(
+      Bag(@value.Bag::Bag([Tuple(@value.Tuple::Tuple([("k", Int(1))]))])),
+    )
     soft
     .expect(ev("SELECT VALUE t.a\{ones} FROM [{'a': 1}] AS t GROUP BY t.a"))
-    .to_equal(Bag(@value.Bag::new([Int(100000)])))
+    .to_equal(Bag(@value.Bag::Bag([Int(100000)])))
     soft
     .expect(
       ev("SELECT VALUE SUM(t.a\{ones}) FROM [{'a': 1}] AS t GROUP BY t.a"),
     )
-    .to_equal(Bag(@value.Bag::new([Int(100000)])))
+    .to_equal(Bag(@value.Bag::Bag([Int(100000)])))
     // A long key, repeated in SELECT.
     soft
     .expect(
       ev("SELECT VALUE t.a\{ones} FROM [{'a': 1}] AS t GROUP BY t.a\{ones}"),
     )
-    .to_equal(Bag(@value.Bag::new([Int(100000)])))
+    .to_equal(Bag(@value.Bag::Bag([Int(100000)])))
   })
 }

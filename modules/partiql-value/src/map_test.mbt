@@ -4,7 +4,7 @@ fn map_of(
   key_type~ : @value.MapType = String,
   value_type~ : @value.MapType = Dynamic,
 ) -> @value.MapValue raise {
-  @value.MapValue::new(key_type~, value_type~, pairs)
+  @value.MapValue(key_type~, value_type~, pairs)
 }
 
 ///|

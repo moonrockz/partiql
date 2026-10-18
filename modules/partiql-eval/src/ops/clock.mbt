@@ -37,7 +37,7 @@ pub fn clock_timestamp(
   let second_of_day = (of_day / 1000000000L).to_int()
   let fraction = (of_day % 1000000000L).to_int()
   let unit = fraction_unit(precision)
-  let time = @value.Time::new(
+  let time = @value.Time::Time(
     hour=second_of_day / 3600,
     minute=second_of_day % 3600 / 60,
     second=second_of_day % 60,
@@ -47,5 +47,5 @@ pub fn clock_timestamp(
   ) catch {
     _ => raise DataFailure("a time out of range")
   }
-  @value.Timestamp::new(date, time)
+  @value.Timestamp::Timestamp(date, time)
 }

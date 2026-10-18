@@ -16,6 +16,8 @@ pub(all) struct Identifier {
 } derive(Debug, Eq)
 
 ///|
+/// An explicit ALL or DISTINCT keyword. A surrounding `None` means the
+/// keyword was omitted; its default depends on the clause.
 pub(all) enum SetQuantifier {
   All
   Distinct
@@ -34,6 +36,7 @@ pub(all) struct Query {
 } derive(Debug, Eq)
 
 ///|
+/// A named query in a WITH clause, with its complete source span.
 pub(all) struct WithBinding {
   name : Identifier
   query : Query
@@ -41,6 +44,8 @@ pub(all) struct WithBinding {
 } derive(Debug, Eq)
 
 ///|
+/// The body before ORDER BY, LIMIT and OFFSET: a SELECT/PIVOT, set
+/// operation, scalar expression or TABLE reference.
 pub(all) enum QueryBody {
   Select(Select)
   SetOp(SetOp)
@@ -51,6 +56,7 @@ pub(all) enum QueryBody {
 } derive(Debug, Eq)
 
 ///|
+/// The UNION, INTERSECT and EXCEPT set operations.
 pub(all) enum SetOpKind {
   Union
   Intersect
@@ -65,6 +71,8 @@ pub(all) enum Corresponding {
 } derive(Debug, Eq)
 
 ///|
+/// A binary set operation, retaining its quantifier, OUTER flag and optional
+/// CORRESPONDING clause. Each operand is a complete query.
 pub(all) struct SetOp {
   op : SetOpKind
   quantifier : SetQuantifier?
@@ -89,6 +97,8 @@ pub(all) struct Select {
 } derive(Debug, Eq)
 
 ///|
+/// The output form of SELECT or PIVOT. A value projection produces values;
+/// a SELECT list or star describes tuple attributes.
 pub(all) enum Projection {
   Star(Span)
   Items(Array[SelectItem])
@@ -97,6 +107,8 @@ pub(all) enum Projection {
 } derive(Debug, Eq)
 
 ///|
+/// An expression with an optional output alias, or an attribute expansion.
+/// `span` covers the item including its alias.
 pub(all) enum SelectItem {
   Expr(Expr, as_~ : Identifier?, span~ : Span)
   /// `expr.*`
@@ -104,6 +116,7 @@ pub(all) enum SelectItem {
 } derive(Debug, Eq)
 
 ///|
+/// A FROM source, UNPIVOT source or recursive join tree.
 pub(all) enum FromItem {
   Scan(FromSource)
   Unpivot(FromSource)
@@ -123,6 +136,7 @@ pub(all) struct FromSource {
 } derive(Debug, Eq)
 
 ///|
+/// The requested join kind, including NULL-padding outer joins.
 pub(all) enum JoinKind {
   Inner
   Left
@@ -131,6 +145,7 @@ pub(all) enum JoinKind {
 } derive(Debug, Eq)
 
 ///|
+/// How a join is written: comma, CROSS JOIN or JOIN with an ON expression.
 pub(all) enum JoinForm {
   /// `a, b`
   Comma
@@ -141,6 +156,7 @@ pub(all) enum JoinForm {
 } derive(Debug, Eq)
 
 ///|
+/// A binary FROM join with its kind, spelling and complete source span.
 pub(all) struct Join {
   kind : JoinKind
   form : JoinForm
@@ -150,6 +166,8 @@ pub(all) struct Join {
 } derive(Debug, Eq)
 
 ///|
+/// A LET expression and its required variable name. Bindings are stored
+/// in source order so later expressions can refer to earlier variables.
 pub(all) struct LetBinding {
   expr : Expr
   name : Identifier
@@ -157,6 +175,7 @@ pub(all) struct LetBinding {
 } derive(Debug, Eq)
 
 ///|
+/// Grouping keys plus an optional GROUP AS variable and the clause span.
 pub(all) struct GroupBy {
   keys : GroupKeys
   group_as : Identifier?
@@ -164,6 +183,7 @@ pub(all) struct GroupBy {
 } derive(Debug, Eq)
 
 ///|
+/// GROUP ALL or an ordered list of GROUP BY keys, retaining PARTIAL.
 pub(all) enum GroupKeys {
   /// `GROUP ALL` (spec section 11): one group of all rows.
   All
@@ -172,6 +192,7 @@ pub(all) enum GroupKeys {
 } derive(Debug, Eq)
 
 ///|
+/// A grouping expression and its optional explicit alias.
 pub(all) struct GroupKey {
   expr : Expr
   as_ : Identifier?
@@ -179,18 +200,21 @@ pub(all) struct GroupKey {
 } derive(Debug, Eq)
 
 ///|
+/// An explicit ASC or DESC direction. An omitted direction is stored as None.
 pub(all) enum SortOrder {
   Asc
   Desc
 } derive(Debug, Eq)
 
 ///|
+/// An explicit NULLS FIRST or NULLS LAST choice. Omission stays None.
 pub(all) enum NullsOrder {
   First
   Last
 } derive(Debug, Eq)
 
 ///|
+/// One ORDER BY expression with optional direction and null-placement keywords.
 pub(all) struct SortSpec {
   expr : Expr
   order : SortOrder?

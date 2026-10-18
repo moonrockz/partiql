@@ -37,13 +37,13 @@ test "float identity: NaN equals NaN, zero signs differ" {
 ///|
 test "bags and tuples are multisets" {
   @expect.expect_all(soft => {
-    let a = @value.Value::Bag(@value.Bag::new([int(1), int(2), int(2)]))
-    let b = @value.Value::Bag(@value.Bag::new([int(2), int(1), int(2)]))
-    let c = @value.Value::Bag(@value.Bag::new([int(1), int(1), int(2)]))
+    let a = @value.Value::Bag(@value.Bag::Bag([int(1), int(2), int(2)]))
+    let b = @value.Value::Bag(@value.Bag::Bag([int(2), int(1), int(2)]))
+    let c = @value.Value::Bag(@value.Bag::Bag([int(1), int(1), int(2)]))
     soft.expect(a == b).to_be_true()
     soft.expect(a == c).to_be_false()
-    let t1 = @value.Tuple::new([("a", int(1)), ("b", int(2)), ("a", int(3))])
-    let t2 = @value.Tuple::new([("a", int(3)), ("a", int(1)), ("b", int(2))])
+    let t1 = @value.Tuple::Tuple([("a", int(1)), ("b", int(2)), ("a", int(3))])
+    let t2 = @value.Tuple::Tuple([("a", int(3)), ("a", int(1)), ("b", int(2))])
     soft.expect(@value.Value::Tuple(t1) == @value.Value::Tuple(t2)).to_be_true()
   })
 }
@@ -51,7 +51,7 @@ test "bags and tuples are multisets" {
 ///|
 test "tuple constructor drops MISSING" {
   @expect.expect_all(soft => {
-    let t = @value.Tuple::new([
+    let t = @value.Tuple::Tuple([
       ("a", @value.Value::Missing),
       ("b", @value.Value::Null),
     ])

@@ -1,16 +1,16 @@
 ///|
 fn date(year : Int32, month : Int32, day : Int32) -> @value.Value raise Error {
-  Date(@value.Date::new(year~, month~, day~))
+  Date(@value.Date::Date(year~, month~, day~))
 }
 
 ///|
 fn dt(seconds : Int64, nanos : Int64) -> @value.Value raise Error {
-  IntervalDT(@value.IntervalDT::new(seconds, nanos))
+  IntervalDT(@value.IntervalDT::IntervalDT(seconds, nanos))
 }
 
 ///|
 fn ym(months : Int64) -> @value.Value raise Error {
-  IntervalYM(@value.IntervalYM::new(months))
+  IntervalYM(@value.IntervalYM::IntervalYM(months))
 }
 
 ///|
@@ -18,16 +18,16 @@ test "datetime and interval literals" {
   @expect.expect_all(soft => {
     soft
     .expect(ev("DATE '2021-02-28'"))
-    .to_equal(Date(@value.Date::new(year=2021, month=2, day=28)))
+    .to_equal(Date(@value.Date::Date(year=2021, month=2, day=28)))
     soft
     .expect(ev("DATE '2021-02-28' + INTERVAL '1' DAY"))
-    .to_equal(Date(@value.Date::new(year=2021, month=3, day=1)))
+    .to_equal(Date(@value.Date::Date(year=2021, month=3, day=1)))
     soft
     .expect(ev("INTERVAL '3' YEAR + INTERVAL '2' MONTH"))
-    .to_equal(IntervalYM(@value.IntervalYM::new(38L)))
+    .to_equal(IntervalYM(@value.IntervalYM::IntervalYM(38L)))
     soft
     .expect(ev("INTERVAL '2' DAY * 2"))
-    .to_equal(IntervalDT(@value.IntervalDT::new(4L * 86400L, 0L)))
+    .to_equal(IntervalDT(@value.IntervalDT::IntervalDT(4L * 86400L, 0L)))
     soft.expect(ev("TIME '12:00:00' < TIME '13:00:00'")).to_equal(Bool(true))
   })
   for mode in [@eval.Mode::Permissive, Strict] {
@@ -49,7 +49,7 @@ test "time and timestamp literals" {
     .expect(ev("TIME '01:01:01.111111111'"))
     .to_equal(
       Time(
-        @value.Time::new(
+        @value.Time::Time(
           hour=1,
           minute=1,
           second=1,
@@ -62,7 +62,7 @@ test "time and timestamp literals" {
     .expect(ev("TIME WITH TIME ZONE '14:30:15+05:30'"))
     .to_equal(
       Time(
-        @value.Time::new(
+        @value.Time::Time(
           hour=14,
           minute=30,
           second=15,
@@ -75,7 +75,7 @@ test "time and timestamp literals" {
     .expect(ev("TIME '23:59:59.999999999999'"))
     .to_equal(
       Time(
-        @value.Time::new(
+        @value.Time::Time(
           hour=23,
           minute=59,
           second=59,
@@ -88,9 +88,9 @@ test "time and timestamp literals" {
     .expect(ev("TIMESTAMP WITH TIME ZONE '2024-12-31 09:15:30-08:00'"))
     .to_equal(
       Timestamp(
-        @value.Timestamp::new(
-          @value.Date::new(year=2024, month=12, day=31),
-          @value.Time::new(
+        @value.Timestamp::Timestamp(
+          @value.Date::Date(year=2024, month=12, day=31),
+          @value.Time::Time(
             hour=9,
             minute=15,
             second=30,
@@ -185,9 +185,9 @@ test "date and timestamp plus and minus an interval" {
     )
     .to_equal(
       Timestamp(
-        @value.Timestamp::new(
-          @value.Date::new(year=2024, month=12, day=30),
-          @value.Time::new(
+        @value.Timestamp::Timestamp(
+          @value.Date::Date(year=2024, month=12, day=30),
+          @value.Time::Time(
             hour=23,
             minute=35,
             second=46,
@@ -205,9 +205,9 @@ test "date and timestamp plus and minus an interval" {
     )
     .to_equal(
       Timestamp(
-        @value.Timestamp::new(
-          @value.Date::new(year=2025, month=1, day=1),
-          @value.Time::new(
+        @value.Timestamp::Timestamp(
+          @value.Date::Date(year=2025, month=1, day=1),
+          @value.Time::Time(
             hour=3,
             minute=1,
             second=1,
@@ -226,12 +226,12 @@ test "time plus an interval wraps around the day" {
   @expect.expect_all(soft => {
     soft
     .expect(ev("TIME '23:00:00' + INTERVAL '2' HOUR"))
-    .to_equal(Time(@value.Time::new(hour=1, minute=0, second=0, precision=1)))
+    .to_equal(Time(@value.Time::Time(hour=1, minute=0, second=0, precision=1)))
     soft
     .expect(ev("TIME '01:01:01.1' + INTERVAL '1' DAY"))
     .to_equal(
       Time(
-        @value.Time::new(
+        @value.Time::Time(
           hour=1,
           minute=1,
           second=1,
@@ -421,7 +421,7 @@ fn time_at(
   nanos : Int32,
   p : Int32,
 ) -> @value.Value raise Error {
-  Time(@value.Time::new(hour=h, minute=m, second=s, nanos~, precision=p))
+  Time(@value.Time::Time(hour=h, minute=m, second=s, nanos~, precision=p))
 }
 
 ///|
@@ -446,9 +446,9 @@ test "an explicit time precision rounds half up" {
     .expect(ev("TIMESTAMP (1) '2024-12-31 23:59:59.96'"))
     .to_equal(
       Timestamp(
-        @value.Timestamp::new(
-          @value.Date::new(year=2025, month=1, day=1),
-          @value.Time::new(hour=0, minute=0, second=0, precision=1),
+        @value.Timestamp::Timestamp(
+          @value.Date::Date(year=2025, month=1, day=1),
+          @value.Time::Time(hour=0, minute=0, second=0, precision=1),
         ),
       ),
     )

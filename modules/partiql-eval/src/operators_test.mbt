@@ -171,7 +171,7 @@ test "unary operators, concatenation and comparison types" {
 ///|
 test "a float from Ion: float with int is float, float with decimal is decimal" {
   let env = @eval.Bindings::of_tuple(
-    @value.Tuple::new([
+    @value.Tuple::Tuple([
       ("f", Float(2.0)),
       ("d", Decimal(@ion.Decimal::parse("3."))),
       ("i", Int(1)),

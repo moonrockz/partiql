@@ -120,6 +120,10 @@ fn datetime_first(
 }
 
 ///|
+/// Add numbers or a supported datetime/interval pair. Unbox Ion and propagate
+/// MISSING before NULL. Numeric operands widen to decimal when either is
+/// decimal, otherwise to float when either is float. Raise `TypeFailure` for
+/// incompatible operands or `DataFailure` for overflow.
 pub fn add(a : @value.Value, b : @value.Value) -> @value.Value raise OpFailure {
   if datetime_first(a, b, datetime_add) is Some(v) {
     return v
@@ -131,6 +135,8 @@ pub fn add(a : @value.Value, b : @value.Value) -> @value.Value raise OpFailure {
 }
 
 ///|
+/// Subtract numbers or a supported datetime/interval pair. Use `add`'s
+/// unboxing, absence, numeric widening and failure rules.
 pub fn sub(a : @value.Value, b : @value.Value) -> @value.Value raise OpFailure {
   if datetime_first(a, b, datetime_sub) is Some(v) {
     return v
@@ -142,6 +148,8 @@ pub fn sub(a : @value.Value, b : @value.Value) -> @value.Value raise OpFailure {
 }
 
 ///|
+/// Multiply numbers or a supported interval/number pair. Use `add`'s
+/// unboxing, absence, numeric widening and failure rules.
 pub fn mul(a : @value.Value, b : @value.Value) -> @value.Value raise OpFailure {
   if datetime_first(a, b, datetime_mul) is Some(v) {
     return v

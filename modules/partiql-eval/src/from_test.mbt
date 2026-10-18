@@ -1,6 +1,6 @@
 ///|
 fn bag(items : Array[@value.Value]) -> @value.Value {
-  Bag(@value.Bag::new(items))
+  Bag(@value.Bag::Bag(items))
 }
 
 ///|
@@ -156,9 +156,9 @@ test "parenthesized joins and long lists" {
 test "a plain name in a FROM source finds a global before a variable" {
   // select.ion, joinWithShadowedGlobal: `a` is a global, so `a.b` is the
   // global's attribute; `@a.b` is the variable's.
-  let a = @value.Tuple::new([("b", @value.Value::Int(7))])
+  let a = @value.Tuple::Tuple([("b", @value.Value::Int(7))])
   let env = @eval.Bindings::of_tuple(
-    @value.Tuple::new([("a", @value.Value::Tuple(a))]),
+    @value.Tuple::Tuple([("a", @value.Value::Tuple(a))]),
   )
   @expect.expect_all(soft => {
     soft

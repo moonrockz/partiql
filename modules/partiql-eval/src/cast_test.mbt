@@ -98,7 +98,9 @@ test "CAST to text" {
 
 ///|
 test "CAST uses the session time zone" {
-  guard @eval.ZoneOffset::new(330) is Some(india) else { fail("offset") }
+  guard @eval.ZoneOffset::from_minutes(330) is Some(india) else {
+    fail("offset")
+  }
   let source = "CAST(TIME '12:00:00' AS TIME WITH TIME ZONE)"
   let at_utc = @eval.evaluate_text(source, env=@eval.Bindings::empty())
   let at_india = @eval.evaluate_text(
@@ -111,7 +113,7 @@ test "CAST uses the session time zone" {
     soft.expect(at_india is Time({ offset: Some(330), .. })).to_be_true()
     soft
     .expect(ev("CAST('2020-01-01' AS DATE)"))
-    .to_equal(Date(@value.Date::new(year=2020, month=1, day=1)))
+    .to_equal(Date(@value.Date::Date(year=2020, month=1, day=1)))
     soft
     .expect(failure_of("CAST(TIME '12:00:00' AS TIMESTAMP)"))
     .to_equal("data")
@@ -223,7 +225,9 @@ test "CHAR and VARCHAR lengths have an upper limit" {
 test "CAST reads SQL datetime and interval literals" {
   // SQL 6.13: text is read by the rules for <literal> (and, since SQL:1999,
   // as an unquoted string under the target's fields).
-  let new_year = @value.Value::Date(@value.Date::new(year=2020, month=1, day=1))
+  let new_year = @value.Value::Date(
+    @value.Date::Date(year=2020, month=1, day=1),
+  )
   @expect.expect_all(soft => {
     soft.expect(ev("CAST('DATE ''2020-01-01''' AS DATE)")).to_equal(new_year)
     soft.expect(ev("CAST(' date ''2020-01-01'' ' AS DATE)")).to_equal(new_year)

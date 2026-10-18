@@ -15,7 +15,7 @@ fn map_value(
   entries : Array[(@value.Value, @value.Value)],
 ) -> @value.Value {
   try
-    @value.Value::Map(@value.MapValue::new(key_type~, value_type~, entries))
+    @value.Value::Map(@value.MapValue(key_type~, value_type~, entries))
   catch {
     _ => Missing
   } noraise {
@@ -28,8 +28,8 @@ test "cast to LIST, BAG and TUPLE" {
   let items : Array[@value.Value] = [Int(1), Int(2)]
   @expect.expect_all(soft => {
     soft.expect(cast(List(items), List)).to_equal(List(items))
-    soft.expect(cast(List(items), Bag)).to_equal(Bag(@value.Bag::new(items)))
-    soft.expect(cast(Bag(@value.Bag::new(items)), List)).to_equal(List(items))
+    soft.expect(cast(List(items), Bag)).to_equal(Bag(@value.Bag::Bag(items)))
+    soft.expect(cast(Bag(@value.Bag::Bag(items)), List)).to_equal(List(items))
     soft
     .expect(cast(tup([("a", Int(1))]), Tuple))
     .to_equal(tup([("a", Int(1))]))

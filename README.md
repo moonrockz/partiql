@@ -10,8 +10,9 @@ measures that compliance.
 
 ## Status
 
-The data model, the parser, the printer and the evaluator for expressions
-are done. Queries are the next work. See [docs/roadmap.md](docs/roadmap.md) for the plan and
+The implementation includes the data model, parser, printer, query evaluator,
+aggregates, casts, datetime functions and Ion sessions. Some specification
+forms remain unsupported. See [docs/roadmap.md](docs/roadmap.md) for the plan and
 [docs/conformance.md](docs/conformance.md) for the current conformance
 results.
 
@@ -24,7 +25,7 @@ use the same version.
 |---|---|
 | [`moonrockz/partiql-value`](https://mooncakes.io/docs/moonrockz/partiql-value) | The PartiQL data model and its PartiQL-encoded Ion codec |
 | [`moonrockz/partiql-syntax`](https://mooncakes.io/docs/moonrockz/partiql-syntax) | The PartiQL parser |
-| [`moonrockz/partiql-eval`](https://mooncakes.io/docs/moonrockz/partiql-eval) | The PartiQL evaluator (expressions so far) |
+| [`moonrockz/partiql-eval`](https://mooncakes.io/docs/moonrockz/partiql-eval) | The PartiQL query evaluator |
 | [`moonrockz/partiql`](https://mooncakes.io/docs/moonrockz/partiql) | The `partiql` command-line tool |
 | `moonrockz/partiql-conformance` | The conformance harness (not published) |
 
@@ -84,6 +85,32 @@ import {
 }
 ```
 
+The library guides include imports, checked examples and error contracts:
+
+- [Values and Ion](modules/partiql-value/README.mbt.md)
+- [Parsing, formatting and diagnostics](modules/partiql-syntax/README.mbt.md)
+- [Evaluation, bindings and sessions](modules/partiql-eval/README.mbt.md)
+- [CLI commands and embedding](modules/partiql/README.mbt.md)
+
+For evaluation, add `moonrockz/partiql-eval` and import it as `@eval`, with
+`moonrockz/partiql-value` as `@value`. This test uses `moonrockz/expect`:
+
+```mbt check
+test "library query" {
+  let session = @eval.Session()
+  let result = session.evaluate("SELECT VALUE x * 2 FROM [1, 2, 3] AS x")
+  let expected = @value.Value::Bag(@value.Bag::Bag([
+    @value.Value(2), @value.Value(4), @value.Value(6),
+  ]))
+  @expect.expect(result).to_equal(expected)
+}
+```
+
+Construct domain types with `Type(...)` and convert supported MoonBit values
+with `Value(x)`. `Type::Type(...)` selects a constructor when an enum variant
+shares its name. Former `new` factories remain deprecated aliases; the
+fallible offset factory is now `ZoneOffset::from_minutes`.
+
 ## Development
 
 The repository uses [mise](https://mise.jdx.dev) for tools and tasks.
@@ -91,7 +118,8 @@ The repository uses [mise](https://mise.jdx.dev) for tools and tasks.
 ```bash
 mise install              # git-cliff, lefthook
 mise run setup            # fetch the partiql-tests submodule and dependencies
-mise run check            # format, lint, interfaces, tests, conformance
+mise run check            # format, lint, interfaces, docs, tests, conformance
+mise run test:docs        # compile and run README examples
 mise run hooks:install    # git hooks
 bd bootstrap              # issue tracking (beads)
 ```

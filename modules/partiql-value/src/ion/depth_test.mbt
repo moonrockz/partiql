@@ -33,25 +33,22 @@ test "mixed containers and graph payloads round-trip at 100000 levels" {
   for i in 0..<100000 {
     v = match i % 6 {
       0 => List([v])
-      1 => Bag(@value.Bag::new([v]))
-      2 => Tuple(@value.Tuple::new([("a", v)]))
+      1 => Bag(@value.Bag::Bag([v]))
+      2 => Tuple(@value.Tuple::Tuple([("a", v)]))
       3 =>
         Map(
-          @value.MapValue::new(key_type=String, value_type=Dynamic, [
+          @value.MapValue(key_type=String, value_type=Dynamic, [
             (String("k"), v),
           ]),
         )
       4 =>
         Graph(
-          @value.GraphValue::new(
-            [@value.GraphNode::new(id="n", payload=Some(v))],
-            [],
-          ),
+          @value.GraphValue([@value.GraphNode(id="n", payload=Some(v))], []),
         )
       _ =>
         Graph(
-          @value.GraphValue::new([@value.GraphNode::new(id="n")], [
-            @value.GraphEdge::new(
+          @value.GraphValue([@value.GraphNode(id="n")], [
+            @value.GraphEdge(
               id="e",
               ends=Directed(from="n", to="n"),
               payload=Some(v),

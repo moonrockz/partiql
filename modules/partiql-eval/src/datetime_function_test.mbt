@@ -117,7 +117,9 @@ test "OVERLAPS evaluates" {
 
 ///|
 test "OVERLAPS uses the session zone for values without an offset" {
-  guard @eval.ZoneOffset::new(-300) is Some(minus_five) else { fail("offset") }
+  guard @eval.ZoneOffset::from_minutes(-300) is Some(minus_five) else {
+    fail("offset")
+  }
   // 10:00-11:00 local at -05:00 is 15:00-16:00 UTC.
   let source = "[TIMESTAMP '2020-01-01 10:00:00', TIMESTAMP '2020-01-01 11:00:00'] OVERLAPS [TIMESTAMP '2020-01-01 15:30:00+00:00', TIMESTAMP '2020-01-01 15:45:00+00:00']"
   @expect.expect_all(soft => {

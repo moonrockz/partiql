@@ -1,10 +1,16 @@
 ///|
+/// How the interpreter handles runtime type failures. Permissive mode yields
+/// MISSING; strict mode raises `TypeError`. Data and unsupported-form failures
+/// raise in either mode.
 pub(all) enum Mode {
   Permissive
   Strict
 } derive(Debug, Eq)
 
 ///|
+/// An evaluation failure with a source location, or the original parse error.
+/// `TypeError` is a strict-mode operand failure; `DataError` is invalid data or
+/// a static error in either mode; `Unsupported` is an unimplemented form.
 pub(all) suberror EvalError {
   TypeError(message~ : String, span~ : @ast.Span)
   DataError(message~ : String, span~ : @ast.Span)
@@ -166,6 +172,8 @@ pub fn output_variable(name : String) -> String {
 }
 
 ///|
+/// How a single-column subquery is coerced at its use site.
+/// Each variant defines its empty-input and cardinality behavior.
 pub(all) enum SubqueryUse {
   /// One value: NULL for no row, the value of the column for one row, and
   /// for more rows MISSING (permissive) or a `TypeError` (strict).
@@ -205,6 +213,8 @@ pub(all) enum Rel {
 } derive(Debug)
 
 ///|
+/// A lowered join strategy. Left and right outer joins pad unmatched
+/// bindings with NULL; cross and inner joins produce only matching pairs.
 pub(all) enum JoinKind {
   Cross
   Inner

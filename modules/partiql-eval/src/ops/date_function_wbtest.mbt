@@ -20,9 +20,16 @@ fn at(
 ) -> @value.Value {
   try
     @value.Value::Timestamp(
-      @value.Timestamp::new(
-        @value.Date::new(year~, month~, day~),
-        @value.Time::new(hour~, minute=0, second=0, nanos~, precision~, offset~),
+      @value.Timestamp::Timestamp(
+        @value.Date::Date(year~, month~, day~),
+        @value.Time::Time(
+          hour~,
+          minute=0,
+          second=0,
+          nanos~,
+          precision~,
+          offset~,
+        ),
       ),
     )
   catch {
@@ -34,7 +41,7 @@ fn at(
 
 ///|
 fn on_day(year : Int32, month : Int32, day : Int32) -> @value.Value {
-  try @value.Value::Date(@value.Date::new(year~, month~, day~)) catch {
+  try @value.Value::Date(@value.Date::Date(year~, month~, day~)) catch {
     _ => Missing
   } noraise {
     v => v
@@ -44,7 +51,7 @@ fn on_day(year : Int32, month : Int32, day : Int32) -> @value.Value {
 ///|
 fn clock_at(hour : Int32, minute : Int32) -> @value.Value {
   try
-    @value.Value::Time(@value.Time::new(hour~, minute~, second=0, precision=0))
+    @value.Value::Time(@value.Time::Time(hour~, minute~, second=0, precision=0))
   catch {
     _ => Missing
   } noraise {

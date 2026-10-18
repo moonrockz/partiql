@@ -8,7 +8,21 @@ pub struct Session {
 }
 
 ///|
-pub fn Session::new(
+/// Build reusable evaluation settings. Default to empty globals, permissive
+/// mode and UTC. Without `clock`, clock functions raise an evaluation error.
+/// Each evaluated statement samples the clock at most once.
+///
+/// ```mbt check
+/// test {
+///   let session = @eval.Session()
+///   @expect.expect(session.evaluate_script("1 + 2; 3 * 4")).to_equal([
+///     @value.Value(3),
+///     @value.Value(12),
+///   ])
+/// }
+/// ```
+#alias(new, deprecated="Use Session(...) instead")
+pub fn Session::Session(
   env~ : Bindings = Bindings::empty(),
   mode~ : Mode = Permissive,
   zone~ : ZoneOffset = ZoneOffset::utc(),
@@ -18,6 +32,9 @@ pub fn Session::new(
 }
 
 ///|
+/// Parse and evaluate one statement with this session's settings.
+/// Raise `EvalError::Syntax` for invalid text or an evaluation error on failure.
+/// Session bindings remain unchanged.
 pub fn Session::evaluate(
   self : Session,
   source : String,
@@ -78,6 +95,10 @@ pub(all) suberror SessionError {
 } derive(Debug)
 
 ///|
+/// Evaluate a complete script and encode its results as PartiQL Ion text,
+/// one value per line. `pretty` controls each value's layout.
+/// Raise `SessionError` on evaluation or encoding failure; no partial output
+/// is returned. Empty scripts produce an empty string.
 pub fn Session::evaluate_ion_text(
   self : Session,
   source : String,
@@ -90,6 +111,9 @@ pub fn Session::evaluate_ion_text(
 }
 
 ///|
+/// Evaluate a complete script and encode its results as one binary Ion
+/// datagram. Raise `SessionError` on evaluation or encoding failure; no
+/// partial output is returned.
 pub fn Session::evaluate_ion_bytes(
   self : Session,
   source : String,

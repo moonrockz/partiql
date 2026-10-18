@@ -103,14 +103,14 @@ fn group(
       groups.length() - 1
     }
     let fields = members.map(name => (name, row.find(name).unwrap_or(Missing)))
-    groups[at].1.push(Tuple(@value.Tuple::new(fields)))
+    groups[at].1.push(Tuple(@value.Tuple::Tuple(fields)))
   })
   if grouping is All && groups.is_empty() {
     groups.push(([], []))
   }
   groups
   .map(g => {
-    let mut bound = Frame(group_as, Bag(@value.Bag::new(g.1)), env)
+    let mut bound = Frame(group_as, Bag(@value.Bag::Bag(g.1)), env)
     for i, key in keys {
       bound = Frame(key.0, g.0[i], bound)
     }

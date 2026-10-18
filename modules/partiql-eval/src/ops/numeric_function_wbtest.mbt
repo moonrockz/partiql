@@ -26,17 +26,19 @@ test "ABS keeps the type and the scale" {
 
 ///|
 test "ABS of an interval has sign +" {
-  let negative_ym = @value.Value::IntervalYM(@value.IntervalYM::new(-18L))
+  let negative_ym = @value.Value::IntervalYM(
+    @value.IntervalYM::IntervalYM(-18L),
+  )
   let negative_dt = @value.Value::IntervalDT(
-    @value.IntervalDT::new(-123L, -456789000L),
+    @value.IntervalDT::IntervalDT(-123L, -456789000L),
   )
   @expect.expect_all(soft => {
     soft
     .expect(abs([negative_ym]))
-    .to_equal(IntervalYM(@value.IntervalYM::new(18L)))
+    .to_equal(IntervalYM(@value.IntervalYM::IntervalYM(18L)))
     soft
     .expect(abs([negative_dt]))
-    .to_equal(IntervalDT(@value.IntervalDT::new(123L, 456789000L)))
+    .to_equal(IntervalDT(@value.IntervalDT::IntervalDT(123L, 456789000L)))
   })
 }
 

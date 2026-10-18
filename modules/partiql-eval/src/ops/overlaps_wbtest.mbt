@@ -5,7 +5,7 @@ fn ov(x : @value.Value, y : @value.Value) -> @value.Value raise OpFailure {
 
 ///|
 fn jan(day : Int32) -> @value.Value {
-  try @value.Value::Date(@value.Date::new(year=2023, month=1, day~)) catch {
+  try @value.Value::Date(@value.Date::Date(year=2023, month=1, day~)) catch {
     _ => Missing
   } noraise {
     v => v
@@ -19,7 +19,9 @@ fn pair(a : @value.Value, b : @value.Value) -> @value.Value {
 
 ///|
 fn days(n : Int64) -> @value.Value {
-  try @value.Value::IntervalDT(@value.IntervalDT::new(n * 86400L, 0L)) catch {
+  try
+    @value.Value::IntervalDT(@value.IntervalDT::IntervalDT(n * 86400L, 0L))
+  catch {
     _ => Missing
   } noraise {
     v => v
@@ -48,7 +50,7 @@ test "OVERLAPS follows SQL-92 8.11" {
     .expect(ov(pair(jan(10), days(-9)), pair(jan(5), jan(6))))
     .to_equal(Bool(true))
     soft
-    .expect(ov(Bag(@value.Bag::new([jan(1), jan(10)])), pair(jan(5), jan(6))))
+    .expect(ov(Bag(@value.Bag::Bag([jan(1), jan(10)])), pair(jan(5), jan(6))))
     .to_equal(Bool(true))
   })
 }
@@ -93,7 +95,7 @@ test "OVERLAPS shape and type failures" {
     .expect(failure(() => ov(pair(Int(42), Null), pair(jan(1), jan(2)))))
     .to_equal("type")
     let noon = try
-      @value.Value::Time(@value.Time::new(hour=12, minute=0, second=0))
+      @value.Value::Time(@value.Time::Time(hour=12, minute=0, second=0))
     catch {
       _ => @value.Value::Missing
     } noraise {

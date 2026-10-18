@@ -27,10 +27,10 @@ test "variables and paths" {
     soft.expect(ev_env("a.z.y.x", "{a: {}}")).to_equal(Missing)
     soft
     .expect(ev_env("[1, 2][*]", "{}"))
-    .to_equal(Bag(@value.Bag::new([Int(1), Int(2)])))
+    .to_equal(Bag(@value.Bag::Bag([Int(1), Int(2)])))
     soft
     .expect(ev_env("{'a': 1, 'b': 2}.*", "{}"))
-    .to_equal(Bag(@value.Bag::new([Int(1), Int(2)])))
+    .to_equal(Bag(@value.Bag::Bag([Int(1), Int(2)])))
     soft.expect(ev_env("a.z IS MISSING", "{a: {}}")).to_equal(Bool(true))
     soft.expect(ev_env("a IS NOT MISSING", "{a: 1}")).to_equal(Bool(true))
     soft.expect(ev_env("NULL IS NULL", "{}")).to_equal(Bool(true))
@@ -85,21 +85,19 @@ test "map literals infer their types and follow the key rules" {
     .expect(ev_env("MAP {'a': 1, 'a': 2}", "{}"))
     .to_equal(
       Map(
-        @value.MapValue::new(key_type=String, value_type=Integer, [
+        @value.MapValue(key_type=String, value_type=Integer, [
           (String("a"), Int(2)),
         ]),
       ),
     )
     soft
     .expect(ev_env("MAP { }", "{}"))
-    .to_equal(
-      Map(@value.MapValue::new(key_type=String, value_type=Dynamic, [])),
-    )
+    .to_equal(Map(@value.MapValue(key_type=String, value_type=Dynamic, [])))
     soft
     .expect(ev_env("MAP {NULL: 1, 'b': 2}", "{}"))
     .to_equal(
       Map(
-        @value.MapValue::new(key_type=String, value_type=Integer, [
+        @value.MapValue(key_type=String, value_type=Integer, [
           (String("b"), Int(2)),
         ]),
       ),
@@ -118,7 +116,7 @@ test "map literals infer their types and follow the key rules" {
 test "wildcards map later steps over the elements" {
   let env = "{s: 'hello', t: {n: 1}, l: [{a: 1}, {b: 2}, {a: 3}], k: 'a'}"
   let bag = (items : Array[@value.Value]) => {
-    @value.Value::Bag(@value.Bag::new(items))
+    @value.Value::Bag(@value.Bag::Bag(items))
   }
   @expect.expect_all(soft => {
     soft.expect(ev_env("l[*].a", env)).to_equal(bag([Int(1), Int(3)]))
@@ -177,7 +175,7 @@ test "map keys that are equal after widening are duplicates" {
       .expect(ev_env(src, "{}"))
       .to_equal(
         Map(
-          @value.MapValue::new(key_type=Decimal, value_type=String, [
+          @value.MapValue(key_type=Decimal, value_type=String, [
             (dec(last), String("b")),
           ]),
         ),
@@ -224,7 +222,7 @@ test "explicit repeated fields fail only in strict mode" {
       .expect(ev_env(source, "{}").lower())
       .to_equal(
         if source.has_prefix("[") {
-          Bag(@value.Bag::new([Int(1)]))
+          Bag(@value.Bag::Bag([Int(1)]))
         } else {
           Int(1)
         },
@@ -259,7 +257,7 @@ test "implicit lookup stops at the first tuple with matching fields" {
       ] {
       soft
       .expect(ev_env(source, "{}").lower())
-      .to_equal(Bag(@value.Bag::new([Int(1)])))
+      .to_equal(Bag(@value.Bag::Bag([Int(1)])))
       soft
       .expect_call(() => ev_env(source, "{}", mode=Strict), label=source)
       .to_raise_matching(
@@ -272,7 +270,7 @@ test "implicit lookup stops at the first tuple with matching fields" {
       .expect(
         ev_env("SELECT VALUE \"a\" FROM [{'a':1,'A':2}] AS t", "{}", mode~),
       )
-      .to_equal(Bag(@value.Bag::new([Int(1)])))
+      .to_equal(Bag(@value.Bag::Bag([Int(1)])))
       soft
       .expect(
         ev_env(
@@ -281,12 +279,12 @@ test "implicit lookup stops at the first tuple with matching fields" {
           mode~,
         ).lower(),
       )
-      .to_equal(Bag(@value.Bag::new([Null])))
+      .to_equal(Bag(@value.Bag::Bag([Null])))
       soft
       .expect(
         ev_env("SELECT VALUE a FROM [0] AS t, [{'a':3}] AS u", "{}", mode~),
       )
-      .to_equal(Bag(@value.Bag::new([Int(3)])))
+      .to_equal(Bag(@value.Bag::Bag([Int(3)])))
     }
   })
 }

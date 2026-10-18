@@ -42,7 +42,7 @@ fn clock(
   precision~ : Int32,
   offset~ : Int32?,
 ) -> @value.Time raise OpFailure {
-  @value.Time::new(
+  @value.Time::Time(
     hour=t.hour,
     minute=t.minute,
     second=t.second,
@@ -88,7 +88,7 @@ fn zoned_timestamp(
   match (ts.time.offset, with_zone) {
     (Some(_), true) | (None, false) => ts
     (None, true) =>
-      @value.Timestamp::new(
+      @value.Timestamp::Timestamp(
         ts.date,
         clock(
           ts.time,
@@ -99,7 +99,7 @@ fn zoned_timestamp(
       )
     (Some(offset), false) => {
       let moved = timestamp_shift(ts, minutes_nanos(session.minutes - offset))
-      @value.Timestamp::new(
+      @value.Timestamp::Timestamp(
         moved.date,
         clock(
           moved.time,
@@ -149,7 +149,7 @@ fn timestamp_precision(
   guard precision is Some(p) else { return ts }
   let unit = fraction_unit(p)
   let rest = ts.time.nanos % unit
-  let kept = @value.Timestamp::new(
+  let kept = @value.Timestamp::Timestamp(
     ts.date,
     clock(
       ts.time,
@@ -225,9 +225,9 @@ fn to_timestamp(
   let ts = match x {
     Timestamp(ts) => ts
     Date(d) =>
-      @value.Timestamp::new(
+      @value.Timestamp::Timestamp(
         d,
-        @value.Time::new(hour=0, minute=0, second=0, precision=0) catch {
+        @value.Time::Time(hour=0, minute=0, second=0, precision=0) catch {
           _ => raise DataFailure("a time out of range")
         },
       )
@@ -242,7 +242,7 @@ fn to_timestamp(
     }
     // The date is CURRENT_DATE; the time and its offset are the value's
     // (SQL-92 6.10 GR 11).
-    Time(t) => @value.Timestamp::new(today(), t)
+    Time(t) => @value.Timestamp::Timestamp(today(), t)
     _ =>
       raise TypeFailure(
         "CAST of \{kind_name(x)} to \{target_name(Timestamp(precision~, zone=with_zone))}",

@@ -114,7 +114,7 @@ test "cast to integers: text" {
     soft.expect(failure(() => cast(String("hello"), int32))).to_equal("type")
     soft.expect(failure(() => cast(Clob(b"1"), int32))).to_equal("type")
     soft.expect(failure(() => cast(List([Int(1)]), int32))).to_equal("type")
-    let ym = @value.Value::IntervalYM(@value.IntervalYM::new(3L))
+    let ym = @value.Value::IntervalYM(@value.IntervalYM::IntervalYM(3L))
     soft.expect(failure(() => cast(ym, int32))).to_equal("unsupported")
   })
 }
@@ -177,7 +177,7 @@ test "cast to REAL and DOUBLE PRECISION" {
     soft.expect(cast(d("1d-50"), Float(Real))).to_equal(Float(0.0))
     soft.expect(cast(Float(1.0 / 0.0), Float(Real))).to_equal(Float(1.0 / 0.0))
     soft.expect(cast(String("-inf"), Float(Double))).to_equal(Float(-1.0 / 0.0))
-    let day = @value.Value::Date(@value.Date::new(year=2020, month=1, day=1))
+    let day = @value.Value::Date(@value.Date::Date(year=2020, month=1, day=1))
     soft.expect(failure(() => cast(day, Float(Double)))).to_equal("type")
   })
 }

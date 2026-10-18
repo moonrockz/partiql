@@ -473,7 +473,7 @@ fn select(
   })
   match projection {
     Pivot(..) => pivoted(values)
-    _ => Bag(@value.Bag::new(values))
+    _ => Bag(@value.Bag::Bag(values))
   }
 }
 
@@ -488,7 +488,7 @@ fn pivoted(rows : Array[@value.Value]) -> @value.Value {
       t.fields().each(f => fields.push(f))
     }
   }
-  Tuple(@value.Tuple::new(fields))
+  Tuple(@value.Tuple::Tuple(fields))
 }
 
 ///|
@@ -523,7 +523,7 @@ fn select_pairs_upto(
   if upto is Some(n) && n <= 0L {
     return out
   }
-  let seen = Counter::new()
+  let seen = Counter()
   let it = relation(rel, env, ctx)
   while pull(it, ctx) is Some(row) {
     let v = project(projection, row, ctx)
@@ -554,7 +554,7 @@ fn project(
           add_fields(fields, v, i)
         }
       }
-      Tuple(@value.Tuple::new(fields))
+      Tuple(@value.Tuple::Tuple(fields))
     }
     Pivot(value~, key~) => {
       // DISTINCT has no meaning for PIVOT: the parser does not take it, and
@@ -564,14 +564,14 @@ fn project(
       // A MISSING value, and in permissive mode a key that is not text,
       // leave the attribute out (the empty tuple).
       match (k, v) {
-        (_, Missing) => Tuple(@value.Tuple::new([]))
-        (String(name), _) => Tuple(@value.Tuple::new([(name, v)]))
+        (_, Missing) => Tuple(@value.Tuple::Tuple([]))
+        (String(name), _) => Tuple(@value.Tuple::Tuple([(name, v)]))
         _ => {
           typed(ctx.mode, key.span(), () => {
             raise TypeFailure("a PIVOT key must be text")
           })
           |> ignore
-          Tuple(@value.Tuple::new([]))
+          Tuple(@value.Tuple::Tuple([]))
         }
       }
     }
@@ -590,7 +590,7 @@ fn project(
           AllFields(e) => add_fields(fields, eval(e, row, ctx), i)
         }
       }
-      Tuple(@value.Tuple::new(fields))
+      Tuple(@value.Tuple::Tuple(fields))
     }
   }
 }

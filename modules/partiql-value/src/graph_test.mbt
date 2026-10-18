@@ -4,7 +4,7 @@ fn node(
   labels~ : Array[String] = [],
   payload~ : @value.Value? = None,
 ) -> @value.GraphNode {
-  @value.GraphNode::new(id~, labels~, payload~)
+  @value.GraphNode(id~, labels~, payload~)
 }
 
 ///|
@@ -14,7 +14,7 @@ fn edge(
   labels~ : Array[String] = [],
   payload~ : @value.Value? = None,
 ) -> @value.GraphEdge {
-  @value.GraphEdge::new(id~, ends~, labels~, payload~)
+  @value.GraphEdge(id~, ends~, labels~, payload~)
 }
 
 ///|
@@ -22,7 +22,7 @@ fn graph(
   nodes : Array[@value.GraphNode],
   edges : Array[@value.GraphEdge],
 ) -> @value.Value raise {
-  @value.Value::Graph(@value.GraphValue::new(nodes, edges))
+  @value.Value::Graph(@value.GraphValue(nodes, edges))
 }
 
 ///|
@@ -135,7 +135,7 @@ test "graph equality and ordering" {
     soft.expect(cmp(no_payload, null_payload)).to_equal(-1)
     soft.expect(@value.sql_equals(base, tup([]))).to_equal(f)
     let m = @value.Value::Map(
-      @value.MapValue::new(key_type=String, value_type=Dynamic, []),
+      @value.MapValue(key_type=String, value_type=Dynamic, []),
     )
     soft.expect(cmp(m, base)).to_equal(-1)
   })
@@ -145,7 +145,7 @@ test "graph equality and ordering" {
 test "a graph does not share arrays with its caller" {
   let nodes = [node("a"), node("b")]
   let edges = [edge("e", Undirected("a", "b"))]
-  let g = @value.GraphValue::new(nodes, edges)
+  let g = @value.GraphValue(nodes, edges)
   nodes.push(node("a"))
   edges.push(edge("e", Directed(from="a", to="b")))
   @expect.expect_all(soft => {

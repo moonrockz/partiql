@@ -39,12 +39,13 @@ pub struct Session {
   zone : @ops.ZoneOffset
   clock : @ops.Clock?
 }
+#alias(new, deprecated)
+pub fn Session::Session(env? : Bindings, mode? : @plan.Mode, zone? : @ops.ZoneOffset, clock? : @ops.Clock) -> Self
 pub fn Session::evaluate(Self, String) -> @partiql-value.Value raise @plan.EvalError
 pub fn Session::evaluate_each(Self, String, name~ : String, values~ : Array[@partiql-value.Value]) -> Array[@partiql-value.Value] raise @plan.EvalError
 pub fn Session::evaluate_ion_bytes(Self, String) -> Bytes raise SessionError
 pub fn Session::evaluate_ion_text(Self, String, pretty? : Bool) -> String raise SessionError
 pub fn Session::evaluate_script(Self, String) -> Array[@partiql-value.Value] raise @plan.EvalError
-pub fn Session::new(env? : Bindings, mode? : @plan.Mode, zone? : @ops.ZoneOffset, clock? : @ops.Clock) -> Self
 
 // Type aliases
 pub using @ops {type Clock}

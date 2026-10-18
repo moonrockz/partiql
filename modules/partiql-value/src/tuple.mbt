@@ -7,16 +7,29 @@ pub struct Tuple {
 
 ///|
 /// Builds a tuple. Pairs whose value is MISSING are dropped.
-pub fn Tuple::new(fields : Array[(String, Value)]) -> Tuple {
+///
+/// ```mbt check
+/// test {
+///   let tuple : @value.Tuple = @value.Tuple([
+///     ("a", @value.Value::Missing),
+///     ("b", @value.Value(2)),
+///   ])
+///   @expect.expect(tuple.get_all("b")).to_equal([@value.Value(2)])
+/// }
+/// ```
+#alias(new, deprecated="Use Tuple(...) instead")
+pub fn Tuple::Tuple(fields : Array[(String, Value)]) -> Tuple {
   { fields: fields.filter(pair => !(pair.1 is Missing)), }
 }
 
 ///|
+/// A read-only view of the retained fields, in input order. Duplicate names remain.
 pub fn Tuple::fields(self : Tuple) -> ArrayView[(String, Value)] {
   self.fields[:]
 }
 
 ///|
+/// The number of retained name-value pairs, counting duplicate names.
 pub fn Tuple::length(self : Tuple) -> Int32 {
   self.fields.length()
 }

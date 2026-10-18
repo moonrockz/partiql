@@ -330,7 +330,7 @@ test "totality: a 100000-element bag through scan, filter and project" {
   let n = 100000
   let items : Array[@value.Value] = Array::makei(n, i => Int(i.to_int64()))
   let env = @eval.Bindings::of_tuple(
-    @value.Tuple::new([("c", Bag(@value.Bag::new(items))), ("l", List(items))]),
+    @value.Tuple::Tuple([("c", Bag(@value.Bag::Bag(items))), ("l", List(items))]),
   )
   let q = (s : String) => @eval.evaluate_text(s, env~)
   let scan = q("SELECT VALUE x FROM c AS x")
@@ -352,7 +352,7 @@ test "totality: a 300-item comma FROM list" {
   let from = Array::makei(300, i => "[\{i}] AS x\{i}").join(", ")
   // 300 singleton sources: one row
   let v = ev("SELECT VALUE 1 FROM \{from}")
-  @expect.expect(v).to_equal(@value.Value::Bag(@value.Bag::new([Int(1L)])))
+  @expect.expect(v).to_equal(@value.Value::Bag(@value.Bag::Bag([Int(1L)])))
 }
 
 ///|
@@ -417,8 +417,8 @@ test "law: ORDER BY is a permutation of its input" {
       let plain = items_of(run("SELECT VALUE x FROM \{c.text()} AS x"))
       match (sorted, plain) {
         (Some(a), Some(b)) =>
-          @value.Value::Bag(@value.Bag::new(a)) ==
-          @value.Value::Bag(@value.Bag::new(b))
+          @value.Value::Bag(@value.Bag::Bag(a)) ==
+          @value.Value::Bag(@value.Bag::Bag(b))
         _ => false
       }
     },
@@ -696,7 +696,7 @@ test "totality: ORDER BY over a 100000-element bag" {
     Int((i * 7919 % n).to_int64())
   })
   let env = @eval.Bindings::of_tuple(
-    @value.Tuple::new([("c", Bag(@value.Bag::new(items)))]),
+    @value.Tuple::Tuple([("c", Bag(@value.Bag::Bag(items)))]),
   )
   let v = @eval.evaluate_text("SELECT VALUE x FROM c AS x ORDER BY x", env~)
   let out = items_of(v).unwrap()
@@ -715,15 +715,17 @@ test "totality: OUTER and SQL set operations over two 100000-element bags" {
   }
   let tuples = (lo : Int32) => {
     Array::makei(n, i => {
-      @value.Value::Tuple(@value.Tuple::new([("a", Int((lo + i).to_int64()))]))
+      @value.Value::Tuple(
+        @value.Tuple::Tuple([("a", Int((lo + i).to_int64()))]),
+      )
     })
   }
   let env = @eval.Bindings::of_tuple(
-    @value.Tuple::new([
-      ("c", Bag(@value.Bag::new(ints(0)))),
-      ("d", Bag(@value.Bag::new(ints(n / 2)))),
-      ("t", Bag(@value.Bag::new(tuples(0)))),
-      ("u", Bag(@value.Bag::new(tuples(n / 2)))),
+    @value.Tuple::Tuple([
+      ("c", Bag(@value.Bag::Bag(ints(0)))),
+      ("d", Bag(@value.Bag::Bag(ints(n / 2)))),
+      ("t", Bag(@value.Bag::Bag(tuples(0)))),
+      ("u", Bag(@value.Bag::Bag(tuples(n / 2)))),
     ]),
   )
   let q = (s : String) => @eval.evaluate_text(s, env~)
@@ -754,5 +756,5 @@ test "totality: WITH with 50 chained bindings" {
     }
   }).join(", ")
   let v = ev("WITH \{bindings} SELECT VALUE y FROM w49 AS y")
-  @expect.expect(v).to_equal(@value.Value::Bag(@value.Bag::new([Int(50L)])))
+  @expect.expect(v).to_equal(@value.Value::Bag(@value.Bag::Bag([Int(50L)])))
 }

@@ -197,7 +197,7 @@ fn run_path(
   }
   match many {
     None => single
-    Some(items) => Bag(@value.Bag::new(items))
+    Some(items) => Bag(@value.Bag::Bag(items))
   }
 }
 
@@ -271,7 +271,7 @@ fn run_tuple(
         }
     }
   }
-  Tuple(@value.Tuple::new(out))
+  Tuple(@value.Tuple::Tuple(out))
 }
 
 ///|
@@ -362,7 +362,7 @@ fn run_map(
     Some(t) => t
     None => common_type(pairs.map(p => p.1))
   }
-  // Duplicates are found after widening and lowering, as `MapValue::new` does.
+  // Duplicates are found after widening and lowering, as `MapValue::MapValue` does.
   let unique : Array[(@value.Value, @value.Value)] = []
   for pair in pairs {
     let key = widen(pair.0, key_type)
@@ -376,7 +376,7 @@ fn run_map(
       None => unique.push(entry)
     }
   }
-  try @value.MapValue::new(key_type~, value_type~, unique) catch {
+  try @value.MapValue(key_type~, value_type~, unique) catch {
     err => raise DataError(message=@debug.to_string(err), span~)
   } noraise {
     m => Map(m)
@@ -507,7 +507,7 @@ fn eval(
     Const(v, _) => v
     Global(name, delimited~, span) => lookup(ctx.globals, name, delimited, span)
     ListOf(items, _) => List(run_all(items, env, ctx))
-    BagOf(items, _) => Bag(@value.Bag::new(run_all(items, env, ctx)))
+    BagOf(items, _) => Bag(@value.Bag::Bag(run_all(items, env, ctx)))
     TupleOf(fields, _) => run_tuple(fields, env, ctx)
     Path(base, steps, span) =>
       run_path(eval(base, env, ctx), steps, env, ctx, span)
@@ -693,7 +693,7 @@ fn subquery(
     other => [other]
   }
   match use_ {
-    Column => Bag(@value.Bag::new(items.map(column_value)))
+    Column => Bag(@value.Bag::Bag(items.map(column_value)))
     Scalar | Row =>
       match items {
         [] => Null

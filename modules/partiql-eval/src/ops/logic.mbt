@@ -40,6 +40,8 @@ pub fn or_(a : @value.Value, b : @value.Value) -> @value.Value raise OpFailure {
 }
 
 ///|
+/// SQL `NOT`: negate a boolean; NULL and MISSING both produce NULL after unboxing Ion.
+/// Raise `TypeFailure` for a present non-boolean operand.
 pub fn not_(a : @value.Value) -> @value.Value raise OpFailure {
   match truth(a) {
     True => Bool(false)

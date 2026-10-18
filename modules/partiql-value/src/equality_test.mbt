@@ -10,12 +10,12 @@ fn s(text : String) -> @value.Value {
 
 ///|
 fn bag(items : Array[@value.Value]) -> @value.Value {
-  @value.Value::Bag(@value.Bag::new(items))
+  @value.Value::Bag(@value.Bag::Bag(items))
 }
 
 ///|
 fn tup(pairs : Array[(String, @value.Value)]) -> @value.Value {
-  @value.Value::Tuple(@value.Tuple::new(pairs))
+  @value.Value::Tuple(@value.Tuple::Tuple(pairs))
 }
 
 ///|
@@ -93,21 +93,24 @@ test "clob equals blob with the same octets" {
 ///|
 test "timestamps: instant equality only with a time zone" {
   @expect.expect_all(soft => {
-    let date = @value.Date::new(year=2024, month=1, day=1)
+    let date = @value.Date::Date(year=2024, month=1, day=1)
     let a = @value.Value::Timestamp(
-      @value.Timestamp::new(
+      @value.Timestamp::Timestamp(
         date,
-        @value.Time::new(hour=1, minute=0, second=0, offset=Some(60)),
+        @value.Time::Time(hour=1, minute=0, second=0, offset=Some(60)),
       ),
     )
     let b = @value.Value::Timestamp(
-      @value.Timestamp::new(
+      @value.Timestamp::Timestamp(
         date,
-        @value.Time::new(hour=0, minute=0, second=0, offset=Some(0)),
+        @value.Time::Time(hour=0, minute=0, second=0, offset=Some(0)),
       ),
     )
     let c = @value.Value::Timestamp(
-      @value.Timestamp::new(date, @value.Time::new(hour=0, minute=0, second=0)),
+      @value.Timestamp::Timestamp(
+        date,
+        @value.Time::Time(hour=0, minute=0, second=0),
+      ),
     )
     soft.expect(@value.sql_equals(a, b)).to_equal(t)
     soft.expect(@value.sql_equals(b, c)).to_equal(f)
@@ -159,7 +162,7 @@ test "group_key is shared by values that are eqg" {
   }
   let one = @value.Value::Int(1)
   let bag = (items : Array[@value.Value]) => {
-    @value.Value::Bag(@value.Bag::new(items))
+    @value.Value::Bag(@value.Bag::Bag(items))
   }
   let nan = @value.Value::Float(@double.not_a_number)
   let pairs = [
