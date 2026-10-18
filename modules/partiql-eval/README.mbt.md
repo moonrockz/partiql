@@ -35,7 +35,7 @@ import { "moonrockz/expect" } for "test"
 ```mbt check
 test {
   let value = @eval.evaluate_text("1 + 2", env=@eval.Bindings::empty())
-  @expect.expect(value).to_equal(@value.Value::Int(3))
+  @expect.expect(value).to_equal(@value.Value::from_int(3))
 }
 ```
 
@@ -47,7 +47,7 @@ test {
     "SELECT VALUE x * 10 FROM [1, 2, 3] AS x WHERE x > 1",
     env=@eval.Bindings::empty(),
   )
-  @expect.expect(value == @value.Value::Bag(@value.Bag::Bag([Int(20), Int(30)]))).to_be_true()
+  @expect.expect(value == @value.Value::from_bag(@value.Bag([@value.Value::from_int(20), @value.Value::from_int(30)]))).to_be_true()
 }
 ```
 
@@ -59,7 +59,7 @@ test {
     "SELECT VALUE x FROM [3, 1, 2] AS x ORDER BY x DESC LIMIT 2",
     env=@eval.Bindings::empty(),
   )
-  @expect.expect(value == @value.Value::List([Int(3), Int(2)])).to_be_true()
+  @expect.expect(value == @value.Value::from_list([@value.Value::from_int(3), @value.Value::from_int(2)])).to_be_true()
 }
 ```
 
@@ -72,9 +72,9 @@ test {
     env=@eval.Bindings::empty(),
   )
   @expect.expect(value ==
-    @value.Value::Bag(
-      @value.Bag::Bag([
-        Tuple(@value.Tuple::Tuple([("r", String("a")), ("total", Int(3))])),
+    @value.Value::from_bag(
+      @value.Bag([
+        @value.Value::from_tuple(@value.Tuple([("r", @value.Value::from_string("a")), ("total", @value.Value::from_int(3))])),
       ]),
     )).to_be_true()
 }
@@ -88,7 +88,7 @@ test {
     "UPPER(TRIM('  straße  '))",
     env=@eval.Bindings::empty(),
   )
-  @expect.expect(value == @value.Value::String("STRASSE")).to_be_true()
+  @expect.expect(value == @value.Value::from_string("STRASSE")).to_be_true()
 }
 ```
 
@@ -102,7 +102,7 @@ test {
     "CAST('3.14159' AS DECIMAL(4, 2))",
     env=@eval.Bindings::empty(),
   )
-  @expect.expect(value == @value.Value::Decimal(@ion.Decimal::parse("3.14"))).to_be_true()
+  @expect.expect(value == @value.Value::from_decimal(@ion.Decimal::parse("3.14"))).to_be_true()
 }
 ```
 
@@ -115,7 +115,7 @@ test {
     "TO_STRING(DATE_ADD(day, 30, DATE '2024-02-15'), 'MMMM d, yyyy')",
     env=@eval.Bindings::empty(),
   )
-  @expect.expect(value == @value.Value::String("March 16, 2024")).to_be_true()
+  @expect.expect(value == @value.Value::from_string("March 16, 2024")).to_be_true()
 }
 ```
 
@@ -131,7 +131,7 @@ test {
     env=@eval.Bindings::empty(),
     clock~,
   )
-  @expect.expect(value == @value.Value::Date(@value.Date::Date(year=2026, month=10, day=16))).to_be_true()
+  @expect.expect(value == @value.Value::from_date(@value.Date(year=2026, month=10, day=16))).to_be_true()
 }
 ```
 

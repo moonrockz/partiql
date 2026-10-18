@@ -7,15 +7,20 @@ test "Ion text and binary bindings evaluate identically" {
   @expect.expect_all(soft => {
     soft
     .expect(@eval.evaluate_text("a + 1", env=text_env))
-    .to_equal(@value.Value::Int(3))
+    .to_equal(@value.Value::from_int(3))
     soft
     .expect(@eval.evaluate_text("b", env=text_env))
     .to_equal(@eval.evaluate_text("b", env=binary_env))
     for
       (text, expected) in [
-        ("", @value.Value::Bag(@value.Bag::Bag([]))),
-        ("1", Int(1)),
-        ("1 $missing::null", Bag(@value.Bag::Bag([Int(1), Missing]))),
+        ("", @value.Value::from_bag(@value.Bag([]))),
+        ("1", @value.Value::from_int(1)),
+        (
+          "1 $missing::null",
+          @value.Value::from_bag(
+            @value.Bag([@value.Value::from_int(1), Missing]),
+          ),
+        ),
       ] {
       let env = @eval.Bindings::empty().with_data(
         "t",

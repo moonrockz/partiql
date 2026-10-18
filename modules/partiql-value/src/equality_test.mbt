@@ -1,33 +1,33 @@
 ///|
 fn i(n : Int32) -> @value.Value {
-  @value.Value::Int(n.to_int64())
+  @value.Value::from_int(n.to_int64())
 }
 
 ///|
 fn s(text : String) -> @value.Value {
-  @value.Value::String(text)
+  @value.Value::from_string(text)
 }
 
 ///|
 fn bag(items : Array[@value.Value]) -> @value.Value {
-  @value.Value::Bag(@value.Bag::Bag(items))
+  @value.Value::from_bag(@value.Bag(items))
 }
 
 ///|
 fn tup(pairs : Array[(String, @value.Value)]) -> @value.Value {
-  @value.Value::Tuple(@value.Tuple::Tuple(pairs))
+  @value.Value::from_tuple(@value.Tuple(pairs))
 }
 
 ///|
 fn ion(text : String) -> @value.Value raise {
-  @value.Value::Ion(@text.read_ion(text))
+  @value.Value::from_ion(@text.read_ion(text))
 }
 
 ///|
-let t : @value.Value = @value.Value::Bool(true)
+let t : @value.Value = @value.Value::from_bool(true)
 
 ///|
-let f : @value.Value = @value.Value::Bool(false)
+let f : @value.Value = @value.Value::from_bool(false)
 
 ///|
 test "spec examples for =" {
@@ -43,7 +43,10 @@ test "spec examples for =" {
     .to_equal(t)
     soft
     .expect(
-      @value.sql_equals(@value.Value::List([i(1), i(2)]), bag([i(1), i(2)])),
+      @value.sql_equals(
+        @value.Value::from_list([i(1), i(2)]),
+        bag([i(1), i(2)]),
+      ),
     )
     .to_equal(f)
     soft
@@ -62,7 +65,9 @@ test "spec examples for =" {
     .to_equal(@value.Value::Null)
     soft.expect(@value.sql_equals(ion("hello"), s("hello"))).to_equal(t)
     soft
-    .expect(@value.sql_equals(ion("(1 2)"), @value.Value::List([i(1), i(2)])))
+    .expect(
+      @value.sql_equals(ion("(1 2)"), @value.Value::from_list([i(1), i(2)])),
+    )
     .to_equal(t)
   })
 }
@@ -70,15 +75,22 @@ test "spec examples for =" {
 ///|
 test "numbers compare across types" {
   @expect.expect_all(soft => {
-    let one_dec = @value.Value::Decimal(@ion_core.Decimal::Decimal(10N, -1))
+    let one_dec = @value.Value::from_decimal(
+      @ion_core.Decimal::Decimal(10N, -1),
+    )
     soft.expect(@value.sql_equals(i(1), one_dec)).to_equal(t)
-    soft.expect(@value.sql_equals(i(1), @value.Value::Float(1.0))).to_equal(t)
+    soft
+    .expect(@value.sql_equals(i(1), @value.Value::from_float(1.0)))
+    .to_equal(t)
     soft
     .expect(
-      @value.sql_equals(@value.Value::Float(0.0), @value.Value::Float(-0.0)),
+      @value.sql_equals(
+        @value.Value::from_float(0.0),
+        @value.Value::from_float(-0.0),
+      ),
     )
     .to_equal(t)
-    let nan = @value.Value::Float(@double.not_a_number)
+    let nan = @value.Value::from_float(@double.not_a_number)
     soft.expect(@value.sql_equals(nan, nan)).to_equal(f)
   })
 }
@@ -86,7 +98,10 @@ test "numbers compare across types" {
 ///|
 test "clob equals blob with the same octets" {
   @expect.expect(
-    @value.sql_equals(@value.Value::Clob(b"x"), @value.Value::Blob(b"x")),
+    @value.sql_equals(
+      @value.Value::from_clob(b"x"),
+      @value.Value::from_blob(b"x"),
+    ),
   ).to_equal(t)
 }
 
@@ -94,23 +109,20 @@ test "clob equals blob with the same octets" {
 test "timestamps: instant equality only with a time zone" {
   @expect.expect_all(soft => {
     let date = @value.Date::Date(year=2024, month=1, day=1)
-    let a = @value.Value::Timestamp(
-      @value.Timestamp::Timestamp(
+    let a = @value.Value::from_timestamp(
+      @value.Timestamp(
         date,
         @value.Time::Time(hour=1, minute=0, second=0, offset=Some(60)),
       ),
     )
-    let b = @value.Value::Timestamp(
-      @value.Timestamp::Timestamp(
+    let b = @value.Value::from_timestamp(
+      @value.Timestamp(
         date,
         @value.Time::Time(hour=0, minute=0, second=0, offset=Some(0)),
       ),
     )
-    let c = @value.Value::Timestamp(
-      @value.Timestamp::Timestamp(
-        date,
-        @value.Time::Time(hour=0, minute=0, second=0),
-      ),
+    let c = @value.Value::from_timestamp(
+      @value.Timestamp(date, @value.Time::Time(hour=0, minute=0, second=0)),
     )
     soft.expect(@value.sql_equals(a, b)).to_equal(t)
     soft.expect(@value.sql_equals(b, c)).to_equal(f)
@@ -123,16 +135,16 @@ test "nested absent values compare with eqg" {
     soft
     .expect(
       @value.sql_equals(
-        @value.Value::List([@value.Value::Null]),
-        @value.Value::List([@value.Value::Null]),
+        @value.Value::from_list([@value.Value::Null]),
+        @value.Value::from_list([@value.Value::Null]),
       ),
     )
     .to_equal(t)
     soft
     .expect(
       @value.sql_equals(
-        @value.Value::List([@value.Value::Null]),
-        @value.Value::List([@value.Value::Missing]),
+        @value.Value::from_list([@value.Value::Null]),
+        @value.Value::from_list([@value.Value::Missing]),
       ),
     )
     .to_equal(f)
@@ -149,29 +161,29 @@ test "eqg" {
     soft
     .expect(@value.eqg(@value.Value::Null, @value.Value::Missing))
     .to_be_false()
-    let nan = @value.Value::Float(@double.not_a_number)
+    let nan = @value.Value::from_float(@double.not_a_number)
     soft.expect(@value.eqg(nan, nan)).to_be_true()
-    soft.expect(@value.eqg(i(2), @value.Value::Float(2.0))).to_be_true()
+    soft.expect(@value.eqg(i(2), @value.Value::from_float(2.0))).to_be_true()
   })
 }
 
 ///|
 test "group_key is shared by values that are eqg" {
   let dec = (c : BigInt, e : Int32) => {
-    @value.Value::Decimal(@ion_core.Decimal::Decimal(c, e))
+    @value.Value::from_decimal(@ion_core.Decimal::Decimal(c, e))
   }
-  let one = @value.Value::Int(1)
+  let one = @value.Value::from_int(1)
   let bag = (items : Array[@value.Value]) => {
-    @value.Value::Bag(@value.Bag::Bag(items))
+    @value.Value::from_bag(@value.Bag(items))
   }
-  let nan = @value.Value::Float(@double.not_a_number)
+  let nan = @value.Value::from_float(@double.not_a_number)
   let pairs = [
     (one, dec(100N, -2)),
-    (one, @value.Value::Float(1.0)),
+    (one, @value.Value::from_float(1.0)),
     (dec(10N, 0), dec(1N, 1)),
-    (nan, @value.Value::Float(@double.not_a_number)),
-    (@value.Value::List([one]), @value.Value::List([dec(10N, -1)])),
-    (bag([one, @value.Value::Int(2)]), bag([dec(20N, -1), one])),
+    (nan, @value.Value::from_float(@double.not_a_number)),
+    (@value.Value::from_list([one]), @value.Value::from_list([dec(10N, -1)])),
+    (bag([one, @value.Value::from_int(2)]), bag([dec(20N, -1), one])),
     (@value.Value::Null, @value.Value::Null),
   ]
   @expect.expect_all(soft => {
@@ -180,7 +192,9 @@ test "group_key is shared by values that are eqg" {
       soft.expect(@value.group_key(pair.0)).to_equal(@value.group_key(pair.1))
     }
     soft
-    .expect(@value.group_key(one) == @value.group_key(@value.Value::Int(2)))
+    .expect(
+      @value.group_key(one) == @value.group_key(@value.Value::from_int(2)),
+    )
     .to_be_false()
   })
 }

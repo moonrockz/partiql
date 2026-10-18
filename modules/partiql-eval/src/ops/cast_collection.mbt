@@ -8,8 +8,9 @@ fn to_collection(
   match (x, target) {
     (List(_), List) | (Bag(_), Bag) | (Tuple(_), Tuple) => x
     // The stored order of the bag (RFC 0035).
-    (Bag(b), List) => List(Array::from_iter(b.items().iter()))
-    (List(items), Bag) => Bag(@value.Bag::Bag(items))
+    (Bag(b), List) =>
+      @value.Value::from_list(Array::from_iter(b.items().iter()))
+    (List(items), Bag) => @value.Value::from_bag(@value.Bag(items))
     _ => raise TypeFailure("CAST of \{kind_name(x)} to \{target_name(target)}")
   }
 }
@@ -32,7 +33,11 @@ fn to_map(
       guard key is Text(_) else {
         raise TypeFailure("CAST of a tuple to a MAP whose key type is not text")
       }
-      t.fields().iter().map(f => (@value.Value::String(f.0), f.1)).collect()
+      t
+      .fields()
+      .iter()
+      .map(f => (@value.Value::from_string(f.0), f.1))
+      .collect()
     }
     Map(m) => Array::from_iter(m.entries().iter())
     _ => raise TypeFailure("CAST of \{kind_name(x)} to MAP")
@@ -52,5 +57,5 @@ fn to_map(
   let built = @value.MapValue(key_type~, value_type~, out) catch {
     _ => raise TypeFailure("a MAP key that is not valid for its type")
   }
-  Map(built)
+  @value.Value::from_map(built)
 }

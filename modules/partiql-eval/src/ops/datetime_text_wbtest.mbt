@@ -12,7 +12,9 @@ test "literal parsers in ops" {
     soft
     .expect(parse_date("2020-02-29"))
     .to_equal(@value.Date::Date(year=2020, month=2, day=29))
-    soft.expect(failure(() => Date(parse_date("2021-02-29")))).to_equal("type")
+    soft
+    .expect(failure(() => @value.Value::from_date(parse_date("2021-02-29"))))
+    .to_equal("type")
     soft
     .expect(parse_time("12:00:00.123+05:30", None, false))
     .to_equal(
@@ -26,7 +28,9 @@ test "literal parsers in ops" {
       ),
     )
     soft
-    .expect(failure(() => Time(parse_time("12:00:00", None, true))))
+    .expect(
+      failure(() => @value.Value::from_time(parse_time("12:00:00", None, true))),
+    )
     .to_equal("type")
     soft
     .expect(
@@ -36,7 +40,7 @@ test "literal parsers in ops" {
         qualifier=qualifier(Year, Some(Month)),
       ),
     )
-    .to_equal(IntervalYM(@value.IntervalYM::IntervalYM(14L)))
+    .to_equal(@value.Value::from_interval_ym(@value.IntervalYM(14L)))
     soft
     .expect(interval_qualifier_valid(qualifier(Day, Some(Second))))
     .to_be_true()

@@ -197,7 +197,7 @@ fn run_path(
   }
   match many {
     None => single
-    Some(items) => Bag(@value.Bag::Bag(items))
+    Some(items) => @value.Value::from_bag(@value.Bag(items))
   }
 }
 
@@ -271,7 +271,7 @@ fn run_tuple(
         }
     }
   }
-  Tuple(@value.Tuple::Tuple(out))
+  @value.Value::from_tuple(@value.Tuple(out))
 }
 
 ///|
@@ -318,7 +318,7 @@ fn widen(v : @value.Value, t : @value.MapType) -> @value.Value {
       try @ion_core.Decimal::parse(n.to_string()) catch {
         _ => v
       } noraise {
-        d => Decimal(d)
+        d => @value.Value::from_decimal(d)
       }
     _ => v
   }
@@ -379,7 +379,7 @@ fn run_map(
   try @value.MapValue(key_type~, value_type~, unique) catch {
     err => raise DataError(message=@debug.to_string(err), span~)
   } noraise {
-    m => Map(m)
+    m => @value.Value::from_map(m)
   }
 }
 
@@ -506,18 +506,19 @@ fn eval(
   match e {
     Const(v, _) => v
     Global(name, delimited~, span) => lookup(ctx.globals, name, delimited, span)
-    ListOf(items, _) => List(run_all(items, env, ctx))
-    BagOf(items, _) => Bag(@value.Bag::Bag(run_all(items, env, ctx)))
+    ListOf(items, _) => @value.Value::from_list(run_all(items, env, ctx))
+    BagOf(items, _) =>
+      @value.Value::from_bag(@value.Bag(run_all(items, env, ctx)))
     TupleOf(fields, _) => run_tuple(fields, env, ctx)
     Path(base, steps, span) =>
       run_path(eval(base, env, ctx), steps, env, ctx, span)
     IsNull(x, negated~, _) => {
       let v = unboxed(eval(x, env, ctx))
-      Bool((v is Null || v is Missing) != negated)
+      @value.Value::from_bool((v is Null || v is Missing) != negated)
     }
     IsMissing(x, negated~, _) => {
       let v = unboxed(eval(x, env, ctx))
-      Bool((v is Missing) != negated)
+      @value.Value::from_bool((v is Missing) != negated)
     }
     MapOf(entries, key_type~, value_type~, span) =>
       run_map(entries, key_type, value_type, env, ctx, span)
@@ -531,7 +532,9 @@ fn eval(
       typed(ctx.mode, span, () => @ops.not_(v))
     }
     BoolTest(x, truth, negated~, _) =>
-      Bool(@ops.bool_test(eval(x, env, ctx), truth, negated~))
+      @value.Value::from_bool(
+        @ops.bool_test(eval(x, env, ctx), truth, negated~),
+      )
     Like(x, pattern~, escape~, negated~, span) => {
       let v = eval(x, env, ctx)
       let p = eval(pattern, env, ctx)
@@ -693,15 +696,15 @@ fn subquery(
     other => [other]
   }
   match use_ {
-    Column => Bag(@value.Bag::Bag(items.map(column_value)))
+    Column => @value.Value::from_bag(@value.Bag(items.map(column_value)))
     Scalar | Row =>
       match items {
         [] => Null
         [row] =>
           if use_ is Row {
             match row {
-              Tuple(t) => List(t.fields().map(f => f.1))
-              other => List([other])
+              Tuple(t) => @value.Value::from_list(t.fields().map(f => f.1))
+              other => @value.Value::from_list([other])
             }
           } else {
             column_value(row)

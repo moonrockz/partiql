@@ -143,7 +143,7 @@ pub fn overlaps(
   let second = and3(gt(s2, s1), not3(and3(ge(s2, t1), ge(t2, t1))))
   let third = and3(eq(s1, s2), or3(ne(t1, t2), eq(t1, t2)))
   match or3(or3(first, second), third) {
-    Some(b) => Bool(b)
+    Some(b) => @value.Value::from_bool(b)
     None => Null
   }
 }

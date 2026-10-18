@@ -4,8 +4,9 @@
 /// `Ion` holds an exact Ion value (from a backtick literal or `$ion::`). It
 /// is a representation, never a PartiQL type: every semantic acts on its
 /// lowered value (see `Value::lower`).
-/// Use `Value(x)` for `ToValue` conversions or explicit variants to choose
-/// between representations such as Blob and Clob. Mutable arrays inside
+/// Use `Value(x)` for `ToValue` conversions or typed `Value::from_*` methods
+/// for known payload types. Choose `from_blob` or `from_clob` explicitly for
+/// bytes; retain variants for pattern matching and direct Null/Missing values. Mutable arrays inside
 /// list values are shared; copy them when independent storage is required.
 pub(all) enum Value {
   /// The SQL null value.
@@ -17,7 +18,7 @@ pub(all) enum Value {
   /// An integer that fits in Int64.
   Int(Int64)
   /// An integer outside the Int64 range. Build integers with
-  /// `Value(n)` or `Value::integer`, which keep this invariant.
+  /// `Value(n)` or `Value::from_bigint`, which keep this invariant.
   BigInt(@bigint.BigInt)
   /// An IEEE binary64 value, including NaN, infinities and signed zero.
   Float(Double)

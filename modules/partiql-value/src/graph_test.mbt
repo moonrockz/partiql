@@ -22,7 +22,7 @@ fn graph(
   nodes : Array[@value.GraphNode],
   edges : Array[@value.GraphEdge],
 ) -> @value.Value raise {
-  @value.Value::Graph(@value.GraphValue(nodes, edges))
+  @value.Value::from_graph(@value.GraphValue(nodes, edges))
 }
 
 ///|
@@ -107,7 +107,7 @@ test "graph equality and ordering" {
     edge("e1", Directed(from="n1", to="n2"), labels=["l"]),
   ])
   let permuted = graph(
-    [node("n2"), node("n1", payload=Some(@value.Value::Float(1.0)))],
+    [node("n2"), node("n1", payload=Some(@value.Value::from_float(1.0)))],
     [edge("e1", Directed(from="n1", to="n2"), labels=["l"])],
   )
   let other_payload = graph([node("n1", payload=Some(i(2))), node("n2")], [
@@ -134,7 +134,7 @@ test "graph equality and ordering" {
     soft.expect(@value.eqg(null_payload, no_payload)).to_be_false()
     soft.expect(cmp(no_payload, null_payload)).to_equal(-1)
     soft.expect(@value.sql_equals(base, tup([]))).to_equal(f)
-    let m = @value.Value::Map(
+    let m = @value.Value::from_map(
       @value.MapValue(key_type=String, value_type=Dynamic, []),
     )
     soft.expect(cmp(m, base)).to_equal(-1)

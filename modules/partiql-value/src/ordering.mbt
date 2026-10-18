@@ -234,7 +234,7 @@ fn order_form(v : Value, nulls : NullOrder) -> OrderValue {
       let sequence = (xs : Array[OrderValue]) => {
         OrderValue::Sequence(Component, xs)
       }
-      let string = (s : String) => OrderValue::Scalar(String(s))
+      let string = (s : String) => OrderValue::Scalar(Value::from_string(s))
       let sort = (xs : Array[OrderValue]) => {
         xs.sort_by((p, q) => order_compare(p, q, nulls))
         xs
@@ -277,14 +277,22 @@ fn order_form(v : Value, nulls : NullOrder) -> OrderValue {
             .map(e => {
               let ends = match e.ends {
                 Directed(from~, to~) =>
-                  sequence([Scalar(Int(0)), string(from), string(to)])
+                  sequence([
+                    Scalar(Value::from_int(0)),
+                    string(from),
+                    string(to),
+                  ])
                 Undirected(a, b) => {
                   let (first, last) = if compare_text(a, b) <= 0 {
                     (a, b)
                   } else {
                     (b, a)
                   }
-                  sequence([Scalar(Int(1)), string(first), string(last)])
+                  sequence([
+                    Scalar(Value::from_int(1)),
+                    string(first),
+                    string(last),
+                  ])
                 }
               }
               sequence([

@@ -69,7 +69,7 @@ pub fn to_ion_data(v : @value.Value) -> @ion_core.IonValue {
 /// Decodes Ion data in the Ion-preserving mode: the value is boxed, so every
 /// Ion detail is kept until a semantic lowers it (ADR 0005).
 pub fn from_ion_data(x : @ion_core.IonValue) -> @value.Value {
-  Ion(x)
+  @value.Value::from_ion(x)
 }
 
 ///|

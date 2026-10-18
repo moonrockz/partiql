@@ -29,7 +29,13 @@ fn count(rel : @plan.Rel, ctx : Ctx) -> Int32 raise @plan.EvalError {
 ///|
 /// `x` over `[1, 2]`.
 let numbers : @plan.Rel = Scan(
-  ListOf([Const(Int(1), at(0)), Const(Int(2), at(0))], at(0)),
+  ListOf(
+    [
+      Const(@value.Value::from_int(1), at(0)),
+      Const(@value.Value::from_int(2), at(0)),
+    ],
+    at(0),
+  ),
   as_="x",
   at=None,
   at(0),
@@ -39,14 +45,23 @@ let numbers : @plan.Rel = Scan(
 /// A relation whose second row fails in strict mode: `x + 'a'` at 7.
 let failing : @plan.Rel = Filter(
   numbers,
-  Binary(Add, Local("x", at(5)), Const(String("a"), at(6)), at(7)),
+  Binary(
+    Add,
+    Local("x", at(5)),
+    Const(@value.Value::from_string("a"), at(6)),
+    at(7),
+  ),
   at(8),
 )
 
 ///|
 test "a failing input read through Filter raises the input's error" {
   let ctx = Ctx([], mode=Strict)
-  let outer : @plan.Rel = Filter(failing, Const(Bool(true), at(9)), at(10))
+  let outer : @plan.Rel = Filter(
+    failing,
+    Const(@value.Value::from_bool(true), at(9)),
+    at(10),
+  )
   let it = relation(outer, Top, ctx)
   @expect.expect_all(soft => {
     soft

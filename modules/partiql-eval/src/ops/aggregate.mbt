@@ -74,7 +74,7 @@ pub fn count_values(
   values : Iter[@value.Value],
   distinct~ : Bool,
 ) -> @value.Value raise OpFailure {
-  Int(present(values, distinct).length().to_int64())
+  @value.Value::from_int(present(values, distinct).length().to_int64())
 }
 
 ///|
@@ -91,7 +91,7 @@ pub fn sum_values(
   let nums = numbers(xs, "SUM")
   match whole_sum(nums) {
     Some(sum) => whole_value(sum)
-    None => Decimal(decimal_sum(nums))
+    None => @value.Value::from_decimal(decimal_sum(nums))
   }
 }
 
@@ -115,7 +115,7 @@ pub fn avg_values(
     @bigint.BigInt::from_int(xs.length()),
     0,
   )
-  Decimal(decimal_div(sum, count))
+  @value.Value::from_decimal(decimal_div(sum, count))
 }
 
 ///|
@@ -177,7 +177,7 @@ pub fn any_values(
   if bs.is_empty() {
     Null
   } else {
-    Bool(bs.iter().any(b => b))
+    @value.Value::from_bool(bs.iter().any(b => b))
   }
 }
 
@@ -191,6 +191,6 @@ pub fn every_values(
   if bs.is_empty() {
     Null
   } else {
-    Bool(bs.iter().all(b => b))
+    @value.Value::from_bool(bs.iter().all(b => b))
   }
 }

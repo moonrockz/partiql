@@ -64,7 +64,7 @@ fn to_decimal(n : Num) -> @ion_core.Decimal raise OpFailure {
 fn whole_value(n : @bigint.BigInt) -> @value.Value raise OpFailure {
   if n.compare_int64(9223372036854775807L) <= 0 &&
     n.compare_int64(-9223372036854775808L) >= 0 {
-    Int(n.to_int64())
+    @value.Value::from_int(n.to_int64())
   } else {
     raise DataFailure("integer overflow")
   }
@@ -95,9 +95,9 @@ fn arithmetic(
     (Some(Whole(m)), Some(Whole(n))) => whole(m, n)
     (Some(p), Some(q)) =>
       if p is Exact(_) || q is Exact(_) {
-        Decimal(exact(to_decimal(p), to_decimal(q)))
+        @value.Value::from_decimal(exact(to_decimal(p), to_decimal(q)))
       } else {
-        Float(approx(to_double(p), to_double(q)))
+        @value.Value::from_float(approx(to_double(p), to_double(q)))
       }
     _ => raise TypeFailure("arithmetic on a value that is not a number")
   }
@@ -224,8 +224,10 @@ pub fn neg(v : @value.Value, negate~ : Bool) -> @value.Value raise OpFailure {
         Some(_) if !negate => x
         Some(Whole(n)) => whole_value(-n)
         Some(Exact(d)) =>
-          Decimal(@ion_core.Decimal::Decimal(-d.coefficient(), d.exponent()))
-        Some(Approx(f)) => Float(-f)
+          @value.Value::from_decimal(
+            @ion_core.Decimal::Decimal(-d.coefficient(), d.exponent()),
+          )
+        Some(Approx(f)) => @value.Value::from_float(-f)
       }
   }
 }
@@ -241,7 +243,7 @@ pub fn concat(
   match (x, y) {
     (Missing, _) | (_, Missing) => Missing
     (Null, _) | (_, Null) => Null
-    (String(p), String(q)) => String(p + q)
+    (String(p), String(q)) => @value.Value::from_string(p + q)
     _ => raise TypeFailure("|| on a value that is not a string")
   }
 }
@@ -262,10 +264,10 @@ pub fn abs(args : Array[@value.Value]) -> @value.Value raise OpFailure {
         }
       BigInt(n) => if is_negative_int(n) { whole_value(-n) } else { v }
       Decimal(x) =>
-        Decimal(
+        @value.Value::from_decimal(
           @ion_core.Decimal::Decimal(abs_int(x.coefficient()), x.exponent()),
         )
-      Float(f) => Float(f.abs())
+      Float(f) => @value.Value::from_float(f.abs())
       IntervalYM(i) if i.is_negative() => interval_abs(v)
       IntervalDT(i) if i.is_negative() => interval_abs(v)
       IntervalYM(_) | IntervalDT(_) => v

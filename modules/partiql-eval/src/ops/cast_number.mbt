@@ -111,7 +111,7 @@ fn to_integer(
   if n.compare_int64(low) < 0 || n.compare_int64(high) > 0 {
     raise DataFailure("\{n} is out of the range of \{name}")
   }
-  Int(n.to_int64())
+  @value.Value::from_int(n.to_int64())
 }
 
 ///|
@@ -131,15 +131,15 @@ fn to_bool(x : @value.Value) -> @value.Value raise OpFailure {
     Bool(_) => x
     String(s) =>
       match s.trim(chars=" ").to_owned().to_lower() {
-        "true" => Bool(true)
-        "false" => Bool(false)
+        "true" => @value.Value::from_bool(true)
+        "false" => @value.Value::from_bool(false)
         "unknown" => Null
         _ => raise TypeFailure("'\{s}' is not a boolean")
       }
     _ =>
       match number(x) {
         Some(Approx(f)) if f.is_nan() => raise TypeFailure("NaN as BOOL")
-        Some(n) => Bool(!is_zero_number(n))
+        Some(n) => @value.Value::from_bool(!is_zero_number(n))
         None => raise TypeFailure("CAST of \{kind_name(x)} to BOOL")
       }
   }
@@ -186,8 +186,9 @@ fn to_decimal_target(
 ) -> @value.Value raise OpFailure {
   let d = exact_of(numeric_source(x, target_name(Decimal(scale))))
   match scale {
-    Unconstrained => Decimal(round_decimal(d))
-    Fixed(precision~, scale~) => Decimal(fixed_decimal(d, precision, scale))
+    Unconstrained => @value.Value::from_decimal(round_decimal(d))
+    Fixed(precision~, scale~) =>
+      @value.Value::from_decimal(fixed_decimal(d, precision, scale))
   }
 }
 
@@ -251,7 +252,7 @@ fn to_float_target(
 ) -> @value.Value raise OpFailure {
   match numeric_source(x, target_name(Float(width))) {
     Approx(f) =>
-      Float(
+      @value.Value::from_float(
         match width {
           Double => f
           Real => to_real(f)
@@ -260,7 +261,7 @@ fn to_float_target(
     n => {
       let d = exact_of(n)
       let f = exact_double(d)
-      Float(
+      @value.Value::from_float(
         match width {
           Double => f
           Real => nearest_real(d, f)

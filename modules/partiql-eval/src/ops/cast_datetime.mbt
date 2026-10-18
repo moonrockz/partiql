@@ -171,15 +171,17 @@ fn to_date(
   session : ZoneOffset,
 ) -> @value.Value raise OpFailure {
   match x {
-    Date(d) => Date(checked_date(d))
+    Date(d) => @value.Value::from_date(checked_date(d))
     Timestamp(ts) =>
-      Date(checked_date(zoned_timestamp(ts, false, session).date))
+      @value.Value::from_date(
+        checked_date(zoned_timestamp(ts, false, session).date),
+      )
     String(s) => {
       let text = trimmed(s)
       match keyword_literal(text) {
-        Some(Date(body)) => Date(parse_date(body))
+        Some(Date(body)) => @value.Value::from_date(parse_date(body))
         Some(_) => raise TypeFailure("'\{text}' is not a DATE literal")
-        None => Date(parse_date(text))
+        None => @value.Value::from_date(parse_date(text))
       }
     }
     _ => raise TypeFailure("CAST of \{kind_name(x)} to DATE")
@@ -210,7 +212,9 @@ fn to_time(
         "CAST of \{kind_name(x)} to \{target_name(Time(precision~, zone=with_zone))}",
       )
   }
-  Time(time_precision(zoned_time(t, with_zone, session), precision))
+  @value.Value::from_time(
+    time_precision(zoned_time(t, with_zone, session), precision),
+  )
 }
 
 ///|
@@ -249,7 +253,7 @@ fn to_timestamp(
       )
   }
   ignore(checked_date(ts.date))
-  Timestamp(
+  @value.Value::from_timestamp(
     timestamp_precision(zoned_timestamp(ts, with_zone, session), precision),
   )
 }

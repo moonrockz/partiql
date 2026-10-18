@@ -143,8 +143,8 @@ fn dt_value(n : @bigint.BigInt) -> @value.Value raise OpFailure {
     raise DataFailure("an interval out of range")
   }
   let rest = (n % nanos_per_second).to_int64()
-  IntervalDT(
-    @value.IntervalDT::IntervalDT(seconds.to_int64(), rest) catch {
+  @value.Value::from_interval_dt(
+    @value.IntervalDT(seconds.to_int64(), rest) catch {
       _ => raise DataFailure("an interval out of range")
     },
   )
@@ -155,8 +155,8 @@ fn ym_value(months : @bigint.BigInt) -> @value.Value raise OpFailure {
   if !fits_int64(months) {
     raise DataFailure("an interval out of range")
   }
-  IntervalYM(
-    @value.IntervalYM::IntervalYM(months.to_int64()) catch {
+  @value.Value::from_interval_ym(
+    @value.IntervalYM(months.to_int64()) catch {
       _ => raise DataFailure("an interval out of range")
     },
   )
@@ -464,22 +464,28 @@ fn shift_datetime(
 ) -> @value.Value raise OpFailure {
   match (point, interval) {
     (Date(d), IntervalYM(i)) =>
-      Date(date_add_months(d, if negative { -i.months } else { i.months }))
+      @value.Value::from_date(
+        date_add_months(d, if negative { -i.months } else { i.months }),
+      )
     (Timestamp(ts), IntervalYM(i)) =>
-      Timestamp(
-        @value.Timestamp::Timestamp(
+      @value.Value::from_timestamp(
+        @value.Timestamp(
           date_add_months(ts.date, if negative { -i.months } else { i.months }),
           ts.time,
         ),
       )
     (Date(d), IntervalDT(i)) =>
-      Date(date_shift(d, if negative { -dt_nanos(i) } else { dt_nanos(i) }))
+      @value.Value::from_date(
+        date_shift(d, if negative { -dt_nanos(i) } else { dt_nanos(i) }),
+      )
     (Timestamp(ts), IntervalDT(i)) =>
-      Timestamp(
+      @value.Value::from_timestamp(
         timestamp_shift(ts, if negative { -dt_nanos(i) } else { dt_nanos(i) }),
       )
     (Time(t), IntervalDT(i)) =>
-      Time(time_shift(t, if negative { -dt_nanos(i) } else { dt_nanos(i) }))
+      @value.Value::from_time(
+        time_shift(t, if negative { -dt_nanos(i) } else { dt_nanos(i) }),
+      )
     (Time(_), IntervalYM(_)) =>
       raise TypeFailure("a time and a year-month interval")
     _ => raise TypeFailure("a datetime and an interval that do not combine")
@@ -584,7 +590,7 @@ fn interval_neg(v : @value.Value) -> @value.Value? raise OpFailure {
 /// `x = y` for two datetimes of the kinds that `datetime_order` compares.
 fn datetime_equal(x : @value.Value, y : @value.Value) -> @value.Value? {
   match datetime_order(x, y) {
-    Some(c) => Some(Bool(c == 0))
+    Some(c) => Some(@value.Value::from_bool(c == 0))
     None => None
   }
 }

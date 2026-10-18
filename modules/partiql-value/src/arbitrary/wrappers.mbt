@@ -30,16 +30,22 @@ pub impl @shrink.Shrink for ArbValue with fn shrink(self) {
   let out : Array[ArbValue] = children(self.value).map(v => { value: v, })
   match self.value {
     List(items) if items.length() > 0 =>
-      out.push({ value: List(items[1:].to_owned()), })
+      out.push({ value: @value.Value::from_list(items[1:].to_owned()), })
     Bag(bag) if bag.length() > 0 =>
-      out.push({ value: Bag(@value.Bag::Bag(bag.items()[1:].to_owned())), })
+      out.push({
+        value: @value.Value::from_bag(@value.Bag(bag.items()[1:].to_owned())),
+      })
     Tuple(t) if t.length() > 0 =>
-      out.push({ value: Tuple(@value.Tuple::Tuple(t.fields()[1:].to_owned())), })
-    Int(n) if n != 0L => out.push({ value: Int(n / 2L), })
-    BigInt(_) | Float(_) | Decimal(_) => out.push({ value: Int(0L), })
-    String(text) if text != "" => out.push({ value: String(""), })
+      out.push({
+        value: @value.Value::from_tuple(@value.Tuple(t.fields()[1:].to_owned())),
+      })
+    Int(n) if n != 0L => out.push({ value: @value.Value::from_int(n / 2L), })
+    BigInt(_) | Float(_) | Decimal(_) =>
+      out.push({ value: @value.Value::from_int(0L), })
+    String(text) if text != "" =>
+      out.push({ value: @value.Value::from_string(""), })
     Ion(x) =>
-      try @value.Value::Ion(x).lower() catch {
+      try @value.Value::from_ion(x).lower() catch {
         _ => ()
       } noraise {
         lowered => out.push({ value: lowered, })

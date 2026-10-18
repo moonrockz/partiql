@@ -118,13 +118,17 @@ pub fn like(
   }
   match operands {
     [String(t), String(p)] =>
-      Bool(wildcard_match(chars_of(t), compile_pattern(p, None)))
+      @value.Value::from_bool(
+        wildcard_match(chars_of(t), compile_pattern(p, None)),
+      )
     [String(t), String(p), String(e)] => {
       let units = chars_of(e)
       guard units.length() == 1 else {
         raise DataFailure("LIKE escape must be one character")
       }
-      Bool(wildcard_match(chars_of(t), compile_pattern(p, Some(units[0]))))
+      @value.Value::from_bool(
+        wildcard_match(chars_of(t), compile_pattern(p, Some(units[0]))),
+      )
     }
     _ => raise TypeFailure("LIKE of a value that is not a string")
   }

@@ -77,7 +77,7 @@ pub fn upper(args : Array[@value.Value]) -> @value.Value raise OpFailure {
         for c in v {
           b.write_string(@case_mapping.full_uppercase(c))
         }
-        String(b.to_string())
+        @value.Value::from_string(b.to_string())
       }
       _ => raise TypeFailure("UPPER of a value that is not a string")
     }
@@ -101,7 +101,7 @@ pub fn lower(args : Array[@value.Value]) -> @value.Value raise OpFailure {
             b.write_string(@case_mapping.full_lowercase(c))
           }
         }
-        String(b.to_string())
+        @value.Value::from_string(b.to_string())
       }
       _ => raise TypeFailure("LOWER of a value that is not a string")
     }
