@@ -5,6 +5,7 @@ let version_line : String = "partiql \{@cli.version}\n"
 test "version command and flags print the version" {
   for args in [["version"], ["--version"], ["-V"]] {
     @expect.expect(@cli.run(args), label=args.join(" ")).to_equal({
+      stdout_bytes: None,
       stdout: version_line,
       stderr: "",
       status: 0,

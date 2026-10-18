@@ -81,3 +81,18 @@ test "README clock example" {
     @value.Value::Date(@value.Date::new(year=2026, month=10, day=16)),
   )
 }
+
+///|
+/// Mirrors the Ion session example of README.mbt.md. Keep the two in step.
+test "README binary Ion session example" {
+  let input = @partiql_ion.write_bytes(
+    @partiql_ion.read_text("{a: 2, b: $bag::[1, 3]}"),
+  )
+  let session = @eval.Session::new(env=@eval.Bindings::from_ion_bytes(input))
+  let output = session.evaluate_ion_bytes(
+    "a + 1; SELECT VALUE x * a FROM b AS x",
+  )
+  @expect.expect(@partiql_ion.read_bytes(output)).to_equal(
+    @partiql_ion.read_text("3 $bag::[2, 6]"),
+  )
+}

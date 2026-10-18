@@ -55,3 +55,13 @@ test "without boxed Ion, both modes encode alike" {
     count=200,
   )
 }
+
+///|
+test "binary datagrams round-trip generated PartiQL values" {
+  @quickcheck.check(
+    (a : @arbitrary.ArbValue) => {
+      @partiql_ion.read_bytes(@partiql_ion.write_bytes([a.value])) == [a.value]
+    },
+    count=200,
+  )
+}

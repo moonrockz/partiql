@@ -126,3 +126,43 @@ supported yet raises `EvalError::Unsupported`, never a wrong answer.
   (an unknown function name, a CAST to NULL). It raises in both modes.
 - `Unsupported`: the form is not evaluated yet.
 - `Syntax`: `evaluate_text` could not parse the text.
+
+## Ion sessions
+
+Import `moonrockz/partiql-value/ion` as `@partiql_ion`. An Ion datagram is
+an ordered array of top-level values. The readers accept text or bytes;
+`read_bytes` detects binary Ion by its version marker and otherwise reads
+strict UTF-8 text. `IonDataError` keeps text, binary, encoding, schema and
+PartiQL codec failures distinct.
+
+This complete binary-input, query, binary-output flow also runs in
+`src/readme_test.mbt`:
+
+```moonbit
+let input = @partiql_ion.write_bytes(@partiql_ion.read_text("{a: 2, b: $bag::[1, 3]}"))
+let session = @eval.Session::new(env=@eval.Bindings::from_ion_bytes(input))
+let output = session.evaluate_ion_bytes("a + 1; SELECT VALUE x * a FROM b AS x")
+guard @partiql_ion.read_bytes(output) == @partiql_ion.read_text("3 $bag::[2, 6]")
+```
+
+`Bindings::from_ion_text` and `from_ion_bytes` require exactly one struct.
+For named data, use `Bindings::empty().with_data("t", values)`: no elements
+bind an empty bag, one binds as-is, and many bind a bag. For document-by-document
+execution, `session.evaluate_each("t.a", name="t", values~)` returns one
+result per element, in order. Empty input returns no results. Session bindings
+are unchanged, including after a failure.
+
+`Session::new` accepts `env~`, `mode~`, `zone~` and `clock~` with the same
+defaults as `evaluate`. `evaluate_script` parses the whole script before
+running any statement. `evaluate_ion_text` and `evaluate_ion_bytes` return
+one datagram for all script results, or raise `SessionError::Evaluation`
+or `SessionError::Ion`. Statements stop at the first error. Sessions keep
+no partial results; the CLI retains results preceding a failing statement.
+
+For schema validation, pass `validation~` to an Ion reader or binding
+constructor. Build it with `Validation::elements(schema, "row")` for
+per-element validation or `Validation::document(schema, "rows")` for a
+whole-datagram schema. Validation checks raw Ion before PartiQL decoding,
+collects every violation and retains its path. A schema must describe the
+physical PartiQL encoding, including annotations such as `$bag` and
+`$missing`. Readers also accept `catalog~` for shared symbol imports.

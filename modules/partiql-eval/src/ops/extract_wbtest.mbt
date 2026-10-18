@@ -67,7 +67,7 @@ test "EXTRACT from intervals" {
 ///|
 test "EXTRACT: absent values, wrong kinds and Ion" {
   let ion = @value.Value::Ion(
-    @ion_core.IonValue::timestamp(@ion_core.Timestamp::new(year=2017)),
+    @ion_core.IonValue::timestamp(@ion_core.Timestamp::Timestamp(year=2017)),
   )
   @expect.expect_all(soft => {
     soft.expect(ex(Year, Null)).to_equal(Null)

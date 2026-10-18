@@ -43,6 +43,31 @@ moonx moonrockz/partiql version
 Native binaries for Linux, macOS and Windows are attached to each
 [GitHub release](https://github.com/moonrockz/partiql/releases).
 
+`query` accepts text and binary Ion for both `--data` and `--env`. The binary
+version marker determines the format, including for stdin. Results default
+to readable Ion text; `--output-format binary` writes a binary datagram.
+
+```bash
+partiql query --data t=rows.ion -e 'SELECT VALUE r.a FROM t AS r'
+partiql query --data t=rows.ion --each t -e 't.a'
+partiql query --data t=rows.ion --output-format binary -e 't' > result.10n
+cat result.10n | partiql query --data t=- -e 't'
+partiql query --data t=rows.ion --data-schema t=rows.isl --schema-type row -e 't'
+```
+
+Whole datagrams bind zero elements as an empty bag, one as-is, and many as a
+bag. `--each t` instead runs the script once per element, in order. Empty
+input runs no statements. `--env` requires one struct. Only one input may
+read stdin. Failed statements exit 1 and retain earlier results, including
+a valid binary datagram when binary output is selected.
+
+`--data-schema NAME=FILE` validates a named binding; `--env-schema FILE`
+validates every environment. `--schema-type TYPE` selects the schema type,
+defaulting to `document`. `--schema-document` checks a whole datagram;
+otherwise every element is checked separately. All validation runs before
+any statement. Schemas describe raw PartiQL-encoded Ion, including `$bag`,
+`$missing` and datetime annotations. Every violation is reported with its path.
+
 ## Library use
 
 ```bash

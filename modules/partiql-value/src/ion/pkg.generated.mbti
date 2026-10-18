@@ -3,17 +3,28 @@ package "moonrockz/partiql-value/ion"
 
 import {
   "moonbitlang/core/debug",
+  "moonrockz/ion/schema",
   "moonrockz/partiql-value",
 }
 
 // Values
-pub fn from_ion(@moonrockz/ion/ion.IonValue) -> @partiql-value.Value raise CodecError
+pub fn from_ion(@moonrockz/ion/ion.Ion) -> @partiql-value.Value raise CodecError
 
-pub fn from_ion_data(@moonrockz/ion/ion.IonValue) -> @partiql-value.Value
+pub fn from_ion_data(@moonrockz/ion/ion.Ion) -> @partiql-value.Value
 
-pub fn to_ion(@partiql-value.Value) -> @moonrockz/ion/ion.IonValue
+pub fn load_schema_bytes(BytesView, resolver? : (String) -> Array[@moonrockz/ion/ion.Ion] raise @moonrockz/ion/ion.IonError) -> @schema.Schema raise IonDataError
 
-pub fn to_ion_data(@partiql-value.Value) -> @moonrockz/ion/ion.IonValue
+pub fn read_bytes(BytesView, catalog? : @moonrockz/ion/ion.Catalog, validation? : Validation) -> Array[@partiql-value.Value] raise IonDataError
+
+pub fn read_text(StringView, catalog? : @moonrockz/ion/ion.Catalog, validation? : Validation) -> Array[@partiql-value.Value] raise IonDataError
+
+pub fn to_ion(@partiql-value.Value) -> @moonrockz/ion/ion.Ion
+
+pub fn to_ion_data(@partiql-value.Value) -> @moonrockz/ion/ion.Ion
+
+pub fn write_bytes(Array[@partiql-value.Value]) -> Bytes raise IonDataError
+
+pub fn write_text(Array[@partiql-value.Value], pretty? : Bool) -> String raise IonDataError
 
 // Errors
 pub(all) suberror CodecError {
@@ -21,7 +32,29 @@ pub(all) suberror CodecError {
   Malformed(String)
 } derive(Eq, @debug.Debug)
 
+pub(all) suberror IonDataError {
+  Utf8
+  Text(@moonrockz/ion/ion.IonError)
+  Binary(@moonrockz/ion/ion.IonError)
+  Codec(CodecError)
+  Schema(@moonrockz/ion/ion.IonError)
+  Violations(Array[ValidationViolation])
+  Write(@moonrockz/ion/ion.IonError)
+  Bindings(String)
+} derive(@debug.Debug)
+pub fn IonDataError::message(Self) -> String
+
 // Types and methods
+pub struct Validation {
+  // private fields
+}
+pub fn Validation::document(@schema.Schema, String) -> Self
+pub fn Validation::elements(@schema.Schema, String) -> Self
+
+pub struct ValidationViolation {
+  path : String
+  message : String
+} derive(@debug.Debug)
 
 // Type aliases
 

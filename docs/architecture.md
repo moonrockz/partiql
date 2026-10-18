@@ -74,7 +74,12 @@ graph TD
     alias is `ion`, so it imports `moonrockz/ion/ion` as `@ion_core`.
     Consumers import it as `@partiql_ion`. Both encoding and decoding use
     work stacks, including map values and graph payloads; boxed Ion remains
-    exact in both modes.
+    exact in both modes. `read_text`/`read_bytes` and `write_text`/`write_bytes`
+    handle complete PartiQL-encoded datagrams. Byte input detects binary Ion
+    by its version marker, otherwise requiring UTF-8. Optional Ion Schema
+    validation checks raw values or a whole document before decoding.
+    `IonDataError` retains transport, codec and schema errors, including all
+    violation paths. See ADR 0007.
   - `arbitrary`: quickcheck generators (`gen_value`, `ArbValue`, ...) and
     the property laws of the data model. Published so that later milestones
     can reuse the generators.
@@ -93,9 +98,8 @@ graph TD
   - `lexer`: tokens; keywords are words that the parser classifies;
     punctuation is one character per token and the parser composes `<<`,
     `<=`, `||` and similar operators from touching tokens; Ion literals are
-    scanned Ion-aware and checked with the Ion text reader. The reader caps
-    container nesting at 128 levels; deeper literals raise a `Syntax` error
-    before they can overflow the stack. `lex_recovering`
+    scanned Ion-aware and checked with the stack-safe Ion text reader, which
+    has no default container nesting limit. `lex_recovering`
     records every lexical error and marks broken literals as `Invalid`
     tokens.
   - `parser`: recursive descent with a precedence ladder for expressions
@@ -125,8 +129,10 @@ graph TD
 - `partiql-eval`
   - root: `evaluate(Statement, env~, mode?) -> Value raise EvalError`,
     `evaluate_text(String, env~, mode?)`, `Bindings` (the global
-    variables: `empty`, `of_tuple`, `of_ion`), and the re-exports `Mode`
-    (`Permissive` or `Strict`) and `EvalError`.
+    variables: `empty`, `of_tuple`, `of_ion`, `from_ion_text`, `from_ion_bytes`,
+    `with_data`), and the re-exports `Mode` (`Permissive` or `Strict`) and
+    `EvalError`. `Session` bundles bindings, mode, zone and clock for repeated
+    evaluation, scripts, element-wise datagrams and text/binary Ion output.
   - `plan`: the logical plan, `Mode` and `EvalError` (`TypeError`,
     `DataError`, `Unsupported`, `Syntax`). `Expr` and `Step` are scalar
     expressions and path steps. `Rel` is the relational part, close to the
@@ -174,9 +180,10 @@ graph TD
     it charges each part of a plan with the stack it uses when it runs and
     refuses a plan above 200 levels with a `DataError`, so the evaluator
     does not overflow the stack. Chains of binary operators, AND and OR
-    are lowered in a loop; an Ion literal counts one level per level of its
-    value. The Ion reader's separate 128-level limit protects literal parsing
-    before evaluation starts.
+    are lowered in a loop. Literal values cost one level regardless of data
+    nesting: Ion 0.6.0 readers and value operations are stack-safe and have
+    no default data nesting limit. The expression-depth guard still applies
+    to the plan that the interpreter executes.
   - `ops`: the semantics of each operator as pure functions on values:
     numeric and decimal arithmetic, comparison, three-valued logic, LIKE,
     datetime and interval arithmetic, type tests and path steps. `=`
@@ -230,8 +237,11 @@ graph TD
     `format`, `query`, `version` and `help`, and the global `--color`. Errors
     print as rendered diagnostics (`@syntax.render`, and
     `@syntax.render_message` for evaluation errors). `query` evaluates with
-    `partiql-eval` and reads and writes PartiQL-encoded Ion. File and stdin
-    access comes in through the `Io` record, which `main.mbt` provides
+    `partiql-eval` and reads and writes PartiQL-encoded Ion in text or binary.
+    `--each` runs the script per top-level data element; schema options validate
+    every input before evaluation. `Outcome.stdout_bytes` carries raw binary
+    output. File and stdin access comes in through the `Io` record, including
+    optional byte readers, which `main.mbt` provides
     (`moonbitlang/x/fs` and `moonbitlang/async` stdin). See the CLI section of `AGENTS.md`.
 
 ## Rules

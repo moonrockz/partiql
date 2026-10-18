@@ -74,7 +74,7 @@ pub fn round_decimal(
     exponent += 1L
   }
   let signed = if negative { -rounded } else { rounded }
-  @ion_core.Decimal::new(signed, checked_exponent(exponent))
+  @ion_core.Decimal::Decimal(signed, checked_exponent(exponent))
 }
 
 ///|
@@ -106,7 +106,7 @@ fn decimal_add(
   b : @ion_core.Decimal,
 ) -> @ion_core.Decimal raise OpFailure {
   let (x, y, e) = aligned(a, b)
-  round_decimal(@ion_core.Decimal::new(x + y, e))
+  round_decimal(@ion_core.Decimal::Decimal(x + y, e))
 }
 
 ///|
@@ -115,7 +115,7 @@ fn decimal_sub(
   b : @ion_core.Decimal,
 ) -> @ion_core.Decimal raise OpFailure {
   let (x, y, e) = aligned(a, b)
-  round_decimal(@ion_core.Decimal::new(x - y, e))
+  round_decimal(@ion_core.Decimal::Decimal(x - y, e))
 }
 
 ///|
@@ -124,7 +124,9 @@ fn decimal_mul(
   b : @ion_core.Decimal,
 ) -> @ion_core.Decimal raise OpFailure {
   let e = checked_exponent(a.exponent().to_int64() + b.exponent().to_int64())
-  round_decimal(@ion_core.Decimal::new(a.coefficient() * b.coefficient(), e))
+  round_decimal(
+    @ion_core.Decimal::Decimal(a.coefficient() * b.coefficient(), e),
+  )
 }
 
 ///|
@@ -145,7 +147,7 @@ fn decimal_div(
   let na = abs_int(a.coefficient())
   let nb = abs_int(b.coefficient())
   if na.is_zero() {
-    return @ion_core.Decimal::new(na, checked_exponent(preferred))
+    return @ion_core.Decimal::Decimal(na, checked_exponent(preferred))
   }
   // Scale the dividend so that the integer quotient has at least 40 digits.
   let shift = (max_decimal_digits + 2 + digit_count(nb) - digit_count(na)).max(
@@ -176,7 +178,7 @@ fn decimal_div(
     digits = digits / ten
     exponent += 1L
   }
-  @ion_core.Decimal::new(
+  @ion_core.Decimal::Decimal(
     if negative {
       -digits
     } else {
@@ -197,7 +199,7 @@ fn decimal_rem(
   }
   let (ma, mb, e) = aligned(a, b)
   let r = abs_int(ma) % abs_int(mb)
-  @ion_core.Decimal::new(if is_negative_int(ma) { -r } else { r }, e)
+  @ion_core.Decimal::Decimal(if is_negative_int(ma) { -r } else { r }, e)
 }
 
 ///|
@@ -231,5 +233,5 @@ pub fn parse_decimal(text : String) -> @ion_core.Decimal? {
   if total > 2147483647L || total < -2147483648L {
     return None
   }
-  Some(@ion_core.Decimal::new(mantissa.coefficient(), total.to_int()))
+  Some(@ion_core.Decimal::Decimal(mantissa.coefficient(), total.to_int()))
 }

@@ -60,7 +60,7 @@ fn whole_sum(nums : Array[Num]) -> @bigint.BigInt? {
 ///|
 /// The sum as a decimal: a float joins as the decimal of its shortest text.
 fn decimal_sum(nums : Array[Num]) -> @ion_core.Decimal raise OpFailure {
-  let mut sum = @ion_core.Decimal::new(@bigint.BigInt::from_int(0), 0)
+  let mut sum = @ion_core.Decimal::Decimal(@bigint.BigInt::from_int(0), 0)
   for n in nums {
     sum = decimal_add(sum, to_decimal(n))
   }
@@ -106,10 +106,13 @@ pub fn avg_values(
   }
   let nums = numbers(xs, "AVG")
   let sum = match whole_sum(nums) {
-    Some(s) => @ion_core.Decimal::new(s, 0)
+    Some(s) => @ion_core.Decimal::Decimal(s, 0)
     None => decimal_sum(nums)
   }
-  let count = @ion_core.Decimal::new(@bigint.BigInt::from_int(xs.length()), 0)
+  let count = @ion_core.Decimal::Decimal(
+    @bigint.BigInt::from_int(xs.length()),
+    0,
+  )
   Decimal(decimal_div(sum, count))
 }
 

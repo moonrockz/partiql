@@ -6,6 +6,8 @@ fn fake_io(
 ) -> (@cli.Io, Map[String, String]) {
   let written : Map[String, String] = Map([])
   let io : @cli.Io = {
+    read_file_bytes: None,
+    read_stdin_bytes: None,
     read_file: path => {
       match files.get(path) {
         Some(text) => text
@@ -24,6 +26,7 @@ fn fake_io(
 test "format a statement argument" {
   let (io, _) = fake_io(Map([]))
   @expect.expect(@cli.run(["format", "-e", "select a from t"], io~)).to_equal({
+    stdout_bytes: None,
     stdout: "SELECT a FROM t;\n",
     stderr: "",
     status: 0,
@@ -46,7 +49,9 @@ test "format files and stdin" {
     soft.expect(@cli.run(["format"], io~).stdout).to_equal("SELECT 3;\n")
     soft.expect(@cli.run(["format", "-"], io~).stdout).to_equal("SELECT 3;\n")
     let outcome = @cli.run(["format", "--write", "a.sql", "b.sql"], io~)
-    soft.expect(outcome).to_equal({ stdout: "", stderr: "", status: 0, })
+    soft
+    .expect(outcome)
+    .to_equal({ stdout_bytes: None, stdout: "", stderr: "", status: 0, })
     soft.expect(written.get("a.sql")).to_equal(Some("SELECT 1;\n"))
     soft.expect(written.get("b.sql")).to_equal(Some("-- b\nSELECT 2;\n"))
   })
@@ -168,6 +173,7 @@ test "format width usage errors" {
       @cli.run(["format", "--compact", "--width", "30", "-e", "select a"], io~),
     )
     .to_equal({
+      stdout_bytes: None,
       stdout: "",
       stderr: "partiql format: --compact takes no --width\nRun 'partiql help format' for more information.\n",
       status: 2,
@@ -175,6 +181,7 @@ test "format width usage errors" {
     soft
     .expect(@cli.run(["format", "--width", "0", "-e", "select a"], io~))
     .to_equal({
+      stdout_bytes: None,
       stdout: "",
       stderr: "partiql format: --width must be a whole number of at least 1\nRun 'partiql help format' for more information.\n",
       status: 2,

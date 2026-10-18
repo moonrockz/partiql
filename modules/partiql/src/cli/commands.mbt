@@ -64,18 +64,44 @@ fn command(name : String, prefix : String) -> @argparse.Command {
             about="Evaluate in strict mode: a type error fails instead of giving MISSING.",
           ),
           @argparse.FlagArg("compact", about="Print each result on one line."),
+          @argparse.FlagArg(
+            "schema-document",
+            about="Validate each binding datagram as a document instead of per element.",
+          ),
         ],
         options=[
           ..input_options(),
           @argparse.OptionArg(
+            "output-format",
+            about="Result format: ion (default) or binary.",
+          ),
+          @argparse.OptionArg(
+            "each",
+            about="Run each statement for every element of this --data NAME, in order.",
+          ),
+          @argparse.OptionArg(
+            "data-schema",
+            about="NAME=FILE: validate this data binding against an Ion Schema.",
+            action=Append,
+          ),
+          @argparse.OptionArg(
+            "env-schema",
+            about="Validate every --env against this Ion Schema file. '-' reads stdin.",
+            allow_hyphen_values=true,
+          ),
+          @argparse.OptionArg(
+            "schema-type",
+            about="Schema type name (default document).",
+          ),
+          @argparse.OptionArg(
             "env",
-            about="An Ion file that holds one struct; each field is a global. '-' reads stdin.",
+            about="A text or binary Ion file that holds one struct; each field is a global. '-' reads stdin.",
             action=Append,
             allow_hyphen_values=true,
           ),
           @argparse.OptionArg(
             "data",
-            about="NAME=FILE: bind the Ion values of FILE to the global NAME. '-' as FILE reads stdin.",
+            about="NAME=FILE: bind the text or binary Ion values of FILE to the global NAME. '-' as FILE reads stdin.",
             action=Append,
           ),
         ],
@@ -152,7 +178,9 @@ fn examples(path : ArrayView[String]) -> Array[String] {
       [
         "partiql query -e 'select value x * 2 from <<1, 2>> as x'", "partiql query --data t=rows.ion -e 'select a from t where b > 1'",
         "partiql query --env env.ion query.sql", "cat rows.ion | partiql query --data t=- query.sql",
-        "partiql query --strict --compact query.sql",
+        "partiql query --strict --compact query.sql", "partiql query --data t=rows.ion --each t -e 't.a'",
+        "partiql query --data t=rows.ion --output-format binary -e 't' > result.10n",
+        "partiql query --data t=rows.ion --data-schema t=rows.isl --schema-type row -e 't'",
       ]
     ["version"] => ["partiql version", "partiql --version"]
     ["help"] => ["partiql help", "partiql help version"]

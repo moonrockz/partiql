@@ -14,8 +14,7 @@
 //   are all one level down.
 // - A subquery used as a value: 1, its query 1 below it (a wrapper that
 //   reads the rows of the nested `eval`).
-// - A literal: 1 per level of its value (operations on a value recurse on
-//   it).
+// - A literal: 1, regardless of data nesting. Value operations are stack-safe.
 // - A query block: 1, its FROM, WHERE and joins 1 below it, its projection 2
 //   below it. Measured: about 1.1 per nested query block.
 // - A FROM source: 1, its expression 1 below it. Measured with a query in a
@@ -48,38 +47,6 @@
 priv enum Pending {
   ExprAt(@plan.Expr, Int32)
   RelAt(@plan.Rel, Int32)
-}
-
-///|
-/// The nesting depth of a value (a scalar is 1), counted in a loop.
-fn value_depth(v : @value.Value) -> Int32 {
-  let mut deepest = 0
-  let pending = [(v, 1)]
-  while pending.pop() is Some((x, d)) {
-    deepest = deepest.max(d)
-    match x {
-      List(items) =>
-        for item in items {
-          pending.push((item, d + 1))
-        }
-      Bag(b) =>
-        for item in b.items() {
-          pending.push((item, d + 1))
-        }
-      Tuple(t) =>
-        for field in t.fields() {
-          pending.push((field.1, d + 1))
-        }
-      Map(m) =>
-        for entry in m.entries() {
-          pending.push((entry.0, d + 1))
-          pending.push((entry.1, d + 1))
-        }
-      Ion(i) => deepest = deepest.max(d + ion_depth(i) - 1)
-      _ => ()
-    }
-  }
-  deepest
 }
 
 ///|
@@ -260,7 +227,6 @@ fn within_depth(plan : @plan.Expr) -> @plan.Expr raise @plan.EvalError {
   let pending = [ExprAt(plan, 1)]
   while pending.pop() is Some(part) {
     let (level, span) = match part {
-      ExprAt(Const(v, span), level) => (level + value_depth(v) - 1, span)
       ExprAt(e, level) => (level, e.span())
       RelAt(r, level) => (level, r.span())
     }

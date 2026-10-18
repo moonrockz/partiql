@@ -131,7 +131,7 @@ test "numbers of different kinds are eqg-equal when equal in value" {
       let big = @bigint.BigInt::from_int(n)
       let values : Array[@value.Value] = [
         @value.Value::Int(n.to_int64()),
-        @value.Value::Decimal(@ion_core.Decimal::new(big * 100N, -2)),
+        @value.Value::Decimal(@ion_core.Decimal::Decimal(big * 100N, -2)),
         @value.Value::Float(n.to_double()),
       ]
       values.iter().all(x => values.iter().all(y => @value.eqg(x, y)))
@@ -218,7 +218,7 @@ test "legacy and new $time forms decode alike" {
       let text = "\{pad2(t.hour)}:\{pad2(t.minute)}:\{pad2(t.second)}"
       let legacy = @partiql_ion.from_ion(
         @ion_core.IonValue::string(text).with_annotation(
-          @ion_core.SymbolToken::new("$time"),
+          @ion_core.SymbolToken::SymbolToken("$time"),
         ),
       )
       let plain = @value.Time::new(
@@ -302,7 +302,7 @@ test "big integers equal their decimal and float forms" {
       let big = two64 * @bigint.BigInt::from_int(k)
       let values : Array[@value.Value] = [
         @value.Value::integer(big),
-        @value.Value::Decimal(@ion_core.Decimal::new(big * 100N, -2)),
+        @value.Value::Decimal(@ion_core.Decimal::Decimal(big * 100N, -2)),
         @value.Value::Float(18446744073709551616.0 * k.to_double()),
       ]
       values[0] is BigInt(_) &&

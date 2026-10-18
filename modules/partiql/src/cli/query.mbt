@@ -12,6 +12,9 @@ fn query_command(m : @argparse.Matches, io : Io, color : Bool) -> Outcome {
     Ok(datas) => datas
     Err(text) => return usage(text)
   }
+  if query_options_error(m, datas) is Some(message) {
+    return usage(message)
+  }
   if query_stdin_readers(m) > 1 {
     return usage("only one input can read stdin")
   }
@@ -21,12 +24,7 @@ fn query_command(m : @argparse.Matches, io : Io, color : Bool) -> Outcome {
     Ok(inputs) => inputs
     Err(outcome) => return outcome
   }
-  let globals = load_bindings(
-    m.values.get("env").unwrap_or([]),
-    datas,
-    io,
-    errors,
-  )
+  let loaded = load_bindings(m, datas, io, errors)
   if errors.to_string() != "" {
     return finish(out, errors)
   }
@@ -44,41 +42,60 @@ fn query_command(m : @argparse.Matches, io : Io, color : Bool) -> Outcome {
   if errors.to_string() != "" {
     return finish(out, errors)
   }
-  let env = @eval.Bindings::of_pairs(globals)
+  let env = @eval.Bindings::of_pairs(loaded.globals)
   let mode : @eval.Mode = if m.flags.get("strict") == Some(true) {
     Strict
   } else {
     Permissive
   }
   let compact = m.flags.get("compact") == Some(true)
-  for script in scripts {
-    let (input, statements) = script
-    for statement in statements {
-      let value = @eval.evaluate(statement, env~, mode~, clock?=io.clock) catch {
+  let binary = m.values.get("output-format") == Some(["binary"])
+  let results : Array[@value.Value] = []
+  let done = () => {
+    if binary {
+      let bytes = @partiql_ion.write_bytes(results) catch {
         e => {
-          errors.write_string(eval_error_text(e, input, color))
+          errors.write_string("partiql query: " + e.message() + "\n")
           return finish(out, errors)
         }
       }
-      let ion = @partiql_ion.to_ion(value)
-      let text = try {
-        if compact {
-          @text.write_ion(ion)
-        } else {
-          @text.write_ion_pretty(ion)
-        }
-      } catch {
-        e => {
-          errors.write_string(
-            "partiql query: \{input.name}: cannot write the result: \{e.message()}\n",
-          )
-          return finish(out, errors)
-        }
-      }
-      out.write_string(text + "\n")
+      { ..finish(out, errors), stdout_bytes: Some(bytes), }
+    } else {
+      finish(out, errors)
     }
   }
-  finish(out, errors)
+  for script in scripts {
+    let (input, statements) = script
+    let environments = match loaded.each {
+      Some((name, values)) =>
+        values.iter().map(value => env.with_value(name, value))
+      None => [env].iter()
+    }
+    for env in environments {
+      for statement in statements {
+        let value = @eval.evaluate(statement, env~, mode~, clock?=io.clock) catch {
+          e => {
+            errors.write_string(eval_error_text(e, input, color))
+            return done()
+          }
+        }
+        if binary {
+          results.push(value)
+        } else {
+          let text = @partiql_ion.write_text([value], pretty=!compact) catch {
+            e => {
+              errors.write_string(
+                "partiql query: \{input.name}: " + e.message() + "\n",
+              )
+              return done()
+            }
+          }
+          out.write_string(text)
+        }
+      }
+    }
+  }
+  done()
 }
 
 ///|
@@ -136,7 +153,17 @@ fn query_stdin_readers(m : @argparse.Matches) -> Int32 {
     .unwrap_or([])
     .filter(t => data_arg(t) is Some({ file: "-", .. }))
     .length()
-  statements + envs + datas
+  let schemas = m.values
+    .get("env-schema")
+    .unwrap_or([])
+    .filter(f => f == "-")
+    .length() +
+    m.values
+    .get("data-schema")
+    .unwrap_or([])
+    .filter(t => data_arg(t) is Some({ file: "-", .. }))
+    .length()
+  statements + envs + datas + schemas
 }
 
 ///|
@@ -144,7 +171,9 @@ fn query_stdin_readers(m : @argparse.Matches) -> Int32 {
 /// ends in a usage error (a bad `--data` value, two stdin readers) reads
 /// nothing, so it never waits for stdin.
 fn query_reads_stdin(m : @argparse.Matches) -> Bool {
-  data_args(m) is Ok(_) && query_stdin_readers(m) == 1
+  data_args(m) is Ok(datas) &&
+  query_options_error(m, datas) is None &&
+  query_stdin_readers(m) == 1
 }
 
 ///|
@@ -167,91 +196,192 @@ fn data_args(m : @argparse.Matches) -> Result[Array[DataArg], String] {
 }
 
 ///|
-/// The decoded top-level values of the Ion file `file` (`-` is stdin), or
-/// `None` after an error in `errors`.
+fn ion_error_text(e : @partiql_ion.IonDataError) -> String {
+  match e {
+    Text(e) => e.message()
+    Codec(Unsupported(message)) | Codec(Malformed(message)) => message
+    _ => e.message()
+  }
+}
+
+///|
+fn read_ion_file(file : String, io : Io) -> Bytes raise {
+  if file == "-" {
+    match io.read_stdin_bytes {
+      Some(read) => read()
+      None => @utf8.encode((io.read_stdin)())
+    }
+  } else {
+    match io.read_file_bytes {
+      Some(read) => read(file)
+      None => @utf8.encode((io.read_file)(file))
+    }
+  }
+}
+
+///|
+fn query_report(
+  errors : StringBuilder,
+  file : String,
+  message : String,
+) -> Unit {
+  let label = if file == "-" { "<stdin>" } else { file }
+  for line in message.split("\n") {
+    errors.write_string("partiql query: \{label}: \{line}\n")
+  }
+}
+
+///|
 fn read_values(
   file : String,
   io : Io,
   errors : StringBuilder,
+  validation : @partiql_ion.Validation?,
 ) -> Array[@value.Value]? {
-  let label = if file == "-" { "<stdin>" } else { file }
-  let report = (message : String) => {
-    errors.write_string("partiql query: \{label}: \{message}\n")
-  }
-  let text = try {
-    if file == "-" {
-      (io.read_stdin)()
-    } else {
-      (io.read_file)(file)
-    }
-  } catch {
+  let bytes = read_ion_file(file, io) catch {
     e => {
-      report(error_text(e))
+      query_report(errors, file, error_text(e))
       return None
     }
   }
-  let ions = @text.read_ion_datagram(text) catch {
+  let values = @partiql_ion.read_bytes(bytes, validation?) catch {
     e => {
-      report(e.message())
+      query_report(errors, file, ion_error_text(e))
       return None
     }
-  }
-  let values : Array[@value.Value] = []
-  for ion in ions {
-    let value = @partiql_ion.from_ion(ion) catch {
-      Unsupported(message) | Malformed(message) => {
-        report(message)
-        return None
-      }
-    }
-    values.push(value)
   }
   Some(values)
 }
 
 ///|
-/// The globals of `--env` and `--data` (spec M4e §4): the fields of each
-/// `--env` struct, then each `--data` binding, in order. A name bound twice
-/// (exact comparison) is an error in `errors`.
+priv struct LoadedBindings {
+  globals : Array[(String, @value.Value)]
+  each : (String, Array[@value.Value])?
+}
+
+///|
+fn read_validation(
+  file : String,
+  m : @argparse.Matches,
+  io : Io,
+  errors : StringBuilder,
+) -> @partiql_ion.Validation? {
+  let bytes = read_ion_file(file, io) catch {
+    e => {
+      query_report(errors, file, error_text(e))
+      return None
+    }
+  }
+  let schema = @partiql_ion.load_schema_bytes(bytes) catch {
+    e => {
+      query_report(errors, file, ion_error_text(e))
+      return None
+    }
+  }
+  let name = m.values.get("schema-type").unwrap_or(["document"])[0]
+  Some(
+    if m.flags.get("schema-document") == Some(true) {
+      @partiql_ion.Validation::document(schema, name)
+    } else {
+      @partiql_ion.Validation::elements(schema, name)
+    },
+  )
+}
+
+///|
 fn load_bindings(
-  envs : Array[String],
+  m : @argparse.Matches,
   datas : Array[DataArg],
   io : Io,
   errors : StringBuilder,
-) -> Array[(String, @value.Value)] {
+) -> LoadedBindings {
   let globals : Array[(String, @value.Value)] = []
+  let mut each : (String, Array[@value.Value])? = None
   let bind = (file : String, name : String, value : @value.Value) => {
     if globals.iter().any(g => g.0 == name) {
-      let label = if file == "-" { "<stdin>" } else { file }
-      errors.write_string(
-        "partiql query: \{label}: the global \{name} is bound twice\n",
-      )
+      query_report(errors, file, "the global \{name} is bound twice")
     } else {
       globals.push((name, value))
     }
   }
-  for file in envs {
-    guard read_values(file, io, errors) is Some(values) else { continue }
+  let env_validation = match m.values.get("env-schema") {
+    Some([file, ..]) => read_validation(file, m, io, errors)
+    _ => None
+  }
+  let validations : Map[String, @partiql_ion.Validation] = Map([])
+  for arg in m.values.get("data-schema").unwrap_or([]) {
+    if data_arg(arg) is Some(d) &&
+      read_validation(d.file, m, io, errors) is Some(v) {
+      validations[d.name] = v
+    }
+  }
+  if errors.to_string() != "" {
+    return { globals, each, }
+  }
+  for file in m.values.get("env").unwrap_or([]) {
+    guard read_values(file, io, errors, env_validation) is Some(values) else {
+      continue
+    }
     match values {
       [Tuple(t)] =>
         for field in t.fields() {
           bind(file, field.0, field.1)
         }
-      _ => {
-        let label = if file == "-" { "<stdin>" } else { file }
-        errors.write_string(
-          "partiql query: \{label}: --env needs one Ion struct\n",
-        )
-      }
+      _ => query_report(errors, file, "--env needs one Ion struct")
     }
   }
   for d in datas {
-    guard read_values(d.file, io, errors) is Some(values) else { continue }
+    guard read_values(d.file, io, errors, validations.get(d.name))
+      is Some(values) else {
+      continue
+    }
+    if m.values.get("each") == Some([d.name]) {
+      each = Some((d.name, values))
+    }
     let value : @value.Value = match values {
       [v] => v
       _ => Bag(@value.Bag::new(values))
     }
     bind(d.file, d.name, value)
   }
-  globals
+  { globals, each, }
+}
+
+///|
+fn query_options_error(
+  m : @argparse.Matches,
+  datas : Array[DataArg],
+) -> String? {
+  match m.values.get("output-format") {
+    None | Some(["ion"]) | Some(["binary"]) => ()
+    _ => return Some("--output-format must be ion or binary")
+  }
+  if m.values.get("each") is Some([name, ..]) && !datas.any(d => d.name == name) {
+    return Some("--each needs a --data binding named " + name)
+  }
+  let names : Array[String] = []
+  for arg in m.values.get("data-schema").unwrap_or([]) {
+    guard data_arg(arg) is Some(d) else {
+      return Some("--data-schema needs NAME=FILE")
+    }
+    if !datas.any(data => data.name == d.name) {
+      return Some("--data-schema names an unknown binding: " + d.name)
+    }
+    if names.contains(d.name) {
+      return Some("--data-schema names a binding twice: " + d.name)
+    }
+    names.push(d.name)
+  }
+  if m.values.get("env-schema") is Some(_) && m.values.get("env") is None {
+    return Some("--env-schema needs --env")
+  }
+  if m.values.get("data-schema") is None &&
+    m.values.get("env-schema") is None &&
+    (
+      m.values.get("schema-type") is Some(_) ||
+      m.flags.get("schema-document") == Some(true)
+    ) {
+    return Some("--schema-type and --schema-document need a schema option")
+  }
+  None
 }

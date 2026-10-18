@@ -1,7 +1,7 @@
 ///|
 fn dec(coefficient : Int32, exponent : Int32) -> Num {
   num_of_decimal(
-    @ion_core.Decimal::new(@bigint.BigInt::from_int(coefficient), exponent),
+    @ion_core.Decimal::Decimal(@bigint.BigInt::from_int(coefficient), exponent),
   )
 }
 

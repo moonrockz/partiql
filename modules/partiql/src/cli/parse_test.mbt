@@ -5,6 +5,8 @@ fn io_with(
   color~ : Bool = false,
 ) -> @cli.Io {
   {
+    read_file_bytes: None,
+    read_stdin_bytes: None,
     read_file: path => {
       match files.get(path) {
         Some(text) => text
@@ -62,7 +64,7 @@ test "check reports errors and keeps going" {
     .to_be_true()
     soft
     .expect(@cli.run(["check", "good.sql"], io~))
-    .to_equal({ stdout: "", stderr: "", status: 0, })
+    .to_equal({ stdout_bytes: None, stdout: "", stderr: "", status: 0, })
     soft
     .expect(
       @cli.run(["check", "-e", "insert into t value 1"], io~).stderr.contains(

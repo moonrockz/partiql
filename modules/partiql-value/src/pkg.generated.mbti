@@ -210,7 +210,7 @@ pub(all) enum Value {
   Tuple(Tuple)
   Map(MapValue)
   Graph(GraphValue)
-  Ion(@ion.IonValue)
+  Ion(@ion.Ion)
 }
 pub fn[A] Value::fold(Self, (Self, Array[A]) -> A raise?, prepare? : (Self) -> Self) -> A raise?
 pub fn Value::integer(@bigint.BigInt) -> Self

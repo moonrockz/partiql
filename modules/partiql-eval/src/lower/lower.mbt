@@ -259,29 +259,6 @@ fn lower_chain(
 }
 
 ///|
-/// The nesting depth of an Ion value (a scalar is 1), counted in a loop: the
-/// parser does not limit the depth of an Ion literal.
-fn ion_depth(v : @ion_core.IonValue) -> Int32 {
-  let mut deepest = 0
-  let pending = [(v, 1)]
-  while pending.pop() is Some((x, d)) {
-    deepest = deepest.max(d)
-    match x.kind() {
-      List(items) | Sexp(items) =>
-        for item in items {
-          pending.push((item, d + 1))
-        }
-      Struct(fields) =>
-        for field in fields {
-          pending.push((field.value(), d + 1))
-        }
-      _ => ()
-    }
-  }
-  deepest
-}
-
-///|
 /// Lowers an expression.
 pub fn lower(e : @ast.Expr) -> @plan.Expr raise @plan.EvalError {
   within_depth(lower_plain(e, Scope::top(), 0))
@@ -306,8 +283,6 @@ fn lower_at(
     return keyed(e, Local(name, span), scope, depth)
   }
   match e.kind {
-    Lit(Ion(_, v)) if depth + ion_depth(v) > max_depth =>
-      raise DataError(message="expression is too deep", span~)
     Lit(l) => Const(literal(l, span), span)
     VarRef(id, qualified~) =>
       match

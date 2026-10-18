@@ -15,6 +15,7 @@ import {
   "moonrockz/partiql-value" @value,
   "moonrockz/ion/ion",
   "moonrockz/ion/text",
+  "moonrockz/partiql-value/ion" @partiql_ion,
   "moonrockz/expect",
   "moonbitlang/core/quickcheck",
   "moonbitlang/core/quickcheck/splitmix",

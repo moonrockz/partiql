@@ -6,7 +6,7 @@ fn int(n : Int32) -> @value.Value {
 ///|
 test "structural identity is type-strict" {
   @expect.expect_all(soft => {
-    let one_decimal = @value.Value::Decimal(@ion_core.Decimal::new(1N, 0))
+    let one_decimal = @value.Value::Decimal(@ion_core.Decimal::Decimal(1N, 0))
     soft.expect(int(1) == one_decimal).to_be_false()
     soft.expect(int(1) == int(1)).to_be_true()
   })
@@ -14,8 +14,8 @@ test "structural identity is type-strict" {
 
 ///|
 test "decimal identity keeps scale" {
-  let a = @value.Value::Decimal(@ion_core.Decimal::new(10N, -1))
-  let b = @value.Value::Decimal(@ion_core.Decimal::new(1N, 0))
+  let a = @value.Value::Decimal(@ion_core.Decimal::Decimal(10N, -1))
+  let b = @value.Value::Decimal(@ion_core.Decimal::Decimal(1N, 0))
   @expect.expect(a == b).to_be_false()
 }
 

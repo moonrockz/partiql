@@ -173,14 +173,14 @@ test "seconds with extreme exponents decode or fail fast" {
     })
     .to_raise_matching(malformed, description="Malformed")
     let tiny = @ion_core.IonValue::from_fields([
-      @ion_core.Field::new("hour", @ion_core.IonValue::int(1)),
-      @ion_core.Field::new("minute", @ion_core.IonValue::int(0)),
-      @ion_core.Field::new(
+      @ion_core.Field::Field("hour", @ion_core.IonValue::int(1)),
+      @ion_core.Field::Field("minute", @ion_core.IonValue::int(0)),
+      @ion_core.Field::Field(
         "second",
-        @ion_core.IonValue::decimal(@ion_core.Decimal::new(1N, -2147483648)),
+        @ion_core.IonValue::decimal(@ion_core.Decimal::Decimal(1N, -2147483648)),
       ),
-      @ion_core.Field::new("offset", @ion_core.IonValue::untyped_null()),
-    ]).with_annotation(@ion_core.SymbolToken::new("$time"))
+      @ion_core.Field::Field("offset", @ion_core.IonValue::untyped_null()),
+    ]).with_annotation(@ion_core.SymbolToken::SymbolToken("$time"))
     soft
     .expect_call(() => @partiql_ion.from_ion(tiny))
     .to_raise_matching(malformed, description="Malformed")
@@ -374,7 +374,9 @@ test "$graph values decode" {
         @value.GraphEdge::new(
           id="d1",
           ends=Directed(from="n1", to="n1"),
-          payload=Some(@value.Value::Decimal(@ion_core.Decimal::new(11N, -1))),
+          payload=Some(
+            @value.Value::Decimal(@ion_core.Decimal::Decimal(11N, -1)),
+          ),
         ),
       ]),
     )
