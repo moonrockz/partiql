@@ -30,6 +30,9 @@ trim = true
 
 [git]
 conventional_commits = true
+# The v1.0.0 attempt failed before publication: moon publish requires 0.x.y.
+# Preserve its immutable tag, but carry its commits into the next release.
+ignore_tags = '^v1\.0\.0$'
 filter_unconventional = false
 commit_parsers = [
     { message = "^Merge (pull request|branch)", skip = true },
@@ -59,7 +62,8 @@ sort_commits = "oldest"
 [bump]
 initial_tag = "0.1.0"
 features_always_bump_minor = true
-breaking_always_bump_major = true
+# Mooncakes currently accepts only 0.x.y, including breaking API changes.
+breaking_always_bump_major = false
 
 [remote.github]
 owner = "moonrockz"

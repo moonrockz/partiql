@@ -2,7 +2,7 @@
 
 name = "moonrockz/partiql-syntax"
 
-version = "1.0.0"
+version = "0.2.0"
 
 readme = "README.mbt.md"
 
