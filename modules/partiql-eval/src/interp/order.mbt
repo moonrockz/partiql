@@ -122,9 +122,11 @@ fn query(
     return pivoted(rows)
   }
   if order.is_empty() {
-    Bag(@value.Bag::Bag(window(pairs.map(pair => pair.1), offset, limit)))
+    @value.Value::from_bag(
+      @value.Bag(window(pairs.map(pair => pair.1), offset, limit)),
+    )
   } else {
-    List(window(sorted(pairs, order, ctx), offset, limit))
+    @value.Value::from_list(window(sorted(pairs, order, ctx), offset, limit))
   }
 }
 

@@ -179,7 +179,7 @@ let logic_inputs : Array[String] = ["TRUE", "FALSE", "NULL", "MISSING"]
 /// String that no table entry equals.
 fn logic(source : String) -> @value.Value {
   ev(source) catch {
-    e => String("error: \{@debug.to_string(e)}")
+    e => @value.Value::from_string("error: \{@debug.to_string(e)}")
   }
 }
 
@@ -196,7 +196,7 @@ fn kleene(v : String) -> Bool? {
 ///|
 fn expect_bool(b : Bool?) -> @value.Value {
   match b {
-    Some(x) => Bool(x)
+    Some(x) => @value.Value::from_bool(x)
     None => Null
   }
 }
@@ -341,10 +341,10 @@ test "law: < agrees with the value order on numbers and strings" {
       let (a, b) = p
       let (va, vb) = (ev(a.text), ev(b.text))
       let c = @value.compare(va, vb, nulls=NullsFirst)
-      ev("\{a.text} < \{b.text}") == Bool(c < 0) &&
-      ev("\{a.text} <= \{b.text}") == Bool(c <= 0) &&
-      ev("\{a.text} > \{b.text}") == Bool(c > 0) &&
-      ev("\{a.text} >= \{b.text}") == Bool(c >= 0)
+      ev("\{a.text} < \{b.text}") == @value.Value::from_bool(c < 0) &&
+      ev("\{a.text} <= \{b.text}") == @value.Value::from_bool(c <= 0) &&
+      ev("\{a.text} > \{b.text}") == @value.Value::from_bool(c > 0) &&
+      ev("\{a.text} >= \{b.text}") == @value.Value::from_bool(c >= 0)
     },
     count=2000,
   )
@@ -353,9 +353,13 @@ test "law: < agrees with the value order on numbers and strings" {
       let (a, b) = p
       // escape for a PartiQL string literal
       let lit = (s : String) => "'" + s.replace_all(old="'", new="''") + "'"
-      let c = @value.compare(String(a), String(b), nulls=NullsFirst)
-      ev("\{lit(a)} < \{lit(b)}") == Bool(c < 0) &&
-      ev("\{lit(a)} = \{lit(b)}") == Bool(a == b)
+      let c = @value.compare(
+        @value.Value::from_string(a),
+        @value.Value::from_string(b),
+        nulls=NullsFirst,
+      )
+      ev("\{lit(a)} < \{lit(b)}") == @value.Value::from_bool(c < 0) &&
+      ev("\{lit(a)} = \{lit(b)}") == @value.Value::from_bool(a == b)
     },
     count=500,
   )
@@ -472,8 +476,8 @@ test "law: = on datetimes agrees with the order, also in collections and IN" {
         let eq = ev("\{a} = \{b}")
         let expected : @value.Value = match
           (ev("\{a} <= \{b}"), ev("\{a} >= \{b}")) {
-          (Bool(p), Bool(q)) => Bool(p && q)
-          _ => Bool(false)
+          (Bool(p), Bool(q)) => @value.Value::from_bool(p && q)
+          _ => @value.Value::from_bool(false)
         }
         let label = "\{a} = \{b}"
         soft.expect(eq, label~).to_equal(expected)

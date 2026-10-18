@@ -1,41 +1,45 @@
 ///|
 fn up(text : String) -> @value.Value raise OpFailure {
-  upper([String(text)])
+  upper([@value.Value::from_string(text)])
 }
 
 ///|
 fn low(text : String) -> @value.Value raise OpFailure {
-  lower([String(text)])
+  lower([@value.Value::from_string(text)])
 }
 
 ///|
 test "UPPER and LOWER use full, locale-independent case mapping" {
   @expect.expect_all(soft => {
-    soft.expect(up("abc")).to_equal(String("ABC"))
-    soft.expect(up("straße")).to_equal(String("STRASSE"))
+    soft.expect(up("abc")).to_equal(@value.Value::from_string("ABC"))
+    soft.expect(up("straße")).to_equal(@value.Value::from_string("STRASSE"))
     soft
     .expect(up("åß∂ƒ©˙∆˚¬…æ"))
-    .to_equal(String("ÅSS∂Ƒ©˙∆˚¬…Æ"))
-    soft.expect(up("ﬁﬂ")).to_equal(String("FIFL"))
-    soft.expect(up("ǰ")).to_equal(String("J\u{030C}"))
-    soft.expect(low("İ")).to_equal(String("i\u{0307}"))
-    soft.expect(low("ABC")).to_equal(String("abc"))
-    soft.expect(up("😁")).to_equal(String("😁"))
+    .to_equal(@value.Value::from_string("ÅSS∂Ƒ©˙∆˚¬…Æ"))
+    soft.expect(up("ﬁﬂ")).to_equal(@value.Value::from_string("FIFL"))
+    soft.expect(up("ǰ")).to_equal(@value.Value::from_string("J\u{030C}"))
+    soft.expect(low("İ")).to_equal(@value.Value::from_string("i\u{0307}"))
+    soft.expect(low("ABC")).to_equal(@value.Value::from_string("abc"))
+    soft.expect(up("😁")).to_equal(@value.Value::from_string("😁"))
     soft.expect(upper([Null])).to_equal(Null)
     soft.expect(lower([Missing])).to_equal(Missing)
-    soft.expect(failure(() => upper([Int(1)]))).to_equal("type")
+    soft
+    .expect(failure(() => upper([@value.Value::from_int(1)])))
+    .to_equal("type")
   })
 }
 
 ///|
 test "LOWER applies Final_Sigma" {
   @expect.expect_all(soft => {
-    soft.expect(low("ΣΑΣ")).to_equal(String("σας"))
-    soft.expect(low("Σ")).to_equal(String("σ"))
-    soft.expect(low("ΑΣ.")).to_equal(String("ας."))
-    soft.expect(low("Α.Σ")).to_equal(String("α.ς"))
-    soft.expect(low("ΑΣ\u{0301}Α")).to_equal(String("ασ\u{0301}α"))
-    soft.expect(low("ΑΣ Α")).to_equal(String("ας α"))
+    soft.expect(low("ΣΑΣ")).to_equal(@value.Value::from_string("σας"))
+    soft.expect(low("Σ")).to_equal(@value.Value::from_string("σ"))
+    soft.expect(low("ΑΣ.")).to_equal(@value.Value::from_string("ας."))
+    soft.expect(low("Α.Σ")).to_equal(@value.Value::from_string("α.ς"))
+    soft
+    .expect(low("ΑΣ\u{0301}Α"))
+    .to_equal(@value.Value::from_string("ασ\u{0301}α"))
+    soft.expect(low("ΑΣ Α")).to_equal(@value.Value::from_string("ας α"))
   })
 }
 

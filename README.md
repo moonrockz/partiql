@@ -99,7 +99,7 @@ For evaluation, add `moonrockz/partiql-eval` and import it as `@eval`, with
 test "library query" {
   let session = @eval.Session()
   let result = session.evaluate("SELECT VALUE x * 2 FROM [1, 2, 3] AS x")
-  let expected = @value.Value::Bag(@value.Bag::Bag([
+  let expected = @value.Value::from_bag(@value.Bag([
     @value.Value(2), @value.Value(4), @value.Value(6),
   ]))
   @expect.expect(result).to_equal(expected)
@@ -107,7 +107,10 @@ test "library query" {
 ```
 
 Construct domain types with `Type(...)` and convert supported MoonBit values
-with `Value(x)`. `Type::Type(...)` selects a constructor when an enum variant
+with `Value(x)`. Typed `Value::from_*` methods wrap known payload types and
+resolve nested domain constructors, such as
+`Value::from_bag(@value.Bag(items))`. Enum variants remain available for patterns.
+`Type::Type(...)` selects a standalone constructor when an enum variant
 shares its name. Former `new` factories remain deprecated aliases; the
 fallible offset factory is now `ZoneOffset::from_minutes`.
 

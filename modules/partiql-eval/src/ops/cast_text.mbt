@@ -216,11 +216,11 @@ fn to_text(x : @value.Value, kind : TextKind) -> @value.Value raise OpFailure {
       }
   }
   match kind {
-    String => String(text)
-    Varchar(n) => String(fit_text(text, n, character, name))
+    String => @value.Value::from_string(text)
+    Varchar(n) => @value.Value::from_string(fit_text(text, n, character, name))
     Char(n) => {
       let fitted = fit_text(text, n, character, name)
-      String(fitted + " ".repeat(n - fitted.char_length()))
+      @value.Value::from_string(fitted + " ".repeat(n - fitted.char_length()))
     }
   }
 }
@@ -232,9 +232,9 @@ fn to_lob(
   target : CastTarget,
 ) -> @value.Value raise OpFailure {
   match (x, target) {
-    (String(s), Clob) => Clob(@utf8.encode(s.view()))
-    (Clob(b) | Blob(b), Clob) => Clob(b)
-    (Clob(b) | Blob(b), Blob) => Blob(b)
+    (String(s), Clob) => @value.Value::from_clob(@utf8.encode(s.view()))
+    (Clob(b) | Blob(b), Clob) => @value.Value::from_clob(b)
+    (Clob(b) | Blob(b), Blob) => @value.Value::from_blob(b)
     _ => raise TypeFailure("CAST of \{kind_name(x)} to \{target_name(target)}")
   }
 }

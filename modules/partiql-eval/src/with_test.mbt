@@ -14,13 +14,20 @@ test "TABLE and WITH" {
   @expect.expect_all(soft => {
     soft
     .expect(wq("TABLE t"))
-    .to_equal(bag_of([tuple([("a", Int(1))]), tuple([("a", Int(2))])]))
-    soft.expect(wq("TABLE hr.emp")).to_equal(bag_of([tuple([("n", Int(1))])]))
+    .to_equal(
+      bag_of([
+        tuple([("a", @value.Value::from_int(1))]),
+        tuple([("a", @value.Value::from_int(2))]),
+      ]),
+    )
+    soft
+    .expect(wq("TABLE hr.emp"))
+    .to_equal(bag_of([tuple([("n", @value.Value::from_int(1))])]))
     soft
     .expect(
       wq("WITH w AS (SELECT VALUE r.a FROM t AS r) SELECT VALUE x FROM w AS x"),
     )
-    .to_equal(bag_of([Int(1), Int(2)]))
+    .to_equal(bag_of([@value.Value::from_int(1), @value.Value::from_int(2)]))
     // chained bindings
     soft
     .expect(
@@ -28,20 +35,20 @@ test "TABLE and WITH" {
         "WITH a AS (SELECT VALUE 1 FROM [0] AS z), b AS (SELECT VALUE x + 1 FROM a AS x) SELECT VALUE y FROM b AS y",
       ),
     )
-    .to_equal(bag_of([Int(2)]))
+    .to_equal(bag_of([@value.Value::from_int(2)]))
     // a WITH name hides a global, also in a FROM source and in an expression
     soft
     .expect(
       wq("WITH w AS (SELECT VALUE 5 FROM [0] AS z) SELECT VALUE x FROM w AS x"),
     )
-    .to_equal(bag_of([Int(5)]))
+    .to_equal(bag_of([@value.Value::from_int(5)]))
     soft
     .expect(
       wq(
         "WITH w AS (SELECT VALUE 5 FROM [0] AS z) SELECT VALUE w FROM [0] AS z",
       ),
     )
-    .to_equal(bag_of([bag_of([Int(5)])]))
+    .to_equal(bag_of([bag_of([@value.Value::from_int(5)])]))
     // a repeated name is a DataError
     soft
     .expect_call(() => wq("WITH a AS (TABLE t), a AS (TABLE t) TABLE a"))
@@ -52,7 +59,12 @@ test "TABLE and WITH" {
     // ORDER BY over TABLE (a SELECT * body) sorts by an implicit attribute
     soft
     .expect(wq("TABLE t ORDER BY a DESC"))
-    .to_equal(List([tuple([("a", Int(2))]), tuple([("a", Int(1))])]))
+    .to_equal(
+      @value.Value::from_list([
+        tuple([("a", @value.Value::from_int(2))]),
+        tuple([("a", @value.Value::from_int(1))]),
+      ]),
+    )
     // WITH wraps ORDER BY and LIMIT of the body
     soft
     .expect(
@@ -60,6 +72,6 @@ test "TABLE and WITH" {
         "WITH s AS (TABLE t) SELECT VALUE x.a FROM s AS x ORDER BY x.a DESC LIMIT 1",
       ),
     )
-    .to_equal(List([Int(2)]))
+    .to_equal(@value.Value::from_list([@value.Value::from_int(2)]))
   })
 }

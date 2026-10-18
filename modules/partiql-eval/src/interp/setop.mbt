@@ -123,7 +123,9 @@ fn set_op(
         span,
       )
     }
-    acc = Bag(@value.Bag::Bag(combine(kind, all, left_items, right_items)))
+    acc = @value.Value::from_bag(
+      @value.Bag(combine(kind, all, left_items, right_items)),
+    )
     acc_span = span
   }
   acc

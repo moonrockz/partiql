@@ -22,7 +22,7 @@ test "law: DATE_DIFF undoes DATE_ADD for day to second" {
         let source = "DATE_DIFF(\{f}, \{x}, \{added})"
         soft
         .expect((source, strict_value(source)))
-        .to_equal((source, Some(Int(n.to_int64()))))
+        .to_equal((source, Some(@value.Value::from_int(n.to_int64()))))
       }
     }
   })
@@ -42,7 +42,7 @@ test "law: DATE_DIFF undoes DATE_ADD for months when no month end overflows" {
           let source = "DATE_DIFF(\{f}, \{x}, \{added})"
           soft
           .expect((source, strict_value(source)))
-          .to_equal((source, Some(Int(n.to_int64()))))
+          .to_equal((source, Some(@value.Value::from_int(n.to_int64()))))
         }
       }
     }
@@ -96,11 +96,11 @@ test "law: EXTRACT rebuilds a timestamp" {
       })
       guard v is Timestamp(ts) else { continue }
       let expected : Array[@value.Value?] = [
-        Some(Int(ts.date.year.to_int64())),
-        Some(Int(ts.date.month.to_int64())),
-        Some(Int(ts.date.day.to_int64())),
-        Some(Int(ts.time.hour.to_int64())),
-        Some(Int(ts.time.minute.to_int64())),
+        Some(@value.Value::from_int(ts.date.year.to_int64())),
+        Some(@value.Value::from_int(ts.date.month.to_int64())),
+        Some(@value.Value::from_int(ts.date.day.to_int64())),
+        Some(@value.Value::from_int(ts.time.hour.to_int64())),
+        Some(@value.Value::from_int(ts.time.minute.to_int64())),
       ]
       soft.expect((x, parts)).to_equal((x, expected))
     }

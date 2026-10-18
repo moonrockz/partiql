@@ -16,7 +16,7 @@ test "law: the clock functions agree for random instants and zones" {
         ] {
         soft
         .expect((law, seconds, nanos, ev_clock(law, clock, zone~)))
-        .to_equal((law, seconds, nanos, Bool(true)))
+        .to_equal((law, seconds, nanos, @value.Value::from_bool(true)))
       }
     }
   })

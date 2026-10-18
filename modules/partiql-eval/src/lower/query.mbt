@@ -389,7 +389,10 @@ fn clause_at(
     // them all), so this literal is not range-checked.
     Lit(Int(text)) =>
       Some(
-        Const(@value.Value::integer(@bigint.BigInt::from_string(text)), e.span),
+        Const(
+          @value.Value::from_bigint(@bigint.BigInt::from_string(text)),
+          e.span,
+        ),
       )
     _ => Some(lower_at(e, scope, depth))
   }

@@ -2,41 +2,51 @@
 test "COLL_ functions over collections" {
   let numbers = "[1, 2.0, `3e0`, 4, 5.]"
   @expect.expect_all(soft => {
-    soft.expect(ev("COLL_COUNT(<<1, 'x', NULL, MISSING>>)")).to_equal(Int(2))
-    soft.expect(ev("COLL_COUNT(<< >>)")).to_equal(Int(0))
-    soft.expect(ev("COLL_COUNT([MISSING])")).to_equal(Int(0))
+    soft
+    .expect(ev("COLL_COUNT(<<1, 'x', NULL, MISSING>>)"))
+    .to_equal(@value.Value::from_int(2))
+    soft.expect(ev("COLL_COUNT(<< >>)")).to_equal(@value.Value::from_int(0))
+    soft.expect(ev("COLL_COUNT([MISSING])")).to_equal(@value.Value::from_int(0))
     soft
     .expect(ev("COLL_SUM(\{numbers})"))
-    .to_equal(Decimal(@ion.Decimal::parse("15.0")))
+    .to_equal(@value.Value::from_decimal(@ion.Decimal::parse("15.0")))
     soft
     .expect(ev("COLL_AVG(\{numbers})"))
-    .to_equal(Decimal(@ion.Decimal::parse("3.0")))
+    .to_equal(@value.Value::from_decimal(@ion.Decimal::parse("3.0")))
     soft
     .expect(ev("COLL_AVG([2, 2, 2, 4])"))
-    .to_equal(Decimal(@ion.Decimal::parse("2.5")))
+    .to_equal(@value.Value::from_decimal(@ion.Decimal::parse("2.5")))
     soft
     .expect(ev("COLL_MAX(\{numbers})"))
-    .to_equal(Decimal(@ion.Decimal::parse("5.")))
+    .to_equal(@value.Value::from_decimal(@ion.Decimal::parse("5.")))
     soft
     .expect(ev("COLL_MAX(<<1, 'non-number', NULL, MISSING>>)"))
-    .to_equal(String("non-number"))
+    .to_equal(@value.Value::from_string("non-number"))
     soft
     .expect(ev("COLL_MIN(<<1, 'non-number', NULL, MISSING>>)"))
-    .to_equal(Int(1))
+    .to_equal(@value.Value::from_int(1))
     soft.expect(ev("COLL_SUM(<< >>)")).to_equal(Null)
     soft.expect(ev("COLL_AVG(<<MISSING, MISSING>>)")).to_equal(Null)
     soft.expect(ev("COLL_ANY(<< >>)")).to_equal(Null)
-    soft.expect(ev("COLL_SOME(<<false, true>>)")).to_equal(Bool(true))
+    soft
+    .expect(ev("COLL_SOME(<<false, true>>)"))
+    .to_equal(@value.Value::from_bool(true))
     soft
     .expect(ev("COLL_EVERY(<< NULL, 2 < 3, MISSING, true >>)"))
-    .to_equal(Bool(true))
-    soft.expect(ev("COLL_SUM(DISTINCT [1, 1, 1, 2])")).to_equal(Int(3))
+    .to_equal(@value.Value::from_bool(true))
+    soft
+    .expect(ev("COLL_SUM(DISTINCT [1, 1, 1, 2])"))
+    .to_equal(@value.Value::from_int(3))
     soft
     .expect(ev("COLL_AVG(DISTINCT [1, 1, 1, 2])"))
-    .to_equal(Decimal(@ion.Decimal::parse("1.5")))
-    soft.expect(ev("COLL_COUNT(ALL [1, 1])")).to_equal(Int(2))
-    soft.expect(ev("coll_count([1])")).to_equal(Int(1))
-    soft.expect(ev("COLL_SUM([`null.int`, 1])")).to_equal(Int(1))
+    .to_equal(@value.Value::from_decimal(@ion.Decimal::parse("1.5")))
+    soft
+    .expect(ev("COLL_COUNT(ALL [1, 1])"))
+    .to_equal(@value.Value::from_int(2))
+    soft.expect(ev("coll_count([1])")).to_equal(@value.Value::from_int(1))
+    soft
+    .expect(ev("COLL_SUM([`null.int`, 1])"))
+    .to_equal(@value.Value::from_int(1))
   })
 }
 
@@ -79,9 +89,9 @@ test "COLL_ functions in queries" {
     .expect(
       ev("SELECT VALUE COLL_COUNT(v) + COLL_SUM(v) FROM <<[1, 2], [3]>> AS v"),
     )
-    .to_equal(bag_of([Int(5), Int(4)]))
+    .to_equal(bag_of([@value.Value::from_int(5), @value.Value::from_int(4)]))
     soft
     .expect(ev("COLL_SUM(SELECT VALUE x FROM [1, 2, 3] AS x)"))
-    .to_equal(Int(6))
+    .to_equal(@value.Value::from_int(6))
   })
 }

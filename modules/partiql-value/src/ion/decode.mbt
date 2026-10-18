@@ -42,7 +42,7 @@ fn int_of(x : @ion_core.IonValue, what : String) -> Int64 raise CodecError {
   guard x.kind() is Int(n) else {
     raise Malformed("\{what} must be an int, not \{describe(x)}")
   }
-  guard @value.Value::integer(n) is Int(small) else {
+  guard @value.Value::from_bigint(n) is Int(small) else {
     raise Malformed("\{what} is out of range")
   }
   small
@@ -177,12 +177,12 @@ fn decode_date(x : @ion_core.IonValue) -> @value.Value raise CodecError {
   match x.kind() {
     Timestamp(ts) => {
       let t = @value.timestamp_of_ion(ts)
-      Date(t.date)
+      @value.Value::from_date(t.date)
     }
     _ => {
       let f = field_map(x, "$date")
       check_fields(f, ["year", "month", "day"], "$date")
-      Date(
+      @value.Value::from_date(
         make_date(
           small_int(required(f, "year", "$date"), "$date.year"),
           small_int(required(f, "month", "$date"), "$date.month"),
@@ -256,7 +256,7 @@ fn parse_time_text(text : String) -> @value.Time raise CodecError {
 ///|
 fn decode_time(x : @ion_core.IonValue) -> @value.Value raise CodecError {
   match x.kind() {
-    String(text) => Time(parse_time_text(text))
+    String(text) => @value.Value::from_time(parse_time_text(text))
     _ => {
       let f = field_map(x, "$time")
       let hour = small_int(required(f, "hour", "$time"), "$time.hour")
@@ -288,7 +288,7 @@ fn decode_time(x : @ion_core.IonValue) -> @value.Value raise CodecError {
         check_fields(f, ["hour", "minute", "second", "offset"], "$time")
         offset_of(f.get("offset"), "$time.offset")
       }
-      Time(make_time(hour, minute, sec, offset))
+      @value.Value::from_time(make_time(hour, minute, sec, offset))
     }
   }
 }
@@ -313,7 +313,7 @@ fn decode_timestamp(x : @ion_core.IonValue) -> @value.Value raise CodecError {
     seconds_of(required(f, "second", form), "\{form}.second"),
     offset_of(f.get("offset"), "\{form}.offset"),
   )
-  Timestamp(@value.Timestamp::Timestamp(date, time))
+  @value.Value::from_timestamp(@value.Timestamp(date, time))
 }
 
 ///|
@@ -346,7 +346,7 @@ fn decode_interval_ym(x : @ion_core.IonValue) -> @value.Value raise CodecError {
   ) catch {
     error => raise Malformed(@debug.to_string(error))
   }
-  IntervalYM(interval)
+  @value.Value::from_interval_ym(interval)
 }
 
 ///|
@@ -368,26 +368,26 @@ fn decode_interval_dt(x : @ion_core.IonValue) -> @value.Value raise CodecError {
   ) catch {
     error => raise Malformed(@debug.to_string(error))
   }
-  IntervalDT(interval)
+  @value.Value::from_interval_dt(interval)
 }
 
 ///|
 fn decode_plain(x : @ion_core.IonValue) -> @value.Value raise CodecError {
   match x.kind() {
     Null(_) => Null
-    Bool(b) => Bool(b)
-    Int(n) => @value.Value::integer(n)
-    Float(d) => Float(d)
-    Decimal(d) => Decimal(d)
-    Timestamp(ts) => Timestamp(@value.timestamp_of_ion(ts))
+    Bool(b) => @value.Value::from_bool(b)
+    Int(n) => @value.Value::from_bigint(n)
+    Float(d) => @value.Value::from_float(d)
+    Decimal(d) => @value.Value::from_decimal(d)
+    Timestamp(ts) => @value.Value::from_timestamp(@value.timestamp_of_ion(ts))
     Symbol(token) =>
       match token.text() {
-        Some(text) => String(text)
+        Some(text) => @value.Value::from_string(text)
         None => raise Malformed("symbol without text")
       }
-    String(s) => String(s)
-    Clob(bytes) => Clob(bytes)
-    Blob(bytes) => Blob(bytes)
+    String(s) => @value.Value::from_string(s)
+    Clob(bytes) => @value.Value::from_clob(bytes)
+    Blob(bytes) => @value.Value::from_blob(bytes)
     List(_) | Struct(_) => raise Malformed("expected a scalar")
     Sexp(_) => raise Malformed("an s-expression is only valid inside $ion")
   }
@@ -405,7 +405,8 @@ fn typed_child(
 ) -> @value.Value {
   match (declared, original.kind()) {
     (Date, Timestamp(ts)) if !original.has_annotations() &&
-      ts.precision() == Day => Date(@value.timestamp_of_ion(ts).date)
+      ts.precision() == Day =>
+      @value.Value::from_date(@value.timestamp_of_ion(ts).date)
     _ => decoded
   }
 }
@@ -450,7 +451,7 @@ fn decode_map(x : @ion_core.IonValue) -> DecodePlan raise CodecError {
     let map = @value.MapValue(key_type~, value_type~, entries) catch {
       error => raise Malformed(@debug.to_string(error))
     }
-    Map(map)
+    @value.Value::from_map(map)
   })
 }
 
@@ -612,7 +613,7 @@ fn decode_graph(x : @ion_core.IonValue) -> DecodePlan raise CodecError {
     let graph = @value.GraphValue(nodes, edges) catch {
       error => raise Malformed(@debug.to_string(error))
     }
-    Graph(graph)
+    @value.Value::from_graph(graph)
   })
 }
 
@@ -628,7 +629,7 @@ fn decode_plan(x : @ion_core.IonValue) -> DecodePlan raise CodecError {
   let annotations = x.annotations()
   if annotations.is_empty() {
     return match x.kind() {
-      List(items) => Children(items, values => List(values))
+      List(items) => Children(items, values => @value.Value::from_list(values))
       Struct(fields) => {
         let names = []
         for f in fields {
@@ -638,7 +639,9 @@ fn decode_plan(x : @ion_core.IonValue) -> DecodePlan raise CodecError {
           names.push(name)
         }
         Children(fields.map(f => f.value()), values => {
-          Tuple(@value.Tuple::Tuple(names.mapi((i, name) => (name, values[i]))))
+          @value.Value::from_tuple(
+            @value.Tuple(names.mapi((i, name) => (name, values[i]))),
+          )
         })
       }
       _ => Ready(decode_plain(x))
@@ -648,7 +651,7 @@ fn decode_plan(x : @ion_core.IonValue) -> DecodePlan raise CodecError {
     raise Malformed("annotation without text")
   }
   if form == "$ion" {
-    return Ready(Ion(without_first_annotation(x)))
+    return Ready(@value.Value::from_ion(without_first_annotation(x)))
   }
   if form == "$map" {
     return decode_map(x)
@@ -669,7 +672,8 @@ fn decode_plan(x : @ion_core.IonValue) -> DecodePlan raise CodecError {
       }
     "$bag" =>
       match body.kind() {
-        List(items) => Children(items, values => Bag(@value.Bag::Bag(values)))
+        List(items) =>
+          Children(items, values => @value.Value::from_bag(@value.Bag(values)))
         _ => raise Malformed("$bag must annotate a list")
       }
     "$date" => Ready(decode_date(body))

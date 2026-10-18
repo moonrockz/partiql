@@ -51,7 +51,7 @@ fn grouping_scalar(a : Value, b : Value) -> Bool {
       }
     (IntervalYM(x), IntervalYM(y)) => x == y
     (IntervalDT(x), IntervalDT(y)) => x == y
-    (Ion(x), Ion(y)) => Value::Ion(x) == Value::Ion(y)
+    (Ion(x), Ion(y)) => Value::from_ion(x) == Value::from_ion(y)
     _ => false
   }
 }
@@ -66,13 +66,13 @@ pub fn sql_equals(a : Value, b : Value) -> Value {
         (Missing, _) | (_, Missing) => Missing
         (Null, _) | (_, Null) => Null
         _ =>
-          Bool(
+          Value::from_bool(
             !(x is Float(f) && f.is_nan()) &&
             !(y is Float(f) && f.is_nan()) &&
             eqg(x, y),
           )
       }
-    _ => Bool(a == b)
+    _ => Value::from_bool(a == b)
   }
 }
 

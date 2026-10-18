@@ -1,14 +1,16 @@
 ///|
 test "EXTRACT evaluates" {
   @expect.expect_all(soft => {
-    soft.expect(ev("EXTRACT(YEAR FROM DATE '2024-02-29')")).to_equal(Int(2024))
+    soft
+    .expect(ev("EXTRACT(YEAR FROM DATE '2024-02-29')"))
+    .to_equal(@value.Value::from_int(2024))
     soft
     .expect(
       ev(
         "EXTRACT(TIMEZONE_MINUTE FROM TIME WITH TIME ZONE '01:23:45.678-06:30')",
       ),
     )
-    .to_equal(Int(-30))
+    .to_equal(@value.Value::from_int(-30))
     soft
     .expect(ev("EXTRACT(SECOND FROM TIME '01:23:45.678')"))
     .to_equal(dec("45.678"))
@@ -44,7 +46,7 @@ test "DATE_ADD evaluates" {
     // An Ion literal evaluates to the boxed Ion value, so compare with `=`.
     soft
     .expect(ev("DATE_ADD(month, 1, `2010T`) = `2010-02T`"))
-    .to_equal(Bool(true))
+    .to_equal(@value.Value::from_bool(true))
     soft
     .expect(ev("DATE_ADD(day, -1, DATE '2024-03-01')"))
     .to_equal(ev("DATE '2024-02-29'"))
@@ -62,19 +64,19 @@ test "DATE_DIFF evaluates" {
     .expect(
       ev("DATE_DIFF(hour, DATE '2025-01-15', TIMESTAMP '2025-01-14 12:30:45')"),
     )
-    .to_equal(Int(-11))
+    .to_equal(@value.Value::from_int(-11))
     soft
     .expect(
       ev("DATE_DIFF(day, `2017-01-02T01:00+10:00`, `2017-01-02T01:00+00:00`)"),
     )
-    .to_equal(Int(0))
+    .to_equal(@value.Value::from_int(0))
     soft
     .expect(
       ev(
         "DATE_DIFF(hour, TIME '08:15:45', TIME WITH TIME ZONE '08:15:45+02:00')",
       ),
     )
-    .to_equal(Int(-2))
+    .to_equal(@value.Value::from_int(-2))
     soft
     .expect(
       failure_of(
@@ -95,14 +97,14 @@ test "OVERLAPS evaluates" {
         "[DATE '2023-01-01', DATE '2023-01-31'] OVERLAPS [DATE '2023-01-31', DATE '2023-02-28']",
       ),
     )
-    .to_equal(Bool(false))
+    .to_equal(@value.Value::from_bool(false))
     soft
     .expect(
       ev(
         "(DATE '2023-01-01', INTERVAL '10' DAY) OVERLAPS (DATE '2023-01-05', DATE '2023-01-06')",
       ),
     )
-    .to_equal(Bool(true))
+    .to_equal(@value.Value::from_bool(true))
     soft.expect(ev("NULL OVERLAPS MISSING")).to_equal(Missing)
     soft
     .expect(
@@ -123,12 +125,12 @@ test "OVERLAPS uses the session zone for values without an offset" {
   // 10:00-11:00 local at -05:00 is 15:00-16:00 UTC.
   let source = "[TIMESTAMP '2020-01-01 10:00:00', TIMESTAMP '2020-01-01 11:00:00'] OVERLAPS [TIMESTAMP '2020-01-01 15:30:00+00:00', TIMESTAMP '2020-01-01 15:45:00+00:00']"
   @expect.expect_all(soft => {
-    soft.expect(ev(source)).to_equal(Bool(false))
+    soft.expect(ev(source)).to_equal(@value.Value::from_bool(false))
     soft
     .expect(
       @eval.evaluate_text(source, env=@eval.Bindings::empty(), zone=minus_five),
     )
-    .to_equal(Bool(true))
+    .to_equal(@value.Value::from_bool(true))
   })
 }
 
@@ -139,8 +141,10 @@ test "TO_STRING evaluates" {
     .expect(
       ev("TO_STRING(`2017-01-02T03:04:05.006+07:08`, 'y-M-d H:m:s.SSS XXX')"),
     )
-    .to_equal(String("2017-1-2 3:4:5.006 +07:08"))
-    soft.expect(ev("TO_STRING(`0986T`, 'X')")).to_equal(String("Z"))
+    .to_equal(@value.Value::from_string("2017-1-2 3:4:5.006 +07:08"))
+    soft
+    .expect(ev("TO_STRING(`0986T`, 'X')"))
+    .to_equal(@value.Value::from_string("Z"))
     soft
     .expect(failure_of("TO_STRING(`2017T`, 'not_a_pattern')", mode=Permissive))
     .to_equal("data")
@@ -156,7 +160,7 @@ test "TO_TIMESTAMP evaluates" {
         "TO_TIMESTAMP('1 1 1 0 0 0 10', 'y M d H m s SS') = `0001-01-01T00:00:00.1-00:00`",
       ),
     )
-    .to_equal(Bool(true))
+    .to_equal(@value.Value::from_bool(true))
     soft
     .expect(failure_of("TO_TIMESTAMP('2020', 'G')", mode=Permissive))
     .to_equal("data")

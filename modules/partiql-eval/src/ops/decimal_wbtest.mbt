@@ -6,7 +6,7 @@ fn dec(text : String) -> @ion_core.Decimal {
 ///|
 /// A decimal as a value, which compares exponent and coefficient.
 fn w(d : @ion_core.Decimal) -> @value.Value {
-  Decimal(d)
+  @value.Value::from_decimal(d)
 }
 
 ///|

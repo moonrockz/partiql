@@ -25,11 +25,11 @@ let edge_doubles : Array[Double] = [
 /// NaN and infinities. Advance the supplied random state.
 pub fn gen_number(rs : @splitmix.RandomState) -> @value.Value {
   match pick(rs, 6) {
-    0 => Int(edge_int64s[pick(rs, edge_int64s.length())])
-    1 => Int(rs.next_int64())
+    0 => @value.Value::from_int(edge_int64s[pick(rs, edge_int64s.length())])
+    1 => @value.Value::from_int(rs.next_int64())
     2 => {
       let base = @bigint.BigInt::from_int64(9223372036854775807L)
-      @value.Value::integer(
+      @value.Value::from_bigint(
         if chance(rs, 50) {
           base + @bigint.BigInt::from_int(1 + pick(rs, 1000))
         } else {
@@ -37,14 +37,16 @@ pub fn gen_number(rs : @splitmix.RandomState) -> @value.Value {
         },
       )
     }
-    3 => Float(edge_doubles[pick(rs, edge_doubles.length())])
-    4 => Float(rs.next_double() * 1.0e6 - 5.0e5)
+    3 => @value.Value::from_float(edge_doubles[pick(rs, edge_doubles.length())])
+    4 => @value.Value::from_float(rs.next_double() * 1.0e6 - 5.0e5)
     _ => {
       let coefficient = @bigint.BigInt::from_int64(
         edge_int64s[pick(rs, edge_int64s.length())] / 1000L +
         pick(rs, 100).to_int64(),
       )
-      Decimal(@ion_core.Decimal::Decimal(coefficient, pick(rs, 12) - 6))
+      @value.Value::from_decimal(
+        @ion_core.Decimal::Decimal(coefficient, pick(rs, 12) - 6),
+      )
     }
   }
 }
@@ -188,38 +190,41 @@ pub fn gen_value(size : Int32, rs : @splitmix.RandomState) -> @value.Value {
     match pick(rs, 12) {
       0 => Null
       1 => Missing
-      2 => Bool(chance(rs, 50))
+      2 => @value.Value::from_bool(chance(rs, 50))
       3 | 4 => gen_number(rs)
-      5 => String(gen_string(rs))
+      5 => @value.Value::from_string(gen_string(rs))
       6 =>
         if chance(rs, 50) {
-          Clob(gen_bytes(rs))
+          @value.Value::from_clob(gen_bytes(rs))
         } else {
-          Blob(gen_bytes(rs))
+          @value.Value::from_blob(gen_bytes(rs))
         }
-      7 => Date(gen_date(rs))
-      8 => Time(gen_time(rs))
-      9 => Timestamp(gen_timestamp(rs))
+      7 => @value.Value::from_date(gen_date(rs))
+      8 => @value.Value::from_time(gen_time(rs))
+      9 => @value.Value::from_timestamp(gen_timestamp(rs))
       10 =>
         if chance(rs, 50) {
-          IntervalYM(gen_interval_ym(rs))
+          @value.Value::from_interval_ym(gen_interval_ym(rs))
         } else {
-          IntervalDT(gen_interval_dt(rs))
+          @value.Value::from_interval_dt(gen_interval_dt(rs))
         }
-      _ => Ion(gen_ion(size, rs))
+      _ => @value.Value::from_ion(gen_ion(size, rs))
     }
   } else {
     let n = pick(rs, 4)
     let child = size / 2
     match pick(rs, 5) {
-      0 => List(Array::makei(n, _ => gen_value(child, rs)))
-      1 => Bag(@value.Bag::Bag(Array::makei(n, _ => gen_value(child, rs))))
-      2 => Map(gen_map(child, rs))
-      3 => Graph(gen_graph(child, rs))
+      0 => @value.Value::from_list(Array::makei(n, _ => gen_value(child, rs)))
+      1 =>
+        @value.Value::from_bag(
+          @value.Bag(Array::makei(n, _ => gen_value(child, rs))),
+        )
+      2 => @value.Value::from_map(gen_map(child, rs))
+      3 => @value.Value::from_graph(gen_graph(child, rs))
       _ => {
         let names = ["a", "b", "A"]
-        Tuple(
-          @value.Tuple::Tuple(
+        @value.Value::from_tuple(
+          @value.Tuple(
             Array::makei(n, _ => (names[pick(rs, 3)], gen_value(child, rs))),
           ),
         )
@@ -233,11 +238,11 @@ pub fn gen_value(size : Int32, rs : @splitmix.RandomState) -> @value.Value {
 /// kind except MISSING.
 pub fn gen_map(size : Int32, rs : @splitmix.RandomState) -> @value.MapValue {
   let kinds : Array[(@value.MapType, (@splitmix.RandomState) -> @value.Value)] = [
-    (String, r => String(gen_string(r))),
-    (Integer, r => Int((pick(r, 7) - 3).to_int64())),
+    (String, r => @value.Value::from_string(gen_string(r))),
+    (Integer, r => @value.Value::from_int((pick(r, 7) - 3).to_int64())),
     (Decimal, r => gen_number(r)),
-    (Bool, r => Bool(chance(r, 50))),
-    (Date, r => Date(gen_date(r))),
+    (Bool, r => @value.Value::from_bool(chance(r, 50))),
+    (Date, r => @value.Value::from_date(gen_date(r))),
   ]
   let (key_type, gen_key) = kinds[pick(rs, kinds.length())]
   let entries : Array[(@value.Value, @value.Value)] = []

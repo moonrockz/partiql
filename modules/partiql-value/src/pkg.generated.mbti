@@ -234,6 +234,24 @@ pub(all) enum Value {
 }
 pub fn[T : ToValue] Value::Value(T) -> Self
 pub fn[A] Value::fold(Self, (Self, Array[A]) -> A raise?, prepare? : (Self) -> Self) -> A raise?
+pub fn Value::from_bag(Bag) -> Self
+pub fn Value::from_bigint(@bigint.BigInt) -> Self
+pub fn Value::from_blob(Bytes) -> Self
+pub fn Value::from_bool(Bool) -> Self
+pub fn Value::from_clob(Bytes) -> Self
+pub fn Value::from_date(Date) -> Self
+pub fn Value::from_decimal(@ion.Decimal) -> Self
+pub fn Value::from_float(Double) -> Self
+pub fn Value::from_graph(GraphValue) -> Self
+pub fn Value::from_int(Int64) -> Self
+pub fn Value::from_interval_dt(IntervalDT) -> Self
+pub fn Value::from_interval_ym(IntervalYM) -> Self
+pub fn Value::from_ion(@ion.Ion) -> Self
+pub fn Value::from_list(Array[Self]) -> Self
+pub fn Value::from_map(MapValue) -> Self
+pub fn Value::from_string(String) -> Self
+pub fn Value::from_time(Time) -> Self
+pub fn Value::from_timestamp(Timestamp) -> Self
 pub fn Value::from_tuple(Tuple) -> Self
 pub fn Value::integer(@bigint.BigInt) -> Self
 pub fn Value::is_absent(Self) -> Bool

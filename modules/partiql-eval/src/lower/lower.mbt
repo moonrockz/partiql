@@ -10,7 +10,7 @@ fn integer_value(
     n.compare_int64(-9223372036854775808L) < 0 {
     raise DataError(message="integer literal \{text} is out of range", span~)
   }
-  Int(n.to_int64())
+  @value.Value::from_int(n.to_int64())
 }
 
 ///|
@@ -31,27 +31,29 @@ fn literal(
   match l {
     Null => Null
     Missing => Missing
-    Bool(b) => Bool(b)
+    Bool(b) => @value.Value::from_bool(b)
     Int(text) => integer_value(text, span)
     Decimal(text) =>
       try @ion_core.Decimal::parse(text) catch {
         _ => raise DataError(message="invalid decimal literal \{text}", span~)
       } noraise {
-        d => Decimal(rounded(d, span))
+        d => @value.Value::from_decimal(rounded(d, span))
       }
     // A number with an exponent is a decimal in PartiQL.
     Float(text) =>
       match @ops.parse_decimal(text) {
-        Some(d) => Decimal(rounded(d, span))
+        Some(d) => @value.Value::from_decimal(rounded(d, span))
         None => raise DataError(message="invalid float literal \{text}", span~)
       }
-    String(s) => String(s)
+    String(s) => @value.Value::from_string(s)
     Ion(_, v) => @partiql_ion.from_ion_data(v)
-    Date(text) => Date(date_literal(text, span~))
+    Date(text) => @value.Value::from_date(date_literal(text, span~))
     Time(text, precision~, with_tz~) =>
-      Time(time_literal(text, precision, with_tz, span~))
+      @value.Value::from_time(time_literal(text, precision, with_tz, span~))
     Timestamp(text, precision~, with_tz~) =>
-      Timestamp(timestamp_literal(text, precision, with_tz, span~))
+      @value.Value::from_timestamp(
+        timestamp_literal(text, precision, with_tz, span~),
+      )
     Interval(text, negative~, qualifier~) =>
       interval_literal(text, negative~, qualifier~, span~)
   }

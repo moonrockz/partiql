@@ -1,6 +1,6 @@
 ///|
 fn dec(text : String) -> @value.Value raise {
-  Decimal(@ion.Decimal::parse(text))
+  @value.Value::from_decimal(@ion.Decimal::parse(text))
 }
 
 ///|
@@ -19,8 +19,16 @@ test "GROUP BY with aggregates" {
     )
     .to_equal(
       bag_of([
-        tuple([("rep", String("a")), ("t", Int(30)), ("c", Int(2))]),
-        tuple([("rep", String("b")), ("t", Int(5)), ("c", Int(1))]),
+        tuple([
+          ("rep", @value.Value::from_string("a")),
+          ("t", @value.Value::from_int(30)),
+          ("c", @value.Value::from_int(2)),
+        ]),
+        tuple([
+          ("rep", @value.Value::from_string("b")),
+          ("t", @value.Value::from_int(5)),
+          ("c", @value.Value::from_int(1)),
+        ]),
       ]),
     )
     soft
@@ -29,16 +37,24 @@ test "GROUP BY with aggregates" {
     )
     .to_equal(
       bag_of([
-        tuple([("r", String("a")), ("a", dec("15."))]),
-        tuple([("r", String("b")), ("a", dec("5."))]),
+        tuple([("r", @value.Value::from_string("a")), ("a", dec("15."))]),
+        tuple([("r", @value.Value::from_string("b")), ("a", dec("5."))]),
       ]),
     )
     soft
     .expect(ev("SELECT y, MIN(n) AS lo, MAX(n) AS hi FROM \{sales} GROUP BY y"))
     .to_equal(
       bag_of([
-        tuple([("y", Int(1)), ("lo", Int(5)), ("hi", Int(10))]),
-        tuple([("y", Int(2)), ("lo", Int(20)), ("hi", Int(20))]),
+        tuple([
+          ("y", @value.Value::from_int(1)),
+          ("lo", @value.Value::from_int(5)),
+          ("hi", @value.Value::from_int(10)),
+        ]),
+        tuple([
+          ("y", @value.Value::from_int(2)),
+          ("lo", @value.Value::from_int(20)),
+          ("hi", @value.Value::from_int(20)),
+        ]),
       ]),
     )
     soft
@@ -49,8 +65,14 @@ test "GROUP BY with aggregates" {
     )
     .to_equal(
       bag_of([
-        tuple([("a", Int(1)), ("c", Int(2))]),
-        tuple([("a", Int(2)), ("c", Int(1))]),
+        tuple([
+          ("a", @value.Value::from_int(1)),
+          ("c", @value.Value::from_int(2)),
+        ]),
+        tuple([
+          ("a", @value.Value::from_int(2)),
+          ("c", @value.Value::from_int(1)),
+        ]),
       ]),
     )
   })
@@ -64,7 +86,7 @@ test "aggregates without GROUP BY are one group, also over empty input" {
     .to_equal(
       bag_of([
         tuple([
-          ("_1", Int(0)),
+          ("_1", @value.Value::from_int(0)),
           ("_2", Null),
           ("_3", Null),
           ("_4", Null),
@@ -74,14 +96,14 @@ test "aggregates without GROUP BY are one group, also over empty input" {
     )
     soft
     .expect(ev("SELECT VALUE COUNT(*) FROM [1, 2, 3]"))
-    .to_equal(bag_of([Int(3)]))
+    .to_equal(bag_of([@value.Value::from_int(3)]))
     soft
     .expect(ev("SELECT VALUE SUM(i) FROM << 0, 1 >> AS i"))
-    .to_equal(bag_of([Int(1)]))
+    .to_equal(bag_of([@value.Value::from_int(1)]))
     soft.expect(ev("SELECT x FROM [] AS x GROUP BY x")).to_equal(bag_of([]))
     soft
     .expect(ev("SELECT VALUE COUNT(*) FROM [1, 2] AS x GROUP ALL"))
-    .to_equal(bag_of([Int(2)]))
+    .to_equal(bag_of([@value.Value::from_int(2)]))
     soft
     .expect(ev("SELECT VALUE g FROM [] AS x GROUP ALL AS g"))
     .to_equal(bag_of([bag_of([])]))
@@ -100,12 +122,12 @@ test "GROUP AS holds the FROM and LET variables of each row" {
     .to_equal(
       bag_of([
         tuple([
-          ("col1", Int(1)),
+          ("col1", @value.Value::from_int(1)),
           (
             "g",
             bag_of([
-              tuple([("t", tuple([("col1", Int(1))]))]),
-              tuple([("t", tuple([("col1", Int(1))]))]),
+              tuple([("t", tuple([("col1", @value.Value::from_int(1))]))]),
+              tuple([("t", tuple([("col1", @value.Value::from_int(1))]))]),
             ]),
           ),
         ]),
@@ -120,14 +142,19 @@ test "GROUP AS holds the FROM and LET variables of each row" {
     .to_equal(
       bag_of([
         bag_of([
-          tuple([("i", Int(0)), ("x", Int(1)), ("y", Int(2)), ("z", Int(3))]),
+          tuple([
+            ("i", @value.Value::from_int(0)),
+            ("x", @value.Value::from_int(1)),
+            ("y", @value.Value::from_int(2)),
+            ("z", @value.Value::from_int(3)),
+          ]),
         ]),
       ]),
     )
     // A MISSING variable is left out of the member tuple.
     soft
     .expect(ev("SELECT VALUE g FROM [1] AS x LET MISSING AS m GROUP ALL AS g"))
-    .to_equal(bag_of([bag_of([tuple([("x", Int(1))])])]))
+    .to_equal(bag_of([bag_of([tuple([("x", @value.Value::from_int(1))])])]))
   })
 }
 
@@ -139,8 +166,11 @@ test "NULL and MISSING keys are one group with a NULL key" {
     .expect(ev("SELECT k, SUM(r.v) AS s FROM \{rows} AS r GROUP BY r.k AS k"))
     .to_equal(
       bag_of([
-        tuple([("k", Null), ("s", Int(7))]),
-        tuple([("k", Int(1)), ("s", Int(24))]),
+        tuple([("k", Null), ("s", @value.Value::from_int(7))]),
+        tuple([
+          ("k", @value.Value::from_int(1)),
+          ("s", @value.Value::from_int(24)),
+        ]),
       ]),
     )
     soft
@@ -169,13 +199,13 @@ test "HAVING filters groups" {
         "SELECT rep FROM \{sales} AS s GROUP BY s.rep AS rep HAVING COUNT(*) > 1",
       ),
     )
-    .to_equal(bag_of([tuple([("rep", String("a"))])]))
+    .to_equal(bag_of([tuple([("rep", @value.Value::from_string("a"))])]))
     soft
     .expect(ev("SELECT VALUE COUNT(*) FROM [1, 2] AS x HAVING SUM(x) > 5"))
     .to_equal(bag_of([]))
     soft
     .expect(ev("SELECT VALUE COUNT(*) FROM [1, 2] AS x HAVING SUM(x) > 2"))
-    .to_equal(bag_of([Int(2)]))
+    .to_equal(bag_of([@value.Value::from_int(2)]))
   })
 }
 
@@ -188,7 +218,15 @@ test "SQL ANY, SOME and EVERY" {
         "SELECT VALUE [ANY(x), SOME(x), EVERY(x)] FROM [true, false, NULL] AS x",
       ),
     )
-    .to_equal(bag_of([List([Bool(true), Bool(true), Bool(false)])]))
+    .to_equal(
+      bag_of([
+        @value.Value::from_list([
+          @value.Value::from_bool(true),
+          @value.Value::from_bool(true),
+          @value.Value::from_bool(false),
+        ]),
+      ]),
+    )
     soft
     .expect(ev("SELECT VALUE EVERY(x) FROM [1] AS x"))
     .to_equal(bag_of([Missing]))
@@ -200,14 +238,17 @@ test "SELECT * after grouping outputs the keys and the GROUP AS variable" {
   @expect.expect_all(soft => {
     soft
     .expect(ev("SELECT * FROM [{'a': 1}, {'a': 1}] AS t GROUP BY t.a"))
-    .to_equal(bag_of([tuple([("a", Int(1))])]))
+    .to_equal(bag_of([tuple([("a", @value.Value::from_int(1))])]))
     soft
     .expect(ev("SELECT * FROM [{'a': 1}] AS t GROUP BY t.a AS k GROUP AS g"))
     .to_equal(
       bag_of([
         tuple([
-          ("k", Int(1)),
-          ("g", bag_of([tuple([("t", tuple([("a", Int(1))]))])])),
+          ("k", @value.Value::from_int(1)),
+          (
+            "g",
+            bag_of([tuple([("t", tuple([("a", @value.Value::from_int(1))]))])]),
+          ),
         ]),
       ]),
     )
@@ -256,9 +297,15 @@ test "names after grouping: keys and GROUP AS only" {
       ),
     )
     .to_equal(
-      List([
-        tuple([("a", Int(1)), ("_1", Int(2))]),
-        tuple([("a", Int(3)), ("_1", Int(5))]),
+      @value.Value::from_list([
+        tuple([
+          ("a", @value.Value::from_int(1)),
+          ("_1", @value.Value::from_int(2)),
+        ]),
+        tuple([
+          ("a", @value.Value::from_int(3)),
+          ("_1", @value.Value::from_int(5)),
+        ]),
       ]),
     )
     // Inside an aggregate the FROM variables are bound per member.
@@ -268,13 +315,20 @@ test "names after grouping: keys and GROUP AS only" {
         "SELECT k, SUM(t.b) AS s FROM [{'a': 1, 'b': 2}] AS t GROUP BY t.a AS k",
       ),
     )
-    .to_equal(bag_of([tuple([("k", Int(1)), ("s", Int(2))])]))
+    .to_equal(
+      bag_of([
+        tuple([
+          ("k", @value.Value::from_int(1)),
+          ("s", @value.Value::from_int(2)),
+        ]),
+      ]),
+    )
     // A key variable inside an aggregate is the constant of the group.
     soft
     .expect(
       ev("SELECT VALUE SUM(k) FROM [{'a': 3}, {'a': 3}] AS t GROUP BY t.a AS k"),
     )
-    .to_equal(bag_of([Int(6)]))
+    .to_equal(bag_of([@value.Value::from_int(6)]))
     // An unqualified attribute inside an aggregate finds the member's tuple.
     soft
     .expect(
@@ -282,7 +336,7 @@ test "names after grouping: keys and GROUP AS only" {
         "SELECT VALUE SUM(b) FROM [{'a': 1, 'b': 2}, {'a': 1, 'b': 5}] AS t GROUP BY t.a",
       ),
     )
-    .to_equal(bag_of([Int(7)]))
+    .to_equal(bag_of([@value.Value::from_int(7)]))
   })
 }
 
@@ -314,21 +368,34 @@ test "a repeated GROUP BY expression is its key variable" {
     .expect(
       ev("SELECT t.A, MAX(T.b) FROM [{'a': 1, 'b': 2}] AS t GROUP BY T.a"),
     )
-    .to_equal(bag_of([tuple([("A", Int(1)), ("_1", Int(2))])]))
+    .to_equal(
+      bag_of([
+        tuple([
+          ("A", @value.Value::from_int(1)),
+          ("_1", @value.Value::from_int(2)),
+        ]),
+      ]),
+    )
     soft
     .expect(
       ev("SELECT t.a + 1 AS n FROM [{'a': 1}, {'a': 1}] AS t GROUP BY t.a + 1"),
     )
-    .to_equal(bag_of([tuple([("n", Int(2))])]))
+    .to_equal(bag_of([tuple([("n", @value.Value::from_int(2))])]))
     soft
     .expect(ev("SELECT t.a + 1 + 1 AS n FROM [{'a': 1}] AS t GROUP BY t.a + 1"))
-    .to_equal(bag_of([tuple([("n", Int(3))])]))
+    .to_equal(bag_of([tuple([("n", @value.Value::from_int(3))])]))
     soft
     .expect(ev("SELECT s.rep, SUM(s.n) AS t FROM \{sales} AS s GROUP BY s.rep"))
     .to_equal(
       bag_of([
-        tuple([("rep", String("a")), ("t", Int(30))]),
-        tuple([("rep", String("b")), ("t", Int(5))]),
+        tuple([
+          ("rep", @value.Value::from_string("a")),
+          ("t", @value.Value::from_int(30)),
+        ]),
+        tuple([
+          ("rep", @value.Value::from_string("b")),
+          ("t", @value.Value::from_int(5)),
+        ]),
       ]),
     )
     // With one FROM variable, `a` and `T.a` name the same attribute.
@@ -339,17 +406,23 @@ test "a repeated GROUP BY expression is its key variable" {
       ),
     )
     .to_equal(
-      List([
-        tuple([("a", Int(3)), ("_1", Int(5))]),
-        tuple([("a", Int(1)), ("_1", Int(2))]),
+      @value.Value::from_list([
+        tuple([
+          ("a", @value.Value::from_int(3)),
+          ("_1", @value.Value::from_int(5)),
+        ]),
+        tuple([
+          ("a", @value.Value::from_int(1)),
+          ("_1", @value.Value::from_int(2)),
+        ]),
       ]),
     )
     soft
     .expect(ev("SELECT a FROM <<{'a': 1}>> AS t GROUP BY t.a AS k"))
-    .to_equal(bag_of([tuple([("a", Int(1))])]))
+    .to_equal(bag_of([tuple([("a", @value.Value::from_int(1))])]))
     soft
     .expect(ev("SELECT VALUE a FROM [{'a': 1}, {'a': 2}] GROUP BY a"))
-    .to_equal(bag_of([Int(1), Int(2)]))
+    .to_equal(bag_of([@value.Value::from_int(1), @value.Value::from_int(2)]))
   })
 }
 
@@ -364,8 +437,14 @@ test "GROUP BY can name a SELECT alias" {
     )
     .to_equal(
       bag_of([
-        tuple([("tag", Int(10)), ("c", Int(2))]),
-        tuple([("tag", Int(20)), ("c", Int(1))]),
+        tuple([
+          ("tag", @value.Value::from_int(10)),
+          ("c", @value.Value::from_int(2)),
+        ]),
+        tuple([
+          ("tag", @value.Value::from_int(20)),
+          ("c", @value.Value::from_int(1)),
+        ]),
       ]),
     )
     // A FROM variable wins over a SELECT alias.
@@ -373,8 +452,14 @@ test "GROUP BY can name a SELECT alias" {
     .expect(ev("SELECT 0 AS t, COUNT(*) AS c FROM [1, 1, 2] AS t GROUP BY t"))
     .to_equal(
       bag_of([
-        tuple([("t", Int(0)), ("c", Int(2))]),
-        tuple([("t", Int(0)), ("c", Int(1))]),
+        tuple([
+          ("t", @value.Value::from_int(0)),
+          ("c", @value.Value::from_int(2)),
+        ]),
+        tuple([
+          ("t", @value.Value::from_int(0)),
+          ("c", @value.Value::from_int(1)),
+        ]),
       ]),
     )
     // A SELECT alias wins over an implicit attribute (spec M4c §3.5):
@@ -397,19 +482,28 @@ test "ORDER BY in a grouped query" {
       ev("SELECT s, MAX(n) AS m FROM \{rows} GROUP BY s ORDER BY MAX(n) DESC"),
     )
     .to_equal(
-      List([
-        tuple([("s", Int(1)), ("m", Int(7))]),
-        tuple([("s", Int(3)), ("m", Int(2))]),
-        tuple([("s", Int(2)), ("m", Int(1))]),
+      @value.Value::from_list([
+        tuple([
+          ("s", @value.Value::from_int(1)),
+          ("m", @value.Value::from_int(7)),
+        ]),
+        tuple([
+          ("s", @value.Value::from_int(3)),
+          ("m", @value.Value::from_int(2)),
+        ]),
+        tuple([
+          ("s", @value.Value::from_int(2)),
+          ("m", @value.Value::from_int(1)),
+        ]),
       ]),
     )
     soft
     .expect(ev("SELECT s FROM \{rows} GROUP BY s ORDER BY COUNT(n), s"))
     .to_equal(
-      List([
-        tuple([("s", Int(2))]),
-        tuple([("s", Int(3))]),
-        tuple([("s", Int(1))]),
+      @value.Value::from_list([
+        tuple([("s", @value.Value::from_int(2))]),
+        tuple([("s", @value.Value::from_int(3))]),
+        tuple([("s", @value.Value::from_int(1))]),
       ]),
     )
     // Review focus 3: the output alias wins over the key for a bare name.
@@ -419,10 +513,17 @@ test "ORDER BY in a grouped query" {
         "SELECT COUNT(*) AS a FROM [{'a': 1}, {'a': 1}, {'a': 2}] AS t GROUP BY t.a ORDER BY a",
       ),
     )
-    .to_equal(List([tuple([("a", Int(1))]), tuple([("a", Int(2))])]))
+    .to_equal(
+      @value.Value::from_list([
+        tuple([("a", @value.Value::from_int(1))]),
+        tuple([("a", @value.Value::from_int(2))]),
+      ]),
+    )
     soft
     .expect(ev("SELECT s FROM \{rows} GROUP BY s ORDER BY s LIMIT 1 OFFSET 1"))
-    .to_equal(List([tuple([("s", Int(2))])]))
+    .to_equal(
+      @value.Value::from_list([tuple([("s", @value.Value::from_int(2))])]),
+    )
   })
 }
 
@@ -438,7 +539,12 @@ test "subqueries and grouped queries in other positions" {
       ),
     )
     .to_equal(
-      bag_of([tuple([("k", Int(1)), ("bs", bag_of([Int(2), Int(3)]))])]),
+      bag_of([
+        tuple([
+          ("k", @value.Value::from_int(1)),
+          ("bs", bag_of([@value.Value::from_int(2), @value.Value::from_int(3)])),
+        ]),
+      ]),
     )
     soft
     .expect(
@@ -446,7 +552,12 @@ test "subqueries and grouped queries in other positions" {
         "SELECT VALUE (SELECT VALUE SUM(o) FROM [1, 2] AS i) FROM [10, 20] AS o",
       ),
     )
-    .to_equal(bag_of([bag_of([Int(20)]), bag_of([Int(40)])]))
+    .to_equal(
+      bag_of([
+        bag_of([@value.Value::from_int(20)]),
+        bag_of([@value.Value::from_int(40)]),
+      ]),
+    )
     // Review focus 5: grouped queries in a set operation, a WITH and a FROM.
     soft
     .expect(
@@ -454,19 +565,19 @@ test "subqueries and grouped queries in other positions" {
         "(SELECT VALUE COUNT(*) FROM [1]) OUTER UNION ALL (SELECT VALUE COUNT(*) FROM [1, 2])",
       ),
     )
-    .to_equal(bag_of([Int(1), Int(2)]))
+    .to_equal(bag_of([@value.Value::from_int(1), @value.Value::from_int(2)]))
     soft
     .expect(
       ev(
         "WITH c AS (SELECT VALUE COUNT(*) FROM [1, 2]) SELECT VALUE x FROM c AS x",
       ),
     )
-    .to_equal(bag_of([Int(2)]))
+    .to_equal(bag_of([@value.Value::from_int(2)]))
     soft
     .expect(
       ev("SELECT VALUE x FROM (SELECT VALUE SUM(y) FROM [1, 2] AS y) AS x"),
     )
-    .to_equal(bag_of([Int(3)]))
+    .to_equal(bag_of([@value.Value::from_int(3)]))
   })
 }
 
@@ -479,24 +590,42 @@ test "unnamed keys with the same implied name are both keys" {
         "SELECT t.a AS ta, s.a AS sa, COUNT(*) AS c FROM [{'a': 1}] AS t, [{'a': 2}] AS s GROUP BY t.a, s.a",
       ),
     )
-    .to_equal(bag_of([tuple([("ta", Int(1)), ("sa", Int(2)), ("c", Int(1))])]))
+    .to_equal(
+      bag_of([
+        tuple([
+          ("ta", @value.Value::from_int(1)),
+          ("sa", @value.Value::from_int(2)),
+          ("c", @value.Value::from_int(1)),
+        ]),
+      ]),
+    )
     // The later key gets its position as its name.
     soft
     .expect(
       ev("SELECT * FROM [{'a': 1}] AS t, [{'a': 2}] AS s GROUP BY t.a, s.a"),
     )
-    .to_equal(bag_of([tuple([("a", Int(1)), ("_2", Int(2))])]))
+    .to_equal(
+      bag_of([
+        tuple([
+          ("a", @value.Value::from_int(1)),
+          ("_2", @value.Value::from_int(2)),
+        ]),
+      ]),
+    )
     soft
     .expect(ev("SELECT a FROM [1] AS a GROUP BY a, a"))
-    .to_equal(bag_of([tuple([("a", Int(1))])]))
+    .to_equal(bag_of([tuple([("a", @value.Value::from_int(1))])]))
     // GROUP AS keeps its name; the implied key name gives way.
     soft
     .expect(ev("SELECT * FROM [{'a': 1}] AS t GROUP BY t.a GROUP AS a"))
     .to_equal(
       bag_of([
         tuple([
-          ("_1", Int(1)),
-          ("a", bag_of([tuple([("t", tuple([("a", Int(1))]))])])),
+          ("_1", @value.Value::from_int(1)),
+          (
+            "a",
+            bag_of([tuple([("t", tuple([("a", @value.Value::from_int(1))]))])]),
+          ),
         ]),
       ]),
     )
@@ -515,8 +644,14 @@ test "key expressions inside subqueries and as path prefixes" {
     )
     .to_equal(
       bag_of([
-        tuple([("a", Int(1)), ("n", bag_of([String("one")]))]),
-        tuple([("a", Int(2)), ("n", bag_of([String("two")]))]),
+        tuple([
+          ("a", @value.Value::from_int(1)),
+          ("n", bag_of([@value.Value::from_string("one")])),
+        ]),
+        tuple([
+          ("a", @value.Value::from_int(2)),
+          ("n", bag_of([@value.Value::from_string("two")])),
+        ]),
       ]),
     )
     // A subquery that declares its own t keeps it.
@@ -526,7 +661,14 @@ test "key expressions inside subqueries and as path prefixes" {
         "SELECT k, (SELECT VALUE t.a FROM [{'a': 9}] AS t) AS s FROM [{'a': 1}] AS t GROUP BY t.a AS k",
       ),
     )
-    .to_equal(bag_of([tuple([("k", Int(1)), ("s", bag_of([Int(9)]))])]))
+    .to_equal(
+      bag_of([
+        tuple([
+          ("k", @value.Value::from_int(1)),
+          ("s", bag_of([@value.Value::from_int(9)])),
+        ]),
+      ]),
+    )
     // A path that starts with a key path navigates into the key value.
     soft
     .expect(
@@ -534,15 +676,22 @@ test "key expressions inside subqueries and as path prefixes" {
         "SELECT t.a.x AS x, COUNT(*) AS c FROM [{'a': {'x': 1}}, {'a': {'x': 1}}] AS t GROUP BY t.a",
       ),
     )
-    .to_equal(bag_of([tuple([("x", Int(1)), ("c", Int(2))])]))
+    .to_equal(
+      bag_of([
+        tuple([
+          ("x", @value.Value::from_int(1)),
+          ("c", @value.Value::from_int(2)),
+        ]),
+      ]),
+    )
     soft
     .expect(ev("SELECT t.a[0] AS x FROM [{'a': [7]}] AS t GROUP BY t.a"))
-    .to_equal(bag_of([tuple([("x", Int(7))])]))
+    .to_equal(bag_of([tuple([("x", @value.Value::from_int(7))])]))
     soft
     .expect(
       ev("SELECT t.a.y[0] AS x FROM [{'a': {'y': [5]}}] AS t GROUP BY t.a.y"),
     )
-    .to_equal(bag_of([tuple([("x", Int(5))])]))
+    .to_equal(bag_of([tuple([("x", @value.Value::from_int(5))])]))
   })
 }
 
@@ -550,8 +699,15 @@ test "key expressions inside subqueries and as path prefixes" {
 test "a key expression in a FROM source finds a global first" {
   let globals = @eval.Bindings::of_tuple(
     @value.Tuple::Tuple([
-      ("x", List([Int(7)])),
-      ("t", @value.Value::from_tuple(@value.Tuple([("a", List([Int(9)]))]))),
+      ("x", @value.Value::from_list([@value.Value::from_int(7)])),
+      (
+        "t",
+        @value.Value::from_tuple(
+          @value.Tuple([
+            ("a", @value.Value::from_list([@value.Value::from_int(9)])),
+          ]),
+        ),
+      ),
     ]),
   )
   let with_globals = (source : String) => {
@@ -566,14 +722,14 @@ test "a key expression in a FROM source finds a global first" {
         "SELECT VALUE (SELECT VALUE y FROM x AS y) FROM [1] AS x GROUP BY x AS k",
       ),
     )
-    .to_equal(bag_of([bag_of([Int(7)])]))
+    .to_equal(bag_of([bag_of([@value.Value::from_int(7)])]))
     soft
     .expect(
       with_globals(
         "SELECT VALUE (SELECT VALUE y FROM t.a AS y) FROM [{'a': [1]}] AS t GROUP BY t.a",
       ),
     )
-    .to_equal(bag_of([bag_of([Int(9)])]))
+    .to_equal(bag_of([bag_of([@value.Value::from_int(9)])]))
     // Without such a global, the source is the key value.
     soft
     .expect(
@@ -581,13 +737,15 @@ test "a key expression in a FROM source finds a global first" {
         "SELECT VALUE (SELECT VALUE y FROM x AS y) FROM [[1, 2]] AS x GROUP BY x AS k",
       ),
     )
-    .to_equal(bag_of([bag_of([Int(1), Int(2)])]))
+    .to_equal(
+      bag_of([bag_of([@value.Value::from_int(1), @value.Value::from_int(2)])]),
+    )
     soft
     .expect(
       ev(
         "SELECT VALUE (SELECT VALUE y FROM t.a AS y) FROM [{'a': [1]}] AS t GROUP BY t.a",
       ),
     )
-    .to_equal(bag_of([bag_of([Int(1)])]))
+    .to_equal(bag_of([bag_of([@value.Value::from_int(1)])]))
   })
 }

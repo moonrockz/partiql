@@ -44,29 +44,43 @@ without lowering it.
 ```mbt check
 test "construct values" {
   let list = @value.Value([1, 2, 3])
-  @expect.expect(list).to_equal(@value.Value::List([Int(1), Int(2), Int(3)]))
+  @expect.expect(list).to_equal(@value.Value::from_list([@value.Value::from_int(1), @value.Value::from_int(2), @value.Value::from_int(3)]))
 }
 ```
 
-Custom constructors validate their inputs as before. `Bag`, `Tuple`, `Date`,
-`Time`, `Timestamp`, `IntervalYM` and `IntervalDT` share names with `Value`
-variants. Use an expected type or qualified syntax such as `Tuple::Tuple(...)`
-to select the domain constructor:
+Use `Value::from_*` when the payload type is known. Every payload-bearing
+variant has a typed conversion:
+
+| Payload | Conversion |
+|---|---|
+| `Bool`, `Int64`, `BigInt` | `from_bool`, `from_int`, `from_bigint` |
+| `Double`, Ion `Decimal`, `String` | `from_float`, `from_decimal`, `from_string` |
+| `Bytes` | `from_blob` or `from_clob`, chosen explicitly |
+| `Date`, `Time`, `Timestamp` | `from_date`, `from_time`, `from_timestamp` |
+| `IntervalYM`, `IntervalDT` | `from_interval_ym`, `from_interval_dt` |
+| `Array[Value]`, `Bag`, `Tuple` | `from_list`, `from_bag`, `from_tuple` |
+| `MapValue`, `GraphValue`, Ion `IonValue` | `from_map`, `from_graph`, `from_ion` |
+
+`from_bigint` normalizes integers to `Int` when they fit Int64. Other typed
+conversions retain the payload's kind and storage. Domain constructors
+validate inputs; value conversions wrap the validated result. `from_list`
+shares its backing array, while generic `Value(array)` maps into a new list.
+
+The concrete parameter types resolve nested domain constructor names:
 
 ```mbt check
-test "bags and tuples" {
-  let bag : @value.Bag = @value.Bag([@value.Value(1), @value.Value(2)])
-  let same : @value.Bag = @value.Bag([@value.Value(2), @value.Value(1)])
-  let tuple : @value.Tuple = @value.Tuple([
-    ("a", @value.Value::Missing), ("b", @value.Value::Null),
-  ])
-  @expect.expect((@value.sql_equals(@value.Value(bag), @value.Value(same)), tuple.length())).to_equal((@value.Value::Bool(true), 1))
+test "typed bag and date conversions" {
+  let bag = @value.Value::from_bag(@value.Bag([@value.Value(1), @value.Value(2)]))
+  let date = @value.Value::from_date(@value.Date(year=2024, month=2, day=29))
+  @expect.expect_all(soft => {
+    soft.expect(bag is @value.Value::Bag(b) && b.length() == 2).to_be_true()
+    soft.expect(date is @value.Value::Date(d) && d.day == 29).to_be_true()
+  })
 }
 ```
 
 `Tuple(fields)` builds the domain tuple. `Value::from_tuple(tuple)` wraps it
-as a PartiQL value and is equivalent to `Value(tuple)`. Its concrete parameter
-type also makes the nested short constructor unambiguous:
+as a PartiQL value and is equivalent to `Value(tuple)`:
 
 ```mbt check
 test "build and wrap a tuple" {
@@ -80,9 +94,12 @@ test "build and wrap a tuple" {
 }
 ```
 
-`Value::Tuple(tuple)` remains the enum variant used in patterns and may also
-be used for construction. That variant still shares the `Tuple` name, so a
-standalone `let tuple = @value.Tuple(fields)` needs a result type annotation.
+Use enum variants in patterns, as above. They also remain available for
+construction for compatibility. `Bag`, `Tuple`, `Date`, `Time`, `Timestamp`,
+`IntervalYM` and `IntervalDT` share names with variants, so a standalone
+`let tuple = @value.Tuple(fields)` still needs an expected result type or
+qualified `Tuple::Tuple(...)`. Prefer typed wrapping functions when building
+a `Value`, for example `Value::from_tuple(@value.Tuple(fields))`.
 
 A tuple preserves duplicate names and drops MISSING fields. A bag keeps
 MISSING and duplicates. Bags retain the supplied backing array; copy it
@@ -91,7 +108,7 @@ constructors create their own arrays. Collection accessors return read-only
 views in stored order.
 
 Use explicit `Value::Null` and `Value::Missing`. Bytes have two meanings,
-so choose `Value::Blob(bytes)` or `Value::Clob(bytes)` explicitly. Arrays
+so choose `Value::from_blob(bytes)` or `Value::from_clob(bytes)` explicitly. Arrays
 become lists; use a `Bag` for an unordered collection. Conversions do not
 perform SQL CAST coercions.
 
@@ -105,13 +122,13 @@ impl @value.ToValue for CustomerId with fn to_value(self) {
 }
 
 test "domain conversion" {
-  @expect.expect(@value.Value(CustomerId(7))).to_equal(@value.Value::Int(7))
+  @expect.expect(@value.Value(CustomerId(7))).to_equal(@value.Value::from_int(7))
 }
 ```
 
 The former `Type::new(...)` entry points remain deprecated aliases. Replace
 them with `Type(...)`, or `Type::Type(...)` where qualification is needed.
-`Value::integer` remains available for explicitly normalizing a `BigInt`.
+`Value::integer` remains available as the legacy spelling of `Value::from_bigint`.
 
 ## Datetimes and intervals
 
@@ -174,7 +191,7 @@ query semantics.
 ```mbt check
 test "boxed Ion equality" {
   let symbol = @value.Value(@ion_core.IonValue::symbol("hello"))
-  @expect.expect(@value.sql_equals(symbol, @value.Value("hello"))).to_equal(@value.Value::Bool(true))
+  @expect.expect(@value.sql_equals(symbol, @value.Value("hello"))).to_equal(@value.Value::from_bool(true))
 }
 ```
 
@@ -184,10 +201,14 @@ nested values without relying on the call stack.
 
 ## Ion codecs and datagrams
 
-`from_ion` and `to_ion` read and write PartiQL-encoded Ion, including `$bag`,
+`@partiql_ion.from_ion` and `to_ion` read and write PartiQL-encoded Ion, including `$bag`,
 `$missing` and `$ion`. `from_ion_data` boxes raw Ion;
 `to_ion_data` preserves boxed Ion at every depth. Choose a matching pair:
 a raw `$bag` annotation must stay boxed when reading Ion-preserving output.
+
+`Value::from_ion` boxes raw Ion without decoding PartiQL annotations. It is
+equivalent to `Value(ion_value)` or the codec's `from_ion_data`, and differs
+from the codec's `from_ion` decoding operation.
 
 Datagram readers return ordered arrays without implicit bag conversion.
 `read_bytes` detects binary Ion by its version marker; otherwise it requires

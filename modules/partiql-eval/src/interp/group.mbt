@@ -91,7 +91,7 @@ fn group(
   let index : Map[String, Array[(@value.Value, Int32)]] = Map([])
   each(relation(input, env, ctx), ctx, row => {
     let values = keys.map(key => key_value(eval(key.1, row, ctx)))
-    let id = @value.Value::List(values)
+    let id = @value.Value::from_list(values)
     let bucket = index.get_or_init(@value.group_key(id), () => [])
     let at = for entry in bucket {
       if @value.eqg(entry.0, id) {
@@ -110,7 +110,11 @@ fn group(
   }
   groups
   .map(g => {
-    let mut bound = Frame(group_as, Bag(@value.Bag::Bag(g.1)), env)
+    let mut bound = Frame(
+      group_as,
+      @value.Value::from_bag(@value.Bag(g.1)),
+      env,
+    )
     for i, key in keys {
       bound = Frame(key.0, g.0[i], bound)
     }

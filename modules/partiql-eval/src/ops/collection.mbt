@@ -17,7 +17,7 @@ fn element_count(name : String, v : @value.Value) -> Int32 raise OpFailure {
 /// `SIZE(c)`.
 pub fn size(args : Array[@value.Value]) -> @value.Value raise OpFailure {
   apply("SIZE", [Collection], args, xs => {
-    Int(element_count("SIZE", xs[0]).to_int64())
+    @value.Value::from_int(element_count("SIZE", xs[0]).to_int64())
   })
 }
 
@@ -25,7 +25,7 @@ pub fn size(args : Array[@value.Value]) -> @value.Value raise OpFailure {
 /// `CARDINALITY(c)`, the same count as SIZE.
 pub fn cardinality(args : Array[@value.Value]) -> @value.Value raise OpFailure {
   apply("CARDINALITY", [Collection], args, xs => {
-    Int(element_count("CARDINALITY", xs[0]).to_int64())
+    @value.Value::from_int(element_count("CARDINALITY", xs[0]).to_int64())
   })
 }
 
@@ -33,7 +33,7 @@ pub fn cardinality(args : Array[@value.Value]) -> @value.Value raise OpFailure {
 /// `EXISTS(c)`: whether `c` has an element.
 pub fn exists(args : Array[@value.Value]) -> @value.Value raise OpFailure {
   apply("EXISTS", [Collection], args, xs => {
-    Bool(element_count("EXISTS", xs[0]) > 0)
+    @value.Value::from_bool(element_count("EXISTS", xs[0]) > 0)
   })
 }
 
@@ -94,7 +94,7 @@ pub fn map_contains_key(
 ) -> @value.Value raise OpFailure {
   apply("MAP_CONTAINS_KEY", [Map, Any], args, xs => {
     match xs {
-      [Map(m), key] => Bool(map_lookup(m, key) is Some(_))
+      [Map(m), key] => @value.Value::from_bool(map_lookup(m, key) is Some(_))
       _ => raise TypeFailure("MAP_CONTAINS_KEY of a value that is not a map")
     }
   })
@@ -109,7 +109,10 @@ fn map_bag(
 ) -> @value.Value raise OpFailure {
   apply(name, [Map], args, xs => {
     match xs {
-      [Map(m)] => Bag(@value.Bag::Bag(m.entries().iter().map(item).collect()))
+      [Map(m)] =>
+        @value.Value::from_bag(
+          @value.Bag(m.entries().iter().map(item).collect()),
+        )
       _ => raise TypeFailure("\{name} of a value that is not a map")
     }
   })

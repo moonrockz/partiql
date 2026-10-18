@@ -9,18 +9,37 @@ fn ev(
 ///|
 test "literals and collections" {
   @expect.expect_all(soft => {
-    soft.expect(ev("1")).to_equal(Int(1))
+    soft.expect(ev("1")).to_equal(@value.Value::from_int(1))
     soft.expect(ev("NULL")).to_equal(Null)
     soft.expect(ev("MISSING")).to_equal(Missing)
-    soft.expect(ev("'abc'")).to_equal(String("abc"))
-    soft.expect(ev("TRUE")).to_equal(Bool(true))
-    soft.expect(ev("1.5")).to_equal(Decimal(@ion.Decimal::parse("1.5")))
-    soft.expect(ev("1e0")).to_equal(Decimal(@ion.Decimal::parse("1")))
-    soft.expect(ev("[1, 'a']")).to_equal(List([Int(1), String("a")]))
-    soft.expect(ev("<<1, 2>>")).to_equal(Bag(@value.Bag::Bag([Int(1), Int(2)])))
+    soft.expect(ev("'abc'")).to_equal(@value.Value::from_string("abc"))
+    soft.expect(ev("TRUE")).to_equal(@value.Value::from_bool(true))
+    soft
+    .expect(ev("1.5"))
+    .to_equal(@value.Value::from_decimal(@ion.Decimal::parse("1.5")))
+    soft
+    .expect(ev("1e0"))
+    .to_equal(@value.Value::from_decimal(@ion.Decimal::parse("1")))
+    soft
+    .expect(ev("[1, 'a']"))
+    .to_equal(
+      @value.Value::from_list([
+        @value.Value::from_int(1),
+        @value.Value::from_string("a"),
+      ]),
+    )
+    soft
+    .expect(ev("<<1, 2>>"))
+    .to_equal(
+      @value.Value::from_bag(
+        @value.Bag([@value.Value::from_int(1), @value.Value::from_int(2)]),
+      ),
+    )
     soft
     .expect(ev("{'a': 1, 'b': MISSING}"))
-    .to_equal(@value.Value::from_tuple(@value.Tuple([("a", Int(1))])))
+    .to_equal(
+      @value.Value::from_tuple(@value.Tuple([("a", @value.Value::from_int(1))])),
+    )
   })
 }
 
@@ -50,9 +69,13 @@ test "unsupported forms say so" {
 
 ///|
 test "bindings and struct keys" {
-  let env = @eval.Bindings::of_tuple(@value.Tuple::Tuple([("Foo", Int(7))]))
+  let env = @eval.Bindings::of_tuple(
+    @value.Tuple::Tuple([("Foo", @value.Value::from_int(7))]),
+  )
   @expect.expect_all(soft => {
-    soft.expect(@eval.evaluate_text("foo", env~)).to_equal(Int(7))
+    soft
+    .expect(@eval.evaluate_text("foo", env~))
+    .to_equal(@value.Value::from_int(7))
     soft
     .expect_call(() => @eval.evaluate_text("\"foo\"", env~))
     .to_raise_matching(
@@ -61,7 +84,9 @@ test "bindings and struct keys" {
     )
     soft
     .expect(ev("{1: 2, 'a': 3}"))
-    .to_equal(@value.Value::from_tuple(@value.Tuple([("a", Int(3))])))
+    .to_equal(
+      @value.Value::from_tuple(@value.Tuple([("a", @value.Value::from_int(3))])),
+    )
     soft
     .expect_call(() => ev("{1: 2}", mode=Strict))
     .to_raise_matching(
@@ -74,18 +99,46 @@ test "bindings and struct keys" {
 ///|
 test "sexp and row literals are lists" {
   @expect.expect_all(soft => {
-    soft.expect(ev("SEXP(1, 2)")).to_equal(List([Int(1), Int(2)]))
-    soft.expect(ev("(1, 2)")).to_equal(List([Int(1), Int(2)]))
-    soft.expect(ev("ROW(1, 2)")).to_equal(List([Int(1), Int(2)]))
+    soft
+    .expect(ev("SEXP(1, 2)"))
+    .to_equal(
+      @value.Value::from_list([
+        @value.Value::from_int(1),
+        @value.Value::from_int(2),
+      ]),
+    )
+    soft
+    .expect(ev("(1, 2)"))
+    .to_equal(
+      @value.Value::from_list([
+        @value.Value::from_int(1),
+        @value.Value::from_int(2),
+      ]),
+    )
+    soft
+    .expect(ev("ROW(1, 2)"))
+    .to_equal(
+      @value.Value::from_list([
+        @value.Value::from_int(1),
+        @value.Value::from_int(2),
+      ]),
+    )
   })
 }
 
 ///|
 test "Bindings::of_pairs keeps a MISSING global bound" {
-  let env = @eval.Bindings::of_pairs([("t", Missing), ("u", Int(1))])
+  let env = @eval.Bindings::of_pairs([
+    ("t", Missing),
+    ("u", @value.Value::from_int(1)),
+  ])
   @expect.expect_all(soft => {
     soft.expect(@eval.evaluate_text("t", env~)).to_equal(Missing)
-    soft.expect(@eval.evaluate_text("t IS MISSING", env~)).to_equal(Bool(true))
-    soft.expect(@eval.evaluate_text("u", env~)).to_equal(Int(1))
+    soft
+    .expect(@eval.evaluate_text("t IS MISSING", env~))
+    .to_equal(@value.Value::from_bool(true))
+    soft
+    .expect(@eval.evaluate_text("u", env~))
+    .to_equal(@value.Value::from_int(1))
   })
 }

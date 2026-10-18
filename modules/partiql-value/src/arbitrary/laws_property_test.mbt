@@ -20,10 +20,10 @@ test "bags and tuples ignore order" {
     (a : @arbitrary.ArbValue) => {
       match v(a) {
         Bag(bag) =>
-          @value.Value::Bag(@value.Bag::Bag(bag.items().to_owned().rev())) ==
+          @value.Value::from_bag(@value.Bag(bag.items().to_owned().rev())) ==
           v(a)
         Tuple(t) =>
-          @value.Value::Tuple(@value.Tuple::Tuple(t.fields().to_owned().rev())) ==
+          @value.Value::from_tuple(@value.Tuple(t.fields().to_owned().rev())) ==
           v(a)
         _ => true
       }
@@ -130,9 +130,9 @@ test "numbers of different kinds are eqg-equal when equal in value" {
     (n : Int32) => {
       let big = @bigint.BigInt::from_int(n)
       let values : Array[@value.Value] = [
-        @value.Value::Int(n.to_int64()),
-        @value.Value::Decimal(@ion_core.Decimal::Decimal(big * 100N, -2)),
-        @value.Value::Float(n.to_double()),
+        @value.Value::from_int(n.to_int64()),
+        @value.Value::from_decimal(@ion_core.Decimal::Decimal(big * 100N, -2)),
+        @value.Value::from_float(n.to_double()),
       ]
       values.iter().all(x => values.iter().all(y => @value.eqg(x, y)))
     },
@@ -180,10 +180,10 @@ test "moving clock and offset together keeps a timestamp equal" {
         ),
       )
       @value.sql_equals(
-        @value.Value::Timestamp(ts),
-        @value.Value::Timestamp(shifted),
+        @value.Value::from_timestamp(ts),
+        @value.Value::from_timestamp(shifted),
       ) ==
-      @value.Value::Bool(true)
+      @value.Value::from_bool(true)
     },
     count=200,
   )
@@ -226,7 +226,7 @@ test "legacy and new $time forms decode alike" {
         minute=t.minute,
         second=t.second,
       )
-      legacy == @value.Value::Time(plain)
+      legacy == @value.Value::from_time(plain)
     },
     count=200,
   )
@@ -247,8 +247,8 @@ test "time zone presence breaks ties: without time zone sorts first" {
     (a : @arbitrary.ArbTimestamp) => {
       let t = a.value.time
       let with_zone = (offset : Int32?) => {
-        @value.Value::Timestamp(
-          @value.Timestamp::Timestamp(
+        @value.Value::from_timestamp(
+          @value.Timestamp(
             a.value.date,
             @value.Time::Time(
               hour=t.hour,
@@ -301,9 +301,9 @@ test "big integers equal their decimal and float forms" {
       let two64 = @bigint.BigInt::from_string("18446744073709551616")
       let big = two64 * @bigint.BigInt::from_int(k)
       let values : Array[@value.Value] = [
-        @value.Value::integer(big),
-        @value.Value::Decimal(@ion_core.Decimal::Decimal(big * 100N, -2)),
-        @value.Value::Float(18446744073709551616.0 * k.to_double()),
+        @value.Value::from_bigint(big),
+        @value.Value::from_decimal(@ion_core.Decimal::Decimal(big * 100N, -2)),
+        @value.Value::from_float(18446744073709551616.0 * k.to_double()),
       ]
       values[0] is BigInt(_) &&
       values.iter().all(x => values.iter().all(y => @value.eqg(x, y)))
@@ -317,15 +317,17 @@ test "Value::integer returns Int exactly when the value fits in Int64" {
   @quickcheck.check(
     (p : (Int64, Int32)) => {
       let n = p.0
-      let fits = @value.Value::integer(@bigint.BigInt::from_int64(n)) ==
-        @value.Value::Int(n)
+      let fits = @value.Value::from_bigint(@bigint.BigInt::from_int64(n)) ==
+        @value.Value::from_int(n)
       let beyond = @bigint.BigInt::from_int64(9223372036854775807L) +
         @bigint.BigInt::from_int((p.1 % 1000 + 1000) % 1000 + 1)
       fits &&
-      @value.Value::integer(beyond) is BigInt(_) &&
-      @value.Value::integer(-beyond - 1N) is BigInt(_) &&
-      @value.Value::integer(-@bigint.BigInt::from_string("9223372036854775808")) ==
-      @value.Value::Int(-9223372036854775808L)
+      @value.Value::from_bigint(beyond) is BigInt(_) &&
+      @value.Value::from_bigint(-beyond - 1N) is BigInt(_) &&
+      @value.Value::from_bigint(
+        -@bigint.BigInt::from_string("9223372036854775808"),
+      ) ==
+      @value.Value::from_int(-9223372036854775808L)
     },
     count=200,
   )
@@ -412,9 +414,7 @@ test "a decoded non-normalized interval equals the normalized value" {
         m.to_int64() * 60L +
         s.to_int64()
       decoded ==
-      @value.Value::IntervalDT(
-        @value.IntervalDT::IntervalDT(total, 1500000000L),
-      )
+      @value.Value::from_interval_dt(@value.IntervalDT(total, 1500000000L))
     },
     count=200,
   )
@@ -432,7 +432,7 @@ test "maps never hold MISSING and ignore entry order" {
             m.entries().to_owned().rev(),
           )
           m.entries().iter().all(pair => !(pair.1 is Missing)) &&
-          @value.Value::Map(reversed) == v(a)
+          @value.Value::from_map(reversed) == v(a)
         }
         _ => true
       }
@@ -445,7 +445,7 @@ test "maps never hold MISSING and ignore entry order" {
 test "MapValue::MapValue drops MISSING values" {
   @quickcheck.check(
     (p : (@arbitrary.ArbValue, Int32)) => {
-      let key = @value.Value::Int(p.1.to_int64())
+      let key = @value.Value::from_int(p.1.to_int64())
       let m = @value.MapValue(key_type=Integer, value_type=Dynamic, [
         (key, @value.Value::Missing),
       ])
@@ -464,14 +464,15 @@ test "maps that differ only in one key are not equal" {
       }
       let entries = m.entries().to_owned()
       // A key that no generated string key uses.
-      entries[0] = (@value.Value::String("\u{1F600}fresh"), entries[0].1)
+      entries[0] = (@value.Value::from_string("\u{1F600}fresh"), entries[0].1)
       let changed = @value.MapValue(
         key_type=m.key_type,
         value_type=m.value_type,
         entries,
       )
-      !@value.eqg(v(a), @value.Value::Map(changed)) &&
-      @value.compare(v(a), @value.Value::Map(changed), nulls=NullsFirst) != 0
+      !@value.eqg(v(a), @value.Value::from_map(changed)) &&
+      @value.compare(v(a), @value.Value::from_map(changed), nulls=NullsFirst) !=
+      0
     },
     count=500,
   )
@@ -484,7 +485,7 @@ fn rebuild(
   edges : Array[@value.GraphEdge],
 ) -> @value.Value raise {
   ignore(g)
-  @value.Value::Graph(@value.GraphValue(nodes, edges))
+  @value.Value::from_graph(@value.GraphValue(nodes, edges))
 }
 
 ///|
@@ -550,7 +551,7 @@ test "changing one node payload changes the graph" {
       nodes[0] = @value.GraphNode(
         id=n.id,
         labels=n.labels().to_owned(),
-        payload=Some(@value.Value::String("\u{1F600}fresh")),
+        payload=Some(@value.Value::from_string("\u{1F600}fresh")),
       )
       let changed = rebuild(g, nodes, g.edges().to_owned())
       !@value.eqg(changed, v(a)) &&

@@ -402,9 +402,11 @@ pub fn parse_interval(
       }
     }
     if fields[0] is (Year | Month) {
-      IntervalYM(@value.IntervalYM::from_parts(negative~, years~, months~))
+      @value.Value::from_interval_ym(
+        @value.IntervalYM::from_parts(negative~, years~, months~),
+      )
     } else {
-      IntervalDT(
+      @value.Value::from_interval_dt(
         @value.IntervalDT::from_parts(
           negative~,
           days~,

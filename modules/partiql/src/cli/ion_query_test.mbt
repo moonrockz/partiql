@@ -66,7 +66,7 @@ test "query runs each datagram element and retains valid binary output on failur
     soft.expect(failed.stderr).to_contain("division by zero")
     soft
     .expect(@partiql_ion.read_bytes(failed.stdout_bytes.unwrap()))
-    .to_equal([@value.Value::Int(1)])
+    .to_equal([@value.Value::from_int(1)])
   })
 }
 

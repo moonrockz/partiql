@@ -135,7 +135,8 @@ fn scan(
     Frame(as_, x, outer)
   }
   match unboxed(v) {
-    List(items) => items.iter().mapi((i, x) => bind(x, Int(i.to_int64())))
+    List(items) =>
+      items.iter().mapi((i, x) => bind(x, @value.Value::from_int(i.to_int64())))
     Bag(_) if at is Some(_) && ctx.mode is Strict =>
       raise TypeError(message="AT over a bag, which has no positions", span~)
     Bag(b) => b.items().iter().map(x => bind(x, Missing))
@@ -173,7 +174,8 @@ fn unpivot(
     Frame(as_, x, outer)
   }
   match unboxed(v) {
-    Tuple(t) => t.fields().iter().map(f => bind(String(f.0), f.1))
+    Tuple(t) =>
+      t.fields().iter().map(f => bind(@value.Value::from_string(f.0), f.1))
     Map(m) => m.entries().iter().map(e => bind(e.0, e.1))
     _ =>
       match ctx.mode {
@@ -185,7 +187,7 @@ fn unpivot(
         Permissive =>
           match unboxed(v) {
             Missing => Iter::empty()
-            _ => Iter::singleton(bind(String("_1"), v))
+            _ => Iter::singleton(bind(@value.Value::from_string("_1"), v))
           }
       }
   }
@@ -473,7 +475,7 @@ fn select(
   })
   match projection {
     Pivot(..) => pivoted(values)
-    _ => Bag(@value.Bag::Bag(values))
+    _ => @value.Value::from_bag(@value.Bag(values))
   }
 }
 

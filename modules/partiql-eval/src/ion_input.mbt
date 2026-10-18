@@ -51,7 +51,7 @@ pub fn Bindings::with_data(
 ) -> Bindings {
   let value : @value.Value = match values {
     [v] => v
-    _ => Bag(@value.Bag::Bag(values.copy()))
+    _ => @value.Value::from_bag(@value.Bag(values.copy()))
   }
   self.with_value(name, value)
 }

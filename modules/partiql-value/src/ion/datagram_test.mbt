@@ -126,7 +126,7 @@ test "schemas describe physical PartiQL encodings and whole documents" {
     let validation = @partiql_ion.Validation::document(schema, "rows")
     soft
     .expect(@partiql_ion.read_text("1 2", validation~))
-    .to_equal([@value.Value::Int(1), Int(2)])
+    .to_equal([@value.Value::from_int(1), @value.Value::from_int(2)])
     soft
     .expect_call(() => @partiql_ion.read_text("1 \"no\"", validation~))
     .to_raise_matching(
@@ -148,7 +148,7 @@ test "binary inputs resolve shared field names through the caller catalog" {
   )
   let bytes = @binary.write_binary(raw)
   @expect.expect(@partiql_ion.read_bytes(bytes, catalog~)).to_equal([
-    @value.Value::Tuple(@value.Tuple::Tuple([("a", Int(2))])),
+    @value.Value::from_tuple(@value.Tuple([("a", @value.Value::from_int(2))])),
   ])
 }
 

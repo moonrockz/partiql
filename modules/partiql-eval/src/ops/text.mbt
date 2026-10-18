@@ -25,7 +25,7 @@ fn utf8_length(s : String) -> Int64 {
 pub fn char_length(args : Array[@value.Value]) -> @value.Value raise OpFailure {
   apply("CHAR_LENGTH", [Text], args, xs => {
     match xs {
-      [String(s)] => Int(chars_of(s).length().to_int64())
+      [String(s)] => @value.Value::from_int(chars_of(s).length().to_int64())
       _ => raise TypeFailure("CHAR_LENGTH of a value that is not a string")
     }
   })
@@ -39,8 +39,8 @@ fn byte_count(
 ) -> @value.Value raise OpFailure {
   apply(name, [Bytes], args, xs => {
     match xs {
-      [String(s)] => Int(utf8_length(s))
-      [Blob(b)] | [Clob(b)] => Int(b.length().to_int64())
+      [String(s)] => @value.Value::from_int(utf8_length(s))
+      [Blob(b)] | [Clob(b)] => @value.Value::from_int(b.length().to_int64())
       _ => raise TypeFailure("\{name} of a value that is not a string")
     }
   })
@@ -56,7 +56,7 @@ pub fn octet_length(args : Array[@value.Value]) -> @value.Value raise OpFailure 
 /// `BIT_LENGTH(s)`: 8 times OCTET_LENGTH.
 pub fn bit_length(args : Array[@value.Value]) -> @value.Value raise OpFailure {
   match byte_count("BIT_LENGTH", args) {
-    Int(n) => Int(n * 8L)
+    Int(n) => @value.Value::from_int(n * 8L)
     other => other
   }
 }
@@ -118,9 +118,12 @@ pub fn substring(args : Array[@value.Value]) -> @value.Value raise OpFailure {
   }
   apply("SUBSTRING", params, args, xs => {
     match xs {
-      [String(v), start] => String(slice(chars_of(v), big_of(start), None))
+      [String(v), start] =>
+        @value.Value::from_string(slice(chars_of(v), big_of(start), None))
       [String(v), start, length] =>
-        String(slice(chars_of(v), big_of(start), Some(big_of(length))))
+        @value.Value::from_string(
+          slice(chars_of(v), big_of(start), Some(big_of(length))),
+        )
       _ => raise TypeFailure("SUBSTRING of a value that is not a string")
     }
   })
@@ -152,8 +155,8 @@ pub fn position(args : Array[@value.Value]) -> @value.Value raise OpFailure {
     match xs {
       [String(needle), String(hay)] =>
         match index_of(chars_of(hay), chars_of(needle), from=0) {
-          Some(i) => Int((i + 1).to_int64())
-          None => Int(0L)
+          Some(i) => @value.Value::from_int((i + 1).to_int64())
+          None => @value.Value::from_int(0L)
         }
       _ => raise TypeFailure("POSITION of a value that is not a string")
     }
@@ -179,7 +182,7 @@ pub fn overlay(args : Array[@value.Value]) -> @value.Value raise OpFailure {
     }
     let cs = chars_of(v)
     let one = @bigint.BigInt::from_int(1)
-    String(
+    @value.Value::from_string(
       slice(cs, one, Some(start - one)) + r + slice(cs, start + length, None),
     )
   })
@@ -202,7 +205,7 @@ pub fn text_replace(args : Array[@value.Value]) -> @value.Value raise OpFailure 
             b.write_char(c)
             b.write_string(r)
           }
-          return String(b.to_string())
+          return @value.Value::from_string(b.to_string())
         }
         let mut i = 0
         while i < cs.length() {
@@ -218,7 +221,7 @@ pub fn text_replace(args : Array[@value.Value]) -> @value.Value raise OpFailure 
             }
           }
         }
-        String(b.to_string())
+        @value.Value::from_string(b.to_string())
       }
       _ => raise TypeFailure("TEXT_REPLACE of a value that is not a string")
     }
@@ -252,6 +255,6 @@ pub fn trim(
         to -= 1
       }
     }
-    String(text_of(cs[from:to]))
+    @value.Value::from_string(text_of(cs[from:to]))
   })
 }

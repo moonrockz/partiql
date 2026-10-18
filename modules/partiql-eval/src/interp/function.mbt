@@ -34,10 +34,16 @@ fn call(
     Overlaps => @ops.overlaps(args, zone=ctx.zone)
     ToString => @ops.datetime_to_string(args)
     ToTimestamp => @ops.text_to_timestamp(args)
-    CurrentDate => Date(clock_now(ctx, f.name(), ctx.zone, 0).date)
-    CurrentTime(p) => Time(clock_now(ctx, f.name(), ctx.zone, p).time)
-    CurrentTimestamp(p) => Timestamp(clock_now(ctx, f.name(), ctx.zone, p))
-    UtcNow => Timestamp(clock_now(ctx, f.name(), @ops.ZoneOffset::utc(), 6))
+    CurrentDate =>
+      @value.Value::from_date(clock_now(ctx, f.name(), ctx.zone, 0).date)
+    CurrentTime(p) =>
+      @value.Value::from_time(clock_now(ctx, f.name(), ctx.zone, p).time)
+    CurrentTimestamp(p) =>
+      @value.Value::from_timestamp(clock_now(ctx, f.name(), ctx.zone, p))
+    UtcNow =>
+      @value.Value::from_timestamp(
+        clock_now(ctx, f.name(), @ops.ZoneOffset::utc(), 6),
+      )
   }
 }
 
