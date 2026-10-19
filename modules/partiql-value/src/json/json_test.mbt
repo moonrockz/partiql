@@ -146,3 +146,29 @@ test "JSON nesting limits fail with typed errors" {
     )
   })
 }
+
+///|
+test "JSON syntax offsets identify the malformed character in the full document" {
+  @expect.expect_all(soft => {
+    for
+      (source, expected) in [
+        ("[\n  \"prefix\\x20\"]", 12),
+        ("[\"😀\\x20\"]", 5),
+        ("{\"a\": 01}", 7),
+        ("[1e+]", 4),
+        ("[\"prefix\\uD800\"]", 8),
+      ] {
+      soft
+      .expect_call(() => @partiql_json.read_text(source))
+      .to_raise_matching(
+        e => {
+          match e {
+            @partiql_json.JsonError::Syntax(offset~, ..) => offset == expected
+            _ => false
+          }
+        },
+        description="document-relative offset in " + source,
+      )
+    }
+  })
+}

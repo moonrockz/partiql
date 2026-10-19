@@ -150,3 +150,17 @@ test "JSON byte input, each cardinality and independent output formats" {
     soft.expect(json.stdout).to_equal("{\n  \"a\": [\n    1,\n    2\n  ]\n}\n")
   })
 }
+
+///|
+test "JSON input diagnostics retain document-relative parser offsets" {
+  let result = query(
+    ["--input-format", "json", "--data", "t=-", "-e", "t"],
+    io=query_io({}, stdin="[\n  \"prefix\\x20\"]"),
+  )
+  @expect.expect_all(soft => {
+    soft.expect(result.status).to_equal(1)
+    soft
+    .expect(result.stderr)
+    .to_contain("<stdin>: JSON at offset 12: invalid character")
+  })
+}

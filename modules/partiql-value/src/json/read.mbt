@@ -51,6 +51,41 @@ fn Reader::take(self : Reader, char : UInt16) -> Bool {
 }
 
 ///|
+// Core parser positions are relative to the token, not the whole document.
+fn Reader::token_error(
+  self : Reader,
+  start : Int32,
+  error : @core_json.ParseError,
+) -> JsonError {
+  let (position, message) = match error {
+    InvalidChar(position, char) =>
+      (position, "invalid character " + char.escape())
+    InvalidNumber(position, number) => (position, "invalid number " + number)
+    InvalidIdentEscape(position) => (position, "invalid escape sequence")
+    InvalidEof =>
+      return Syntax(offset=self.pos, message="unexpected end of JSON token")
+    DepthLimitExceeded =>
+      return Syntax(offset=start, message="JSON token nesting limit exceeded")
+  }
+  let mut offset = start
+  let mut line = 1
+  while offset < self.pos && line < position.line {
+    if self.source[offset] == '\n' {
+      line += 1
+    }
+    offset += 1
+  }
+  Syntax(offset=offset + position.column, message~)
+}
+
+///|
+fn Reader::token(self : Reader, start : Int32) -> Json raise JsonError {
+  @core_json.parse(self.source[start:self.pos]) catch {
+    e => raise self.token_error(start, e)
+  }
+}
+
+///|
 fn Reader::string(self : Reader) -> String raise JsonError {
   self.skip_space()
   let start = self.pos
@@ -61,10 +96,7 @@ fn Reader::string(self : Reader) -> String raise JsonError {
     let c = self.source[self.pos]
     self.pos += 1
     if c == '"' {
-      let token = self.source[start:self.pos]
-      let json = @core_json.parse(token) catch {
-        e => raise Syntax(offset=start, message=e.to_string())
-      }
+      let json = self.token(start)
       match json {
         String(s) => return s
         _ => raise self.error("expected a string")
@@ -145,9 +177,7 @@ fn Reader::scalar(self : Reader) -> @value.Value raise JsonError {
     }
   }
   let token = self.source[start:self.pos]
-  let json = @core_json.parse(token) catch {
-    e => raise Syntax(offset=start, message=e.to_string())
-  }
+  let json = self.token(start)
   match json {
     Null => Null
     True => @value.Value::from_bool(true)
