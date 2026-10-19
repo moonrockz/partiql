@@ -123,7 +123,7 @@ fn Scope::resolve(
   while scope is Some(s) {
     let matches = []
     for name in s.names {
-      if names_variable(id, name) && !matches.contains(name) {
+      if names_variable(id, name) && (s.outputs || !matches.contains(name)) {
         matches.push(name)
       }
     }
@@ -143,7 +143,8 @@ fn Scope::resolve(
 }
 
 ///|
-/// The distinct spellings in the winning frame, in declaration order.
+/// Matches in the winning frame, in declaration order. Exact output repeats
+/// represent different expressions; ordinary variable repeats shadow.
 fn Scope::resolved_name(
   self : Scope,
   id : @ast.Identifier,
@@ -151,9 +152,24 @@ fn Scope::resolved_name(
   defer_ambiguity~ : Bool,
 ) -> (@plan.LocalLookup, Bool) raise @plan.EvalError {
   if matches.length() > 1 {
+    let repeated_output = self.outputs &&
+      matches.iter().all(name => name == matches[0])
     // WITH bindings precede globals even in a FROM source.
     if defer_ambiguity && !self.with_ {
-      return (Ambiguous(matches), false)
+      return (
+        if repeated_output {
+          AmbiguousOutput(id.text)
+        } else {
+          Ambiguous(matches)
+        },
+        false,
+      )
+    }
+    if repeated_output {
+      raise DataError(
+        message="output name \{id.text} is ambiguous: different SELECT expressions use it; use distinct aliases",
+        span=id.span,
+      )
     }
     raise DataError(
       message="\{id.text} is ambiguous: it names \{matches.join(" and ")}; write the name in double quotes",
@@ -168,14 +184,32 @@ fn Scope::resolved_name(
 }
 
 ///|
-/// The names of every variable in scope, the innermost query first and each
-/// query in FROM order. Output names are left out.
-fn Scope::locals(self : Scope) -> Array[String] {
+/// Candidate variables grouped by lexical scope, innermost first. Exact
+/// repeats denote one binding; inner bindings hide outer candidates ignoring
+/// case, while different spellings in the same frame remain candidates. Output,
+/// WITH and grouped bindings are not implicit attribute candidates.
+fn Scope::locals(self : Scope) -> Array[@plan.ImplicitScope] {
   let all = []
+  let seen : @hashset.HashSet[String] = @hashset.HashSet([])
   let mut scope = Some(self)
   while scope is Some(s) {
-    if !s.outputs && !s.with_ && !s.grouped {
-      all.append(s.names)
+    let variables = []
+    if !s.outputs {
+      let frame : @hashset.HashSet[String] = @hashset.HashSet([])
+      for name in s.names {
+        if !seen.contains(name.to_lower()) && !frame.contains(name) {
+          frame.add(name)
+          if !s.with_ && !s.grouped {
+            variables.push(name)
+          }
+        }
+      }
+      for name in s.names {
+        seen.add(name.to_lower())
+      }
+    }
+    if !variables.is_empty() {
+      all.push(@plan.ImplicitScope::{ variables, })
     }
     scope = s.outer
   }
@@ -207,7 +241,7 @@ fn query_at(
   let (body, aliases, keys_scope) = match q.body {
     Select(s) => {
       let (body, aliases, inner) = select_parts(s, q.order_by, scope, depth)
-      (body, aliases, inner.with_outputs(aliases))
+      (body, aliases, inner.with_outputs(order_names(s.projection, aliases)))
     }
     Expr(e) =>
       (lower_at(e, scope, depth), [], scope.inner([@plan.row_variable]))
@@ -940,4 +974,29 @@ fn row_at(
   depth : Int32,
 ) -> @plan.Expr raise @plan.EvalError {
   Subquery(lower_plain(e, scope, depth), Row, e.span)
+}
+
+///|
+/// ORDER BY can name repeated output labels only when all occurrences name
+/// the same expression (SQL's identical-target exception). Keep distinct
+/// expressions as separate matches even when their labels are identical.
+fn order_names(p : @ast.Projection, aliases : Array[String]) -> Array[String] {
+  guard p is Items(items) else { return aliases }
+  let first : Map[String, @ast.Expr] = Map([])
+  let names = []
+  let mut index = 0
+  for item in items {
+    if item is Expr(e, ..) {
+      let name = aliases[index]
+      index += 1
+      match first.get(name) {
+        Some(prior) => if !same_expr(e, prior) { names.push(name) }
+        None => {
+          first[name] = e
+          names.push(name)
+        }
+      }
+    }
+  }
+  names
 }

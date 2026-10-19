@@ -32,6 +32,8 @@ pub(all) enum Step {
 pub(all) enum LocalLookup {
   Bound(String)
   Ambiguous(Array[String])
+  /// One output label denotes distinct SELECT expressions.
+  AmbiguousOutput(String)
 } derive(Debug)
 
 ///|
@@ -84,12 +86,11 @@ pub(all) enum Expr {
   /// the local lookup `variable`, which may be ambiguous (partiql-tests select.ion,
   /// `joinWithShadowedGlobal`; `@name` selects the variable only).
   GlobalOrLocal(String, variable~ : LocalLookup, delimited~ : Bool, @ast.Span)
-  /// A name that no variable declares, inside a query: the attribute of that
-  /// name of the first tuple among the query variables `locals` (FROM AS and
-  /// AT, and LET; innermost query first, each in declared order), else the
-  /// global of that name, else MISSING (permissive) or a `TypeError`
-  /// (strict).
-  Implicit(String, delimited~ : Bool, locals~ : Array[String], @ast.Span)
+  /// An undeclared name: search implicit attributes in the nearest scope
+  /// with a match, rejecting matches across different variables. Within one
+  /// tuple, repeated fields keep the mode-dependent path semantics.
+  /// If no scope matches, try globals, then MISSING (permissive) or TypeError.
+  Implicit(String, delimited~ : Bool, locals~ : Array[ImplicitScope], @ast.Span)
   /// A query block: the projection of each binding tuple of `rel`, as a bag.
   Select(Rel, Projection, distinct~ : Bool, @ast.Span)
   /// A single-column `SELECT` (the first operand, a `Select`) used where a
@@ -413,3 +414,10 @@ pub fn Function::name(self : Function) -> String {
     UtcNow => "UTCNOW"
   }
 }
+
+///|
+/// Candidate variables in one lexical scope for an implicit attribute lookup.
+/// Scopes are carried innermost first, with shadowed variables excluded.
+pub(all) struct ImplicitScope {
+  variables : Array[String]
+} derive(Debug, Eq)

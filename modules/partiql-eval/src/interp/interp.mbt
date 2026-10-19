@@ -67,34 +67,46 @@ fn lookup(
 }
 
 ///|
-/// A name that no variable declares: the attribute of that name of the first
-/// tuple among the variables `locals` that is bound in `env`, else the global
-/// of that name. Found nowhere, it is MISSING in permissive
-/// mode and a `TypeError` in strict mode, like the path step `variable.name`.
+/// Resolve implicit attributes in the nearest scope with a match. Multiple
+/// variables are ambiguous in both modes, even if their values are equal.
 fn implicit(
   name : String,
   delimited : Bool,
-  locals : Array[String],
+  locals : Array[@plan.ImplicitScope],
   env : Env,
   ctx : Ctx,
   span : @ast.Span,
 ) -> @value.Value raise @plan.EvalError {
-  for variable in locals {
-    if env.find(variable) is Some(v) {
-      if unboxed(v) is Tuple(t) {
+  for scope in locals {
+    let matches : Array[(String, @ops.FieldMatch)] = []
+    for variable in scope.variables {
+      if env.find(variable) is Some(v) && unboxed(v) is Tuple(t) {
         match @ops.field_match(t, name, delimited~) {
           NoField => ()
-          One(value) => return value
-          Many(value, count~) =>
-            match ctx.mode {
-              Permissive => return value
-              Strict =>
-                raise TypeError(
-                  message="field \{name} is ambiguous: the tuple has \{count} matching fields",
-                  span~,
-                )
-            }
+          found => matches.push((variable, found))
         }
+      }
+    }
+    if matches.length() > 1 {
+      let names = matches.map(pair => pair.0).join(" and ")
+      raise DataError(
+        message="attribute \{name} is ambiguous: it occurs in \{names}; qualify it with a variable name",
+        span~,
+      )
+    }
+    if matches is [(_, found)] {
+      match found {
+        One(value) => return value
+        Many(value, count~) =>
+          match ctx.mode {
+            Permissive => return value
+            Strict =>
+              raise TypeError(
+                message="field \{name} is ambiguous: the tuple has \{count} matching fields",
+                span~,
+              )
+          }
+        NoField => ()
       }
     }
   }
@@ -625,6 +637,11 @@ fn eval(
             Ambiguous(names) =>
               raise DataError(
                 message="\{name} is ambiguous: it names \{names.join(" and ")}; write the name in double quotes",
+                span~,
+              )
+            AmbiguousOutput(name) =>
+              raise DataError(
+                message="output name \{name} is ambiguous: different SELECT expressions use it; use distinct aliases",
                 span~,
               )
           }

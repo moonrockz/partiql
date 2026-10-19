@@ -342,13 +342,30 @@ no global matches. WITH bindings precede globals, and `@name` selects only a
 local variable. Inner frames shadow outer frames,
 exact repeated LET names keep the later binding, and exact repeated globals
 keep the first binding. ORDER BY output names remain a fallback to variables
-inside a non-bare sort key.
+inside a non-bare sort key. An exact repeated output label is a `DataError`
+when it names different SELECT expressions, even over empty input. Identical
+expressions may repeat the label: `SELECT t.a, t.a ... ORDER BY a` is valid.
+Expression identity ignores spans and regular-identifier case, as for GROUP
+BY key matching; equal runtime values alone do not establish identity. This
+follows PostgreSQL's [identical-target exception](https://github.com/postgres/postgres/blob/master/src/backend/parser/parse_clause.c)
+and PartiQL's [SELECT alias substitution](https://github.com/partiql/partiql-lang/blob/main/src/orderby.adoc).
 
 Every matching tuple field counts, including exact repeats. Strict mode raises
 `TypeError` for repeated matches; permissive mode returns the first match.
 The rule applies to explicit paths, named subscripts and implicit attributes,
-and to both tuples and Ion structs. Implicit lookup uses the first variable
-whose tuple has a match. The literal `[{repeated:1, repeated:2}]` fails because
+and to both tuples and Ion structs. Implicit attribute lookup searches lexical
+query scopes from inner to outer. In the nearest scope containing a match,
+two matching variables are a `DataError` in both modes; qualify the attribute
+with its variable to disambiguate. Exact repeated LET bindings count once.
+Inner bindings mask outer candidates ignoring case; differently spelled
+names in the same frame remain separate candidates. A quoted, qualified
+variable reference can still select an outer spelling explicitly.
+If exactly one variable matches, its tuple uses the field rule above;
+if none matches, lookup proceeds to outer scopes, then
+globals. NULL-valued fields count as present; MISSING fields are absent from
+the value model. This preserves the inner-query precedence required by
+PartiQL's [SQL scoping rules](https://github.com/partiql/partiql-lang/blob/main/src/scoping.adoc).
+The literal `[{repeated:1, repeated:2}]` fails because
 its keys are references to an undefined variable. Its failure does not test
 repeated fields; the Ion literal `` `[{repeated:1, repeated:2}]` `` reaches that
 lookup.

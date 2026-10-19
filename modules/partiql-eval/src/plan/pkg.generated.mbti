@@ -61,7 +61,7 @@ pub(all) enum Expr {
   Cast(Expr, @ops.CastTarget, @ast.Span)
   Local(String, @ast.Span)
   GlobalOrLocal(String, variable~ : LocalLookup, delimited~ : Bool, @ast.Span)
-  Implicit(String, delimited~ : Bool, locals~ : Array[String], @ast.Span)
+  Implicit(String, delimited~ : Bool, locals~ : Array[ImplicitScope], @ast.Span)
   Select(Rel, Projection, distinct~ : Bool, @ast.Span)
   Subquery(Expr, SubqueryUse, @ast.Span)
   Query(Expr, order~ : Array[SortKey], limit~ : Expr?, offset~ : Expr?, aliases~ : Array[String], @ast.Span)
@@ -113,6 +113,10 @@ pub(all) enum Grouping {
   By(Array[(String, Expr)])
 } derive(@debug.Debug)
 
+pub(all) struct ImplicitScope {
+  variables : Array[String]
+} derive(Eq, @debug.Debug)
+
 pub(all) enum Item {
   Named(String, Expr)
   AllFields(Expr)
@@ -128,6 +132,7 @@ pub(all) enum JoinKind {
 pub(all) enum LocalLookup {
   Bound(String)
   Ambiguous(Array[String])
+  AmbiguousOutput(String)
 } derive(@debug.Debug)
 
 pub(all) enum Mode {

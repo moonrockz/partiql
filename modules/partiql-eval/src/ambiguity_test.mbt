@@ -365,3 +365,220 @@ test "FROM source ambiguity uses the winning lookup tier" {
     }
   })
 }
+
+///|
+test "implicit attributes reject matches in two FROM variables in both modes" {
+  @expect.expect_all(soft => {
+    for mode in [@eval.Mode::Permissive, Strict] {
+      for
+        source in [
+          "SELECT VALUE x FROM [{'x':1}] AS t, [{'x':2}] AS u", "SELECT VALUE x FROM `[{x:1}]` AS t, `[{x:2}]` AS u",
+          "SELECT VALUE x FROM [{'x':1}] AS t, [{'X':2}] AS u", "SELECT VALUE \"x\" FROM [{'x':1}] AS t, [{'x':2}] AS u",
+        ] {
+        soft
+        .expect_call(() => ev(source, mode~), label=source)
+        .to_raise_matching(
+          e => {
+            e is @eval.EvalError::DataError(message~, span~) &&
+            message ==
+            "attribute x is ambiguous: it occurs in t and u; qualify it with a variable name" &&
+            source[span.start:span.end].to_owned() is ("x" | "\"x\"")
+          },
+          description="cross-variable ambiguity at the reference",
+        )
+      }
+    }
+  })
+}
+
+///|
+test "implicit attribute lookup preserves scopes qualification and shadowing" {
+  @expect.expect_all(soft => {
+    for mode in [@eval.Mode::Permissive, Strict] {
+      for
+        (source, expected) in [
+          (
+            "SELECT VALUE [t.x,u.x] FROM [{'x':1}] AS t, [{'x':2}] AS u", "<<[1,2]>>",
+          ),
+          ("SELECT VALUE \"x\" FROM [{'x':1}] AS t, [{'X':2}] AS u", "<<1>>"),
+          (
+            "SELECT VALUE x FROM [0] AS t LET {'x':1} AS u, {'x':2} AS u", "<<2>>",
+          ),
+          (
+            "SELECT VALUE (SELECT VALUE x FROM [{'x':2}] AS i) FROM [{'x':1}] AS o, [{'x':3}] AS p",
+            "<<<<2>>>>",
+          ),
+          (
+            "SELECT VALUE (SELECT VALUE x FROM [0] AS i) FROM [{'x':1}] AS o", "<<<<1>>>>",
+          ),
+          (
+            "SELECT VALUE (SELECT VALUE x FROM [{'x':2}] AS o) FROM [{'x':1}] AS o",
+            "<<<<2>>>>",
+          ),
+          (
+            "SELECT VALUE (SELECT VALUE x FROM [0] AS o) FROM [{'x':1}] AS o, [{'x':3}] AS p",
+            "<<<<3>>>>",
+          ),
+          ("SELECT VALUE x FROM [] AS t, [{'x':2}] AS u", "<<>>"),
+          ("SELECT VALUE x FROM [{'x':null}] AS t, [{'y':2}] AS u", "<<null>>"),
+        ] {
+        soft.expect(ev(source, mode~), label=source).to_equal(ev(expected))
+      }
+      for
+        source in [
+          "SELECT VALUE (SELECT VALUE x FROM [0] AS i) FROM [{'x':1}] AS t, [{'x':2}] AS u",
+          "SELECT VALUE x FROM [{'x':1,'x':2}] AS t, [{'x':3}] AS u", "SELECT VALUE x FROM [{'x':null}] AS t, [{'x':2}] AS u",
+          "SELECT VALUE 1 FROM [{'x':1}] AS t JOIN [{'x':2}] AS u ON x = 1", "SELECT VALUE 1 FROM [{'x':1}] AS t, [{'x':2}] AS u WHERE x = 1",
+          "SELECT VALUE 1 FROM [{'x':1}] AS t, [{'x':2}] AS u GROUP BY x",
+        ] {
+        soft
+        .expect_call(() => ev_env(source, "{x:99}", mode~), label=source)
+        .to_raise_matching(
+          e => e is @eval.EvalError::DataError(..),
+          description="ambiguity is not hidden by globals or by a field type failure",
+        )
+      }
+    }
+  })
+}
+
+///|
+test "ORDER BY rejects one output name for distinct expressions" {
+  @expect.expect_all(soft => {
+    for mode in [@eval.Mode::Permissive, Strict] {
+      for
+        source in [
+          "SELECT 1 AS x, 2 AS x FROM [] AS t ORDER BY x", "SELECT 1 AS x, 2 AS x FROM [0] AS t ORDER BY \"x\"",
+          "SELECT 1 AS x, 2 AS x FROM [0] AS t ORDER BY x + 1", "SELECT t.a AS x, t.b AS x FROM [{'a':1,'b':1}] AS t ORDER BY x",
+          "SELECT SUM(t.a) AS x, COUNT(*) AS x FROM [] AS t ORDER BY x",
+        ] {
+        soft
+        .expect_call(() => ev(source, mode~), label=source)
+        .to_raise_matching(
+          e => {
+            e is @eval.EvalError::DataError(message~, span~) &&
+            message ==
+            "output name x is ambiguous: different SELECT expressions use it; use distinct aliases" &&
+            source[span.start:span.end].to_owned() is ("x" | "\"x\"")
+          },
+          description="static output-name ambiguity at the ORDER BY reference",
+        )
+      }
+    }
+  })
+}
+
+///|
+test "ORDER BY preserves identical outputs and winning variable scopes" {
+  @expect.expect_all(soft => {
+    for mode in [@eval.Mode::Permissive, Strict] {
+      for
+        (source, expected) in [
+          (
+            "SELECT t.a, t.a FROM [{'a':2},{'a':1}] AS t ORDER BY a", "[{'a':1,'a':1},{'a':2,'a':2}]",
+          ),
+          (
+            "SELECT t.a+1 AS x, (T.A+1) AS x FROM [{'a':1}] AS t ORDER BY x", "[{'x':2,'x':2}]",
+          ),
+          (
+            "SELECT 1 AS x, 2 AS x FROM [3] AS x ORDER BY x + 1", "[{'x':1,'x':2}]",
+          ),
+          (
+            "SELECT 1 AS x, 2 AS x FROM [{'a':1}] AS t ORDER BY t.a", "[{'x':1,'x':2}]",
+          ),
+          (
+            "SELECT SUM(t.a) AS x, SUM(t.a) AS x FROM [{'a':2}] AS t ORDER BY x",
+            "[{'x':2,'x':2}]",
+          ),
+          ("SELECT t.a, t.a FROM [] AS t ORDER BY a", "[]"),
+          ("SELECT 1 AS x, 2 AS x FROM [0] AS t", "<<{'x':1,'x':2}>>"),
+        ] {
+        soft.expect(ev(source, mode~), label=source).to_equal(ev(expected))
+      }
+      let source = "SELECT 1 AS x, 2 AS x FROM [0] AS t ORDER BY (SELECT VALUE y FROM x AS y)"
+      soft
+      .expect(ev_env(source, "{x:[9]}", mode~))
+      .to_equal(ev("[{'x':1,'x':2}]"))
+      soft
+      .expect_call(() => ev_env(source, "{}", mode~))
+      .to_raise_matching(
+        e => {
+          e
+          is @eval.EvalError::DataError(
+            message="output name x is ambiguous: different SELECT expressions use it; use distinct aliases",
+            ..
+          )
+        },
+        description="deferred output ambiguity when a FROM source has no matching global",
+      )
+    }
+  })
+}
+
+///|
+test "MISSING fields are absent and do not create implicit ambiguity" {
+  @expect.expect_all(soft => {
+    for mode in [@eval.Mode::Permissive, Strict] {
+      soft
+      .expect(
+        ev("SELECT VALUE x FROM [{'x':missing}] AS t, [{'x':2}] AS u", mode~),
+      )
+      .to_equal(ev("<<2>>"))
+    }
+  })
+}
+
+///|
+test "implicit candidates mask outer names case-insensitively but keep same-scope spellings" {
+  @expect.expect_all(soft => {
+    for mode in [@eval.Mode::Permissive, Strict] {
+      for
+        source in [
+          "SELECT VALUE (SELECT VALUE a FROM [0] AS T) FROM [{'a':1}] AS t", "SELECT VALUE (SELECT VALUE \"a\" FROM [0] AS T) FROM [{'a':1}] AS t",
+          "SELECT VALUE (SELECT VALUE a FROM [0] AS T) FROM [{'a':1}] AS t, [{'a':2}] AS T",
+        ] {
+        soft
+        .expect(ev_env(source, "{a:9}", mode~), label=source)
+        .to_equal(ev("<<<<9>>>>"))
+        match mode {
+          Permissive =>
+            soft
+            .expect(ev(source), label=source)
+            .to_equal(ev("<<<<missing>>>>"))
+          Strict =>
+            soft
+            .expect_call(() => ev(source, mode~), label=source)
+            .to_raise_matching(
+              e => e is @eval.EvalError::TypeError(..),
+              description="shadowed outer attribute is unavailable",
+            )
+        }
+      }
+      soft
+      .expect_call(() => {
+        ev("SELECT VALUE a FROM [{'a':1}] AS t, [{'a':2}] AS T", mode~)
+      })
+      .to_raise_matching(
+        e => e is @eval.EvalError::DataError(..),
+        description="same-frame t and T remain two candidates",
+      )
+      soft
+      .expect(
+        ev(
+          "SELECT VALUE [\"t\".a, \"T\".a] FROM [{'a':1}] AS t, [{'a':2}] AS T",
+          mode~,
+        ),
+      )
+      .to_equal(ev("<<[1,2]>>"))
+      // A delimited variable reference still explicitly names the outer spelling.
+      soft
+      .expect(
+        ev(
+          "SELECT VALUE (SELECT VALUE \"t\".a FROM [0] AS T) FROM [{'a':1}] AS t",
+          mode~,
+        ),
+      )
+      .to_equal(ev("<<<<1>>>>"))
+    }
+  })
+}

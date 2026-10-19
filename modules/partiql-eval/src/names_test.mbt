@@ -84,10 +84,10 @@ test "names in queries" {
 }
 
 ///|
-test "implicit attributes in FROM order" {
+test "implicit attributes resolve unique matches and correlated scopes" {
   @expect.expect_all(soft => {
     soft
-    .expect(names_ev("SELECT VALUE x FROM [{'x': 1}] AS p, [{'x': 2}] AS q"))
+    .expect(names_ev("SELECT VALUE p.x FROM [{'x': 1}] AS p, [{'x': 2}] AS q"))
     .to_equal(bag([@value.Value::from_int(1)]))
     soft
     .expect(names_ev("SELECT VALUE y FROM [{'x': 1}] AS p, [{'y': 2}] AS q"))
