@@ -300,7 +300,7 @@ fn lower_at(
           } else {
             Local(name, span)
           }
-        Some((Ambiguous(_) as variable, _)) =>
+        Some((Ambiguous(_) | AmbiguousOutput(_) as variable, _)) =>
           GlobalOrLocal(id.text, variable~, delimited=id.delimited, span)
         None =>
           if scope.aggregates is Allowed(g) &&

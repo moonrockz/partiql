@@ -302,11 +302,11 @@ test "explicit repeated fields fail only in strict mode" {
 }
 
 ///|
-test "implicit lookup stops at the first tuple with matching fields" {
+test "implicit lookup preserves field rules within the sole matching tuple" {
   @expect.expect_all(soft => {
     for
       source in [
-        "SELECT VALUE a FROM [{'a':1,'a':2}] AS t, [{'a':3}] AS u", "SELECT VALUE A FROM [{'a':1,'A':2}] AS t",
+        "SELECT VALUE a FROM [{'a':1,'a':2}] AS t, [{'b':3}] AS u", "SELECT VALUE A FROM [{'a':1,'A':2}] AS t",
         "SELECT VALUE CAST(\"a\" AS INT) FROM `[{a:1,a:2}]` AS t",
       ] {
       soft
@@ -329,7 +329,7 @@ test "implicit lookup stops at the first tuple with matching fields" {
       .expect(
         ev_env(
           "SELECT VALUE a FROM t, u",
-          "{t:[{a:null}],u:[{a:3}],a:4}",
+          "{t:[{a:null}],u:[{b:3}],a:4}",
           mode~,
         ).lower(),
       )
