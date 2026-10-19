@@ -329,3 +329,35 @@ test "YAML duplicate checks use decoded keys including aliases and escapes" {
     .to_equal(@ion.read_text("{\"é\": 1, \"é\": 2}"))
   })
 }
+
+///|
+test "YAML byte order marks delimit documents and remain quoted content" {
+  @expect.expect_all(soft => {
+    for
+      (source, expected) in [
+        ("\u{feff}a", "\"a\""),
+        ("--- a\n\u{feff}--- b", "\"a\" \"b\""),
+        ("a: 1\n\u{feff}---\nb: 2", "{a:1} {b:2}"),
+        ("---\n\u{feff}--- b", "null \"b\""),
+        ("a\n...\n\u{feff}b", "\"a\" \"b\""),
+        ("\"pre\u{feff}post\"", "\"pre\u{feff}post\""),
+        ("'pre\u{feff}post'", "\"pre\u{feff}post\""),
+      ] {
+      soft
+      .expect(@yaml.read_text(source) catch { e => fail(e.message()) })
+      .to_equal(@ion.read_text(expected))
+    }
+    for
+      source in [
+        "- before\n\u{feff}\n- after", "a: pre\u{feff}post", "a\n\u{feff}%YAML 1.2\n--- b",
+        "a: |\n  pre\u{feff}post", "a: |\n  long enough to exceed the scanner buffer before \u{feff} post",
+      ] {
+      soft
+      .expect_call(() => @yaml.read_text(source))
+      .to_raise_matching(
+        e => e is @yaml.YamlError::YamlError(kind=Syntax, ..),
+        description=source,
+      )
+    }
+  })
+}

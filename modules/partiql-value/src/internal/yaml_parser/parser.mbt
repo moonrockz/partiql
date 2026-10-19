@@ -629,7 +629,8 @@ fn Parser::document_content(self : Parser) -> (Event, Marker) raise YamlError {
       | TokenType::TagDirective(..)
       | TokenType::DocumentStart
       | TokenType::DocumentEnd
-      | TokenType::StreamEnd,
+      | TokenType::StreamEnd
+      | TokenType::ByteOrderMark,
     } => {
       self.pop_state()
       // empty scalar
@@ -803,7 +804,8 @@ fn Parser::document_start(
   self : Parser,
   implicit : Bool,
 ) -> (Event, Marker) raise YamlError {
-  while self.peek_token().token_type is TokenType::DocumentEnd {
+  while self.peek_token().token_type
+        is (TokenType::DocumentEnd | TokenType::ByteOrderMark) {
     self.skip()
   }
   match self.peek_token() {
@@ -812,6 +814,15 @@ fn Parser::document_start(
       self.skip()
       (Event::StreamEnd, marker)
     }
+    {
+      marker,
+      token_type: TokenType::VersionDirective(_)
+      | TokenType::TagDirective(_),
+    } if !implicit =>
+      raise YamlError::YamlError(
+        mark=marker,
+        info="missing explicit document end marker before directive",
+      )
     {
       marker: _,
       token_type: TokenType::VersionDirective(_)

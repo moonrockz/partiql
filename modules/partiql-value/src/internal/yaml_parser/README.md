@@ -16,7 +16,8 @@ Local changes:
 - Accumulate all tag directives and detect duplicate handles.
 - Preserve empty entries in indentless block sequences as Null.
 - Consume characters in verbatim tag scanning, avoiding the upstream loop.
-- Recognize BOMs at line starts and expose markers for view-relative diagnostics.
+- Treat BOMs as document prefixes, reject them in plain and block scalars, and
+  preserve them in quoted scalars. Expose markers for view-relative diagnostics.
 
 Regressions live in `../../yaml/`. Keep this provenance and license when updating
 these sources. ADR 0008 explains why the registry package cannot yet replace them.

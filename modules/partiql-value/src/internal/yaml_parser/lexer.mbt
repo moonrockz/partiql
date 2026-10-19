@@ -4,6 +4,8 @@ priv enum TokenType {
   StreamStart
   /// The end of the stream, EOF.
   StreamEnd
+  /// A byte order mark introducing a document prefix.
+  ByteOrderMark
   /// A YAML version directive `(Major, Minor)`.
   VersionDirective(major~ : Int32, minor~ : Int32)
   /// A YAML tag directive `(Handle, Prefix)` (e.g.: `!!str`, `!foo!bar`, ...).
@@ -501,6 +503,13 @@ fn Lexer::fetch_next_token(self : Lexer) -> Unit raise YamlError {
   self.skip_to_next_token()
   self.stale_simple_keys()
   let mark = self.get_marker()
+  if self.char() == '\u{feff}' && self.col == 0 {
+    self.unroll_indent(-1)
+    self.skip_blank()
+    self.col = 0
+    self.tokens.push_back(Token::{ marker: mark, token_type: ByteOrderMark, })
+    return
+  }
   self.unroll_indent(mark.col)
   self.lookahead(4)
   if self.char().is_z() {
@@ -692,7 +701,9 @@ fn Lexer::scan_plain_scalar(self : Lexer) -> Token raise YamlError {
   let whitespaces = TextBuffer(self.remaining_payload, self.get_marker())
   while true {
     self.lookahead(4)
-    if self.next_is_document_indicator() || self.char() == '#' {
+    if self.next_is_document_indicator() ||
+      self.char() == '#' ||
+      (self.char() == '\u{feff}' && self.col == 0) {
       break
     }
     if self.flow_level > 0 && self.char() == '-' && self.buffer[1].is_flow() {
@@ -724,6 +735,7 @@ fn Lexer::scan_plain_scalar(self : Lexer) -> Token raise YamlError {
       }
 
       // We can unroll the first iteration of the loop.
+      self.reject_content_bom(self.char(), self.get_marker())
       buf.write_char(self.char())
       self.skip_non_blank()
       self.lookahead(2)
@@ -733,6 +745,7 @@ fn Lexer::scan_plain_scalar(self : Lexer) -> Token raise YamlError {
         if !self.next_can_be_plain_scalar() {
           break
         }
+        self.reject_content_bom(self.char(), self.get_marker())
         buf.write_char(self.char())
         self.skip_non_blank()
         self.lookahead(2)
@@ -1321,6 +1334,7 @@ fn Lexer::scan_block_scalar_content_line(
 ) -> Unit raise YamlError {
   // Start by evaluating characters in the buffer.
   while !self.buffer.is_empty() && !self.char().is_breakz() {
+    self.reject_content_bom(self.char(), self.get_marker())
     buf.write_char(self.char())
     // We may technically skip non-blank characters. However, the only distinction is
     // to determine what is leading whitespace and what is not. Here, we read the
@@ -1337,6 +1351,12 @@ fn Lexer::scan_block_scalar_content_line(
     let mut line_buffer_size = 0
     let mut c = self.raw_read_char()
     while !c.is_breakz() {
+      let mark = self.get_marker()
+      self.reject_content_bom(c, Marker::{
+        index: mark.index + line_buffer_size,
+        line: mark.line,
+        col: mark.col + line_buffer_size,
+      })
       line_buffer.write_char(c)
       line_buffer_size += 1
       c = self.raw_read_char()
@@ -2371,10 +2391,6 @@ fn Lexer::stale_simple_keys(self : Lexer) -> Unit raise YamlError {
 fn Lexer::skip_to_next_token(self : Lexer) -> Unit raise YamlError {
   while true {
     match self.look_char() {
-      '\u{feff}' if self.col == 0 => {
-        self.skip_blank()
-        self.col = 0
-      }
       // Tabs may not be used as indentation.
       // "Indentation" only exists as long as a block is started, but does not exist
       // inside of flow-style constructs. Tabs are allowed as part of leading
@@ -2489,3 +2505,17 @@ priv enum Chomping {
   /// The final line break and trailing empty lines are included.
   Keep
 } derive(Eq)
+
+///|
+fn Lexer::reject_content_bom(
+  _self : Lexer,
+  c : Char,
+  mark : Marker,
+) -> Unit raise YamlError {
+  if c == '\u{feff}' {
+    raise YamlError::YamlError(
+      mark~,
+      info="byte order mark is only allowed in a document prefix or quoted scalar",
+    )
+  }
+}
