@@ -251,3 +251,23 @@ instant for every clock function within the statement.
 All checked examples run through `mise run test:docs`. See the repository's
 [architecture](../../docs/architecture.md) and
 [conformance report](../../docs/conformance.md) for supported syntax and behavior.
+
+## JSON bindings
+
+`Bindings::from_json_text` and `Bindings::from_json_bytes` accept one strict
+JSON object. Its fields become global bindings. Arrays, scalars and multiple
+documents raise `JsonError`; numbers and duplicate fields follow the
+[value codec's rules](../partiql-value/README.mbt.md#json-documents).
+To bind a JSON array or scalar to one name, import
+`moonrockz/partiql-value/json` and use
+`Bindings::empty().with_value("t", @partiql_json.read_text(source))`.
+
+```mbt check
+test "query a JSON environment" {
+  let env = @eval.Bindings::from_json_text("{\"t\":[{\"a\":2},{\"a\":3}]}")
+  let result = @eval.evaluate_text("SELECT VALUE r.a FROM t AS r", env~)
+  @expect.expect(result).to_equal(@value.Value::from_bag(@value.Bag([
+    @value.Value::from_int(2), @value.Value::from_int(3),
+  ])))
+}
+```

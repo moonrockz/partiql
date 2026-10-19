@@ -1,5 +1,5 @@
 // `partiql query` (spec M4e): evaluates statements against global bindings
-// read from Ion, and prints each result as PartiQL-encoded Ion.
+// read from Ion or JSON, and prints each result in the selected format.
 
 ///|
 fn query_command(m : @argparse.Matches, io : Io, color : Bool) -> Outcome {
@@ -50,6 +50,7 @@ fn query_command(m : @argparse.Matches, io : Io, color : Bool) -> Outcome {
   }
   let compact = m.flags.get("compact") == Some(true)
   let binary = m.values.get("output-format") == Some(["binary"])
+  let json = m.values.get("output-format") == Some(["json"])
   let results : Array[@value.Value] = []
   let done = () => {
     if binary {
@@ -82,10 +83,21 @@ fn query_command(m : @argparse.Matches, io : Io, color : Bool) -> Outcome {
         if binary {
           results.push(value)
         } else {
-          let text = @partiql_ion.write_text([value], pretty=!compact) catch {
+          let text = try {
+            if json {
+              (@partiql_json.write_text(value, pretty=!compact) catch {
+                e => raise Failure(e.message())
+              }) +
+              "\n"
+            } else {
+              @partiql_ion.write_text([value], pretty=!compact) catch {
+                e => raise Failure(e.message())
+              }
+            }
+          } catch {
             e => {
               errors.write_string(
-                "partiql query: \{input.name}: " + e.message() + "\n",
+                "partiql query: \{input.name}: " + error_text(e) + "\n",
               )
               return done()
             }
@@ -237,12 +249,22 @@ fn read_values(
   io : Io,
   errors : StringBuilder,
   validation : @partiql_ion.Validation?,
+  json : Bool,
 ) -> Array[@value.Value]? {
   let bytes = read_ion_file(file, io) catch {
     e => {
       query_report(errors, file, error_text(e))
       return None
     }
+  }
+  if json {
+    let value = @partiql_json.read_bytes(bytes) catch {
+      e => {
+        query_report(errors, file, e.message())
+        return None
+      }
+    }
+    return Some([value])
   }
   let values = @partiql_ion.read_bytes(bytes, validation?) catch {
     e => {
@@ -295,6 +317,7 @@ fn load_bindings(
   io : Io,
   errors : StringBuilder,
 ) -> LoadedBindings {
+  let json = m.values.get("input-format") == Some(["json"])
   let globals : Array[(String, @value.Value)] = []
   let mut each : (String, Array[@value.Value])? = None
   let bind = (file : String, name : String, value : @value.Value) => {
@@ -319,7 +342,7 @@ fn load_bindings(
     return { globals, each, }
   }
   for file in m.values.get("env").unwrap_or([]) {
-    guard read_values(file, io, errors, env_validation) is Some(values) else {
+    guard read_values(file, io, errors, env_validation, json) is Some(values) else {
       continue
     }
     match values {
@@ -327,16 +350,37 @@ fn load_bindings(
         for field in t.fields() {
           bind(file, field.0, field.1)
         }
-      _ => query_report(errors, file, "--env needs one Ion struct")
+      _ =>
+        query_report(
+          errors,
+          file,
+          if json {
+            "--env needs one JSON object"
+          } else {
+            "--env needs one Ion struct"
+          },
+        )
     }
   }
   for d in datas {
-    guard read_values(d.file, io, errors, validations.get(d.name))
+    guard read_values(d.file, io, errors, validations.get(d.name), json)
       is Some(values) else {
       continue
     }
     if m.values.get("each") == Some([d.name]) {
-      each = Some((d.name, values))
+      each = Some(
+        (
+          d.name,
+          if json {
+            match values {
+              [List(items)] => items
+              _ => values
+            }
+          } else {
+            values
+          },
+        ),
+      )
     }
     let value : @value.Value = match values {
       [v] => v
@@ -353,8 +397,21 @@ fn query_options_error(
   datas : Array[DataArg],
 ) -> String? {
   match m.values.get("output-format") {
-    None | Some(["ion"]) | Some(["binary"]) => ()
-    _ => return Some("--output-format must be ion or binary")
+    None | Some(["ion"]) | Some(["binary"]) | Some(["json"]) => ()
+    _ => return Some("--output-format must be ion, binary or json")
+  }
+  match m.values.get("input-format") {
+    None | Some(["ion"]) => ()
+    Some(["json"]) =>
+      if m.values.get("env-schema") is Some(_) ||
+        m.values.get("data-schema") is Some(_) ||
+        m.values.get("schema-type") is Some(_) ||
+        m.flags.get("schema-document") == Some(true) {
+        return Some(
+          "Ion Schema options cannot be used with --input-format json",
+        )
+      }
+    _ => return Some("--input-format must be ion or json")
   }
   if m.values.get("each") is Some([name, ..]) && !datas.any(d => d.name == name) {
     return Some("--each needs a --data binding named " + name)

@@ -11,7 +11,7 @@ measures that compliance.
 ## Status
 
 The implementation includes the data model, parser, printer, query evaluator,
-aggregates, casts, datetime functions and Ion sessions. Some specification
+aggregates, casts, datetime functions, Ion sessions and strict JSON input/output. Some specification
 forms remain unsupported. See [docs/roadmap.md](docs/roadmap.md) for the plan and
 [docs/conformance.md](docs/conformance.md) for the current conformance
 results.
@@ -23,7 +23,7 @@ use the same version.
 
 | Module | Purpose |
 |---|---|
-| [`moonrockz/partiql-value`](https://mooncakes.io/docs/moonrockz/partiql-value) | The PartiQL data model and its PartiQL-encoded Ion codec |
+| [`moonrockz/partiql-value`](https://mooncakes.io/docs/moonrockz/partiql-value) | The PartiQL data model with Ion and JSON codecs |
 | [`moonrockz/partiql-syntax`](https://mooncakes.io/docs/moonrockz/partiql-syntax) | The PartiQL parser |
 | [`moonrockz/partiql-eval`](https://mooncakes.io/docs/moonrockz/partiql-eval) | The PartiQL query evaluator |
 | [`moonrockz/partiql`](https://mooncakes.io/docs/moonrockz/partiql) | The `partiql` command-line tool |
@@ -69,6 +69,27 @@ otherwise every element is checked separately. All validation runs before
 any statement. Schemas describe raw PartiQL-encoded Ion, including `$bag`,
 `$missing` and datetime annotations. Every violation is reported with its path.
 
+### JSON
+
+Use `--input-format json` for one strict JSON document per `--data` or `--env`
+file, including stdin. Objects become tuples, arrays become lists, and
+numbers retain integer precision or exact decimal scale. Duplicate keys
+survive. `--env` requires an object. `--each t` iterates a JSON array.
+
+```sh
+partiql query --input-format json --data t=rows.json --output-format json \
+  -e 'CAST((SELECT VALUE r.a FROM t AS r) AS LIST)'
+```
+
+`--output-format json` writes one document per result; add `--compact` for
+JSON Lines. Input accepts one document, not JSON Lines. JSON output rejects
+bags, MISSING, non-finite floats, maps, graphs, temporals, intervals, blobs,
+clobs and boxed Ion. Finite floats write binary64 round-trip spellings and
+read back as Int/Decimal. Use an explicit list cast for SELECT bags. See
+[the complete mapping, errors and limits](modules/partiql-value/README.mbt.md#json-documents)
+and [CLI examples](modules/partiql/README.mbt.md#json-input-and-output).
+Ion remains the default; Ion Schema options require Ion input.
+
 ## Library use
 
 ```bash
@@ -87,7 +108,7 @@ import {
 
 The library guides include imports, checked examples and error contracts:
 
-- [Values and Ion](modules/partiql-value/README.mbt.md)
+- [Values, Ion and JSON](modules/partiql-value/README.mbt.md)
 - [Parsing, formatting and diagnostics](modules/partiql-syntax/README.mbt.md)
 - [Evaluation, bindings and sessions](modules/partiql-eval/README.mbt.md)
 - [CLI commands and embedding](modules/partiql/README.mbt.md)

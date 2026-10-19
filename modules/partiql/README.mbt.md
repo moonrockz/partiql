@@ -28,7 +28,7 @@ is unset).
 
 `query` evaluates PartiQL statements and prints each result as
 PartiQL-encoded Ion (`$bag::[...]`, `$missing::null`). Global bindings come
-from Ion files:
+from Ion files by default:
 
 - `--env FILE` reads one Ion struct; each field is a global.
 - `--data NAME=FILE` binds the global `NAME`. A file with one top-level
@@ -80,6 +80,41 @@ and its PartiQL annotations. Every violation is reported with its path.
 printf '$ion_schema_2_0 schema_header::{} type::{name: row, type: struct} schema_footer::{}' > rows.isl
 partiql query --data t=rows.ion --data-schema t=rows.isl --schema-type row -e 't'
 ```
+
+## JSON input and output
+
+`--input-format json` selects strict JSON for every `--data` and `--env`
+file, including stdin. Each file must hold exactly one document. `--data`
+binds it as-is; `--env` requires an object. Empty input and JSON Lines are
+rejected. `--each NAME` iterates a top-level JSON array in order, runs once
+for another document, and runs nothing for an empty array.
+
+`--output-format json` writes one JSON document per evaluation result,
+followed by a newline. Multiple statements or `--each` produce multiple
+documents. `--compact` makes this JSON Lines; the default uses indentation.
+The input reader still accepts only one document, so a stream of results
+must be split before it can be read back. Earlier complete results remain
+on an evaluation or output error; no partial failing document is written.
+
+```sh
+printf '[{"a":1},{"a":2}]' > rows.json
+partiql query --input-format json --data t=rows.json --output-format json \
+  -e 'CAST((SELECT VALUE r.a FROM t AS r) AS LIST)'
+cat rows.json | partiql query --input-format json --data t=- \
+  --each t --output-format json --compact -e 't.a'
+```
+
+JSON objects map to tuples and arrays to lists. Integers retain all digits;
+fractions and exponents become exact decimals with scale. Duplicate object
+keys survive. Finite floats write binary64 round-trip spellings but read
+back as Int/Decimal. JSON output rejects non-finite floats, `Missing`, bags,
+maps, graphs, all temporal and interval values, blobs, clobs and boxed Ion.
+For a SELECT bag, explicitly `CAST(... AS LIST)` or use `ORDER BY` to produce
+a list. See the [complete value mapping and limits](../partiql-value/README.mbt.md#json-documents).
+
+Input and output formats are independent. `--input-format ion` is the
+default and detects text or binary Ion; `--output-format ion` remains the
+default output. Ion Schema options cannot be combined with JSON input.
 
 ## Embed the CLI
 

@@ -1,7 +1,7 @@
 # moonrockz/partiql-value
 
 The PartiQL data model for MoonBit, with structural identity, SQL equality,
-grouping equivalence, ordering and a PartiQL-encoded Ion codec.
+grouping equivalence, ordering, and codecs for PartiQL-encoded Ion and JSON.
 
 ## Installation and imports
 
@@ -15,6 +15,7 @@ Add the packages you use to `moon.pkg`:
 import {
   "moonrockz/partiql-value" @value,
   "moonrockz/partiql-value/ion" @partiql_ion,
+  "moonrockz/partiql-value/json" @partiql_json,
   "moonrockz/ion/ion" @ion_core,
 }
 ```
@@ -31,6 +32,7 @@ import { "moonrockz/expect" } for "test"
 |---|---|
 | `moonrockz/partiql-value` | `Value`, collections, maps, graphs, datetime and interval types, and value relations |
 | `moonrockz/partiql-value/ion` | Single-value codecs, text/binary datagrams and Ion Schema validation |
+| `moonrockz/partiql-value/json` | Strict JSON documents with exact numbers and duplicate keys |
 | `moonrockz/partiql-value/arbitrary` | Quickcheck generators and shrinkable wrappers |
 
 ## Constructing values
@@ -261,3 +263,58 @@ See the repository's [architecture](../../docs/architecture.md),
 [Ion semantics](../../docs/adr/0005-ion-values-are-boxed.md) and
 [datagram/session design](../../docs/adr/0007-ion-datagrams-and-sessions.md).
 The checked examples above run through `mise run test:docs`.
+
+## JSON documents
+
+Import `moonrockz/partiql-value/json` as `@partiql_json`. `read_text` and
+`read_bytes` read exactly one [RFC 8259](https://datatracker.ietf.org/doc/html/rfc8259)
+JSON document. Bytes must be UTF-8 without a BOM. Empty input, concatenated
+documents, JSON Lines, comments, trailing commas and Ion syntax are errors.
+Strings must contain Unicode scalar values, so unpaired surrogate escapes
+are rejected. Nesting is limited to 256 containers in both directions.
+
+| JSON | PartiQL value |
+|---|---|
+| `null`, booleans, strings | `Null`, `Bool`, `String` |
+| Integer without fraction or exponent | `Int` within Int64, otherwise `BigInt`; `-0` normalizes to `0` |
+| Fraction or exponent, such as `1.2300` or `1e2` | Exact `Decimal`, preserving coefficient, scale and signed zero; `1e2` is coefficient 1, exponent 2 |
+| Array | `List`, retaining order |
+| Object | `Tuple`, retaining field order and duplicate names |
+
+Decimal exponents, after adjustment for fractional digits, must fit Int32.
+An explicit exponent must itself fit Int32. Large coefficients do not pass
+through binary64, so neither integers nor decimals lose precision.
+
+`write_text(value, pretty=false)` emits one document without a trailing newline.
+`write_bytes` emits its UTF-8 bytes. `pretty=true` uses two-space indentation.
+The writer emits duplicate fields, which other JSON readers may collapse.
+
+| PartiQL value on write | JSON representation or error |
+|---|---|
+| `Null`, `Bool`, `String`, `Int`, `BigInt`, `List`, `Tuple` | Corresponding JSON value; nested values follow the same rules |
+| `Decimal` | Exact coefficient and exponent, such as `12300e-4`; scale and negative zero survive read-back |
+| Finite `Float` | Shortest binary64 round-trip number spelling; negative zero is `-0.0` |
+| NaN or infinite `Float` | `JsonError::Unsupported` |
+| `Missing`, `Bag`, `Map`, `Graph` | `JsonError::Unsupported` |
+| `Date`, `Time`, `Timestamp`, `IntervalYM`, `IntervalDT` | `JsonError::Unsupported` |
+| `Blob`, `Clob`, boxed `Ion` | `JsonError::Unsupported` |
+
+JSON has no numeric type tags. Reading a written finite `Float` produces an
+`Int` or `Decimal`, not a `Float`. Its spelling round-trips through a binary64
+JSON consumer, but may denote a different exact decimal value from the binary
+fraction. Use Ion when the numeric type or exact binary representation must
+survive. Every value parsed by this JSON codec round-trips with structural
+identity, including decimal scale and duplicate fields.
+
+```mbt check
+test "JSON document round trip" {
+  let value = @partiql_json.read_text("{\"n\":9223372036854775808,\"price\":1.2300}")
+  @expect.expect(@partiql_json.read_bytes(@partiql_json.write_bytes(value))).to_equal(value)
+}
+```
+
+`JsonError` distinguishes invalid UTF-8, syntax errors with a zero-based
+UTF-16 offset, unsupported output values, and invalid binding shapes.
+`error.message()` gives a human-readable description. No unsupported value
+is silently omitted or replaced with null. The `Tuple` constructor itself
+removes `Missing` fields before the codec sees them.

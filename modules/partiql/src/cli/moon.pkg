@@ -9,6 +9,7 @@ import {
   "moonrockz/partiql-eval" @eval,
   "moonrockz/partiql-value" @value,
   "moonrockz/partiql-value/ion" @partiql_ion,
+  "moonrockz/partiql-value/json" @partiql_json,
 }
 
 import {
