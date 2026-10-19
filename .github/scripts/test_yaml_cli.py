@@ -11,6 +11,11 @@ def query(binary, args, source=None, status=0):
     assert result.returncode == status, (args, result.returncode, result.stderr)
     if status == 0:
         assert result.stderr == b"", result.stderr
+    # Native text output uses platform line endings. Binary Ion stays byte-exact.
+    binary_output = any(a == "--output-format" and b == "binary"
+                        for a, b in zip(args, args[1:]))
+    if not binary_output:
+        result.stdout = result.stdout.replace(b"\r\n", b"\n")
     return result
 
 
