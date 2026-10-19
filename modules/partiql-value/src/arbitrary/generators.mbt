@@ -21,13 +21,15 @@ let edge_doubles : Array[Double] = [
 ]
 
 ///|
+/// Generate an integer, decimal or float, including numeric boundary cases,
+/// NaN and infinities. Advance the supplied random state.
 pub fn gen_number(rs : @splitmix.RandomState) -> @value.Value {
   match pick(rs, 6) {
-    0 => Int(edge_int64s[pick(rs, edge_int64s.length())])
-    1 => Int(rs.next_int64())
+    0 => @value.Value::from_int(edge_int64s[pick(rs, edge_int64s.length())])
+    1 => @value.Value::from_int(rs.next_int64())
     2 => {
       let base = @bigint.BigInt::from_int64(9223372036854775807L)
-      @value.Value::integer(
+      @value.Value::from_bigint(
         if chance(rs, 50) {
           base + @bigint.BigInt::from_int(1 + pick(rs, 1000))
         } else {
@@ -35,14 +37,16 @@ pub fn gen_number(rs : @splitmix.RandomState) -> @value.Value {
         },
       )
     }
-    3 => Float(edge_doubles[pick(rs, edge_doubles.length())])
-    4 => Float(rs.next_double() * 1.0e6 - 5.0e5)
+    3 => @value.Value::from_float(edge_doubles[pick(rs, edge_doubles.length())])
+    4 => @value.Value::from_float(rs.next_double() * 1.0e6 - 5.0e5)
     _ => {
       let coefficient = @bigint.BigInt::from_int64(
         edge_int64s[pick(rs, edge_int64s.length())] / 1000L +
         pick(rs, 100).to_int64(),
       )
-      Decimal(@ion_core.Decimal::new(coefficient, pick(rs, 12) - 6))
+      @value.Value::from_decimal(
+        @ion_core.Decimal::Decimal(coefficient, pick(rs, 12) - 6),
+      )
     }
   }
 }
@@ -69,6 +73,7 @@ fn gen_bytes(rs : @splitmix.RandomState) -> Bytes {
 }
 
 ///|
+/// Generate a valid Gregorian date from boundary years and random month/day fields.
 pub fn gen_date(rs : @splitmix.RandomState) -> @value.Date {
   let edges = [
     (2024, 2, 29),
@@ -83,12 +88,13 @@ pub fn gen_date(rs : @splitmix.RandomState) -> @value.Date {
   } else {
     (1 + pick(rs, 9999), 1 + pick(rs, 12), 1 + pick(rs, 28))
   }
-  @value.Date::new(year~, month~, day~) catch {
+  @value.Date::Date(year~, month~, day~) catch {
     _ => abort("unreachable: generated date fields are valid")
   }
 }
 
 ///|
+/// Generate a valid time, varying fractional precision and optional UTC offset.
 pub fn gen_time(rs : @splitmix.RandomState) -> @value.Time {
   let precision = pick(rs, 10)
   let unit = [
@@ -113,7 +119,7 @@ pub fn gen_time(rs : @splitmix.RandomState) -> @value.Time {
   } else {
     (pick(rs, 24), pick(rs, 60), pick(rs, 60))
   }
-  @value.Time::new(
+  @value.Time::Time(
     hour~,
     minute~,
     second~,
@@ -126,11 +132,13 @@ pub fn gen_time(rs : @splitmix.RandomState) -> @value.Time {
 }
 
 ///|
+/// Generate a timestamp by combining a generated date and time.
 pub fn gen_timestamp(rs : @splitmix.RandomState) -> @value.Timestamp {
-  @value.Timestamp::new(gen_date(rs), gen_time(rs))
+  @value.Timestamp::Timestamp(gen_date(rs), gen_time(rs))
 }
 
 ///|
+/// Generate a normalized year-month interval of either sign.
 pub fn gen_interval_ym(rs : @splitmix.RandomState) -> @value.IntervalYM {
   @value.IntervalYM::from_parts(
     negative=chance(rs, 50),
@@ -142,6 +150,7 @@ pub fn gen_interval_ym(rs : @splitmix.RandomState) -> @value.IntervalYM {
 }
 
 ///|
+/// Generate a normalized day-time interval of either sign, including fractions.
 pub fn gen_interval_dt(rs : @splitmix.RandomState) -> @value.IntervalDT {
   @value.IntervalDT::from_parts(
     negative=chance(rs, 50),
@@ -162,6 +171,8 @@ let ion_texts : Array[String] = [
 ]
 
 ///|
+/// Choose a parsed Ion example, including symbols, annotations, typed nulls,
+/// containers and numeric special values. `size` is currently ignored.
 pub fn gen_ion(size : Int32, rs : @splitmix.RandomState) -> @ion_core.IonValue {
   ignore(size)
   @text.read_ion(ion_texts[pick(rs, ion_texts.length())]) catch {
@@ -170,44 +181,50 @@ pub fn gen_ion(size : Int32, rs : @splitmix.RandomState) -> @ion_core.IonValue {
 }
 
 ///|
+/// Generate a PartiQL value using `size` as a recursion budget.
+/// Nonpositive sizes select leaves; recursive containers halve the budget.
+/// The generator includes MISSING, boxed Ion, maps and graphs.
 pub fn gen_value(size : Int32, rs : @splitmix.RandomState) -> @value.Value {
   let leaf = size <= 0 || chance(rs, 40)
   if leaf {
     match pick(rs, 12) {
       0 => Null
       1 => Missing
-      2 => Bool(chance(rs, 50))
+      2 => @value.Value::from_bool(chance(rs, 50))
       3 | 4 => gen_number(rs)
-      5 => String(gen_string(rs))
+      5 => @value.Value::from_string(gen_string(rs))
       6 =>
         if chance(rs, 50) {
-          Clob(gen_bytes(rs))
+          @value.Value::from_clob(gen_bytes(rs))
         } else {
-          Blob(gen_bytes(rs))
+          @value.Value::from_blob(gen_bytes(rs))
         }
-      7 => Date(gen_date(rs))
-      8 => Time(gen_time(rs))
-      9 => Timestamp(gen_timestamp(rs))
+      7 => @value.Value::from_date(gen_date(rs))
+      8 => @value.Value::from_time(gen_time(rs))
+      9 => @value.Value::from_timestamp(gen_timestamp(rs))
       10 =>
         if chance(rs, 50) {
-          IntervalYM(gen_interval_ym(rs))
+          @value.Value::from_interval_ym(gen_interval_ym(rs))
         } else {
-          IntervalDT(gen_interval_dt(rs))
+          @value.Value::from_interval_dt(gen_interval_dt(rs))
         }
-      _ => Ion(gen_ion(size, rs))
+      _ => @value.Value::from_ion(gen_ion(size, rs))
     }
   } else {
     let n = pick(rs, 4)
     let child = size / 2
     match pick(rs, 5) {
-      0 => List(Array::makei(n, _ => gen_value(child, rs)))
-      1 => Bag(@value.Bag::new(Array::makei(n, _ => gen_value(child, rs))))
-      2 => Map(gen_map(child, rs))
-      3 => Graph(gen_graph(child, rs))
+      0 => @value.Value::from_list(Array::makei(n, _ => gen_value(child, rs)))
+      1 =>
+        @value.Value::from_bag(
+          @value.Bag(Array::makei(n, _ => gen_value(child, rs))),
+        )
+      2 => @value.Value::from_map(gen_map(child, rs))
+      3 => @value.Value::from_graph(gen_graph(child, rs))
       _ => {
         let names = ["a", "b", "A"]
-        Tuple(
-          @value.Tuple::new(
+        @value.Value::from_tuple(
+          @value.Tuple(
             Array::makei(n, _ => (names[pick(rs, 3)], gen_value(child, rs))),
           ),
         )
@@ -221,11 +238,11 @@ pub fn gen_value(size : Int32, rs : @splitmix.RandomState) -> @value.Value {
 /// kind except MISSING.
 pub fn gen_map(size : Int32, rs : @splitmix.RandomState) -> @value.MapValue {
   let kinds : Array[(@value.MapType, (@splitmix.RandomState) -> @value.Value)] = [
-    (String, r => String(gen_string(r))),
-    (Integer, r => Int((pick(r, 7) - 3).to_int64())),
+    (String, r => @value.Value::from_string(gen_string(r))),
+    (Integer, r => @value.Value::from_int((pick(r, 7) - 3).to_int64())),
     (Decimal, r => gen_number(r)),
-    (Bool, r => Bool(chance(r, 50))),
-    (Date, r => Date(gen_date(r))),
+    (Bool, r => @value.Value::from_bool(chance(r, 50))),
+    (Date, r => @value.Value::from_date(gen_date(r))),
   ]
   let (key_type, gen_key) = kinds[pick(rs, kinds.length())]
   let entries : Array[(@value.Value, @value.Value)] = []
@@ -249,7 +266,7 @@ pub fn gen_map(size : Int32, rs : @splitmix.RandomState) -> @value.MapValue {
   } else {
     String
   }
-  @value.MapValue::new(key_type~, value_type~, entries) catch {
+  @value.MapValue(key_type~, value_type~, entries) catch {
     _ => abort("unreachable: generated map entries are valid")
   }
 }
@@ -277,11 +294,7 @@ pub fn gen_graph(size : Int32, rs : @splitmix.RandomState) -> @value.GraphValue 
   }
   let node_ids = ["n1", "n2", "n3"][:1 + pick(rs, 3)].to_owned()
   let nodes = node_ids.map(id => {
-    @value.GraphNode::new(
-      id~,
-      labels=gen_labels(rs),
-      payload=gen_payload(size, rs),
-    )
+    @value.GraphNode(id~, labels=gen_labels(rs), payload=gen_payload(size, rs))
   })
   let edges = Array::makei(pick(rs, 4), k => {
     let a = node_ids[pick(rs, node_ids.length())]
@@ -291,14 +304,14 @@ pub fn gen_graph(size : Int32, rs : @splitmix.RandomState) -> @value.GraphValue 
     } else {
       Undirected(a, b)
     }
-    @value.GraphEdge::new(
+    @value.GraphEdge(
       id="e\{k}",
       ends~,
       labels=gen_labels(rs),
       payload=gen_payload(size, rs),
     )
   })
-  @value.GraphValue::new(nodes, edges) catch {
+  @value.GraphValue(nodes, edges) catch {
     _ => abort("unreachable: generated graphs are valid")
   }
 }

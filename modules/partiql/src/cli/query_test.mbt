@@ -5,6 +5,8 @@ fn query_io(
   clock~ : @eval.Clock? = None,
 ) -> @cli.Io {
   {
+    read_file_bytes: None,
+    read_stdin_bytes: None,
     read_file: path => {
       match files.get(path) {
         Some(text) => text
@@ -28,7 +30,12 @@ test "query prints each result as Ion" {
   @expect.expect_all(soft => {
     soft
     .expect(query(["-e", "SELECT VALUE x * 2 FROM <<1, 2>> AS x"]))
-    .to_equal({ stdout: "$bag::[\n  2,\n  4\n]\n", stderr: "", status: 0, })
+    .to_equal({
+      stdout_bytes: None,
+      stdout: "$bag::[\n  2,\n  4\n]\n",
+      stderr: "",
+      status: 0,
+    })
     soft
     .expect(
       query(["--compact", "-e", "SELECT VALUE x * 2 FROM <<1, 2>> AS x"]).stdout,
@@ -50,10 +57,10 @@ test "query prints each result as Ion" {
     // Review focus 3: no statement prints nothing.
     soft
     .expect(query(["-e", ""]))
-    .to_equal({ stdout: "", stderr: "", status: 0, })
+    .to_equal({ stdout_bytes: None, stdout: "", stderr: "", status: 0, })
     soft
     .expect(query(["e.sql"], io=query_io({ "e.sql": "" })))
-    .to_equal({ stdout: "", stderr: "", status: 0, })
+    .to_equal({ stdout_bytes: None, stdout: "", stderr: "", status: 0, })
   })
 }
 
@@ -62,10 +69,16 @@ test "query modes: MISSING in permissive mode, an error in strict mode" {
   @expect.expect_all(soft => {
     soft
     .expect(query(["-e", "1 + 'a'"]))
-    .to_equal({ stdout: "$missing::null\n", stderr: "", status: 0, })
+    .to_equal({
+      stdout_bytes: None,
+      stdout: "$missing::null\n",
+      stderr: "",
+      status: 0,
+    })
     soft
     .expect(query(["--strict", "-e", "1 + 'a'"]))
     .to_equal({
+      stdout_bytes: None,
       stdout: "",
       stderr: (
         #|error: type error: arithmetic on a value that is not a number
@@ -106,6 +119,7 @@ test "query stops at the first failing statement and keeps earlier output" {
     soft
     .expect(query(["-e", "?"]))
     .to_equal({
+      stdout_bytes: None,
       stdout: "",
       stderr: "error: a parameter (later) is not supported yet\n --> <expr>:1:1\n  |\n1 | ?\n  | ^\n",
       status: 1,
@@ -159,7 +173,7 @@ test "query help and usage" {
 ///|
 /// The outcome of a run that fails with `stderr` and prints nothing.
 fn failed(stderr : String) -> @cli.Outcome {
-  { stdout: "", stderr, status: 1, }
+  { stdout_bytes: None, stdout: "", stderr, status: 1, }
 }
 
 ///|
@@ -244,16 +258,31 @@ test "query binds --env structs and merges the bindings" {
     soft
     .expect(query(["--env", "two.ion", "-e", "1"], io~))
     .to_equal(failed("partiql query: two.ion: --env needs one Ion struct\n"))
-    // Review focus 1: names that differ only in case are both bound; an
-    // unquoted name finds the first.
-    soft
-    .expect(
-      query(
-        ["--compact", "--data", "T=upper.ion", "--data", "t=n.ion", "-e", "t"],
-        io~,
-      ).stdout,
-    )
-    .to_equal("6\n")
+    // Different spellings stay bound, but a regular name must be unique.
+    for strict in [false, true] {
+      let flags = if strict { ["--strict"] } else { [] }
+      let bindings = ["--compact", "--data", "T=upper.ion", "--data", "t=n.ion"]
+      soft
+      .expect(query([..flags, ..bindings, "-e", "t"], io~))
+      .to_equal({
+        stdout_bytes: None,
+        stdout: "",
+        stderr: (
+          #|error: data error: t is ambiguous: it names T and t; write the name in double quotes
+          #| --> <expr>:1:1
+          #|  |
+          #|1 | t
+          #|  | ^
+          #|
+        ),
+        status: 1,
+      })
+      for (name, output) in [("\"T\"", "6\n"), ("\"t\"", "5\n")] {
+        soft
+        .expect(query([..flags, ..bindings, "-e", name], io~))
+        .to_equal({ stdout_bytes: None, stdout: output, stderr: "", status: 0, })
+      }
+    }
   })
 }
 
@@ -499,5 +528,26 @@ test "query reports an unknown function at its name" {
     soft.expect(out.status).to_equal(1)
     soft.expect(out.stdout).to_equal("")
     soft.expect(out.stderr).to_contain("unknown function foo")
+  })
+}
+
+///|
+test "query --time-zone applies to every JSON and YAML input element" {
+  let clock : @eval.Clock = {
+    now: () => @time.date_time(2026, 10, 16, hour=2),
+  }
+  @expect.expect_all(soft => {
+    for (format, source) in [("json", "[1, 2]"), ("yaml", "--- 1\n--- 2")] {
+      let outcome = query(
+        [
+          "--input-format", format, "--data", "t=-", "--each", "t", "--time-zone",
+          "-08:00", "--output-format", "json", "--compact", "-e", "t + EXTRACT(TIMEZONE_HOUR FROM CURRENT_TIME)",
+        ],
+        io=query_io({}, stdin=source, clock=Some(clock)),
+      )
+      soft.expect(outcome.status, label=format).to_equal(0)
+      soft.expect(outcome.stderr, label=format).to_equal("")
+      soft.expect(outcome.stdout, label=format).to_equal("-7\n-6\n")
+    }
   })
 }

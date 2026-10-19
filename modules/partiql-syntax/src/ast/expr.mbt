@@ -1,16 +1,21 @@
 ///|
+/// An expression kind and its half-open UTF-16 source span.
+/// Recovered expressions may contain `ExprKind::Error`.
 pub(all) struct Expr {
   kind : ExprKind
   span : Span
 } derive(Debug, Eq)
 
 ///|
+/// The unary numeric signs `+` and `-`.
 pub(all) enum UnaryOp {
   Pos
   Neg
 } derive(Debug, Eq)
 
 ///|
+/// A non-short-circuit arithmetic, concatenation or comparison operator.
+/// AND, OR and NOT have separate expression variants.
 pub(all) enum BinaryOp {
   Add
   Sub
@@ -27,6 +32,7 @@ pub(all) enum BinaryOp {
 } derive(Debug, Eq)
 
 ///|
+/// Which end of a string TRIM removes matching characters from.
 pub(all) enum TrimSpec {
   Both
   Leading
@@ -34,6 +40,8 @@ pub(all) enum TrimSpec {
 } derive(Debug, Eq)
 
 ///|
+/// A datetime field used by EXTRACT, DATE_ADD, DATE_DIFF and interval qualifiers.
+/// Not every field is valid in every position; the parser checks those rules.
 pub(all) enum DatetimeField {
   Year
   Month
@@ -54,6 +62,9 @@ pub(all) enum CurrentKind {
 } derive(Debug, Eq)
 
 ///|
+/// The syntactic form of an expression, with child expressions in source order.
+/// Literal source text and syntactic options are retained for printing.
+/// Parsing a form does not imply the evaluator supports it.
 pub(all) enum ExprKind {
   Lit(Literal)
   /// A variable; `qualified` is the `@` prefix (local-first lookup).
@@ -111,6 +122,8 @@ pub(all) enum ExprKind {
 } derive(Debug, Eq)
 
 ///|
+/// One field, index or wildcard step following a path root.
+/// Identifiers retain whether lookup is case-sensitive.
 pub(all) enum PathStep {
   /// `.name`
   Field(Identifier)
@@ -125,6 +138,8 @@ pub(all) enum PathStep {
 } derive(Debug, Eq)
 
 ///|
+/// The leading and optional trailing fields of an INTERVAL type or literal.
+/// Optional precisions retain the written leading and fractional digit counts.
 pub(all) struct IntervalQualifier {
   start : DatetimeField
   start_precision : Int32?

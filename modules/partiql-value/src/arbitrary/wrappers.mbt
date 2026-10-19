@@ -1,4 +1,7 @@
 ///|
+/// A quickcheck value wrapper with `Arbitrary` and `Shrink` instances.
+/// Generation caps the recursion budget at eight; shrinking reduces containers
+/// and scalar magnitudes.
 pub(all) struct ArbValue {
   value : @value.Value
 } derive(Debug)
@@ -27,16 +30,22 @@ pub impl @shrink.Shrink for ArbValue with fn shrink(self) {
   let out : Array[ArbValue] = children(self.value).map(v => { value: v, })
   match self.value {
     List(items) if items.length() > 0 =>
-      out.push({ value: List(items[1:].to_owned()), })
+      out.push({ value: @value.Value::from_list(items[1:].to_owned()), })
     Bag(bag) if bag.length() > 0 =>
-      out.push({ value: Bag(@value.Bag::new(bag.items()[1:].to_owned())), })
+      out.push({
+        value: @value.Value::from_bag(@value.Bag(bag.items()[1:].to_owned())),
+      })
     Tuple(t) if t.length() > 0 =>
-      out.push({ value: Tuple(@value.Tuple::new(t.fields()[1:].to_owned())), })
-    Int(n) if n != 0L => out.push({ value: Int(n / 2L), })
-    BigInt(_) | Float(_) | Decimal(_) => out.push({ value: Int(0L), })
-    String(text) if text != "" => out.push({ value: String(""), })
+      out.push({
+        value: @value.Value::from_tuple(@value.Tuple(t.fields()[1:].to_owned())),
+      })
+    Int(n) if n != 0L => out.push({ value: @value.Value::from_int(n / 2L), })
+    BigInt(_) | Float(_) | Decimal(_) =>
+      out.push({ value: @value.Value::from_int(0L), })
+    String(text) if text != "" =>
+      out.push({ value: @value.Value::from_string(""), })
     Ion(x) =>
-      try @value.Value::Ion(x).lower() catch {
+      try @value.Value::from_ion(x).lower() catch {
         _ => ()
       } noraise {
         lowered => out.push({ value: lowered, })
@@ -47,6 +56,8 @@ pub impl @shrink.Shrink for ArbValue with fn shrink(self) {
 }
 
 ///|
+/// A quickcheck Ion wrapper drawn from representative parsed examples.
+/// Shrinking drops annotations and selects container children.
 pub(all) struct ArbIon {
   value : @ion_core.IonValue
 } derive(Debug)
@@ -79,6 +90,7 @@ pub impl @shrink.Shrink for ArbIon with fn shrink(self) {
 }
 
 ///|
+/// A quickcheck timestamp wrapper. Shrinking approaches 2000-01-01 midnight UTC.
 pub(all) struct ArbTimestamp {
   value : @value.Timestamp
 } derive(Debug)
@@ -93,10 +105,10 @@ pub impl @quickcheck.Arbitrary for ArbTimestamp with fn arbitrary(_size, rs) {
 /// then the offset.
 pub impl @shrink.Shrink for ArbTimestamp with fn shrink(self) {
   let ts = self.value
-  let target_date = @value.Date::new(year=2000, month=1, day=1) catch {
+  let target_date = @value.Date::Date(year=2000, month=1, day=1) catch {
     _ => abort("unreachable: 2000-01-01 is valid")
   }
-  let midnight = @value.Time::new(
+  let midnight = @value.Time::Time(
     hour=0,
     minute=0,
     second=0,
@@ -104,7 +116,7 @@ pub impl @shrink.Shrink for ArbTimestamp with fn shrink(self) {
   ) catch {
     _ => abort("unreachable: midnight is valid")
   }
-  let utc_midnight = @value.Time::new(
+  let utc_midnight = @value.Time::Time(
     hour=0,
     minute=0,
     second=0,
@@ -113,9 +125,9 @@ pub impl @shrink.Shrink for ArbTimestamp with fn shrink(self) {
     _ => abort("unreachable: midnight is valid")
   }
   let candidates = [
-    @value.Timestamp::new(target_date, ts.time),
-    @value.Timestamp::new(ts.date, midnight),
-    @value.Timestamp::new(ts.date, utc_midnight),
+    @value.Timestamp::Timestamp(target_date, ts.time),
+    @value.Timestamp::Timestamp(ts.date, midnight),
+    @value.Timestamp::Timestamp(ts.date, utc_midnight),
   ]
   candidates
   .filter(c => !(c == ts))

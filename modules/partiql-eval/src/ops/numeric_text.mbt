@@ -137,7 +137,7 @@ fn signed_decimal(
   exponent : Int32,
 ) -> @ion_core.Decimal {
   let coefficient = @bigint.BigInt::from_string(digits)
-  @ion_core.Decimal::new(
+  @ion_core.Decimal::Decimal(
     if negative {
       -coefficient
     } else {

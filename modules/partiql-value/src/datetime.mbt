@@ -28,7 +28,18 @@ fn days_in_month(year : Int32, month : Int32) -> Int32 {
 }
 
 ///|
-pub fn Date::new(
+/// Build a Gregorian date with a year in -999999999..999999999.
+/// Raise `DateTimeError::InvalidDate` for an invalid year, month or day,
+/// including February 29 in a non-leap year.
+///
+/// ```mbt check
+/// test {
+///   let leap_day : @value.Date = @value.Date(year=2024, month=2, day=29)
+///   @expect.expect(leap_day.day).to_equal(29)
+/// }
+/// ```
+#alias(new, deprecated="Use Date(...) instead")
+pub fn Date::Date(
   year~ : Int32,
   month~ : Int32,
   day~ : Int32,
@@ -69,7 +80,13 @@ fn pow10(n : Int32) -> Int32 {
 }
 
 ///|
-pub fn Time::new(
+/// Build a time with hours 0..23, minutes and seconds 0..59, and
+/// fractional precision 0..9. `nanos` must fit that precision exactly.
+/// `offset=None` means WITHOUT TIME ZONE; `Some(n)` is minutes east of UTC
+/// in -1439..1439. Raise `DateTimeError::InvalidTime` for invalid fields.
+/// Leap seconds are not accepted.
+#alias(new, deprecated="Use Time(...) instead")
+pub fn Time::Time(
   hour~ : Int32,
   minute~ : Int32,
   second~ : Int32,
@@ -109,7 +126,10 @@ pub struct Timestamp {
 } derive(Debug)
 
 ///|
-pub fn Timestamp::new(date : Date, time : Time) -> Timestamp {
+/// Combine an already validated date and time. Preserve the time's precision
+/// and optional UTC offset; perform no time zone conversion.
+#alias(new, deprecated="Use Timestamp(...) instead")
+pub fn Timestamp::Timestamp(date : Date, time : Time) -> Timestamp {
   { date, time, }
 }
 

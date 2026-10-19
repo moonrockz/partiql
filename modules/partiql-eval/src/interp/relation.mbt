@@ -135,7 +135,8 @@ fn scan(
     Frame(as_, x, outer)
   }
   match unboxed(v) {
-    List(items) => items.iter().mapi((i, x) => bind(x, Int(i.to_int64())))
+    List(items) =>
+      items.iter().mapi((i, x) => bind(x, @value.Value::from_int(i.to_int64())))
     Bag(_) if at is Some(_) && ctx.mode is Strict =>
       raise TypeError(message="AT over a bag, which has no positions", span~)
     Bag(b) => b.items().iter().map(x => bind(x, Missing))
@@ -173,7 +174,8 @@ fn unpivot(
     Frame(as_, x, outer)
   }
   match unboxed(v) {
-    Tuple(t) => t.fields().iter().map(f => bind(String(f.0), f.1))
+    Tuple(t) =>
+      t.fields().iter().map(f => bind(@value.Value::from_string(f.0), f.1))
     Map(m) => m.entries().iter().map(e => bind(e.0, e.1))
     _ =>
       match ctx.mode {
@@ -185,7 +187,7 @@ fn unpivot(
         Permissive =>
           match unboxed(v) {
             Missing => Iter::empty()
-            _ => Iter::singleton(bind(String("_1"), v))
+            _ => Iter::singleton(bind(@value.Value::from_string("_1"), v))
           }
       }
   }
@@ -473,7 +475,7 @@ fn select(
   })
   match projection {
     Pivot(..) => pivoted(values)
-    _ => Bag(@value.Bag::new(values))
+    _ => @value.Value::from_bag(@value.Bag(values))
   }
 }
 
@@ -488,7 +490,7 @@ fn pivoted(rows : Array[@value.Value]) -> @value.Value {
       t.fields().each(f => fields.push(f))
     }
   }
-  Tuple(@value.Tuple::new(fields))
+  @value.Value::from_tuple(@value.Tuple(fields))
 }
 
 ///|
@@ -523,7 +525,7 @@ fn select_pairs_upto(
   if upto is Some(n) && n <= 0L {
     return out
   }
-  let seen = Counter::new()
+  let seen = Counter()
   let it = relation(rel, env, ctx)
   while pull(it, ctx) is Some(row) {
     let v = project(projection, row, ctx)
@@ -554,7 +556,7 @@ fn project(
           add_fields(fields, v, i)
         }
       }
-      Tuple(@value.Tuple::new(fields))
+      @value.Value::from_tuple(@value.Tuple(fields))
     }
     Pivot(value~, key~) => {
       // DISTINCT has no meaning for PIVOT: the parser does not take it, and
@@ -564,14 +566,14 @@ fn project(
       // A MISSING value, and in permissive mode a key that is not text,
       // leave the attribute out (the empty tuple).
       match (k, v) {
-        (_, Missing) => Tuple(@value.Tuple::new([]))
-        (String(name), _) => Tuple(@value.Tuple::new([(name, v)]))
+        (_, Missing) => @value.Value::from_tuple(@value.Tuple([]))
+        (String(name), _) => @value.Value::from_tuple(@value.Tuple([(name, v)]))
         _ => {
           typed(ctx.mode, key.span(), () => {
             raise TypeFailure("a PIVOT key must be text")
           })
           |> ignore
-          Tuple(@value.Tuple::new([]))
+          @value.Value::from_tuple(@value.Tuple([]))
         }
       }
     }
@@ -590,7 +592,7 @@ fn project(
           AllFields(e) => add_fields(fields, eval(e, row, ctx), i)
         }
       }
-      Tuple(@value.Tuple::new(fields))
+      @value.Value::from_tuple(@value.Tuple(fields))
     }
   }
 }

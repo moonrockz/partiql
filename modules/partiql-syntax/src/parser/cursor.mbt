@@ -36,7 +36,7 @@ priv struct Parser {
 }
 
 ///|
-fn Parser::new(tokens : Array[@lexer.Token]) -> Parser {
+fn Parser::Parser(tokens : Array[@lexer.Token]) -> Parser {
   {
     tokens,
     pos: 0,

@@ -208,7 +208,7 @@ pub fn datetime_to_string(
     guard xs[1] is String(pattern) else {
       raise TypeFailure("the pattern of TO_STRING must be a string")
     }
-    String(format_datetime(xs[0], tokenize(pattern)))
+    @value.Value::from_string(format_datetime(xs[0], tokenize(pattern)))
   })
 }
 
@@ -579,14 +579,14 @@ fn parse_with_pattern(
     raise out_of_range
   }
   let precision = if fraction { needed_precision(nanos.to_int()) } else { 0 }
-  let date = @value.Date::new(
+  let date = @value.Date::Date(
     year=year.to_int(),
     month=month.to_int(),
     day=day.to_int(),
   ) catch {
     _ => raise out_of_range
   }
-  let time = @value.Time::new(
+  let time = @value.Time::Time(
     hour=hour24.to_int(),
     minute=minute.to_int(),
     second=second.to_int(),
@@ -596,7 +596,7 @@ fn parse_with_pattern(
   ) catch {
     _ => raise out_of_range
   }
-  Timestamp(@value.Timestamp::new(date, time))
+  @value.Value::from_timestamp(@value.Timestamp(date, time))
 }
 
 ///|
@@ -607,7 +607,7 @@ fn ion_timestamp_text(text : String) -> @value.Value raise OpFailure {
   }
   let ts = @value.timestamp_of_ion(parsed)
   ignore(checked_date(ts.date))
-  Timestamp(ts)
+  @value.Value::from_timestamp(ts)
 }
 
 ///|

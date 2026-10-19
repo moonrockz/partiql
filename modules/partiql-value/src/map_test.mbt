@@ -4,7 +4,7 @@ fn map_of(
   key_type~ : @value.MapType = String,
   value_type~ : @value.MapType = Dynamic,
 ) -> @value.MapValue raise {
-  @value.MapValue::new(key_type~, value_type~, pairs)
+  @value.MapValue(key_type~, value_type~, pairs)
 }
 
 ///|
@@ -34,7 +34,7 @@ test "map constructor rejects invalid keys" {
       key in [
         @value.Value::Null,
         @value.Value::Missing,
-        @value.Value::List([i(1)]),
+        @value.Value::from_list([i(1)]),
         tup([("a", i(1))]),
         bag([]),
       ] {
@@ -47,7 +47,9 @@ test "map constructor rejects invalid keys" {
 
 ///|
 test "map constructor rejects keys that are eqg-equal" {
-  let one_decimal = @value.Value::Decimal(@ion_core.Decimal::new(10N, -1))
+  let one_decimal = @value.Value::from_decimal(
+    @ion_core.Decimal::Decimal(10N, -1),
+  )
   @expect.expect_all(soft => {
     soft
     .expect_call(() => {
@@ -109,8 +111,12 @@ test "map identity sees type parameters and ignores entry order" {
   let b = map_of([(s("b"), i(2)), (s("a"), i(1))], value_type=Integer)
   let c = map_of([(s("a"), i(1)), (s("b"), i(2))], value_type=BigInt)
   @expect.expect_all(soft => {
-    soft.expect(@value.Value::Map(a) == @value.Value::Map(b)).to_be_true()
-    soft.expect(@value.Value::Map(a) == @value.Value::Map(c)).to_be_false()
+    soft
+    .expect(@value.Value::from_map(a) == @value.Value::from_map(b))
+    .to_be_true()
+    soft
+    .expect(@value.Value::from_map(a) == @value.Value::from_map(c))
+    .to_be_false()
   })
 }
 
@@ -119,7 +125,7 @@ fn mv(
   pairs : Array[(@value.Value, @value.Value)],
   value_type~ : @value.MapType = Integer,
 ) -> @value.Value raise {
-  @value.Value::Map(map_of(pairs, value_type~))
+  @value.Value::from_map(map_of(pairs, value_type~))
 }
 
 ///|
@@ -188,7 +194,7 @@ test "maps order by sorted entries, after bags" {
 
 ///|
 test "map constructor rejects keys outside the key type family" {
-  let blob = @value.Value::Blob(b"hi")
+  let blob = @value.Value::from_blob(b"hi")
   @expect.expect_all(soft => {
     soft
     .expect_call(() => map_of([(i(1), i(2))], key_type=String))
@@ -203,7 +209,7 @@ test "map constructor rejects keys outside the key type family" {
     soft.expect(map_of([(i(1), s("x"))], key_type=Decimal).length()).to_equal(1)
     soft
     .expect(
-      map_of([(@value.Value::Float(1.5), s("x"))], key_type=Integer).length(),
+      map_of([(@value.Value::from_float(1.5), s("x"))], key_type=Integer).length(),
     )
     .to_equal(1)
   })
@@ -217,7 +223,7 @@ test "MapType::admits groups the key types into families" {
     soft.expect(@value.MapType::Double.admits(i(1))).to_be_true()
     soft.expect(@value.MapType::Bool.admits(i(1))).to_be_false()
     soft
-    .expect(@value.MapType::String.admits(@value.Value::Blob(b"")))
+    .expect(@value.MapType::String.admits(@value.Value::from_blob(b"")))
     .to_be_false()
     soft.expect(@value.MapType::Dynamic.admits(s("a"))).to_be_false()
   })

@@ -23,9 +23,9 @@ fn truth(v : @value.Value) -> Truth raise OpFailure {
 /// FALSE if either is FALSE; else NULL if either is unknown; else TRUE.
 pub fn and_(a : @value.Value, b : @value.Value) -> @value.Value raise OpFailure {
   match (truth(a), truth(b)) {
-    (False, _) | (_, False) => Bool(false)
+    (False, _) | (_, False) => @value.Value::from_bool(false)
     (Unknown, _) | (_, Unknown) => Null
-    _ => Bool(true)
+    _ => @value.Value::from_bool(true)
   }
 }
 
@@ -33,17 +33,19 @@ pub fn and_(a : @value.Value, b : @value.Value) -> @value.Value raise OpFailure 
 /// TRUE if either is TRUE; else NULL if either is unknown; else FALSE.
 pub fn or_(a : @value.Value, b : @value.Value) -> @value.Value raise OpFailure {
   match (truth(a), truth(b)) {
-    (True, _) | (_, True) => Bool(true)
+    (True, _) | (_, True) => @value.Value::from_bool(true)
     (Unknown, _) | (_, Unknown) => Null
-    _ => Bool(false)
+    _ => @value.Value::from_bool(false)
   }
 }
 
 ///|
+/// SQL `NOT`: negate a boolean; NULL and MISSING both produce NULL after unboxing Ion.
+/// Raise `TypeFailure` for a present non-boolean operand.
 pub fn not_(a : @value.Value) -> @value.Value raise OpFailure {
   match truth(a) {
-    True => Bool(false)
-    False => Bool(true)
+    True => @value.Value::from_bool(false)
+    False => @value.Value::from_bool(true)
     Unknown => Null
   }
 }

@@ -1,0 +1,31 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "moonrockz/partiql-value/json"
+
+import {
+  "moonbitlang/core/debug",
+  "moonrockz/partiql-value",
+}
+
+// Values
+pub fn read_bytes(BytesView) -> @partiql-value.Value raise JsonError
+
+pub fn read_text(StringView) -> @partiql-value.Value raise JsonError
+
+pub fn write_bytes(@partiql-value.Value, pretty? : Bool) -> Bytes raise JsonError
+
+pub fn write_text(@partiql-value.Value, pretty? : Bool) -> String raise JsonError
+
+// Errors
+pub(all) suberror JsonError {
+  Utf8
+  Syntax(offset~ : Int, message~ : String)
+  Unsupported(String)
+  Bindings(String)
+} derive(@debug.Debug)
+pub fn JsonError::message(Self) -> String
+
+// Types and methods
+
+// Type aliases
+
+// Traits

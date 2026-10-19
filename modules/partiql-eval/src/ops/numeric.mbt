@@ -44,7 +44,7 @@ fn to_double(n : Num) -> Double raise OpFailure {
 /// have none.
 fn to_decimal(n : Num) -> @ion_core.Decimal raise OpFailure {
   match n {
-    Whole(w) => @ion_core.Decimal::new(w, 0)
+    Whole(w) => @ion_core.Decimal::Decimal(w, 0)
     Exact(d) => d
     Approx(f) =>
       if f.is_nan() || f.is_inf() {
@@ -64,7 +64,7 @@ fn to_decimal(n : Num) -> @ion_core.Decimal raise OpFailure {
 fn whole_value(n : @bigint.BigInt) -> @value.Value raise OpFailure {
   if n.compare_int64(9223372036854775807L) <= 0 &&
     n.compare_int64(-9223372036854775808L) >= 0 {
-    Int(n.to_int64())
+    @value.Value::from_int(n.to_int64())
   } else {
     raise DataFailure("integer overflow")
   }
@@ -95,9 +95,9 @@ fn arithmetic(
     (Some(Whole(m)), Some(Whole(n))) => whole(m, n)
     (Some(p), Some(q)) =>
       if p is Exact(_) || q is Exact(_) {
-        Decimal(exact(to_decimal(p), to_decimal(q)))
+        @value.Value::from_decimal(exact(to_decimal(p), to_decimal(q)))
       } else {
-        Float(approx(to_double(p), to_double(q)))
+        @value.Value::from_float(approx(to_double(p), to_double(q)))
       }
     _ => raise TypeFailure("arithmetic on a value that is not a number")
   }
@@ -120,6 +120,10 @@ fn datetime_first(
 }
 
 ///|
+/// Add numbers or a supported datetime/interval pair. Unbox Ion and propagate
+/// MISSING before NULL. Numeric operands widen to decimal when either is
+/// decimal, otherwise to float when either is float. Raise `TypeFailure` for
+/// incompatible operands or `DataFailure` for overflow.
 pub fn add(a : @value.Value, b : @value.Value) -> @value.Value raise OpFailure {
   if datetime_first(a, b, datetime_add) is Some(v) {
     return v
@@ -131,6 +135,8 @@ pub fn add(a : @value.Value, b : @value.Value) -> @value.Value raise OpFailure {
 }
 
 ///|
+/// Subtract numbers or a supported datetime/interval pair. Use `add`'s
+/// unboxing, absence, numeric widening and failure rules.
 pub fn sub(a : @value.Value, b : @value.Value) -> @value.Value raise OpFailure {
   if datetime_first(a, b, datetime_sub) is Some(v) {
     return v
@@ -142,6 +148,8 @@ pub fn sub(a : @value.Value, b : @value.Value) -> @value.Value raise OpFailure {
 }
 
 ///|
+/// Multiply numbers or a supported interval/number pair. Use `add`'s
+/// unboxing, absence, numeric widening and failure rules.
 pub fn mul(a : @value.Value, b : @value.Value) -> @value.Value raise OpFailure {
   if datetime_first(a, b, datetime_mul) is Some(v) {
     return v
@@ -216,8 +224,10 @@ pub fn neg(v : @value.Value, negate~ : Bool) -> @value.Value raise OpFailure {
         Some(_) if !negate => x
         Some(Whole(n)) => whole_value(-n)
         Some(Exact(d)) =>
-          Decimal(@ion_core.Decimal::new(-d.coefficient(), d.exponent()))
-        Some(Approx(f)) => Float(-f)
+          @value.Value::from_decimal(
+            @ion_core.Decimal::Decimal(-d.coefficient(), d.exponent()),
+          )
+        Some(Approx(f)) => @value.Value::from_float(-f)
       }
   }
 }
@@ -233,7 +243,7 @@ pub fn concat(
   match (x, y) {
     (Missing, _) | (_, Missing) => Missing
     (Null, _) | (_, Null) => Null
-    (String(p), String(q)) => String(p + q)
+    (String(p), String(q)) => @value.Value::from_string(p + q)
     _ => raise TypeFailure("|| on a value that is not a string")
   }
 }
@@ -254,8 +264,10 @@ pub fn abs(args : Array[@value.Value]) -> @value.Value raise OpFailure {
         }
       BigInt(n) => if is_negative_int(n) { whole_value(-n) } else { v }
       Decimal(x) =>
-        Decimal(@ion_core.Decimal::new(abs_int(x.coefficient()), x.exponent()))
-      Float(f) => Float(f.abs())
+        @value.Value::from_decimal(
+          @ion_core.Decimal::Decimal(abs_int(x.coefficient()), x.exponent()),
+        )
+      Float(f) => @value.Value::from_float(f.abs())
       IntervalYM(i) if i.is_negative() => interval_abs(v)
       IntervalDT(i) if i.is_negative() => interval_abs(v)
       IntervalYM(_) | IntervalDT(_) => v

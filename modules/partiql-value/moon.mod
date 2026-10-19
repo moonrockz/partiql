@@ -3,7 +3,7 @@
 
 name = "moonrockz/partiql-value"
 
-version = "0.1.0"
+version = "0.3.0"
 
 readme = "README.mbt.md"
 
@@ -13,7 +13,7 @@ license = "Apache-2.0"
 
 keywords = [ "partiql", "sql", "query", "ion", "data-model" ]
 
-description = "The PartiQL data model for MoonBit, with a PartiQL-encoded Ion codec."
+description = "The PartiQL data model for MoonBit, with PartiQL-encoded Ion, JSON and YAML input codecs."
 
 source = "src"
 
@@ -22,6 +22,6 @@ source = "src"
 warnings = "-implicit_impl_as_method"
 
 import {
-  "moonrockz/ion@0.5.0",
+  "moonrockz/ion@0.6.0",
   "moonrockz/expect@0.6.0",
 }

@@ -43,7 +43,7 @@ test "law: a successful CAST(x AS T) IS T" {
         }
         soft
         .expect((source, strict_value("\{source} IS \{t}")))
-        .to_equal((source, Some(Bool(true))))
+        .to_equal((source, Some(@value.Value::from_bool(true))))
       }
     }
   })

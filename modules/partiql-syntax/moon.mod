@@ -2,7 +2,7 @@
 
 name = "moonrockz/partiql-syntax"
 
-version = "0.1.0"
+version = "0.3.0"
 
 readme = "README.mbt.md"
 
@@ -21,7 +21,7 @@ source = "src"
 warnings = "-implicit_impl_as_method"
 
 import {
-  "moonrockz/ion@0.5.0",
+  "moonrockz/ion@0.6.0",
   "moonrockz/pretty@0.1.0",
   "moonrockz/expect@0.6.0",
 }

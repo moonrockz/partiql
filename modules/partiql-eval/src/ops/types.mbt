@@ -186,5 +186,5 @@ pub fn is_type(
       }
     Custom(_) => raise TypeFailure("an unknown type")
   }
-  Bool(holds)
+  @value.Value::from_bool(holds)
 }

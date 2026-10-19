@@ -2,11 +2,13 @@
 package "moonrockz/partiql-eval"
 
 import {
-  "moonrockz/ion/ion",
+  "moonbitlang/core/debug",
   "moonrockz/partiql-eval/ops",
   "moonrockz/partiql-eval/plan",
   "moonrockz/partiql-syntax/ast",
   "moonrockz/partiql-value",
+  "moonrockz/partiql-value/json",
+  "moonrockz/partiql-value/yaml",
 }
 
 // Values
@@ -15,15 +17,41 @@ pub fn evaluate(@ast.Statement, env~ : Bindings, mode? : @plan.Mode, zone? : @op
 pub fn evaluate_text(String, env~ : Bindings, mode? : @plan.Mode, zone? : @ops.ZoneOffset, clock? : @ops.Clock) -> @partiql-value.Value raise @plan.EvalError
 
 // Errors
+pub(all) suberror SessionError {
+  Evaluation(@plan.EvalError)
+  Ion(@moonrockz/partiql-value/ion.IonDataError)
+} derive(@debug.Debug)
 
 // Types and methods
 pub struct Bindings {
   // private fields
 }
 pub fn Bindings::empty() -> Self
-pub fn Bindings::of_ion(@ion.IonValue) -> Self raise @plan.EvalError
+pub fn Bindings::from_ion_bytes(BytesView, catalog? : @moonrockz/ion/ion.Catalog, validation? : @moonrockz/partiql-value/ion.Validation) -> Self raise @moonrockz/partiql-value/ion.IonDataError
+pub fn Bindings::from_ion_text(StringView, catalog? : @moonrockz/ion/ion.Catalog, validation? : @moonrockz/partiql-value/ion.Validation) -> Self raise @moonrockz/partiql-value/ion.IonDataError
+pub fn Bindings::from_json_bytes(BytesView) -> Self raise @json.JsonError
+pub fn Bindings::from_json_text(StringView) -> Self raise @json.JsonError
+pub fn Bindings::from_yaml_bytes(BytesView) -> Self raise @yaml.YamlError
+pub fn Bindings::from_yaml_text(StringView) -> Self raise @yaml.YamlError
+pub fn Bindings::of_ion(@moonrockz/ion/ion.Ion) -> Self raise @plan.EvalError
 pub fn Bindings::of_pairs(Array[(String, @partiql-value.Value)]) -> Self
 pub fn Bindings::of_tuple(@partiql-value.Tuple) -> Self
+pub fn Bindings::with_data(Self, String, Array[@partiql-value.Value]) -> Self
+pub fn Bindings::with_value(Self, String, @partiql-value.Value) -> Self
+
+pub struct Session {
+  env : Bindings
+  mode : @plan.Mode
+  zone : @ops.ZoneOffset
+  clock : @ops.Clock?
+}
+#alias(new, deprecated)
+pub fn Session::Session(env? : Bindings, mode? : @plan.Mode, zone? : @ops.ZoneOffset, clock? : @ops.Clock) -> Self
+pub fn Session::evaluate(Self, String) -> @partiql-value.Value raise @plan.EvalError
+pub fn Session::evaluate_each(Self, String, name~ : String, values~ : Array[@partiql-value.Value]) -> Array[@partiql-value.Value] raise @plan.EvalError
+pub fn Session::evaluate_ion_bytes(Self, String) -> Bytes raise SessionError
+pub fn Session::evaluate_ion_text(Self, String, pretty? : Bool) -> String raise SessionError
+pub fn Session::evaluate_script(Self, String) -> Array[@partiql-value.Value] raise @plan.EvalError
 
 // Type aliases
 pub using @ops {type Clock}

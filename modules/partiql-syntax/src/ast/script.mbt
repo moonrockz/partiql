@@ -1,4 +1,5 @@
 ///|
+/// Whether a preserved source comment uses line or block delimiters.
 pub(all) enum CommentKind {
   /// `-- …` up to the end of the line
   Line

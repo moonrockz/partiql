@@ -42,7 +42,7 @@ fn CollText::as_bag(self : CollText) -> @value.Value raise @eval.EvalError {
 /// expected value equals.
 fn run(source : String, mode~ : @eval.Mode = Permissive) -> @value.Value {
   ev(source, mode~) catch {
-    e => String("error: \{@debug.to_string(e)}")
+    e => @value.Value::from_string("error: \{@debug.to_string(e)}")
   }
 }
 
@@ -328,9 +328,14 @@ fn count_of(v : @value.Value) -> Int32 {
 ///|
 test "totality: a 100000-element bag through scan, filter and project" {
   let n = 100000
-  let items : Array[@value.Value] = Array::makei(n, i => Int(i.to_int64()))
+  let items : Array[@value.Value] = Array::makei(n, i => {
+    @value.Value::from_int(i.to_int64())
+  })
   let env = @eval.Bindings::of_tuple(
-    @value.Tuple::new([("c", Bag(@value.Bag::new(items))), ("l", List(items))]),
+    @value.Tuple::Tuple([
+      ("c", @value.Value::from_bag(@value.Bag(items))),
+      ("l", @value.Value::from_list(items)),
+    ]),
   )
   let q = (s : String) => @eval.evaluate_text(s, env~)
   let scan = q("SELECT VALUE x FROM c AS x")
@@ -352,7 +357,9 @@ test "totality: a 300-item comma FROM list" {
   let from = Array::makei(300, i => "[\{i}] AS x\{i}").join(", ")
   // 300 singleton sources: one row
   let v = ev("SELECT VALUE 1 FROM \{from}")
-  @expect.expect(v).to_equal(@value.Value::Bag(@value.Bag::new([Int(1L)])))
+  @expect.expect(v).to_equal(
+    @value.Value::from_bag(@value.Bag([@value.Value::from_int(1L)])),
+  )
 }
 
 ///|
@@ -417,8 +424,8 @@ test "law: ORDER BY is a permutation of its input" {
       let plain = items_of(run("SELECT VALUE x FROM \{c.text()} AS x"))
       match (sorted, plain) {
         (Some(a), Some(b)) =>
-          @value.Value::Bag(@value.Bag::new(a)) ==
-          @value.Value::Bag(@value.Bag::new(b))
+          @value.Value::from_bag(@value.Bag(a)) ==
+          @value.Value::from_bag(@value.Bag(b))
         _ => false
       }
     },
@@ -693,17 +700,17 @@ test "law: OUTER operators equal the SQL operators on relations" {
 test "totality: ORDER BY over a 100000-element bag" {
   let n = 100000
   let items : Array[@value.Value] = Array::makei(n, i => {
-    Int((i * 7919 % n).to_int64())
+    @value.Value::from_int((i * 7919 % n).to_int64())
   })
   let env = @eval.Bindings::of_tuple(
-    @value.Tuple::new([("c", Bag(@value.Bag::new(items)))]),
+    @value.Tuple::Tuple([("c", @value.Value::from_bag(@value.Bag(items)))]),
   )
   let v = @eval.evaluate_text("SELECT VALUE x FROM c AS x ORDER BY x", env~)
   let out = items_of(v).unwrap()
   @expect.expect_all(soft => {
     soft.expect(out.length()).to_equal(n)
-    soft.expect(out[0]).to_equal(Int(0L))
-    soft.expect(out[n - 1]).to_equal(Int((n - 1).to_int64()))
+    soft.expect(out[0]).to_equal(@value.Value::from_int(0L))
+    soft.expect(out[n - 1]).to_equal(@value.Value::from_int((n - 1).to_int64()))
   })
 }
 
@@ -711,19 +718,21 @@ test "totality: ORDER BY over a 100000-element bag" {
 test "totality: OUTER and SQL set operations over two 100000-element bags" {
   let n = 100000
   let ints = (lo : Int32) => {
-    Array::makei(n, i => @value.Value::Int((lo + i).to_int64()))
+    Array::makei(n, i => @value.Value::from_int((lo + i).to_int64()))
   }
   let tuples = (lo : Int32) => {
     Array::makei(n, i => {
-      @value.Value::Tuple(@value.Tuple::new([("a", Int((lo + i).to_int64()))]))
+      @value.Value::from_tuple(
+        @value.Tuple([("a", @value.Value::from_int((lo + i).to_int64()))]),
+      )
     })
   }
   let env = @eval.Bindings::of_tuple(
-    @value.Tuple::new([
-      ("c", Bag(@value.Bag::new(ints(0)))),
-      ("d", Bag(@value.Bag::new(ints(n / 2)))),
-      ("t", Bag(@value.Bag::new(tuples(0)))),
-      ("u", Bag(@value.Bag::new(tuples(n / 2)))),
+    @value.Tuple::Tuple([
+      ("c", @value.Value::from_bag(@value.Bag(ints(0)))),
+      ("d", @value.Value::from_bag(@value.Bag(ints(n / 2)))),
+      ("t", @value.Value::from_bag(@value.Bag(tuples(0)))),
+      ("u", @value.Value::from_bag(@value.Bag(tuples(n / 2)))),
     ]),
   )
   let q = (s : String) => @eval.evaluate_text(s, env~)
@@ -754,5 +763,7 @@ test "totality: WITH with 50 chained bindings" {
     }
   }).join(", ")
   let v = ev("WITH \{bindings} SELECT VALUE y FROM w49 AS y")
-  @expect.expect(v).to_equal(@value.Value::Bag(@value.Bag::new([Int(50L)])))
+  @expect.expect(v).to_equal(
+    @value.Value::from_bag(@value.Bag([@value.Value::from_int(50L)])),
+  )
 }

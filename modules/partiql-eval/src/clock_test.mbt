@@ -35,7 +35,7 @@ fn counting(calls : Ref[Int32]) -> @eval.Clock {
 
 ///|
 fn offset(minutes : Int32) -> @eval.ZoneOffset {
-  @eval.ZoneOffset::new(minutes).unwrap_or(@eval.ZoneOffset::utc())
+  @eval.ZoneOffset::from_minutes(minutes).unwrap_or(@eval.ZoneOffset::utc())
 }
 
 ///|
@@ -44,19 +44,19 @@ test "clock functions read the injected clock in the session zone" {
   @expect.expect_all(soft => {
     soft
     .expect(ev_clock("CURRENT_DATE = DATE '2026-10-16'", clock))
-    .to_equal(Bool(true))
+    .to_equal(@value.Value::from_bool(true))
     soft
     .expect(
       ev_clock("CURRENT_TIME = TIME WITH TIME ZONE '23:30:15+00:00'", clock),
     )
-    .to_equal(Bool(true))
+    .to_equal(@value.Value::from_bool(true))
     soft
     .expect(
       ev_clock(
         "CURRENT_TIMESTAMP = TIMESTAMP '2026-10-16 23:30:15.123456+00:00'", clock,
       ),
     )
-    .to_equal(Bool(true))
+    .to_equal(@value.Value::from_bool(true))
     soft
     .expect(ev_clock("EXTRACT(SECOND FROM CURRENT_TIMESTAMP)", clock))
     .to_equal(dec("15.123456"))
@@ -70,13 +70,13 @@ test "clock functions read the injected clock in the session zone" {
     .expect(
       ev_clock("UTCNOW() = TIMESTAMP '2026-10-16 23:30:15.123456+00:00'", clock),
     )
-    .to_equal(Bool(true))
+    .to_equal(@value.Value::from_bool(true))
     // +05:30 crosses midnight.
     soft
     .expect(
       ev_clock("CURRENT_DATE = DATE '2026-10-17'", clock, zone=offset(330)),
     )
-    .to_equal(Bool(true))
+    .to_equal(@value.Value::from_bool(true))
     soft
     .expect(
       ev_clock(
@@ -85,17 +85,17 @@ test "clock functions read the injected clock in the session zone" {
         zone=offset(330),
       ),
     )
-    .to_equal(Int(30))
+    .to_equal(@value.Value::from_int(30))
     soft
     .expect(
       ev_clock("EXTRACT(HOUR FROM CURRENT_TIMESTAMP)", clock, zone=offset(-480)),
     )
-    .to_equal(Int(15))
+    .to_equal(@value.Value::from_int(15))
     soft
     .expect(
       ev_clock("EXTRACT(TIMEZONE_HOUR FROM UTCNOW())", clock, zone=offset(-480)),
     )
-    .to_equal(Int(0))
+    .to_equal(@value.Value::from_int(0))
   })
 }
 
@@ -107,10 +107,10 @@ test "clock values are cut, never rounded" {
     .expect(
       ev_clock("CURRENT_TIME(0) = TIME WITH TIME ZONE '23:59:59+00:00'", clock),
     )
-    .to_equal(Bool(true))
+    .to_equal(@value.Value::from_bool(true))
     soft
     .expect(ev_clock("CURRENT_DATE = DATE '2026-12-31'", clock))
-    .to_equal(Bool(true))
+    .to_equal(@value.Value::from_bool(true))
   })
 }
 
@@ -131,7 +131,13 @@ test "the clock is read at most once per statement" {
         clock,
       ),
     )
-    .to_equal(bag_of([Int(1), Int(2), Int(3)]))
+    .to_equal(
+      bag_of([
+        @value.Value::from_int(1),
+        @value.Value::from_int(2),
+        @value.Value::from_int(3),
+      ]),
+    )
     soft.expect(calls.val).to_equal(2)
     // WITH, GROUP BY and ORDER BY share the statement instant.
     soft
@@ -141,7 +147,7 @@ test "the clock is read at most once per statement" {
         clock,
       ),
     )
-    .to_equal(@value.Value::List([Int(2)]))
+    .to_equal(@value.Value::from_list([@value.Value::from_int(2)]))
     soft.expect(calls.val).to_equal(3)
     ignore(ev_clock("1 + 1", clock))
     soft.expect(calls.val).to_equal(3)
@@ -222,7 +228,7 @@ test "CAST of TIME to TIMESTAMP takes CURRENT_DATE" {
         "CAST(TIME '12:00:00' AS TIMESTAMP) = TIMESTAMP '2026-10-16 12:00:00'", clock,
       ),
     )
-    .to_equal(Bool(true))
+    .to_equal(@value.Value::from_bool(true))
     soft
     .expect(
       ev_clock(
@@ -230,7 +236,7 @@ test "CAST of TIME to TIMESTAMP takes CURRENT_DATE" {
         clock,
       ),
     )
-    .to_equal(Bool(true))
+    .to_equal(@value.Value::from_bool(true))
     // The date is CURRENT_DATE in the session zone.
     soft
     .expect(
@@ -240,7 +246,7 @@ test "CAST of TIME to TIMESTAMP takes CURRENT_DATE" {
         zone=offset(330),
       ),
     )
-    .to_equal(Bool(true))
+    .to_equal(@value.Value::from_bool(true))
     let outcome = try
       ev_clock("CAST(TIME '12:00:00' AS TIMESTAMP)", None, mode=Strict)
     catch {

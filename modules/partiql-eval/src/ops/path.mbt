@@ -19,25 +19,59 @@ fn boxed(v : @value.Value) -> @value.Value raise OpFailure {
 }
 
 ///|
+/// Matches in tuple declaration order; repeated fields never shadow.
+pub(all) enum FieldMatch {
+  NoField
+  One(@value.Value)
+  Many(@value.Value, count~ : Int32)
+} derive(Debug, Eq)
+
+///|
+/// All fields matching a name, ignoring ASCII case for regular identifiers.
+pub fn field_match(
+  t : @value.Tuple,
+  name : String,
+  delimited~ : Bool,
+) -> FieldMatch {
+  let wanted = if delimited { name } else { name.to_lower() }
+  let mut found = NoField
+  for (key, value) in t.fields() {
+    let key = if delimited { key } else { key.to_lower() }
+    if key == wanted {
+      found = match found {
+        NoField => One(value)
+        One(first) => Many(first, count=2)
+        Many(first, count~) => Many(first, count=count + 1)
+      }
+    }
+  }
+  found
+}
+
+///|
 /// The field `name` of a tuple. Without `delimited` the match ignores ASCII
-/// case; the first matching field wins.
+/// case. With `unique`, repeated matches are a type failure.
 pub fn field(
   v : @value.Value,
   name : String,
   delimited~ : Bool,
+  unique~ : Bool,
 ) -> @value.Value raise OpFailure {
   match boxed(v) {
     Null => Missing
-    Tuple(t) => {
-      let wanted = if delimited { name } else { name.to_lower() }
-      for entry in t.fields() {
-        let key = if delimited { entry.0 } else { entry.0.to_lower() }
-        if key == wanted {
-          return entry.1
-        }
+    Tuple(t) =>
+      match field_match(t, name, delimited~) {
+        NoField => raise TypeFailure("no field \{name}")
+        One(v) => v
+        Many(v, count~) =>
+          if unique {
+            raise TypeFailure(
+              "field \{name} is ambiguous: the tuple has \{count} matching fields",
+            )
+          } else {
+            v
+          }
       }
-      raise TypeFailure("no field \{name}")
-    }
     _ => raise TypeFailure("field \{name} of a value that is not a tuple")
   }
 }
@@ -51,6 +85,7 @@ pub fn index(
   v : @value.Value,
   i : @value.Value,
   named~ : Bool,
+  unique~ : Bool,
 ) -> @value.Value raise OpFailure {
   match (boxed(v), boxed(i)) {
     (Null, _) => Missing
@@ -60,7 +95,8 @@ pub fn index(
       } else {
         raise TypeFailure("list index \{n} out of range")
       }
-    (Tuple(_) as t, String(name)) if named => field(t, name, delimited=true)
+    (Tuple(_) as t, String(name)) if named =>
+      field(t, name, delimited=true, unique~)
     (Map(_), Null) => Null
     (Map(_), Missing) => Missing
     (Map(m), key) =>

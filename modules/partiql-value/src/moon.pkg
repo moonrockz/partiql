@@ -6,11 +6,15 @@ import {
 
 import {
   "moonrockz/partiql-value" @value,
+  "moonrockz/partiql-value/ion" @partiql_ion,
+  "moonrockz/partiql-value/json" @partiql_json,
+  "moonbitlang/core/encoding/utf8",
   "moonrockz/expect",
   "moonbitlang/core/debug",
   "moonbitlang/core/double",
   "moonrockz/ion/ion" @ion_core,
   "moonrockz/ion/text",
+  "moonrockz/partiql-value/yaml" @partiql_yaml,
 } for "test"
 
 import {

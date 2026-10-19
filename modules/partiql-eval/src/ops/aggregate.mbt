@@ -60,7 +60,7 @@ fn whole_sum(nums : Array[Num]) -> @bigint.BigInt? {
 ///|
 /// The sum as a decimal: a float joins as the decimal of its shortest text.
 fn decimal_sum(nums : Array[Num]) -> @ion_core.Decimal raise OpFailure {
-  let mut sum = @ion_core.Decimal::new(@bigint.BigInt::from_int(0), 0)
+  let mut sum = @ion_core.Decimal::Decimal(@bigint.BigInt::from_int(0), 0)
   for n in nums {
     sum = decimal_add(sum, to_decimal(n))
   }
@@ -68,11 +68,13 @@ fn decimal_sum(nums : Array[Num]) -> @ion_core.Decimal raise OpFailure {
 }
 
 ///|
+/// Count present values after unboxing Ion and dropping NULL and MISSING.
+/// With `distinct`, count each grouping-equivalent value once. Empty input gives zero.
 pub fn count_values(
   values : Iter[@value.Value],
   distinct~ : Bool,
 ) -> @value.Value raise OpFailure {
-  Int(present(values, distinct).length().to_int64())
+  @value.Value::from_int(present(values, distinct).length().to_int64())
 }
 
 ///|
@@ -89,7 +91,7 @@ pub fn sum_values(
   let nums = numbers(xs, "SUM")
   match whole_sum(nums) {
     Some(sum) => whole_value(sum)
-    None => Decimal(decimal_sum(nums))
+    None => @value.Value::from_decimal(decimal_sum(nums))
   }
 }
 
@@ -106,11 +108,14 @@ pub fn avg_values(
   }
   let nums = numbers(xs, "AVG")
   let sum = match whole_sum(nums) {
-    Some(s) => @ion_core.Decimal::new(s, 0)
+    Some(s) => @ion_core.Decimal::Decimal(s, 0)
     None => decimal_sum(nums)
   }
-  let count = @ion_core.Decimal::new(@bigint.BigInt::from_int(xs.length()), 0)
-  Decimal(decimal_div(sum, count))
+  let count = @ion_core.Decimal::Decimal(
+    @bigint.BigInt::from_int(xs.length()),
+    0,
+  )
+  @value.Value::from_decimal(decimal_div(sum, count))
 }
 
 ///|
@@ -128,6 +133,8 @@ fn extreme(xs : Array[@value.Value], better : (Int32) -> Bool) -> @value.Value {
 }
 
 ///|
+/// The least present value under PartiQL total ordering, or NULL for empty
+/// or entirely absent input. Unbox Ion and ignore NULL and MISSING.
 pub fn min_values(
   values : Iter[@value.Value],
   distinct~ : Bool,
@@ -136,6 +143,8 @@ pub fn min_values(
 }
 
 ///|
+/// The greatest present value under PartiQL total ordering, or NULL for empty
+/// or entirely absent input. Unbox Ion and ignore NULL and MISSING.
 pub fn max_values(
   values : Iter[@value.Value],
   distinct~ : Bool,
@@ -168,7 +177,7 @@ pub fn any_values(
   if bs.is_empty() {
     Null
   } else {
-    Bool(bs.iter().any(b => b))
+    @value.Value::from_bool(bs.iter().any(b => b))
   }
 }
 
@@ -182,6 +191,6 @@ pub fn every_values(
   if bs.is_empty() {
     Null
   } else {
-    Bool(bs.iter().all(b => b))
+    @value.Value::from_bool(bs.iter().all(b => b))
   }
 }

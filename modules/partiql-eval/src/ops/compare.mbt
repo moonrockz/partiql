@@ -41,20 +41,24 @@ fn ordered(
     raise TypeFailure("an ordering of values that cannot be compared")
   }
   if is_nan(x) || is_nan(y) {
-    return Bool(false)
+    return @value.Value::from_bool(false)
   }
   match datetime_order(x, y) {
-    Some(c) => Bool(holds(c))
-    None => Bool(holds(@value.compare(x, y, nulls=NullsFirst)))
+    Some(c) => @value.Value::from_bool(holds(c))
+    None =>
+      @value.Value::from_bool(holds(@value.compare(x, y, nulls=NullsFirst)))
   }
 }
 
 ///|
+/// The `<` predicate. Unbox Ion; propagate MISSING before NULL.
+/// Return false for NaN and raise `TypeFailure` for incomparable kinds.
 pub fn less(a : @value.Value, b : @value.Value) -> @value.Value raise OpFailure {
   ordered(a, b, c => c < 0)
 }
 
 ///|
+/// The `<=` predicate, with the same absence, NaN and type rules as `less`.
 pub fn less_eq(
   a : @value.Value,
   b : @value.Value,
@@ -63,6 +67,7 @@ pub fn less_eq(
 }
 
 ///|
+/// The `>` predicate, with the same absence, NaN and type rules as `less`.
 pub fn greater(
   a : @value.Value,
   b : @value.Value,
@@ -71,6 +76,7 @@ pub fn greater(
 }
 
 ///|
+/// The `>=` predicate, with the same absence, NaN and type rules as `less`.
 pub fn greater_eq(
   a : @value.Value,
   b : @value.Value,
@@ -116,7 +122,7 @@ pub fn equal(a : @value.Value, b : @value.Value) -> @value.Value {
   match (x, y) {
     (Null, _) | (_, Null) => Null
     (Missing, _) | (_, Missing) => Missing
-    _ => Bool(!is_nan(x) && !is_nan(y) && same(x, y))
+    _ => @value.Value::from_bool(!is_nan(x) && !is_nan(y) && same(x, y))
   }
 }
 
@@ -124,7 +130,7 @@ pub fn equal(a : @value.Value, b : @value.Value) -> @value.Value {
 /// `<>`: the negation of `=`, keeping an absent result.
 pub fn not_equal(a : @value.Value, b : @value.Value) -> @value.Value {
   match equal(a, b) {
-    Bool(x) => Bool(!x)
+    Bool(x) => @value.Value::from_bool(!x)
     other => other
   }
 }
@@ -172,7 +178,7 @@ pub fn in_(x : @value.Value, c : @value.Value) -> @value.Value raise OpFailure {
   let mut absent = false
   for item in items {
     match equal(needle, item) {
-      Bool(true) => return Bool(true)
+      Bool(true) => return @value.Value::from_bool(true)
       Null | Missing => absent = true
       _ => ()
     }
@@ -180,6 +186,6 @@ pub fn in_(x : @value.Value, c : @value.Value) -> @value.Value raise OpFailure {
   if absent {
     Null
   } else {
-    Bool(false)
+    @value.Value::from_bool(false)
   }
 }

@@ -14,16 +14,18 @@ fn failure_of(source : String, mode~ : @eval.Mode = Permissive) -> String {
 ///|
 test "CAST to numbers evaluates" {
   @expect.expect_all(soft => {
-    soft.expect(ev("CAST('12' AS INT)")).to_equal(Int(12))
-    soft.expect(ev("CAST(1.5 AS INTEGER)")).to_equal(Int(2))
-    soft.expect(ev("CAST(TRUE AS BIGINT)")).to_equal(Int(1))
+    soft.expect(ev("CAST('12' AS INT)")).to_equal(@value.Value::from_int(12))
+    soft.expect(ev("CAST(1.5 AS INTEGER)")).to_equal(@value.Value::from_int(2))
+    soft.expect(ev("CAST(TRUE AS BIGINT)")).to_equal(@value.Value::from_int(1))
     soft.expect(ev("CAST(5 AS DECIMAL(5, 2))")).to_equal(dec("5.00"))
     soft.expect(ev("CAST(5 AS NUMERIC(3))")).to_equal(dec("5"))
-    soft.expect(ev("CAST(0 AS BOOLEAN)")).to_equal(Bool(false))
+    soft
+    .expect(ev("CAST(0 AS BOOLEAN)"))
+    .to_equal(@value.Value::from_bool(false))
     soft.expect(ev("CAST(NULL AS INT)")).to_equal(Null)
     soft.expect(ev("CAST(MISSING AS INT)")).to_equal(Missing)
-    soft.expect(ev("CAST(1 AS ANY)")).to_equal(Int(1))
-    soft.expect(ev("CAST(`1.5e0` AS INT)")).to_equal(Int(2))
+    soft.expect(ev("CAST(1 AS ANY)")).to_equal(@value.Value::from_int(1))
+    soft.expect(ev("CAST(`1.5e0` AS INT)")).to_equal(@value.Value::from_int(2))
   })
 }
 
@@ -76,19 +78,33 @@ test "CAST target checks are static" {
 ///|
 test "CAST to text" {
   @expect.expect_all(soft => {
-    soft.expect(ev("CAST(1.50 AS STRING)")).to_equal(String("1.50"))
-    soft.expect(ev("CAST(TRUE AS VARCHAR)")).to_equal(String("TRUE"))
-    soft.expect(ev("CAST('abcdef' AS VARCHAR(3))")).to_equal(String("abc"))
-    soft.expect(ev("CAST('ab' AS CHAR(4))")).to_equal(String("ab  "))
-    soft.expect(ev("CAST('ab' AS CHAR)")).to_equal(String("a"))
-    soft.expect(ev("CAST(`abc` AS SYMBOL)")).to_equal(String("abc"))
+    soft
+    .expect(ev("CAST(1.50 AS STRING)"))
+    .to_equal(@value.Value::from_string("1.50"))
+    soft
+    .expect(ev("CAST(TRUE AS VARCHAR)"))
+    .to_equal(@value.Value::from_string("TRUE"))
+    soft
+    .expect(ev("CAST('abcdef' AS VARCHAR(3))"))
+    .to_equal(@value.Value::from_string("abc"))
+    soft
+    .expect(ev("CAST('ab' AS CHAR(4))"))
+    .to_equal(@value.Value::from_string("ab  "))
+    soft
+    .expect(ev("CAST('ab' AS CHAR)"))
+    .to_equal(@value.Value::from_string("a"))
+    soft
+    .expect(ev("CAST(`abc` AS SYMBOL)"))
+    .to_equal(@value.Value::from_string("abc"))
     soft
     .expect(ev("CAST(DATE '2007-10-10' AS STRING)"))
-    .to_equal(String("DATE '2007-10-10'"))
+    .to_equal(@value.Value::from_string("DATE '2007-10-10'"))
     soft
     .expect(ev("CAST(TIME WITH TIME ZONE '23:12:12.1267-05:30' AS STRING)"))
-    .to_equal(String("TIME '23:12:12.1267-05:30'"))
-    soft.expect(ev("CHAR_LENGTH(CAST('😀' AS CHAR(3)))")).to_equal(Int(3))
+    .to_equal(@value.Value::from_string("TIME '23:12:12.1267-05:30'"))
+    soft
+    .expect(ev("CHAR_LENGTH(CAST('😀' AS CHAR(3)))"))
+    .to_equal(@value.Value::from_int(3))
     soft
     .expect(failure_of("CAST(12345 AS CHAR(3))", mode=Strict))
     .to_equal("data")
@@ -98,7 +114,9 @@ test "CAST to text" {
 
 ///|
 test "CAST uses the session time zone" {
-  guard @eval.ZoneOffset::new(330) is Some(india) else { fail("offset") }
+  guard @eval.ZoneOffset::from_minutes(330) is Some(india) else {
+    fail("offset")
+  }
   let source = "CAST(TIME '12:00:00' AS TIME WITH TIME ZONE)"
   let at_utc = @eval.evaluate_text(source, env=@eval.Bindings::empty())
   let at_india = @eval.evaluate_text(
@@ -111,7 +129,7 @@ test "CAST uses the session time zone" {
     soft.expect(at_india is Time({ offset: Some(330), .. })).to_be_true()
     soft
     .expect(ev("CAST('2020-01-01' AS DATE)"))
-    .to_equal(Date(@value.Date::new(year=2020, month=1, day=1)))
+    .to_equal(@value.Value::from_date(@value.Date(year=2020, month=1, day=1)))
     soft
     .expect(failure_of("CAST(TIME '12:00:00' AS TIMESTAMP)"))
     .to_equal("data")
@@ -139,7 +157,9 @@ test "CAST to INTERVAL" {
 ///|
 test "CAST to collections and maps" {
   @expect.expect_all(soft => {
-    soft.expect(ev("CAST([1, 2] AS BAG)")).to_equal(bag_of([Int(1), Int(2)]))
+    soft
+    .expect(ev("CAST([1, 2] AS BAG)"))
+    .to_equal(bag_of([@value.Value::from_int(1), @value.Value::from_int(2)]))
     soft
     .expect(ev("CAST({'a': 1, 'a': 2} AS MAP<STRING, INTEGER>)"))
     .to_equal(ev("MAP {'a': 2}"))
@@ -157,7 +177,9 @@ test "CAST to collections and maps" {
     .to_equal("data")
     // Elements of an Ion sexp stay Ion-boxed (shallow lowering, as for
     // paths); they equal the PartiQL values.
-    soft.expect(ev("CAST(`(1 2)` AS LIST) = [1, 2]")).to_equal(Bool(true))
+    soft
+    .expect(ev("CAST(`(1 2)` AS LIST) = [1, 2]"))
+    .to_equal(@value.Value::from_bool(true))
   })
 }
 
@@ -166,11 +188,15 @@ test "t[CAST(e AS STRING)] names a field; a map keeps its key lookup" {
   @expect.expect_all(soft => {
     soft
     .expect(ev("{'attr': 1, 'b': 2}[CAST('at' || 'tr' AS STRING)]"))
-    .to_equal(Int(1))
-    soft.expect(ev("{'a': 1}[CAST('a' AS VARCHAR(3))]")).to_equal(Int(1))
+    .to_equal(@value.Value::from_int(1))
+    soft
+    .expect(ev("{'a': 1}[CAST('a' AS VARCHAR(3))]"))
+    .to_equal(@value.Value::from_int(1))
     // A field name match is case-sensitive, as for a string literal.
     soft.expect(ev("{'a': 1}[CAST('A' AS STRING)]")).to_equal(Missing)
-    soft.expect(ev("MAP {'k': 5}[CAST('k' AS STRING)]")).to_equal(Int(5))
+    soft
+    .expect(ev("MAP {'k': 5}[CAST('k' AS STRING)]"))
+    .to_equal(@value.Value::from_int(5))
     // Not a string cast: a tuple is not indexed by an expression.
     soft.expect(ev("{'a': 1}['a' || '']")).to_equal(Missing)
   })
@@ -181,14 +207,14 @@ test "the implied name of a CAST is the name of its operand" {
   @expect.expect_all(soft => {
     soft
     .expect(ev("SELECT CAST(t.n AS STRING) FROM [{'n': 1}] AS t"))
-    .to_equal(bag_of([tuple([("n", String("1"))])]))
+    .to_equal(bag_of([tuple([("n", @value.Value::from_string("1"))])]))
     soft
     .expect(
       ev(
         "SELECT num FROM [{'num': 1.0}, {'num': 1}] AS t GROUP BY CAST(t.num AS INT)",
       ),
     )
-    .to_equal(bag_of([tuple([("num", Int(1))])]))
+    .to_equal(bag_of([tuple([("num", @value.Value::from_int(1))])]))
   })
 }
 
@@ -197,14 +223,14 @@ test "a MAP literal declares the types of uniform CAST keys and values" {
   @expect.expect_all(soft => {
     soft
     .expect(ev("MAP { CAST(100 AS BIGINT): 'hundred' } IS MAP<BIGINT, STRING>"))
-    .to_equal(Bool(true))
+    .to_equal(@value.Value::from_bool(true))
     soft
     .expect(ev("MAP { 'a': CAST(1 AS SMALLINT) } IS MAP<STRING, SMALLINT>"))
-    .to_equal(Bool(true))
+    .to_equal(@value.Value::from_bool(true))
     // Mixed: inferred as before.
     soft
     .expect(ev("MAP { CAST(1 AS BIGINT): 'a', 2: 'b' } IS MAP<INT, STRING>"))
-    .to_equal(Bool(true))
+    .to_equal(@value.Value::from_bool(true))
   })
 }
 
@@ -223,7 +249,7 @@ test "CHAR and VARCHAR lengths have an upper limit" {
 test "CAST reads SQL datetime and interval literals" {
   // SQL 6.13: text is read by the rules for <literal> (and, since SQL:1999,
   // as an unquoted string under the target's fields).
-  let new_year = @value.Value::Date(@value.Date::new(year=2020, month=1, day=1))
+  let new_year = @value.Value::from_date(@value.Date(year=2020, month=1, day=1))
   @expect.expect_all(soft => {
     soft.expect(ev("CAST('DATE ''2020-01-01''' AS DATE)")).to_equal(new_year)
     soft.expect(ev("CAST(' date ''2020-01-01'' ' AS DATE)")).to_equal(new_year)

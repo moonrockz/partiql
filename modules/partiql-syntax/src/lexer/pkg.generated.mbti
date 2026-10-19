@@ -29,7 +29,7 @@ pub(all) enum TokenKind {
   IntLit(String)
   DecimalLit(String)
   FloatLit(String)
-  IonLit(String, @ion.IonValue)
+  IonLit(String, @ion.Ion)
   Invalid
   Punct(Char)
   End

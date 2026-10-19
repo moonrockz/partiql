@@ -1,7 +1,7 @@
 ///|
 /// A date value for use inside a `failure` closure.
 fn date_on(year : Int32, month : Int32, day : Int32) -> @value.Value {
-  try @value.Value::Date(@value.Date::new(year~, month~, day~)) catch {
+  try @value.Value::from_date(@value.Date(year~, month~, day~)) catch {
     _ => Missing
   } noraise {
     v => v
@@ -10,7 +10,7 @@ fn date_on(year : Int32, month : Int32, day : Int32) -> @value.Value {
 
 ///|
 fn ym_of(months : Int64) -> @value.Value {
-  try @value.Value::IntervalYM(@value.IntervalYM::new(months)) catch {
+  try @value.Value::from_interval_ym(@value.IntervalYM(months)) catch {
     _ => Missing
   } noraise {
     v => v
@@ -19,7 +19,7 @@ fn ym_of(months : Int64) -> @value.Value {
 
 ///|
 fn days_of(n : Int64) -> @value.Value {
-  try @value.Value::IntervalDT(@value.IntervalDT::new(n * 86400L, 0L)) catch {
+  try @value.Value::from_interval_dt(@value.IntervalDT(n * 86400L, 0L)) catch {
     _ => Missing
   } noraise {
     v => v
@@ -75,12 +75,18 @@ test "datetime results stay in years 0001-9999" {
 ///|
 test "literal and CAST text years outside 0001-9999 are not valid" {
   @expect.expect_all(soft => {
-    soft.expect(failure(() => Date(parse_date("10000-01-01")))).to_equal("type")
-    soft.expect(failure(() => Date(parse_date("0000-01-01")))).to_equal("type")
-    soft.expect(failure(() => Date(parse_date("-0001-01-01")))).to_equal("type")
+    soft
+    .expect(failure(() => @value.Value::from_date(parse_date("10000-01-01"))))
+    .to_equal("type")
+    soft
+    .expect(failure(() => @value.Value::from_date(parse_date("0000-01-01"))))
+    .to_equal("type")
+    soft
+    .expect(failure(() => @value.Value::from_date(parse_date("-0001-01-01"))))
+    .to_equal("type")
     soft
     .expect(parse_date("0001-01-01"))
-    .to_equal(@value.Date::new(year=1, month=1, day=1))
+    .to_equal(@value.Date::Date(year=1, month=1, day=1))
   })
 }
 

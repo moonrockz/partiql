@@ -58,29 +58,30 @@ pub fn timestamp_of_ion(ts : @ion_core.Timestamp) -> Timestamp {
 fn lower_ion(x : @ion_core.IonValue) -> Value raise LowerError {
   match x.kind() {
     Null(_) => Null
-    Bool(b) => Bool(b)
-    Int(n) => Value::integer(n)
-    Float(d) => Float(d)
-    Decimal(d) => Decimal(d)
-    Timestamp(ts) => Timestamp(timestamp_of_ion(ts))
+    Bool(b) => Value::from_bool(b)
+    Int(n) => Value::from_bigint(n)
+    Float(d) => Value::from_float(d)
+    Decimal(d) => Value::from_decimal(d)
+    Timestamp(ts) => Value::from_timestamp(timestamp_of_ion(ts))
     Symbol(token) =>
       match token.text() {
-        Some(text) => String(text)
+        Some(text) => Value::from_string(text)
         None => raise SymbolWithoutText
       }
-    String(s) => String(s)
-    Clob(bytes) => Clob(bytes)
-    Blob(bytes) => Blob(bytes)
-    List(items) | Sexp(items) => List(items.map(item => Ion(item)))
+    String(s) => Value::from_string(s)
+    Clob(bytes) => Value::from_clob(bytes)
+    Blob(bytes) => Value::from_blob(bytes)
+    List(items) | Sexp(items) =>
+      Value::from_list(items.map(item => Value::from_ion(item)))
     Struct(fields) => {
       let pairs : Array[(String, Value)] = []
       for field in fields {
         match field.name().text() {
-          Some(name) => pairs.push((name, Ion(field.value())))
+          Some(name) => pairs.push((name, Value::from_ion(field.value())))
           None => raise SymbolWithoutText
         }
       }
-      Tuple(Tuple::new(pairs))
+      Value::from_tuple(Tuple(pairs))
     }
   }
 }
@@ -102,12 +103,14 @@ pub fn Value::lower_deep(self : Value) -> Value raise LowerError {
     (node, children) => {
       let node = node.lower()
       match node {
-        List(_) => List(children)
-        Bag(_) => Bag(Bag::new(children))
+        List(_) => Value::from_list(children)
+        Bag(_) => Value::from_bag(Bag(children))
         Tuple(t) =>
-          Tuple(Tuple::new(t.fields().mapi((i, p) => (p.0, children[i]))))
+          Value::from_tuple(
+            Tuple(t.fields().mapi((i, p) => (p.0, children[i]))),
+          )
         Map(m) =>
-          Map({
+          Value::from_map({
             key_type: m.key_type,
             value_type: m.value_type,
             entries: m
@@ -128,7 +131,7 @@ pub fn Value::lower_deep(self : Value) -> Value raise LowerError {
           }
           let nodes = g.nodes().map(n => { ..n, payload: payload(n.payload), })
           let edges = g.edges().map(e => { ..e, payload: payload(e.payload), })
-          Graph({ nodes, edges, })
+          Value::from_graph({ nodes, edges, })
         }
         other => other
       }

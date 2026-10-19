@@ -57,25 +57,55 @@ fn command(name : String, prefix : String) -> @argparse.Command {
     "query" =>
       @argparse.Command(
         named,
-        about="Evaluate PartiQL against Ion data; print each result as Ion.",
+        about="Evaluate PartiQL against Ion or JSON data; print each result.",
         flags=[
           @argparse.FlagArg(
             "strict",
             about="Evaluate in strict mode: a type error fails instead of giving MISSING.",
           ),
           @argparse.FlagArg("compact", about="Print each result on one line."),
+          @argparse.FlagArg(
+            "schema-document",
+            about="Validate each binding datagram as a document instead of per element.",
+          ),
         ],
         options=[
           ..input_options(),
           @argparse.OptionArg(
+            "input-format",
+            about="Data and environment format: ion (default, text or binary), json or yaml.",
+          ),
+          @argparse.OptionArg(
+            "output-format",
+            about="Result format: ion (default), binary or json.",
+          ),
+          @argparse.OptionArg(
+            "each",
+            about="Run each statement for every element of this --data NAME, in order.",
+          ),
+          @argparse.OptionArg(
+            "data-schema",
+            about="NAME=FILE: validate this data binding against an Ion Schema.",
+            action=Append,
+          ),
+          @argparse.OptionArg(
+            "env-schema",
+            about="Validate every --env against this Ion Schema file. '-' reads stdin.",
+            allow_hyphen_values=true,
+          ),
+          @argparse.OptionArg(
+            "schema-type",
+            about="Schema type name (default document).",
+          ),
+          @argparse.OptionArg(
             "env",
-            about="An Ion file that holds one struct; each field is a global. '-' reads stdin.",
+            about="An Ion struct or JSON object file; each field is a global. '-' reads stdin.",
             action=Append,
             allow_hyphen_values=true,
           ),
           @argparse.OptionArg(
             "data",
-            about="NAME=FILE: bind the Ion values of FILE to the global NAME. '-' as FILE reads stdin.",
+            about="NAME=FILE: bind the Ion values or JSON document of FILE to the global NAME. '-' as FILE reads stdin.",
             action=Append,
           ),
           @argparse.OptionArg(
@@ -156,8 +186,13 @@ fn examples(path : ArrayView[String]) -> Array[String] {
     ["query"] =>
       [
         "partiql query -e 'select value x * 2 from <<1, 2>> as x'", "partiql query --data t=rows.ion -e 'select a from t where b > 1'",
+        "partiql query --input-format json --data t=rows.json --output-format json -e 'CAST((SELECT * FROM t) AS LIST)'",
+        "partiql query --input-format yaml --data t=rows.yaml --each t -e 't.name'",
         "partiql query --env env.ion query.sql", "cat rows.ion | partiql query --data t=- query.sql",
-        "partiql query --strict --compact query.sql", "partiql query --time-zone -08:00 -e 'CURRENT_TIMESTAMP'",
+        "partiql query --strict --compact query.sql", "partiql query --data t=rows.ion --each t -e 't.a'",
+        "partiql query --data t=rows.ion --output-format binary -e 't' > result.10n",
+        "partiql query --data t=rows.ion --data-schema t=rows.isl --schema-type row -e 't'",
+        "partiql query --time-zone -08:00 -e 'CURRENT_TIMESTAMP'",
       ]
     ["version"] => ["partiql version", "partiql --version"]
     ["help"] => ["partiql help", "partiql help version"]

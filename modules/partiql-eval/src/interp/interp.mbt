@@ -1,17 +1,56 @@
 ///|
+priv enum GlobalMatch {
+  NoGlobal
+  Global(@value.Value)
+  Ambiguous(Array[String])
+}
+
+///|
 fn find_global(
   globals : Array[(String, @value.Value)],
   name : String,
   delimited : Bool,
-) -> @value.Value? {
+) -> GlobalMatch {
   let wanted = if delimited { name } else { name.to_lower() }
-  for entry in globals {
-    let key = if delimited { entry.0 } else { entry.0.to_lower() }
+  let names = []
+  let mut first = None
+  for (spelling, value) in globals {
+    let key = if delimited { spelling } else { spelling.to_lower() }
     if key == wanted {
-      return Some(entry.1)
+      if first is None {
+        first = Some(value)
+      }
+      if !names.contains(spelling) {
+        names.push(spelling)
+      }
     }
   }
-  None
+  if names.length() > 1 {
+    Ambiguous(names)
+  } else {
+    match first {
+      Some(value) => Global(value)
+      None => NoGlobal
+    }
+  }
+}
+
+///|
+/// Turn a global match into a value only after checking distinct spellings.
+fn GlobalMatch::value(
+  self : GlobalMatch,
+  name : String,
+  span : @ast.Span,
+) -> @value.Value? raise @plan.EvalError {
+  match self {
+    NoGlobal => None
+    Global(value) => Some(value)
+    Ambiguous(names) =>
+      raise DataError(
+        message="\{name} is ambiguous: it names \{names.join(" and ")}; write the name in double quotes",
+        span~,
+      )
+  }
 }
 
 ///|
@@ -21,7 +60,7 @@ fn lookup(
   delimited : Bool,
   span : @ast.Span,
 ) -> @value.Value raise @plan.EvalError {
-  match find_global(globals, name, delimited) {
+  match find_global(globals, name, delimited).value(name, span) {
     Some(v) => v
     None => raise DataError(message="undefined variable \{name}", span~)
   }
@@ -42,17 +81,24 @@ fn implicit(
 ) -> @value.Value raise @plan.EvalError {
   for variable in locals {
     if env.find(variable) is Some(v) {
-      let found = @ops.field(v, name, delimited~) catch {
-        TypeFailure(_) => Missing
-        DataFailure(message) => raise DataError(message~, span~)
-        Unsupported(message) => raise Unsupported(message~, span~)
-      }
-      if !(found is Missing) {
-        return found
+      if unboxed(v) is Tuple(t) {
+        match @ops.field_match(t, name, delimited~) {
+          NoField => ()
+          One(value) => return value
+          Many(value, count~) =>
+            match ctx.mode {
+              Permissive => return value
+              Strict =>
+                raise TypeError(
+                  message="field \{name} is ambiguous: the tuple has \{count} matching fields",
+                  span~,
+                )
+            }
+        }
       }
     }
   }
-  if find_global(ctx.globals, name, delimited) is Some(v) {
+  if find_global(ctx.globals, name, delimited).value(name, span) is Some(v) {
     return v
   }
   typed(ctx.mode, span, () => raise TypeFailure("undefined variable \{name}"))
@@ -151,7 +197,7 @@ fn run_path(
   }
   match many {
     None => single
-    Some(items) => Bag(@value.Bag::new(items))
+    Some(items) => @value.Value::from_bag(@value.Bag(items))
   }
 }
 
@@ -165,7 +211,9 @@ fn navigate(
 ) -> @value.Value raise @plan.EvalError {
   match step {
     Field(name, delimited~) =>
-      typed(ctx.mode, span, () => @ops.field(v, name, delimited~))
+      typed(ctx.mode, span, () => {
+        @ops.field(v, name, delimited~, unique=ctx.mode is Strict)
+      })
     Index(e) => {
       let i = eval(e, env, ctx)
       // A string literal, also an Ion one, or a CAST to a character string
@@ -175,7 +223,9 @@ fn navigate(
         Cast(_, Text(_), _) => true
         _ => false
       }
-      typed(ctx.mode, span, () => @ops.index(v, i, named~))
+      typed(ctx.mode, span, () => {
+        @ops.index(v, i, named~, unique=ctx.mode is Strict)
+      })
     }
     AllElements | AllFields => v
   }
@@ -221,7 +271,7 @@ fn run_tuple(
         }
     }
   }
-  Tuple(@value.Tuple::new(out))
+  @value.Value::from_tuple(@value.Tuple(out))
 }
 
 ///|
@@ -268,7 +318,7 @@ fn widen(v : @value.Value, t : @value.MapType) -> @value.Value {
       try @ion_core.Decimal::parse(n.to_string()) catch {
         _ => v
       } noraise {
-        d => Decimal(d)
+        d => @value.Value::from_decimal(d)
       }
     _ => v
   }
@@ -312,7 +362,7 @@ fn run_map(
     Some(t) => t
     None => common_type(pairs.map(p => p.1))
   }
-  // Duplicates are found after widening and lowering, as `MapValue::new` does.
+  // Duplicates are found after widening and lowering, as `MapValue::MapValue` does.
   let unique : Array[(@value.Value, @value.Value)] = []
   for pair in pairs {
     let key = widen(pair.0, key_type)
@@ -326,10 +376,10 @@ fn run_map(
       None => unique.push(entry)
     }
   }
-  try @value.MapValue::new(key_type~, value_type~, unique) catch {
+  try @value.MapValue(key_type~, value_type~, unique) catch {
     err => raise DataError(message=@debug.to_string(err), span~)
   } noraise {
-    m => Map(m)
+    m => @value.Value::from_map(m)
   }
 }
 
@@ -456,18 +506,19 @@ fn eval(
   match e {
     Const(v, _) => v
     Global(name, delimited~, span) => lookup(ctx.globals, name, delimited, span)
-    ListOf(items, _) => List(run_all(items, env, ctx))
-    BagOf(items, _) => Bag(@value.Bag::new(run_all(items, env, ctx)))
+    ListOf(items, _) => @value.Value::from_list(run_all(items, env, ctx))
+    BagOf(items, _) =>
+      @value.Value::from_bag(@value.Bag(run_all(items, env, ctx)))
     TupleOf(fields, _) => run_tuple(fields, env, ctx)
     Path(base, steps, span) =>
       run_path(eval(base, env, ctx), steps, env, ctx, span)
     IsNull(x, negated~, _) => {
       let v = unboxed(eval(x, env, ctx))
-      Bool((v is Null || v is Missing) != negated)
+      @value.Value::from_bool((v is Null || v is Missing) != negated)
     }
     IsMissing(x, negated~, _) => {
       let v = unboxed(eval(x, env, ctx))
-      Bool((v is Missing) != negated)
+      @value.Value::from_bool((v is Missing) != negated)
     }
     MapOf(entries, key_type~, value_type~, span) =>
       run_map(entries, key_type, value_type, env, ctx, span)
@@ -481,7 +532,9 @@ fn eval(
       typed(ctx.mode, span, () => @ops.not_(v))
     }
     BoolTest(x, truth, negated~, _) =>
-      Bool(@ops.bool_test(eval(x, env, ctx), truth, negated~))
+      @value.Value::from_bool(
+        @ops.bool_test(eval(x, env, ctx), truth, negated~),
+      )
     Like(x, pattern~, escape~, negated~, span) => {
       let v = eval(x, env, ctx)
       let p = eval(pattern, env, ctx)
@@ -559,12 +612,21 @@ fn eval(
       typed(ctx.mode, span, () => call(f, values, ctx))
     }
     GlobalOrLocal(name, variable~, delimited~, span) =>
-      match find_global(ctx.globals, name, delimited) {
+      match find_global(ctx.globals, name, delimited).value(name, span) {
         Some(v) => v
         None =>
-          match env.find(variable) {
-            Some(v) => v
-            None => raise DataError(message="undefined variable \{name}", span~)
+          match variable {
+            Bound(variable) =>
+              match env.find(variable) {
+                Some(v) => v
+                None =>
+                  raise DataError(message="undefined variable \{name}", span~)
+              }
+            Ambiguous(names) =>
+              raise DataError(
+                message="\{name} is ambiguous: it names \{names.join(" and ")}; write the name in double quotes",
+                span~,
+              )
           }
       }
     Implicit(name, delimited~, locals~, span) =>
@@ -584,7 +646,9 @@ fn eval(
     Aggregate(kind, distinct~, arg, members~, group~, span) =>
       aggregate(kind, distinct, arg, members, group, env, ctx, span)
     GlobalsFirst(globals, key~, otherwise~, _) =>
-      if globals.iter().any(g => find_global(ctx.globals, g.0, g.1) is Some(_)) {
+      if globals
+        .iter()
+        .any(g => find_global(ctx.globals, g.0, g.1).value(g.0, g.2) is Some(_)) {
         eval(otherwise, env, ctx)
       } else {
         eval(key, env, ctx)
@@ -632,15 +696,15 @@ fn subquery(
     other => [other]
   }
   match use_ {
-    Column => Bag(@value.Bag::new(items.map(column_value)))
+    Column => @value.Value::from_bag(@value.Bag(items.map(column_value)))
     Scalar | Row =>
       match items {
         [] => Null
         [row] =>
           if use_ is Row {
             match row {
-              Tuple(t) => List(t.fields().map(f => f.1))
-              other => List([other])
+              Tuple(t) => @value.Value::from_list(t.fields().map(f => f.1))
+              other => @value.Value::from_list([other])
             }
           } else {
             column_value(row)

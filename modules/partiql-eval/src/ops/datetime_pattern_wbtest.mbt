@@ -1,6 +1,6 @@
 ///|
 fn fmt(x : @value.Value, pattern : String) -> @value.Value raise OpFailure {
-  datetime_to_string([x, String(pattern)])
+  datetime_to_string([x, @value.Value::from_string(pattern)])
 }
 
 ///|
@@ -15,10 +15,10 @@ fn moment(
   offset : Int32?,
 ) -> @value.Value {
   try
-    @value.Value::Timestamp(
-      @value.Timestamp::new(
-        @value.Date::new(year~, month~, day~),
-        @value.Time::new(hour~, minute~, second~, nanos~, precision=9, offset~),
+    @value.Value::from_timestamp(
+      @value.Timestamp(
+        @value.Date::Date(year~, month~, day~),
+        @value.Time::Time(hour~, minute~, second~, nanos~, precision=9, offset~),
       ),
     )
   catch {
@@ -54,35 +54,47 @@ test "TO_STRING formats every symbol" {
   let utc = moment(2017, 11, 21, 0, 0, 0, 0, Some(0))
   let pm = moment(2017, 11, 21, 15, 7, 9, 123456789, Some(90))
   @expect.expect_all(soft => {
-    soft.expect(fmt(t, "y")).to_equal(String("986"))
-    soft.expect(fmt(t, "yy")).to_equal(String("86"))
-    soft.expect(fmt(t, "yyyy")).to_equal(String("0986"))
+    soft.expect(fmt(t, "y")).to_equal(@value.Value::from_string("986"))
+    soft.expect(fmt(t, "yy")).to_equal(@value.Value::from_string("86"))
+    soft.expect(fmt(t, "yyyy")).to_equal(@value.Value::from_string("0986"))
     soft
     .expect(fmt(t, "M MM MMM MMMM MMMMM"))
-    .to_equal(String("1 01 Jan January J"))
-    soft.expect(fmt(t, "d dd")).to_equal(String("2 02"))
-    soft.expect(fmt(t, "H HH h hh a")).to_equal(String("3 03 3 03 AM"))
-    soft.expect(fmt(utc, "h a")).to_equal(String("12 AM"))
-    soft.expect(fmt(pm, "h a")).to_equal(String("3 PM"))
-    soft.expect(fmt(t, "m mm s ss")).to_equal(String("4 04 5 05"))
-    soft.expect(fmt(t, "SS SSS n")).to_equal(String("00 004 4000000"))
-    soft.expect(fmt(pm, "SSSSSSSSS")).to_equal(String("123456789"))
-    soft.expect(fmt(t, "X XX XXX")).to_equal(String("-0530 -0530 -05:30"))
-    soft.expect(fmt(pm, "X")).to_equal(String("+0130"))
+    .to_equal(@value.Value::from_string("1 01 Jan January J"))
+    soft.expect(fmt(t, "d dd")).to_equal(@value.Value::from_string("2 02"))
+    soft
+    .expect(fmt(t, "H HH h hh a"))
+    .to_equal(@value.Value::from_string("3 03 3 03 AM"))
+    soft.expect(fmt(utc, "h a")).to_equal(@value.Value::from_string("12 AM"))
+    soft.expect(fmt(pm, "h a")).to_equal(@value.Value::from_string("3 PM"))
+    soft
+    .expect(fmt(t, "m mm s ss"))
+    .to_equal(@value.Value::from_string("4 04 5 05"))
+    soft
+    .expect(fmt(t, "SS SSS n"))
+    .to_equal(@value.Value::from_string("00 004 4000000"))
+    soft
+    .expect(fmt(pm, "SSSSSSSSS"))
+    .to_equal(@value.Value::from_string("123456789"))
+    soft
+    .expect(fmt(t, "X XX XXX"))
+    .to_equal(@value.Value::from_string("-0530 -0530 -05:30"))
+    soft.expect(fmt(pm, "X")).to_equal(@value.Value::from_string("+0130"))
     soft
     .expect(fmt(utc, "X XXX x xx xxx"))
-    .to_equal(String("Z Z +00 +0000 +00:00"))
+    .to_equal(@value.Value::from_string("Z Z +00 +0000 +00:00"))
     soft
     .expect(fmt(utc, "yyyy-MM-dd'T'HH:mm:ss''X"))
-    .to_equal(String("2017-11-21T00:00:00'Z"))
-    soft.expect(fmt(utc, "y😀M")).to_equal(String("2017😀11"))
+    .to_equal(@value.Value::from_string("2017-11-21T00:00:00'Z"))
+    soft
+    .expect(fmt(utc, "y😀M"))
+    .to_equal(@value.Value::from_string("2017😀11"))
   })
 }
 
 ///|
 test "TO_STRING: types and fields the value lacks" {
   let date = try
-    @value.Value::Date(@value.Date::new(year=2020, month=3, day=4))
+    @value.Value::from_date(@value.Date(year=2020, month=3, day=4))
   catch {
     _ => @value.Value::Missing
   } noraise {
@@ -90,21 +102,32 @@ test "TO_STRING: types and fields the value lacks" {
   }
   let no_zone = moment(2020, 3, 4, 5, 6, 7, 0, None)
   @expect.expect_all(soft => {
-    soft.expect(fmt(date, "yyyy-MM-dd")).to_equal(String("2020-03-04"))
+    soft
+    .expect(fmt(date, "yyyy-MM-dd"))
+    .to_equal(@value.Value::from_string("2020-03-04"))
     soft.expect(failure(() => fmt(date, "HH"))).to_equal("data")
     soft.expect(failure(() => fmt(no_zone, "X"))).to_equal("data")
-    soft.expect(failure(() => fmt(Int(1), "y"))).to_equal("type")
     soft
-    .expect(failure(() => datetime_to_string([date, Int(1)])))
+    .expect(failure(() => fmt(@value.Value::from_int(1), "y")))
     .to_equal("type")
-    soft.expect(datetime_to_string([Null, String("G")])).to_equal(Null)
+    soft
+    .expect(
+      failure(() => datetime_to_string([date, @value.Value::from_int(1)])),
+    )
+    .to_equal("type")
+    soft
+    .expect(datetime_to_string([Null, @value.Value::from_string("G")]))
+    .to_equal(Null)
     soft.expect(datetime_to_string([Null, Missing])).to_equal(Missing)
   })
 }
 
 ///|
 fn parse_ts(text : String, pattern : String) -> @value.Value raise OpFailure {
-  text_to_timestamp([String(text), String(pattern)])
+  text_to_timestamp([
+    @value.Value::from_string(text),
+    @value.Value::from_string(pattern),
+  ])
 }
 
 ///|
@@ -120,10 +143,10 @@ fn stamp_of(
   offset : Int32,
 ) -> @value.Value {
   try
-    @value.Value::Timestamp(
-      @value.Timestamp::new(
-        @value.Date::new(year~, month~, day~),
-        @value.Time::new(
+    @value.Value::from_timestamp(
+      @value.Timestamp(
+        @value.Date::Date(year~, month~, day~),
+        @value.Time::Time(
           hour~,
           minute~,
           second~,
@@ -226,14 +249,24 @@ test "TO_TIMESTAMP: text that does not match or is out of range" {
 test "TO_TIMESTAMP with one argument reads Ion timestamp text" {
   @expect.expect_all(soft => {
     soft
-    .expect(text_to_timestamp([String("2007-02-23T12:14:33.079-08:00")]))
+    .expect(
+      text_to_timestamp([
+        @value.Value::from_string("2007-02-23T12:14:33.079-08:00"),
+      ]),
+    )
     .to_equal(stamp_of(2007, 2, 23, 12, 14, 33, 79000000, 3, -480))
     soft
-    .expect(failure(() => text_to_timestamp([String("2007-02-23 12:14")])))
+    .expect(
+      failure(() => {
+        text_to_timestamp([@value.Value::from_string("2007-02-23 12:14")])
+      }),
+    )
     .to_equal("data")
     soft.expect(text_to_timestamp([Null])).to_equal(Null)
     soft.expect(text_to_timestamp([Missing])).to_equal(Missing)
-    soft.expect(failure(() => text_to_timestamp([Int(1)]))).to_equal("type")
+    soft
+    .expect(failure(() => text_to_timestamp([@value.Value::from_int(1)])))
+    .to_equal("type")
   })
 }
 

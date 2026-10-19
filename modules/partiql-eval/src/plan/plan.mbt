@@ -1,10 +1,16 @@
 ///|
+/// How the interpreter handles runtime type failures. Permissive mode yields
+/// MISSING; strict mode raises `TypeError`. Data and unsupported-form failures
+/// raise in either mode.
 pub(all) enum Mode {
   Permissive
   Strict
 } derive(Debug, Eq)
 
 ///|
+/// An evaluation failure with a source location, or the original parse error.
+/// `TypeError` is a strict-mode operand failure; `DataError` is invalid data or
+/// a static error in either mode; `Unsupported` is an unimplemented form.
 pub(all) suberror EvalError {
   TypeError(message~ : String, span~ : @ast.Span)
   DataError(message~ : String, span~ : @ast.Span)
@@ -19,6 +25,13 @@ pub(all) enum Step {
   Index(Expr)
   AllElements
   AllFields
+} derive(Debug)
+
+///|
+/// The local fallback of a FROM source after global lookup has failed.
+pub(all) enum LocalLookup {
+  Bound(String)
+  Ambiguous(Array[String])
 } derive(Debug)
 
 ///|
@@ -68,9 +81,9 @@ pub(all) enum Expr {
   /// A FROM variable, by the name it was declared with.
   Local(String, @ast.Span)
   /// A name in a FROM source: the global of that name if there is one, else
-  /// the FROM variable `variable` (partiql-tests select.ion,
+  /// the local lookup `variable`, which may be ambiguous (partiql-tests select.ion,
   /// `joinWithShadowedGlobal`; `@name` selects the variable only).
-  GlobalOrLocal(String, variable~ : String, delimited~ : Bool, @ast.Span)
+  GlobalOrLocal(String, variable~ : LocalLookup, delimited~ : Bool, @ast.Span)
   /// A name that no variable declares, inside a query: the attribute of that
   /// name of the first tuple among the query variables `locals` (FROM AS and
   /// AT, and LET; innermost query first, each in declared order), else the
@@ -127,8 +140,13 @@ pub(all) enum Expr {
   )
   /// A key expression in a FROM source: a name there finds a global before
   /// a variable, so `otherwise` (the expression without key variables) when
-  /// one of the names `globals` (name, delimited) is a global, else `key`.
-  GlobalsFirst(Array[(String, Bool)], key~ : Expr, otherwise~ : Expr, @ast.Span)
+  /// one of the names `globals` (name, delimited, span) is a global, else `key`.
+  GlobalsFirst(
+    Array[(String, Bool, @ast.Span)],
+    key~ : Expr,
+    otherwise~ : Expr,
+    @ast.Span
+  )
 } derive(Debug)
 
 ///|
@@ -154,6 +172,8 @@ pub fn output_variable(name : String) -> String {
 }
 
 ///|
+/// How a single-column subquery is coerced at its use site.
+/// Each variant defines its empty-input and cardinality behavior.
 pub(all) enum SubqueryUse {
   /// One value: NULL for no row, the value of the column for one row, and
   /// for more rows MISSING (permissive) or a `TypeError` (strict).
@@ -193,6 +213,8 @@ pub(all) enum Rel {
 } derive(Debug)
 
 ///|
+/// A lowered join strategy. Left and right outer joins pad unmatched
+/// bindings with NULL; cross and inner joins produce only matching pairs.
 pub(all) enum JoinKind {
   Cross
   Inner

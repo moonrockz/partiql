@@ -30,7 +30,21 @@ fn notes(path : ArrayView[String]) -> Array[String] {
   match path {
     ["query"] =>
       [
-        "The session time zone is UTC unless --time-zone sets it. CURRENT_DATE,",
+        "Ion input is text or binary, detected by the binary version marker.", "Ion --data binds 0 elements as an empty bag, 1 as-is, and many as a bag.",
+        "--each NAME runs the script for each element in order; empty data runs nothing.",
+        "JSON input is one JSON document per file; --env requires an object.", "JSON --each iterates a top-level array, or runs once for any other document.",
+        "JSON output writes one document per result; --compact makes JSON Lines.",
+        "JSON keeps integer precision, decimal scale and duplicate object keys.",
+        "Finite floats write binary64 spellings and read back as Int/Decimal.", "JSON rejects non-finite floats, MISSING, bags, maps, graphs, temporals,",
+        "intervals, blobs, clobs and boxed Ion. CAST a SELECT result AS LIST explicitly.",
+        "YAML input uses Core 1.2, exact finite numbers and unique string mapping keys.",
+        "YAML supports core tags and bounded aliases; --env needs one mapping document.",
+        "YAML --each expands one top-level list, otherwise iterates whole documents.",
+        "Empty YAML streams run nothing with --each; empty documents evaluate as null.",
+        "YAML is input-only, UTF-8, with 256-level, 1M-node and 64 MiB scalar limits.",
+        "JSON and YAML input cannot use Ion Schema options. Ion remains the default.",
+        "--output-format binary writes raw bytes; --compact applies only to text.",
+        "Schemas validate raw PartiQL-encoded Ion before any statement runs.", "The session time zone is UTC unless --time-zone sets it. CURRENT_DATE,",
         "CURRENT_TIME and CURRENT_TIMESTAMP read the system clock at that offset,",
         "and CAST uses it to add or remove a time zone.",
       ]

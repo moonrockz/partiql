@@ -111,30 +111,60 @@ fn Scope::for_source(self : Scope) -> Scope {
 ///|
 /// The declared name of the innermost variable that `id` names: a regular
 /// identifier ignores case, a delimited one does not. Also whether that
-/// variable is a WITH binding.
-fn Scope::resolve(self : Scope, id : @ast.Identifier) -> (String, Bool)? {
-  let wanted = if id.delimited { id.text } else { id.text.to_lower() }
+/// variable is a WITH binding. A FROM source may defer local ambiguity until
+/// global lookup fails; WITH bindings always precede globals.
+fn Scope::resolve(
+  self : Scope,
+  id : @ast.Identifier,
+  defer_ambiguity~ : Bool = false,
+) -> (@plan.LocalLookup, Bool)? raise @plan.EvalError {
   let mut scope = Some(self)
-  let mut hidden = None
+  let mut hidden : (Scope, Array[String])? = None
   while scope is Some(s) {
-    for name in s.names.rev_iter() {
-      let key = if id.delimited { name } else { name.to_lower() }
-      if key == wanted {
-        // An output name is a frame of its own, so it never hides a
-        // variable of the same name at run time.
-        let shown = if s.outputs { @plan.output_variable(name) } else { name }
-        if s.outputs && s.variables_first {
-          if hidden is None {
-            hidden = Some((shown, s.with_))
-          }
-          break
+    let matches = []
+    for name in s.names {
+      if names_variable(id, name) && !matches.contains(name) {
+        matches.push(name)
+      }
+    }
+    if !matches.is_empty() {
+      // Output ambiguity matters only when this frame wins lookup.
+      if s.outputs && s.variables_first {
+        if hidden is None {
+          hidden = Some((s, matches))
         }
-        return Some((shown, s.with_))
+      } else {
+        return Some(s.resolved_name(id, matches, defer_ambiguity~))
       }
     }
     scope = s.outer
   }
-  hidden
+  hidden.map(pair => pair.0.resolved_name(id, pair.1, defer_ambiguity~))
+}
+
+///|
+/// The distinct spellings in the winning frame, in declaration order.
+fn Scope::resolved_name(
+  self : Scope,
+  id : @ast.Identifier,
+  matches : Array[String],
+  defer_ambiguity~ : Bool,
+) -> (@plan.LocalLookup, Bool) raise @plan.EvalError {
+  if matches.length() > 1 {
+    // WITH bindings precede globals even in a FROM source.
+    if defer_ambiguity && !self.with_ {
+      return (Ambiguous(matches), false)
+    }
+    raise DataError(
+      message="\{id.text} is ambiguous: it names \{matches.join(" and ")}; write the name in double quotes",
+      span=id.span,
+    )
+  }
+  let name = matches[0]
+  (
+    Bound(if self.outputs { @plan.output_variable(name) } else { name }),
+    self.with_,
+  )
 }
 
 ///|
@@ -359,7 +389,10 @@ fn clause_at(
     // them all), so this literal is not range-checked.
     Lit(Int(text)) =>
       Some(
-        Const(@value.Value::integer(@bigint.BigInt::from_string(text)), e.span),
+        Const(
+          @value.Value::from_bigint(@bigint.BigInt::from_string(text)),
+          e.span,
+        ),
       )
     _ => Some(lower_at(e, scope, depth))
   }
@@ -822,10 +855,10 @@ fn from_leaf(
   sources.val += 1
   let at = source.at.map(id => id.text)
   let expr = lower_plain(source.expr, scope.inner(names).for_source(), depth)
+  declare_variable(names, as_, source.span)
   if source.at is Some(id) {
     declare_variable(names, id.text, id.span)
   }
-  declare_variable(names, as_, source.span)
   if unpivot {
     Unpivot(expr, as_~, at~, source.span)
   } else {

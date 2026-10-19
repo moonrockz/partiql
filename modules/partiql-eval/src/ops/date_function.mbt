@@ -34,10 +34,11 @@ fn add_units(
         raise DataFailure("datetime field overflow in DATE_ADD")
       }
       match x {
-        Date(d) => Date(date_add_months(d, months.to_int64()))
+        Date(d) =>
+          @value.Value::from_date(date_add_months(d, months.to_int64()))
         Timestamp(ts) =>
-          Timestamp(
-            @value.Timestamp::new(
+          @value.Value::from_timestamp(
+            @value.Timestamp(
               date_add_months(ts.date, months.to_int64()),
               ts.time,
             ),
@@ -48,9 +49,10 @@ fn add_units(
     _ => {
       let nanos = count * field_nanos(f)
       match x {
-        Date(d) => Date(date_shift(d, nanos))
-        Timestamp(ts) => Timestamp(timestamp_shift(ts, nanos))
-        Time(t) => Time(time_shift(t, nanos))
+        Date(d) => @value.Value::from_date(date_shift(d, nanos))
+        Timestamp(ts) =>
+          @value.Value::from_timestamp(timestamp_shift(ts, nanos))
+        Time(t) => @value.Value::from_time(time_shift(t, nanos))
         _ => raise TypeFailure("DATE_ADD \{field_name(f)} to \{kind_name(x)}")
       }
     }
@@ -96,9 +98,9 @@ fn as_timestamp(v : @value.Value) -> @value.Timestamp raise OpFailure {
   match v {
     Timestamp(ts) => ts
     Date(d) =>
-      @value.Timestamp::new(
+      @value.Timestamp::Timestamp(
         d,
-        @value.Time::new(hour=0, minute=0, second=0, precision=0) catch {
+        @value.Time::Time(hour=0, minute=0, second=0, precision=0) catch {
           _ => raise DataFailure("a time out of range")
         },
       )
@@ -168,11 +170,11 @@ fn diff_units(
   match f {
     Year | Month => {
       let m = month_difference(as_timestamp(a), as_timestamp(b), zone)
-      Int(if f is Year { m / 12L } else { m })
+      @value.Value::from_int(if f is Year { m / 12L } else { m })
     }
     _ => {
       let delta = zoned_instant(b, zone) - zoned_instant(a, zone)
-      Int((delta / field_nanos(f)).to_int64())
+      @value.Value::from_int((delta / field_nanos(f)).to_int64())
     }
   }
 }

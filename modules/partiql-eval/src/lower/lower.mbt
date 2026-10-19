@@ -10,7 +10,7 @@ fn integer_value(
     n.compare_int64(-9223372036854775808L) < 0 {
     raise DataError(message="integer literal \{text} is out of range", span~)
   }
-  Int(n.to_int64())
+  @value.Value::from_int(n.to_int64())
 }
 
 ///|
@@ -31,27 +31,29 @@ fn literal(
   match l {
     Null => Null
     Missing => Missing
-    Bool(b) => Bool(b)
+    Bool(b) => @value.Value::from_bool(b)
     Int(text) => integer_value(text, span)
     Decimal(text) =>
       try @ion_core.Decimal::parse(text) catch {
         _ => raise DataError(message="invalid decimal literal \{text}", span~)
       } noraise {
-        d => Decimal(rounded(d, span))
+        d => @value.Value::from_decimal(rounded(d, span))
       }
     // A number with an exponent is a decimal in PartiQL.
     Float(text) =>
       match @ops.parse_decimal(text) {
-        Some(d) => Decimal(rounded(d, span))
+        Some(d) => @value.Value::from_decimal(rounded(d, span))
         None => raise DataError(message="invalid float literal \{text}", span~)
       }
-    String(s) => String(s)
+    String(s) => @value.Value::from_string(s)
     Ion(_, v) => @partiql_ion.from_ion_data(v)
-    Date(text) => Date(date_literal(text, span~))
+    Date(text) => @value.Value::from_date(date_literal(text, span~))
     Time(text, precision~, with_tz~) =>
-      Time(time_literal(text, precision, with_tz, span~))
+      @value.Value::from_time(time_literal(text, precision, with_tz, span~))
     Timestamp(text, precision~, with_tz~) =>
-      Timestamp(timestamp_literal(text, precision, with_tz, span~))
+      @value.Value::from_timestamp(
+        timestamp_literal(text, precision, with_tz, span~),
+      )
     Interval(text, negative~, qualifier~) =>
       interval_literal(text, negative~, qualifier~, span~)
   }
@@ -259,29 +261,6 @@ fn lower_chain(
 }
 
 ///|
-/// The nesting depth of an Ion value (a scalar is 1), counted in a loop: the
-/// parser does not limit the depth of an Ion literal.
-fn ion_depth(v : @ion_core.IonValue) -> Int32 {
-  let mut deepest = 0
-  let pending = [(v, 1)]
-  while pending.pop() is Some((x, d)) {
-    deepest = deepest.max(d)
-    match x.kind() {
-      List(items) | Sexp(items) =>
-        for item in items {
-          pending.push((item, d + 1))
-        }
-      Struct(fields) =>
-        for field in fields {
-          pending.push((field.value(), d + 1))
-        }
-      _ => ()
-    }
-  }
-  deepest
-}
-
-///|
 /// Lowers an expression.
 pub fn lower(e : @ast.Expr) -> @plan.Expr raise @plan.EvalError {
   within_depth(lower_plain(e, Scope::top(), 0))
@@ -306,17 +285,23 @@ fn lower_at(
     return keyed(e, Local(name, span), scope, depth)
   }
   match e.kind {
-    Lit(Ion(_, v)) if depth + ion_depth(v) > max_depth =>
-      raise DataError(message="expression is too deep", span~)
     Lit(l) => Const(literal(l, span), span)
     VarRef(id, qualified~) =>
-      match scope.resolve(id) {
-        Some((name, is_with)) =>
+      match
+        scope.resolve(id, defer_ambiguity=scope.globals_first && !qualified) {
+        Some((Bound(name), is_with)) =>
           if scope.globals_first && !qualified && !is_with {
-            GlobalOrLocal(id.text, variable=name, delimited=id.delimited, span)
+            GlobalOrLocal(
+              id.text,
+              variable=Bound(name),
+              delimited=id.delimited,
+              span,
+            )
           } else {
             Local(name, span)
           }
+        Some((Ambiguous(_) as variable, _)) =>
+          GlobalOrLocal(id.text, variable~, delimited=id.delimited, span)
         None =>
           if scope.aggregates is Allowed(g) &&
             g.hidden.iter().any(name => names_variable(id, name)) {

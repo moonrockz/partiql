@@ -119,7 +119,8 @@ pub fn MapType::admits(self : MapType, key : Value) -> Bool {
 /// Builds a MAP. Entries whose value is MISSING are dropped (RFC 0104).
 /// Keys are lowered first; NULL, MISSING and non-scalar keys, and keys equal
 /// under `eqg` to an earlier key, raise.
-pub fn MapValue::new(
+#alias(new, deprecated="Use MapValue(...) instead")
+pub fn MapValue::MapValue(
   key_type~ : MapType,
   value_type~ : MapType,
   entries : Array[(Value, Value)],
@@ -152,11 +153,14 @@ pub fn MapValue::new(
 }
 
 ///|
+/// A read-only view of the retained entries in insertion order. Keys are lowered
+/// and entries with MISSING values have already been removed.
 pub fn MapValue::entries(self : MapValue) -> ArrayView[(Value, Value)] {
   self.entries[:]
 }
 
 ///|
+/// The number of retained entries after dropping MISSING values.
 pub fn MapValue::length(self : MapValue) -> Int32 {
   self.entries.length()
 }

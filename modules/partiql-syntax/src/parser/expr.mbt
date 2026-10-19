@@ -269,7 +269,7 @@ fn Parser::unary(self : Parser) -> @ast.Expr raise @ast.ParseError {
 /// Parses one expression from `source`. The whole input must be the
 /// expression.
 pub fn parse_expression(source : String) -> @ast.Expr raise @ast.ParseError {
-  let p = Parser::new(@lexer.lex(source))
+  let p = Parser(@lexer.lex(source))
   let e = p.expr()
   if !(p.peek().kind is End) {
     p.note("end of input")

@@ -158,5 +158,5 @@ pub impl @debug.Debug for GraphEdge with fn to_repr(self) {
 
 ///|
 pub impl @debug.Debug for GraphValue with fn to_repr(self) {
-  graph_repr(self, Value::Graph(self).children().map(v => Repr(v)))
+  graph_repr(self, Value::from_graph(self).children().map(v => Repr(v)))
 }

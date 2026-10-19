@@ -1,6 +1,8 @@
 ///|
 fn annotate(x : @ion_core.IonValue, name : String) -> @ion_core.IonValue {
-  x.with_annotations([@ion_core.SymbolToken::new(name), ..x.annotations()])
+  x.with_annotations(
+    [@ion_core.SymbolToken::SymbolToken(name), ..x.annotations()],
+  )
 }
 
 ///|
@@ -19,7 +21,9 @@ fn seconds_decimal(t : @value.Time) -> @ion_core.IonValue {
   let fraction = @bigint.BigInt::from_int(t.nanos) /
     10N.pow(@bigint.BigInt::from_int(9 - t.precision))
   let coefficient = @bigint.BigInt::from_int(t.second) * unit + fraction
-  @ion_core.IonValue::decimal(@ion_core.Decimal::new(coefficient, -t.precision))
+  @ion_core.IonValue::decimal(
+    @ion_core.Decimal::Decimal(coefficient, -t.precision),
+  )
 }
 
 ///|
@@ -35,7 +39,7 @@ fn struct_of(
   fields : Array[(String, @ion_core.IonValue)],
 ) -> @ion_core.IonValue {
   @ion_core.IonValue::from_fields(
-    fields.map(pair => @ion_core.Field::new(pair.0, pair.1)),
+    fields.map(pair => @ion_core.Field::Field(pair.0, pair.1)),
   )
 }
 
@@ -43,9 +47,6 @@ fn struct_of(
 fn sign_value(negative : Bool) -> @ion_core.IonValue {
   @ion_core.IonValue::string(if negative { "-" } else { "+" })
 }
-
-///|
-/// Encodes a value in canonical PartiQL-encoded Ion.
 
 ///|
 /// Encodes a value in PartiQL-encoded Ion. A boxed Ion value is written as
@@ -68,7 +69,7 @@ pub fn to_ion_data(v : @value.Value) -> @ion_core.IonValue {
 /// Decodes Ion data in the Ion-preserving mode: the value is boxed, so every
 /// Ion detail is kept until a semantic lowers it (ADR 0005).
 pub fn from_ion_data(x : @ion_core.IonValue) -> @value.Value {
-  Ion(x)
+  @value.Value::from_ion(x)
 }
 
 ///|
@@ -149,9 +150,9 @@ fn encode(v : @value.Value, preserve : Bool) -> @ion_core.IonValue {
             @ion_core.IonValue::list([children[2 * i], children[2 * i + 1]])
           })
         @ion_core.IonValue::list(pairs).with_annotations([
-          @ion_core.SymbolToken::new("$map"),
-          @ion_core.SymbolToken::new(m.key_type.name()),
-          @ion_core.SymbolToken::new(m.value_type.name()),
+          @ion_core.SymbolToken::SymbolToken("$map"),
+          @ion_core.SymbolToken::SymbolToken(m.key_type.name()),
+          @ion_core.SymbolToken::SymbolToken(m.value_type.name()),
         ])
       }
       Graph(g) => encode_graph(g, children)

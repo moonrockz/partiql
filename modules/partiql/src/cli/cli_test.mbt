@@ -5,6 +5,7 @@ let version_line : String = "partiql \{@cli.version}\n"
 test "version command and flags print the version" {
   for args in [["version"], ["--version"], ["-V"]] {
     @expect.expect(@cli.run(args), label=args.join(" ")).to_equal({
+      stdout_bytes: None,
       stdout: version_line,
       stderr: "",
       status: 0,
@@ -91,7 +92,7 @@ test "root help snapshot" {
       #|  parse    Print the syntax tree of PartiQL as S-expressions; broken parts are (error).
       #|  check    Check that PartiQL parses; print every error.
       #|  format   Print PartiQL in a readable layout, keeping comments.
-      #|  query    Evaluate PartiQL against Ion data; print each result as Ion.
+      #|  query    Evaluate PartiQL against Ion or JSON data; print each result.
       #|  version  Print the version.
       #|  help     Print help for the command line or for one command.
       #|

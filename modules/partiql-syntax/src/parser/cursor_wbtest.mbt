@@ -1,6 +1,6 @@
 ///|
 fn parser_of(source : String) -> Parser raise {
-  Parser::new(@lexer.lex(source))
+  Parser(@lexer.lex(source))
 }
 
 ///|

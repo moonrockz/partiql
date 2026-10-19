@@ -10,7 +10,7 @@ priv enum EqualityStep {
 fn rows(v : Value) -> Array[Array[Value]] {
   match v {
     Bag(b) => b.items().map(x => [x])
-    Tuple(t) => t.fields().map(p => [String(p.0), p.1])
+    Tuple(t) => t.fields().map(p => [Value::from_string(p.0), p.1])
     Map(m) => m.entries().map(p => [p.0, p.1])
     _ => []
   }
@@ -158,7 +158,13 @@ fn equal_values(
               (List(xs), List(ys)) | (Sexp(xs), Sexp(ys)) => {
                 equal = xs.length() == ys.length()
                 if equal {
-                  work.push(All(xs.map(v => Ion(v)), ys.map(v => Ion(v)), 0))
+                  work.push(
+                    All(
+                      xs.map(v => Value::from_ion(v)),
+                      ys.map(v => Value::from_ion(v)),
+                      0,
+                    ),
+                  )
                 }
               }
               (Struct(xs), Struct(ys)) => {
@@ -166,8 +172,10 @@ fn equal_values(
                 if equal && !xs.is_empty() {
                   let row = (f : @ion_core.Field) => {
                     [
-                      Ion(@ion_core.IonValue::symbol_token(f.name())),
-                      Ion(f.value()),
+                      Value::from_ion(
+                        @ion_core.IonValue::symbol_token(f.name()),
+                      ),
+                      Value::from_ion(f.value()),
                     ]
                   }
                   work.push(

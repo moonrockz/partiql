@@ -1,18 +1,24 @@
 ///|
 test "LIKE" {
   @expect.expect_all(soft => {
-    soft.expect(ev("'abc' LIKE 'a%'")).to_equal(Bool(true))
-    soft.expect(ev("'abc' LIKE 'a_c'")).to_equal(Bool(true))
-    soft.expect(ev("'abc' LIKE 'a_'")).to_equal(Bool(false))
-    soft.expect(ev("'a%c' LIKE 'a\\%c' ESCAPE '\\'")).to_equal(Bool(true))
-    soft.expect(ev("'😀' LIKE '_'")).to_equal(Bool(true))
-    soft.expect(ev("'日本' || '😀'")).to_equal(String("日本😀"))
-    soft.expect(ev("'abc' NOT LIKE 'b%'")).to_equal(Bool(true))
+    soft.expect(ev("'abc' LIKE 'a%'")).to_equal(@value.Value::from_bool(true))
+    soft.expect(ev("'abc' LIKE 'a_c'")).to_equal(@value.Value::from_bool(true))
+    soft.expect(ev("'abc' LIKE 'a_'")).to_equal(@value.Value::from_bool(false))
+    soft
+    .expect(ev("'a%c' LIKE 'a\\%c' ESCAPE '\\'"))
+    .to_equal(@value.Value::from_bool(true))
+    soft.expect(ev("'😀' LIKE '_'")).to_equal(@value.Value::from_bool(true))
+    soft
+    .expect(ev("'日本' || '😀'"))
+    .to_equal(@value.Value::from_string("日本😀"))
+    soft
+    .expect(ev("'abc' NOT LIKE 'b%'"))
+    .to_equal(@value.Value::from_bool(true))
     soft.expect(ev("NULL LIKE 'a'")).to_equal(Null)
     soft.expect(ev("1 LIKE 'a'")).to_equal(Missing)
     soft
     .expect(ev("'" + "a".repeat(5000) + "' LIKE '" + "%a".repeat(50) + "%b'"))
-    .to_equal(Bool(false))
+    .to_equal(@value.Value::from_bool(false))
   })
 }
 
@@ -22,10 +28,16 @@ test "LIKE absent operands and escape errors" {
     soft.expect(ev("'a' LIKE NULL ESCAPE MISSING")).to_equal(Missing)
     soft.expect(ev("'a' LIKE 'a' ESCAPE NULL")).to_equal(Null)
     soft.expect(ev("MISSING NOT LIKE 'a'")).to_equal(Missing)
-    soft.expect(ev("'' LIKE ''")).to_equal(Bool(true))
-    soft.expect(ev("'_' LIKE '[_[_' ESCAPE '['")).to_equal(Bool(false))
-    soft.expect(ev("'100%' LIKE '1_[%' ESCAPE '['")).to_equal(Bool(false))
-    soft.expect(ev("'100%' LIKE '1__[%' ESCAPE '['")).to_equal(Bool(true))
+    soft.expect(ev("'' LIKE ''")).to_equal(@value.Value::from_bool(true))
+    soft
+    .expect(ev("'_' LIKE '[_[_' ESCAPE '['"))
+    .to_equal(@value.Value::from_bool(false))
+    soft
+    .expect(ev("'100%' LIKE '1_[%' ESCAPE '['"))
+    .to_equal(@value.Value::from_bool(false))
+    soft
+    .expect(ev("'100%' LIKE '1__[%' ESCAPE '['"))
+    .to_equal(@value.Value::from_bool(true))
     soft.expect(ev("123 LIKE 'a'")).to_equal(Missing)
   })
   let failed = fn(source : String, mode : @eval.Mode) -> Bool {

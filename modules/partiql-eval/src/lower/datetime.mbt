@@ -22,6 +22,8 @@ pub fn date_literal(
 }
 
 ///|
+/// Parse a TIME literal at its declared precision and time-zone presence.
+/// Invalid text raises a static `EvalError::DataError` at `span`.
 pub fn time_literal(
   text : String,
   precision : Int32?,
@@ -34,6 +36,8 @@ pub fn time_literal(
 }
 
 ///|
+/// Parse a TIMESTAMP literal at its declared precision and time-zone presence.
+/// Invalid text raises a static `EvalError::DataError` at `span`.
 pub fn timestamp_literal(
   text : String,
   precision : Int32?,
@@ -46,6 +50,8 @@ pub fn timestamp_literal(
 }
 
 ///|
+/// Parse an INTERVAL literal with its sign and qualifier.
+/// Invalid text or overflow raises a static `EvalError::DataError` at `span`.
 pub fn interval_literal(
   text : String,
   negative~ : Bool,

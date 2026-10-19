@@ -22,7 +22,7 @@ priv struct Cursor {
 }
 
 ///|
-fn Cursor::new(text : String) -> Cursor {
+fn Cursor::Cursor(text : String) -> Cursor {
   { chars: text.to_array(), pos: 0, }
 }
 
@@ -110,7 +110,7 @@ fn date_part(c : Cursor) -> @value.Date raise Error {
   if signed_year < 1 || signed_year > 9999 {
     raise Reason("a year outside 0001-9999")
   }
-  @value.Date::new(year=signed_year, month~, day~)
+  @value.Date::Date(year=signed_year, month~, day~)
 }
 
 ///|
@@ -170,7 +170,14 @@ fn time_part(
   let nanos = all - all % unit
   let up = if all % unit * 2 >= unit && unit > 1 { unit } else { 0 }
   (
-    @value.Time::new(hour~, minute~, second~, nanos~, precision=digits, offset~),
+    @value.Time::Time(
+      hour~,
+      minute~,
+      second~,
+      nanos~,
+      precision=digits,
+      offset~,
+    ),
     up,
   )
 }
@@ -250,7 +257,7 @@ fn interval_values(
   q : @ast.IntervalQualifier,
   fields : Array[@ast.DatetimeField],
 ) -> (Bool, Array[Int64], Int64) raise Malformed {
-  let c = Cursor::new(text)
+  let c = Cursor(text)
   let negative = c.eat('-')
   if !negative {
     ignore(c.eat('+'))
@@ -303,7 +310,7 @@ fn literal_failure(what : String, text : String, reason : String) -> OpFailure {
 /// `YYYY-MM-DD`.
 pub fn parse_date(text : String) -> @value.Date raise OpFailure {
   try {
-    let c = Cursor::new(text)
+    let c = Cursor(text)
     let d = date_part(c)
     c.finish()
     d
@@ -322,7 +329,7 @@ pub fn parse_time(
   with_tz : Bool,
 ) -> @value.Time raise OpFailure {
   try {
-    let c = Cursor::new(text)
+    let c = Cursor(text)
     let (t, up) = time_part(c, precision, with_tz)
     c.finish()
     if up > 0 {
@@ -344,14 +351,14 @@ pub fn parse_timestamp(
   with_tz : Bool,
 ) -> @value.Timestamp raise OpFailure {
   try {
-    let c = Cursor::new(text)
+    let c = Cursor(text)
     let d = date_part(c)
     if !c.eat(' ') {
       c.expect('T')
     }
     let (t, up) = time_part(c, precision, with_tz)
     c.finish()
-    let ts = @value.Timestamp::new(d, t)
+    let ts = @value.Timestamp::Timestamp(d, t)
     if up > 0 {
       shift_timestamp(ts, up.to_int64())
     } else {
@@ -395,9 +402,11 @@ pub fn parse_interval(
       }
     }
     if fields[0] is (Year | Month) {
-      IntervalYM(@value.IntervalYM::from_parts(negative~, years~, months~))
+      @value.Value::from_interval_ym(
+        @value.IntervalYM::from_parts(negative~, years~, months~),
+      )
     } else {
-      IntervalDT(
+      @value.Value::from_interval_dt(
         @value.IntervalDT::from_parts(
           negative~,
           days~,

@@ -43,17 +43,17 @@ pub impl Eq for IntervalDT with fn equal(a, b) {
 
 ///|
 pub impl Eq for Tuple with fn equal(a, b) {
-  Value::Tuple(a) == Value::Tuple(b)
+  Value::from_tuple(a) == Value::from_tuple(b)
 }
 
 ///|
 pub impl Eq for Bag with fn equal(a, b) {
-  Value::Bag(a) == Value::Bag(b)
+  Value::from_bag(a) == Value::from_bag(b)
 }
 
 ///|
 pub impl Eq for MapValue with fn equal(a, b) {
-  Value::Map(a) == Value::Map(b)
+  Value::from_map(a) == Value::from_map(b)
 }
 
 ///|
@@ -68,7 +68,7 @@ pub impl Eq for Ends with fn equal(a, b) {
 
 ///|
 pub impl Eq for GraphValue with fn equal(a, b) {
-  Value::Graph(a) == Value::Graph(b)
+  Value::from_graph(a) == Value::from_graph(b)
 }
 
 ///|

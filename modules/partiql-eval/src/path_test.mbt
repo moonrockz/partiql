@@ -14,30 +14,64 @@ fn ev_env(
 ///|
 test "variables and paths" {
   @expect.expect_all(soft => {
-    soft.expect(ev_env("a.b", "{a: {b: 1}}")).to_equal(Int(1))
-    soft.expect(ev_env("A.B", "{a: {b: 1}}")).to_equal(Int(1))
-    soft.expect(ev_env("\"a\".b", "{a: {b: 1}}")).to_equal(Int(1))
-    soft.expect(ev_env("{'Foo': 1}.foo", "{}")).to_equal(Int(1))
+    soft
+    .expect(ev_env("a.b", "{a: {b: 1}}"))
+    .to_equal(@value.Value::from_int(1))
+    soft
+    .expect(ev_env("A.B", "{a: {b: 1}}"))
+    .to_equal(@value.Value::from_int(1))
+    soft
+    .expect(ev_env("\"a\".b", "{a: {b: 1}}"))
+    .to_equal(@value.Value::from_int(1))
+    soft
+    .expect(ev_env("{'Foo': 1}.foo", "{}"))
+    .to_equal(@value.Value::from_int(1))
     soft.expect(ev_env("{'Foo': 1}.\"foo\"", "{}")).to_equal(Missing)
-    soft.expect(ev_env("{'a': 1}['a']", "{}")).to_equal(Int(1))
-    soft.expect(ev_env("[10, 20][1]", "{}")).to_equal(Int(20))
+    soft
+    .expect(ev_env("{'a': 1}['a']", "{}"))
+    .to_equal(@value.Value::from_int(1))
+    soft
+    .expect(ev_env("[10, 20][1]", "{}"))
+    .to_equal(@value.Value::from_int(20))
     soft.expect(ev_env("[10, 20][5]", "{}")).to_equal(Missing)
     soft.expect(ev_env("<<1, 2, 3>>[1]", "{}")).to_equal(Missing)
     soft.expect(ev_env("'not a tuple'.a", "{}")).to_equal(Missing)
     soft.expect(ev_env("a.z.y.x", "{a: {}}")).to_equal(Missing)
     soft
     .expect(ev_env("[1, 2][*]", "{}"))
-    .to_equal(Bag(@value.Bag::new([Int(1), Int(2)])))
+    .to_equal(
+      @value.Value::from_bag(
+        @value.Bag([@value.Value::from_int(1), @value.Value::from_int(2)]),
+      ),
+    )
     soft
     .expect(ev_env("{'a': 1, 'b': 2}.*", "{}"))
-    .to_equal(Bag(@value.Bag::new([Int(1), Int(2)])))
-    soft.expect(ev_env("a.z IS MISSING", "{a: {}}")).to_equal(Bool(true))
-    soft.expect(ev_env("a IS NOT MISSING", "{a: 1}")).to_equal(Bool(true))
-    soft.expect(ev_env("NULL IS NULL", "{}")).to_equal(Bool(true))
-    soft.expect(ev_env("MISSING IS NULL", "{}")).to_equal(Bool(true))
-    soft.expect(ev_env("NULL IS MISSING", "{}")).to_equal(Bool(false))
-    soft.expect(ev_env("1 IS NOT NULL", "{}")).to_equal(Bool(true))
-    soft.expect(ev_env("MAP {'a': 1}['a']", "{}")).to_equal(Int(1))
+    .to_equal(
+      @value.Value::from_bag(
+        @value.Bag([@value.Value::from_int(1), @value.Value::from_int(2)]),
+      ),
+    )
+    soft
+    .expect(ev_env("a.z IS MISSING", "{a: {}}"))
+    .to_equal(@value.Value::from_bool(true))
+    soft
+    .expect(ev_env("a IS NOT MISSING", "{a: 1}"))
+    .to_equal(@value.Value::from_bool(true))
+    soft
+    .expect(ev_env("NULL IS NULL", "{}"))
+    .to_equal(@value.Value::from_bool(true))
+    soft
+    .expect(ev_env("MISSING IS NULL", "{}"))
+    .to_equal(@value.Value::from_bool(true))
+    soft
+    .expect(ev_env("NULL IS MISSING", "{}"))
+    .to_equal(@value.Value::from_bool(false))
+    soft
+    .expect(ev_env("1 IS NOT NULL", "{}"))
+    .to_equal(@value.Value::from_bool(true))
+    soft
+    .expect(ev_env("MAP {'a': 1}['a']", "{}"))
+    .to_equal(@value.Value::from_int(1))
     soft.expect(ev_env("MAP {'a': 1}[NULL]", "{}")).to_equal(Null)
     soft.expect(ev_env("MAP {'a': 1}[MISSING]", "{}")).to_equal(Missing)
     soft.expect(ev_env("MAP {'a': 1}['z']", "{}")).to_equal(Missing)
@@ -84,23 +118,25 @@ test "map literals infer their types and follow the key rules" {
     soft
     .expect(ev_env("MAP {'a': 1, 'a': 2}", "{}"))
     .to_equal(
-      Map(
-        @value.MapValue::new(key_type=String, value_type=Integer, [
-          (String("a"), Int(2)),
+      @value.Value::from_map(
+        @value.MapValue(key_type=String, value_type=Integer, [
+          (@value.Value::from_string("a"), @value.Value::from_int(2)),
         ]),
       ),
     )
     soft
     .expect(ev_env("MAP { }", "{}"))
     .to_equal(
-      Map(@value.MapValue::new(key_type=String, value_type=Dynamic, [])),
+      @value.Value::from_map(
+        @value.MapValue(key_type=String, value_type=Dynamic, []),
+      ),
     )
     soft
     .expect(ev_env("MAP {NULL: 1, 'b': 2}", "{}"))
     .to_equal(
-      Map(
-        @value.MapValue::new(key_type=String, value_type=Integer, [
-          (String("b"), Int(2)),
+      @value.Value::from_map(
+        @value.MapValue(key_type=String, value_type=Integer, [
+          (@value.Value::from_string("b"), @value.Value::from_int(2)),
         ]),
       ),
     )
@@ -118,20 +154,28 @@ test "map literals infer their types and follow the key rules" {
 test "wildcards map later steps over the elements" {
   let env = "{s: 'hello', t: {n: 1}, l: [{a: 1}, {b: 2}, {a: 3}], k: 'a'}"
   let bag = (items : Array[@value.Value]) => {
-    @value.Value::Bag(@value.Bag::new(items))
+    @value.Value::from_bag(@value.Bag(items))
   }
   @expect.expect_all(soft => {
-    soft.expect(ev_env("l[*].a", env)).to_equal(bag([Int(1), Int(3)]))
-    soft.expect(ev_env("s[*]", env)).to_equal(bag([String("hello")]))
-    soft.expect(ev_env("(100).*.*", env)).to_equal(bag([Int(100)]))
+    soft
+    .expect(ev_env("l[*].a", env))
+    .to_equal(bag([@value.Value::from_int(1), @value.Value::from_int(3)]))
+    soft
+    .expect(ev_env("s[*]", env))
+    .to_equal(bag([@value.Value::from_string("hello")]))
+    soft
+    .expect(ev_env("(100).*.*", env))
+    .to_equal(bag([@value.Value::from_int(100)]))
     soft.expect(ev_env("{}.*.*.bar", env)).to_equal(bag([]))
-    soft.expect(ev_env("t.*.*", env)).to_equal(bag([Int(1)]))
+    soft.expect(ev_env("t.*.*", env)).to_equal(bag([@value.Value::from_int(1)]))
     soft
     .expect(ev_env("(NULL).a IS MISSING", env, mode=Strict))
-    .to_equal(Bool(true))
-    soft.expect(ev_env("`null.int` IS NULL", env)).to_equal(Bool(true))
+    .to_equal(@value.Value::from_bool(true))
+    soft
+    .expect(ev_env("`null.int` IS NULL", env))
+    .to_equal(@value.Value::from_bool(true))
     soft.expect(ev_env("t[k]", env)).to_equal(Missing)
-    soft.expect(ev_env("t['n']", env)).to_equal(Int(1))
+    soft.expect(ev_env("t['n']", env)).to_equal(@value.Value::from_int(1))
     soft
     .expect_call(() => ev_env("s[*]", env, mode=Strict))
     .to_raise_matching(
@@ -153,19 +197,23 @@ test "a decimal literal keeps 38 digits" {
     soft
     .expect(ev_env("1.9999999999999999999999999999999999999999999999", "{}"))
     .to_equal(
-      Decimal(@ion.Decimal::parse("2.0000000000000000000000000000000000000")),
+      @value.Value::from_decimal(
+        @ion.Decimal::parse("2.0000000000000000000000000000000000000"),
+      ),
     )
     soft
     .expect(ev_env("1.00000000000000000000000000000000000000000001", "{}"))
     .to_equal(
-      Decimal(@ion.Decimal::parse("1.0000000000000000000000000000000000000")),
+      @value.Value::from_decimal(
+        @ion.Decimal::parse("1.0000000000000000000000000000000000000"),
+      ),
     )
   })
 }
 
 ///|
 test "map keys that are equal after widening are duplicates" {
-  let dec = (t : String) => @value.Value::Decimal(@ion.Decimal::parse(t))
+  let dec = (t : String) => @value.Value::from_decimal(@ion.Decimal::parse(t))
   @expect.expect_all(soft => {
     for
       case in [
@@ -176,9 +224,9 @@ test "map keys that are equal after widening are duplicates" {
       soft
       .expect(ev_env(src, "{}"))
       .to_equal(
-        Map(
-          @value.MapValue::new(key_type=Decimal, value_type=String, [
-            (dec(last), String("b")),
+        @value.Value::from_map(
+          @value.MapValue(key_type=Decimal, value_type=String, [
+            (dec(last), @value.Value::from_string("b")),
           ]),
         ),
       )
@@ -194,7 +242,7 @@ test "map keys that are equal after widening are duplicates" {
 
 ///|
 test "decimal rounding is half to even and renormalizes a carry" {
-  let d = (t : String) => @value.Value::Decimal(@ion.Decimal::parse(t))
+  let d = (t : String) => @value.Value::from_decimal(@ion.Decimal::parse(t))
   let nines = "9".repeat(38)
   @expect.expect_all(soft => {
     // 39 digits ending in an exact half: the kept digit decides.
@@ -208,5 +256,89 @@ test "decimal rounding is half to even and renormalizes a carry" {
     soft
     .expect(ev_env("0." + nines + "9", "{}"))
     .to_equal(d("1." + "0".repeat(37)))
+  })
+}
+
+///|
+test "explicit repeated fields fail only in strict mode" {
+  @expect.expect_all(soft => {
+    for
+      source in [
+        "{'a':1,'a':2}.a", "{'a':1,'A':2}.a", "{'a':1,'a':2}.\"a\"", "{'a':1,'a':2}['a']",
+        "{'a':1,'a':2}[CAST('a' AS STRING)]", "`{a:1,a:2}`.a", "`{a:1,a:2}`['a']",
+        "[{'a':1,'a':2}][*].a",
+      ] {
+      soft
+      .expect(ev_env(source, "{}").lower())
+      .to_equal(
+        if source.has_prefix("[") {
+          @value.Value::from_bag(@value.Bag([@value.Value::from_int(1)]))
+        } else {
+          @value.Value::from_int(1)
+        },
+      )
+      soft
+      .expect_call(() => ev_env(source, "{}", mode=Strict), label=source)
+      .to_raise_matching(
+        e => {
+          e
+          is @eval.EvalError::TypeError(
+            message="field a is ambiguous: the tuple has 2 matching fields",
+            ..
+          )
+        },
+        description="ambiguous field TypeError",
+      )
+    }
+    for mode in [@eval.Mode::Permissive, Strict] {
+      soft
+      .expect(ev_env("{'a':1,'A':2}.\"a\"", "{}", mode~))
+      .to_equal(@value.Value::from_int(1))
+      soft
+      .expect(ev_env("{'a':1,'A':2}['A']", "{}", mode~))
+      .to_equal(@value.Value::from_int(2))
+    }
+  })
+}
+
+///|
+test "implicit lookup stops at the first tuple with matching fields" {
+  @expect.expect_all(soft => {
+    for
+      source in [
+        "SELECT VALUE a FROM [{'a':1,'a':2}] AS t, [{'a':3}] AS u", "SELECT VALUE A FROM [{'a':1,'A':2}] AS t",
+        "SELECT VALUE CAST(\"a\" AS INT) FROM `[{a:1,a:2}]` AS t",
+      ] {
+      soft
+      .expect(ev_env(source, "{}").lower())
+      .to_equal(@value.Value::from_bag(@value.Bag([@value.Value::from_int(1)])))
+      soft
+      .expect_call(() => ev_env(source, "{}", mode=Strict), label=source)
+      .to_raise_matching(
+        e => e is @eval.EvalError::TypeError(..),
+        description="ambiguous field TypeError",
+      )
+    }
+    for mode in [@eval.Mode::Permissive, Strict] {
+      soft
+      .expect(
+        ev_env("SELECT VALUE \"a\" FROM [{'a':1,'A':2}] AS t", "{}", mode~),
+      )
+      .to_equal(@value.Value::from_bag(@value.Bag([@value.Value::from_int(1)])))
+      soft
+      .expect(
+        ev_env(
+          "SELECT VALUE a FROM t, u",
+          "{t:[{a:null}],u:[{a:3}],a:4}",
+          mode~,
+        ).lower(),
+      )
+      .to_equal(@value.Value::from_bag(@value.Bag([Null])))
+      soft
+      .expect(
+        ev_env("SELECT VALUE a FROM [0] AS t, [{'a':3}] AS u", "{}", mode~),
+      )
+      .to_equal(@value.Value::from_bag(@value.Bag([@value.Value::from_int(3)])))
+    }
   })
 }

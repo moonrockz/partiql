@@ -13,14 +13,14 @@ priv struct Counter {
 }
 
 ///|
-fn Counter::new() -> Counter {
+fn Counter::Counter() -> Counter {
   { buckets: Map([]), }
 }
 
 ///|
 /// The multiset of `values`.
 fn Counter::of(values : Array[@value.Value]) -> Counter {
-  let counter = Counter::new()
+  let counter = Counter()
   for v in values {
     ignore(counter.add(v))
   }
@@ -80,7 +80,7 @@ fn Counter::take(self : Counter, v : @value.Value) -> Bool {
 ///|
 /// The first of each value of `values`, in order.
 fn dedupe(values : Array[@value.Value]) -> Array[@value.Value] {
-  let seen = Counter::new()
+  let seen = Counter()
   values.filter(v => seen.add(v))
 }
 
@@ -123,7 +123,9 @@ fn set_op(
         span,
       )
     }
-    acc = Bag(@value.Bag::new(combine(kind, all, left_items, right_items)))
+    acc = @value.Value::from_bag(
+      @value.Bag(combine(kind, all, left_items, right_items)),
+    )
     acc_span = span
   }
   acc
@@ -319,7 +321,7 @@ fn outer_projected(
         fields.push((column.name, v))
       }
     }
-    @value.Value::Tuple(@value.Tuple::new(fields))
+    @value.Value::from_tuple(@value.Tuple(fields))
   })
 }
 
@@ -367,10 +369,8 @@ fn conform(
   }
   check_columns(names.length(), l, r, span)
   let tuple_of = (values : Array[@value.Value]) => {
-    @value.Value::Tuple(
-      @value.Tuple::new(
-        Array::makei(names.length(), i => (names[i], values[i])),
-      ),
+    @value.Value::from_tuple(
+      @value.Tuple(Array::makei(names.length(), i => (names[i], values[i]))),
     )
   }
   (l.map(tuple_of), r.map(tuple_of))

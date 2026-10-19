@@ -1,12 +1,28 @@
 ///|
 fn names_env() -> @eval.Bindings {
-  let row1 = @value.Tuple::new([("a", Int(1)), ("b", Int(2))])
-  let row2 = @value.Tuple::new([("a", Int(3))])
+  let row1 = @value.Tuple::Tuple([
+    ("a", @value.Value::from_int(1)),
+    ("b", @value.Value::from_int(2)),
+  ])
+  let row2 = @value.Tuple::Tuple([("a", @value.Value::from_int(3))])
   @eval.Bindings::of_tuple(
-    @value.Tuple::new([
-      ("t", List([Tuple(row1), Tuple(row2)])),
-      ("a", Int(100)),
-      ("s", List([Tuple(@value.Tuple::new([("x", Int(1))]))])),
+    @value.Tuple::Tuple([
+      (
+        "t",
+        @value.Value::from_list([
+          @value.Value::from_tuple(row1),
+          @value.Value::from_tuple(row2),
+        ]),
+      ),
+      ("a", @value.Value::from_int(100)),
+      (
+        "s",
+        @value.Value::from_list([
+          @value.Value::from_tuple(
+            @value.Tuple([("x", @value.Value::from_int(1))]),
+          ),
+        ]),
+      ),
     ]),
   )
 }
@@ -25,18 +41,18 @@ test "names in queries" {
     // a local variable wins over a global of the same name
     soft
     .expect(names_ev("SELECT VALUE a FROM [5] AS a"))
-    .to_equal(bag([Int(5)]))
+    .to_equal(bag([@value.Value::from_int(5)]))
     // a global is visible inside a query; a variable's attribute wins
     soft
     .expect(names_ev("SELECT VALUE a FROM t AS r"))
-    .to_equal(bag([Int(1), Int(3)]))
+    .to_equal(bag([@value.Value::from_int(1), @value.Value::from_int(3)]))
     soft
     .expect(names_ev("SELECT VALUE a FROM [{'b': 1}] AS r"))
-    .to_equal(bag([Int(100)]))
+    .to_equal(bag([@value.Value::from_int(100)]))
     // an unbound name is an attribute of a FROM variable's tuple
     soft
     .expect(names_ev("SELECT VALUE b FROM t AS r"))
-    .to_equal(bag([Int(2), Missing]))
+    .to_equal(bag([@value.Value::from_int(2), Missing]))
     soft
     .expect_call(() => names_ev("SELECT VALUE b FROM t AS r", mode=Strict))
     .to_raise_matching(
@@ -46,17 +62,24 @@ test "names in queries" {
     // @x takes locals only
     soft
     .expect(names_ev("SELECT VALUE @r.a FROM t AS r"))
-    .to_equal(bag([Int(1), Int(3)]))
+    .to_equal(bag([@value.Value::from_int(1), @value.Value::from_int(3)]))
     // shadowing does not leak out of a subquery
     soft
     .expect(
       names_ev("SELECT VALUE [(SELECT VALUE a FROM [7] AS a), a] FROM [1] AS z"),
     )
-    .to_equal(bag([List([bag([Int(7)]), Int(100)])]))
+    .to_equal(
+      bag([
+        @value.Value::from_list([
+          bag([@value.Value::from_int(7)]),
+          @value.Value::from_int(100),
+        ]),
+      ]),
+    )
     // case-insensitive unless quoted
     soft
     .expect(names_ev("SELECT VALUE R.A FROM t AS r"))
-    .to_equal(bag([Int(1), Int(3)]))
+    .to_equal(bag([@value.Value::from_int(1), @value.Value::from_int(3)]))
   })
 }
 
@@ -65,10 +88,10 @@ test "implicit attributes in FROM order" {
   @expect.expect_all(soft => {
     soft
     .expect(names_ev("SELECT VALUE x FROM [{'x': 1}] AS p, [{'x': 2}] AS q"))
-    .to_equal(bag([Int(1)]))
+    .to_equal(bag([@value.Value::from_int(1)]))
     soft
     .expect(names_ev("SELECT VALUE y FROM [{'x': 1}] AS p, [{'y': 2}] AS q"))
-    .to_equal(bag([Int(2)]))
+    .to_equal(bag([@value.Value::from_int(2)]))
     // an outer variable is reached from a subquery
     soft
     .expect(
@@ -76,7 +99,7 @@ test "implicit attributes in FROM order" {
         "SELECT VALUE (SELECT VALUE x FROM [5] AS i) FROM [{'x': 9}] AS o",
       ),
     )
-    .to_equal(bag([bag([Int(9)])]))
+    .to_equal(bag([bag([@value.Value::from_int(9)])]))
     // an ON clause sees the attributes of the variables declared so far
     soft
     .expect(
@@ -84,7 +107,7 @@ test "implicit attributes in FROM order" {
         "SELECT VALUE y FROM [{'x': 1}] AS p JOIN [{'y': 2}] AS q ON y = x + 1",
       ),
     )
-    .to_equal(bag([Int(2)]))
+    .to_equal(bag([@value.Value::from_int(2)]))
   })
 }
 
@@ -143,10 +166,10 @@ test "case and scope of implicit names" {
   @expect.expect_all(soft => {
     soft
     .expect(names_ev("SELECT VALUE X FROM [{'x': 1}] AS p"))
-    .to_equal(bag([Int(1)]))
+    .to_equal(bag([@value.Value::from_int(1)]))
     soft
     .expect(names_ev("SELECT VALUE \"x\" FROM [{'x': 1}] AS p"))
-    .to_equal(bag([Int(1)]))
+    .to_equal(bag([@value.Value::from_int(1)]))
     // a FROM-source subquery sees an outer variable
     soft
     .expect(
@@ -154,39 +177,41 @@ test "case and scope of implicit names" {
         "SELECT VALUE v FROM [{'x': 4}] AS o, (SELECT VALUE x FROM [0] AS i) AS v",
       ),
     )
-    .to_equal(bag([Int(4)]))
+    .to_equal(bag([@value.Value::from_int(4)]))
     // `@x` in a FROM source finds an earlier variable
     soft
     .expect(names_ev("SELECT VALUE y FROM [[1, 2]] AS x, @x AS y"))
-    .to_equal(bag([Int(1), Int(2)]))
+    .to_equal(bag([@value.Value::from_int(1), @value.Value::from_int(2)]))
     // `@t` outside a query is unchanged
-    soft.expect(names_ev("@a")).to_equal(Int(100))
+    soft.expect(names_ev("@a")).to_equal(@value.Value::from_int(100))
   })
 }
 
 ///|
 test "implicit name: variable attribute before global" {
   let env = @eval.Bindings::of_tuple(
-    @value.Tuple::new([("a", String("global-a"))]),
+    @value.Tuple::Tuple([("a", @value.Value::from_string("global-a"))]),
   )
   @expect.expect_all(soft => {
     soft
     .expect(@eval.evaluate_text("SELECT VALUE a FROM [{'a': 1}] AS x", env~))
-    .to_equal(bag([Int(1)]))
+    .to_equal(bag([@value.Value::from_int(1)]))
     soft
     .expect(@eval.evaluate_text("SELECT VALUE a FROM [{'b': 1}] AS x", env~))
-    .to_equal(bag([String("global-a")]))
+    .to_equal(bag([@value.Value::from_string("global-a")]))
   })
 }
 
 ///|
 test "a repeated FROM variable is an error" {
-  let items = @value.Tuple::new([("items", List([Int(1)]))])
+  let items = @value.Tuple::Tuple([
+    ("items", @value.Value::from_list([@value.Value::from_int(1)])),
+  ])
   let env = @eval.Bindings::of_tuple(
-    @value.Tuple::new([
-      ("s", Tuple(items)),
-      ("u", Tuple(items)),
-      ("t", List([Int(1)])),
+    @value.Tuple::Tuple([
+      ("s", @value.Value::from_tuple(items)),
+      ("u", @value.Value::from_tuple(items)),
+      ("t", @value.Value::from_list([@value.Value::from_int(1)])),
     ]),
   )
   fn rejects(q : String, mode : @eval.Mode) -> (Bool, String) {
@@ -215,7 +240,7 @@ test "a repeated FROM variable is an error" {
     .expect(
       @eval.evaluate_text("SELECT VALUE x FROM [1] AS x LET 2 AS x", env~),
     )
-    .to_equal(bag([Int(2)]))
+    .to_equal(bag([@value.Value::from_int(2)]))
     soft
     .expect(
       @eval.evaluate_text(
@@ -223,7 +248,7 @@ test "a repeated FROM variable is an error" {
         env~,
       ),
     )
-    .to_equal(bag([bag([Int(5)])]))
+    .to_equal(bag([bag([@value.Value::from_int(5)])]))
   })
 }
 
@@ -232,13 +257,35 @@ test "unnamed SELECT items are numbered by a counter of unnamed items" {
   @expect.expect_all(soft => {
     soft
     .expect(ev("SELECT x.a, x.a + 1, 2 FROM [{'a': 1}] AS x"))
-    .to_equal(bag_of([tuple([("a", Int(1)), ("_1", Int(2)), ("_2", Int(2))])]))
+    .to_equal(
+      bag_of([
+        tuple([
+          ("a", @value.Value::from_int(1)),
+          ("_1", @value.Value::from_int(2)),
+          ("_2", @value.Value::from_int(2)),
+        ]),
+      ]),
+    )
     soft
     .expect(ev("SELECT x.a + 1, x.a FROM [{'a': 1}] AS x"))
-    .to_equal(bag_of([tuple([("_1", Int(2)), ("a", Int(1))])]))
+    .to_equal(
+      bag_of([
+        tuple([
+          ("_1", @value.Value::from_int(2)),
+          ("a", @value.Value::from_int(1)),
+        ]),
+      ]),
+    )
     // FROM sources keep their position.
     soft
     .expect(ev("SELECT * FROM <<{'a': 1}>> AS x, <<{'b': 2}>>"))
-    .to_equal(bag_of([tuple([("a", Int(1)), ("b", Int(2))])]))
+    .to_equal(
+      bag_of([
+        tuple([
+          ("a", @value.Value::from_int(1)),
+          ("b", @value.Value::from_int(2)),
+        ]),
+      ]),
+    )
   })
 }

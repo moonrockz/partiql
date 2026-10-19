@@ -1,6 +1,8 @@
 ///|
-/// The result of one run: text for each stream and the exit status.
+/// The result of one run: text or binary stdout, text stderr, and exit status.
 pub(all) struct Outcome {
+  /// Raw binary output, when requested. Text output is empty in this case.
+  stdout_bytes : Bytes?
   stdout : String
   stderr : String
   status : Int32
@@ -8,12 +10,12 @@ pub(all) struct Outcome {
 
 ///|
 fn success(text : String) -> Outcome {
-  { stdout: text, stderr: "", status: 0, }
+  { stdout_bytes: None, stdout: text, stderr: "", status: 0, }
 }
 
 ///|
 fn usage_error(text : String) -> Outcome {
-  { stdout: "", stderr: text, status: 2, }
+  { stdout_bytes: None, stdout: "", stderr: text, status: 2, }
 }
 
 ///|
@@ -30,7 +32,17 @@ fn help_outcome(path : ArrayView[String]) -> Outcome {
 }
 
 ///|
-/// Runs the command line. `args` excludes the program name.
+/// Run arguments excluding the program name, using only injected `io` for
+/// files, stdin and clock access. Return output without writing process streams.
+/// Status is 0 for success, 1 for input/evaluation failure, and 2 for usage
+/// errors. Binary stdout uses `stdout_bytes` with empty text `stdout`.
+///
+/// ```mbt check
+/// test {
+///   let result = @cli.run(["query", "--compact", "-e", "1 + 2"])
+///   @expect.expect((result.status, result.stdout)).to_equal((0, "3\n"))
+/// }
+/// ```
 pub fn run(args : ArrayView[String], io~ : Io = Io::unavailable()) -> Outcome {
   if args.is_empty() {
     return usage_error(help_text([]).unwrap_or(""))
@@ -64,6 +76,9 @@ pub fn run(args : ArrayView[String], io~ : Io = Io::unavailable()) -> Outcome {
 /// File and stdin access for `run`. `main` provides the real one; tests pass
 /// fakes, so `run` never touches the process or the file system itself.
 pub(all) struct Io {
+  /// Optional byte readers. When absent, text readers supply UTF-8 Ion.
+  read_file_bytes : ((String) -> Bytes raise)?
+  read_stdin_bytes : (() -> Bytes raise)?
   read_file : (String) -> String raise
   write_file : (String, String) -> Unit raise
   read_stdin : () -> String raise
@@ -79,6 +94,8 @@ pub(all) struct Io {
 /// An `Io` that raises on every access.
 pub fn Io::unavailable() -> Io {
   {
+    read_file_bytes: None,
+    read_stdin_bytes: None,
     read_file: _ => fail("file access is not available"),
     write_file: (_, _) => fail("file access is not available"),
     read_stdin: () => fail("stdin is not available"),

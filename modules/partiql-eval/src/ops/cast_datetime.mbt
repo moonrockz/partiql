@@ -42,7 +42,7 @@ fn clock(
   precision~ : Int32,
   offset~ : Int32?,
 ) -> @value.Time raise OpFailure {
-  @value.Time::new(
+  @value.Time::Time(
     hour=t.hour,
     minute=t.minute,
     second=t.second,
@@ -88,7 +88,7 @@ fn zoned_timestamp(
   match (ts.time.offset, with_zone) {
     (Some(_), true) | (None, false) => ts
     (None, true) =>
-      @value.Timestamp::new(
+      @value.Timestamp::Timestamp(
         ts.date,
         clock(
           ts.time,
@@ -99,7 +99,7 @@ fn zoned_timestamp(
       )
     (Some(offset), false) => {
       let moved = timestamp_shift(ts, minutes_nanos(session.minutes - offset))
-      @value.Timestamp::new(
+      @value.Timestamp::Timestamp(
         moved.date,
         clock(
           moved.time,
@@ -149,7 +149,7 @@ fn timestamp_precision(
   guard precision is Some(p) else { return ts }
   let unit = fraction_unit(p)
   let rest = ts.time.nanos % unit
-  let kept = @value.Timestamp::new(
+  let kept = @value.Timestamp::Timestamp(
     ts.date,
     clock(
       ts.time,
@@ -171,15 +171,17 @@ fn to_date(
   session : ZoneOffset,
 ) -> @value.Value raise OpFailure {
   match x {
-    Date(d) => Date(checked_date(d))
+    Date(d) => @value.Value::from_date(checked_date(d))
     Timestamp(ts) =>
-      Date(checked_date(zoned_timestamp(ts, false, session).date))
+      @value.Value::from_date(
+        checked_date(zoned_timestamp(ts, false, session).date),
+      )
     String(s) => {
       let text = trimmed(s)
       match keyword_literal(text) {
-        Some(Date(body)) => Date(parse_date(body))
+        Some(Date(body)) => @value.Value::from_date(parse_date(body))
         Some(_) => raise TypeFailure("'\{text}' is not a DATE literal")
-        None => Date(parse_date(text))
+        None => @value.Value::from_date(parse_date(text))
       }
     }
     _ => raise TypeFailure("CAST of \{kind_name(x)} to DATE")
@@ -210,7 +212,9 @@ fn to_time(
         "CAST of \{kind_name(x)} to \{target_name(Time(precision~, zone=with_zone))}",
       )
   }
-  Time(time_precision(zoned_time(t, with_zone, session), precision))
+  @value.Value::from_time(
+    time_precision(zoned_time(t, with_zone, session), precision),
+  )
 }
 
 ///|
@@ -225,9 +229,9 @@ fn to_timestamp(
   let ts = match x {
     Timestamp(ts) => ts
     Date(d) =>
-      @value.Timestamp::new(
+      @value.Timestamp::Timestamp(
         d,
-        @value.Time::new(hour=0, minute=0, second=0, precision=0) catch {
+        @value.Time::Time(hour=0, minute=0, second=0, precision=0) catch {
           _ => raise DataFailure("a time out of range")
         },
       )
@@ -242,14 +246,14 @@ fn to_timestamp(
     }
     // The date is CURRENT_DATE; the time and its offset are the value's
     // (SQL-92 6.10 GR 11).
-    Time(t) => @value.Timestamp::new(today(), t)
+    Time(t) => @value.Timestamp::Timestamp(today(), t)
     _ =>
       raise TypeFailure(
         "CAST of \{kind_name(x)} to \{target_name(Timestamp(precision~, zone=with_zone))}",
       )
   }
   ignore(checked_date(ts.date))
-  Timestamp(
+  @value.Value::from_timestamp(
     timestamp_precision(zoned_timestamp(ts, with_zone, session), precision),
   )
 }

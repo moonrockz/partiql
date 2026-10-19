@@ -21,6 +21,7 @@ pub(all) struct GraphPattern {
 } derive(Debug, Eq)
 
 ///|
+/// A graph path selector and the span of its selector keywords and count.
 pub(all) struct Selector {
   kind : SelectorKind
   span : Span
@@ -42,6 +43,9 @@ pub(all) enum SelectorKind {
 } derive(Debug, Eq)
 
 ///|
+/// The path repetition rule: WALK permits repeats, TRAIL forbids repeated
+/// edges, ACYCLIC forbids repeated nodes, and SIMPLE permits only the
+/// starting node to repeat as the ending node.
 pub(all) enum Restrictor {
   Walk
   Trail
@@ -59,6 +63,7 @@ pub(all) struct PathPattern {
 } derive(Debug, Eq)
 
 ///|
+/// One node, edge or nested group in a graph path, in traversal order.
 pub(all) enum PathPart {
   Node(NodePattern)
   Edge(EdgePattern)
@@ -94,6 +99,8 @@ pub(all) struct EdgeFiller {
 } derive(Debug, Eq)
 
 ///|
+/// The allowed edge directions, retaining abbreviated and mixed-direction
+/// syntax through the surrounding `EdgePattern`.
 pub(all) enum EdgeDirection {
   /// `<-[ ]-`, `<-`
   Left
@@ -123,12 +130,14 @@ pub(all) struct GroupPattern {
 } derive(Debug, Eq)
 
 ///|
+/// Whether a graph path group was enclosed in parentheses or brackets.
 pub(all) enum GroupDelimiter {
   Paren
   Bracket
 } derive(Debug, Eq)
 
 ///|
+/// A graph path repetition bound and its complete source span.
 pub(all) struct Quantifier {
   kind : QuantifierKind
   span : Span
@@ -154,6 +163,7 @@ pub(all) struct Label {
 } derive(Debug, Eq)
 
 ///|
+/// A graph label name, wildcard, negation, conjunction or disjunction.
 pub(all) enum LabelKind {
   Name(Identifier)
   /// `%`

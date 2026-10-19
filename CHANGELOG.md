@@ -5,6 +5,39 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.0] - 2026-10-19
+
+### Added
+
+- **value:** Add JSON codecs and query formats (#46)
+- **value:** Add bounded YAML input (#47)
+
+## [0.2.0] - 2026-10-18
+
+### Added
+
+- **eval:** The partiql-eval module and expression evaluation (M4a) (#23)
+- **eval:** M4b1 query evaluation core (#25)
+- **eval:** M4b2 ORDER BY, LIMIT/OFFSET, set operations, PIVOT, WITH (#28)
+- **cli:** Partiql query (M4e) (#29)
+- **eval:** M4c grouping and aggregation (#30)
+- **eval:** M4d1 built-in functions (#31)
+- **eval:** M4d2 CAST (#32)
+- **eval:** M4d3 datetime functions (#33)
+- Session clock (#34)
+- **eval:** Unknown function names are a static error (#35)
+- **eval:** Detect ambiguous names and repeated fields (#39)
+- **eval:** Add Ion datagrams and sessions (#41)
+- **value:** Add constructors and API guides (#42)
+- **value:** Standardize typed conversions (#43)
+
+### Fixed
+
+- **eval:** IS CHAR without a length, and IS DECIMAL with a positive exponent (#24)
+- **value:** Prevent deep-value stack overflows (#36)
+- **cli:** Serialize deeply nested query results (#37)
+- **build:** Keep releases below 1.0 (#45)
+
 ## [0.1.0] - 2026-10-04
 
 ### Added

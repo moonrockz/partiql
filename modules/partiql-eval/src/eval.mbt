@@ -11,11 +11,15 @@ pub struct Bindings {
 }
 
 ///|
+/// An environment with no global names.
 pub fn Bindings::empty() -> Bindings {
   { entries: [], }
 }
 
 ///|
+/// Bind each retained tuple field, preserving order and duplicate names.
+/// Tuple construction has already removed MISSING fields. Ambiguous names
+/// are reported when evaluation resolves them.
 pub fn Bindings::of_tuple(tuple : @value.Tuple) -> Bindings {
   { entries: Array::from_iter(tuple.fields().iter()), }
 }
@@ -58,7 +62,7 @@ pub fn evaluate(
     Query(q) =>
       @interp.run(
         @lower.lower_query(q),
-        @interp.Ctx::new(env.entries, mode~, zone~, clock?),
+        @interp.Ctx(env.entries, mode~, zone~, clock?),
       )
     Error(span) =>
       raise Unsupported(message="a statement that could not be read", span~)
@@ -67,6 +71,13 @@ pub fn evaluate(
 
 ///|
 /// Parses and evaluates a statement. A syntax error raises `Syntax`.
+///
+/// ```mbt check
+/// test {
+///   let env = @eval.Bindings::of_pairs([("x", @value.Value(7))])
+///   @expect.expect(@eval.evaluate_text("x + 1", env~)).to_equal(@value.Value(8))
+/// }
+/// ```
 pub fn evaluate_text(
   source : String,
   env~ : Bindings,

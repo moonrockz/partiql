@@ -3,7 +3,7 @@
 
 name = "moonrockz/partiql"
 
-version = "0.1.0"
+version = "0.3.0"
 
 readme = "README.mbt.md"
 
@@ -22,10 +22,10 @@ source = "src"
 warnings = "-implicit_impl_as_method"
 
 import {
-  "moonrockz/partiql-syntax@0.1.0",
-  "moonrockz/partiql-eval@0.1.0",
-  "moonrockz/partiql-value@0.1.0",
-  "moonrockz/ion@0.5.0",
+  "moonrockz/partiql-syntax@0.3.0",
+  "moonrockz/partiql-eval@0.3.0",
+  "moonrockz/partiql-value@0.3.0",
+  "moonrockz/ion@0.6.0",
   "moonbitlang/x@0.5.5",
   "moonbitlang/async@0.22.4",
   "moonrockz/expect@0.6.0",

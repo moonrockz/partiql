@@ -26,7 +26,7 @@ fn second_decimal(
 ) -> @ion_core.Decimal {
   let units = big64(seconds) * pow10(scale) +
     big64(nanos.to_int64()) / pow10(9 - scale)
-  @ion_core.Decimal::new(if negative { -units } else { units }, -scale)
+  @ion_core.Decimal::Decimal(if negative { -units } else { units }, -scale)
 }
 
 ///|
@@ -43,16 +43,18 @@ fn time_field(
   x : @value.Value,
 ) -> @value.Value raise OpFailure {
   match f {
-    Hour => Int(t.hour.to_int64())
-    Minute => Int(t.minute.to_int64())
+    Hour => @value.Value::from_int(t.hour.to_int64())
+    Minute => @value.Value::from_int(t.minute.to_int64())
     Second =>
-      Decimal(
+      @value.Value::from_decimal(
         second_decimal(false, t.second.to_int64(), t.nanos, t.precision.min(9)),
       )
     TimezoneHour | TimezoneMinute =>
       match t.offset {
         Some(o) =>
-          Int((if f is TimezoneHour { o / 60 } else { o % 60 }).to_int64())
+          @value.Value::from_int(
+            (if f is TimezoneHour { o / 60 } else { o % 60 }).to_int64(),
+          )
         None => raise no_field(f, x)
       }
     _ => raise no_field(f, x)
@@ -67,17 +69,17 @@ fn extract_field(
   match x {
     Date(d) =>
       match f {
-        Year => Int(d.year.to_int64())
-        Month => Int(d.month.to_int64())
-        Day => Int(d.day.to_int64())
+        Year => @value.Value::from_int(d.year.to_int64())
+        Month => @value.Value::from_int(d.month.to_int64())
+        Day => @value.Value::from_int(d.day.to_int64())
         _ => raise no_field(f, x)
       }
     Time(t) => time_field(f, t, x)
     Timestamp(ts) =>
       match f {
-        Year => Int(ts.date.year.to_int64())
-        Month => Int(ts.date.month.to_int64())
-        Day => Int(ts.date.day.to_int64())
+        Year => @value.Value::from_int(ts.date.year.to_int64())
+        Month => @value.Value::from_int(ts.date.month.to_int64())
+        Day => @value.Value::from_int(ts.date.day.to_int64())
         _ => time_field(f, ts.time, x)
       }
     // The value keeps no qualifier, so the fields are the normalized ones
@@ -85,8 +87,8 @@ fn extract_field(
     IntervalYM(i) => {
       let sign = if i.is_negative() { -1L } else { 1L }
       match f {
-        Year => Int(sign * i.years())
-        Month => Int(sign * i.months_part())
+        Year => @value.Value::from_int(sign * i.years())
+        Month => @value.Value::from_int(sign * i.months_part())
         _ => raise no_field(f, x)
       }
     }
@@ -94,13 +96,13 @@ fn extract_field(
       let negative = i.is_negative()
       let sign = if negative { -1L } else { 1L }
       match f {
-        Day => Int(sign * i.days())
-        Hour => Int(sign * i.hours())
-        Minute => Int(sign * i.minutes())
+        Day => @value.Value::from_int(sign * i.days())
+        Hour => @value.Value::from_int(sign * i.hours())
+        Minute => @value.Value::from_int(sign * i.minutes())
         Second => {
           let nanos = i.nanos_part().to_int()
           let digits = if nanos == 0 { 0 } else { needed_precision(nanos) }
-          Decimal(
+          @value.Value::from_decimal(
             second_decimal(negative, i.seconds_part(), nanos, digits.max(6)),
           )
         }

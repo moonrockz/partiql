@@ -28,7 +28,10 @@ fn dedup_labels(labels : Array[String]) -> Array[String] {
 }
 
 ///|
-pub fn GraphNode::new(
+/// Build a node and remove duplicate labels in first-seen order.
+/// Id uniqueness and MISSING payloads are checked when building `GraphValue`.
+#alias(new, deprecated="Use GraphNode(...) instead")
+pub fn GraphNode::GraphNode(
   id~ : String,
   labels~ : Array[String] = [],
   payload~ : Value? = None,
@@ -46,7 +49,10 @@ pub struct GraphEdge {
 }
 
 ///|
-pub fn GraphEdge::new(
+/// Build an edge and remove duplicate labels in first-seen order.
+/// Endpoint existence, id uniqueness and MISSING payloads are checked by `GraphValue`.
+#alias(new, deprecated="Use GraphEdge(...) instead")
+pub fn GraphEdge::GraphEdge(
   id~ : String,
   ends~ : Ends,
   labels~ : Array[String] = [],
@@ -87,7 +93,11 @@ pub struct GraphValue {
 }
 
 ///|
-pub fn GraphValue::new(
+/// Build a graph from copies of the node and edge arrays.
+/// Raise `GraphError` for duplicate ids within either namespace, unknown
+/// endpoints, or MISSING payloads. Node and edge ids may share a name.
+#alias(new, deprecated="Use GraphValue(...) instead")
+pub fn GraphValue::GraphValue(
   nodes : Array[GraphNode],
   edges : Array[GraphEdge],
 ) -> GraphValue raise GraphError {
@@ -125,11 +135,13 @@ pub fn GraphValue::new(
 }
 
 ///|
+/// A read-only view of nodes in their input order.
 pub fn GraphValue::nodes(self : GraphValue) -> ArrayView[GraphNode] {
   self.nodes[:]
 }
 
 ///|
+/// A read-only view of edges in their input order.
 pub fn GraphValue::edges(self : GraphValue) -> ArrayView[GraphEdge] {
   self.edges[:]
 }

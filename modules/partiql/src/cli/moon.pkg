@@ -3,16 +3,20 @@
 
 import {
   "moonbitlang/core/argparse",
+  "moonbitlang/core/encoding/utf8",
   "moonbitlang/core/string",
   "moonrockz/partiql-syntax" @syntax,
   "moonrockz/partiql-eval" @eval,
   "moonrockz/partiql-value" @value,
   "moonrockz/partiql-value/ion" @partiql_ion,
-  "moonrockz/ion/text",
+  "moonrockz/partiql-value/json" @partiql_json,
+  "moonrockz/partiql-value/yaml" @partiql_yaml,
 }
 
 import {
   "moonrockz/partiql/cli",
+  "moonrockz/partiql-value" @value,
+  "moonbitlang/core/encoding/utf8",
   "moonrockz/expect",
   "moonrockz/partiql-value/arbitrary",
   "moonrockz/partiql-value/ion" @partiql_ion,

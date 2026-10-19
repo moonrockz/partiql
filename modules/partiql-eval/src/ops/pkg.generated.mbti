@@ -58,7 +58,9 @@ pub fn exists(Array[@partiql-value.Value]) -> @partiql-value.Value raise OpFailu
 
 pub fn extract(@ast.DatetimeField, Array[@partiql-value.Value]) -> @partiql-value.Value raise OpFailure
 
-pub fn field(@partiql-value.Value, String, delimited~ : Bool) -> @partiql-value.Value raise OpFailure
+pub fn field(@partiql-value.Value, String, delimited~ : Bool, unique~ : Bool) -> @partiql-value.Value raise OpFailure
+
+pub fn field_match(@partiql-value.Tuple, String, delimited~ : Bool) -> FieldMatch
 
 pub fn greater(@partiql-value.Value, @partiql-value.Value) -> @partiql-value.Value raise OpFailure
 
@@ -66,7 +68,7 @@ pub fn greater_eq(@partiql-value.Value, @partiql-value.Value) -> @partiql-value.
 
 pub fn in_(@partiql-value.Value, @partiql-value.Value) -> @partiql-value.Value raise OpFailure
 
-pub fn index(@partiql-value.Value, @partiql-value.Value, named~ : Bool) -> @partiql-value.Value raise OpFailure
+pub fn index(@partiql-value.Value, @partiql-value.Value, named~ : Bool, unique~ : Bool) -> @partiql-value.Value raise OpFailure
 
 pub fn interval_qualifier_valid(@ast.IntervalQualifier) -> Bool
 
@@ -184,6 +186,12 @@ pub(all) struct Clock {
 }
 pub fn Clock::fixed(@time.ZonedDateTime) -> Self
 
+pub(all) enum FieldMatch {
+  NoField
+  One(@partiql-value.Value)
+  Many(@partiql-value.Value, count~ : Int)
+} derive(Eq, @debug.Debug)
+
 pub(all) enum FloatWidth {
   Real
   Double
@@ -210,7 +218,8 @@ pub(all) enum TextKind {
 pub struct ZoneOffset {
   minutes : Int
 } derive(Eq, @debug.Debug)
-pub fn ZoneOffset::new(Int) -> Self?
+#alias(new, deprecated)
+pub fn ZoneOffset::from_minutes(Int) -> Self?
 pub fn ZoneOffset::utc() -> Self
 
 // Type aliases

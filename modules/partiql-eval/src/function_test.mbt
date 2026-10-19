@@ -1,13 +1,17 @@
 ///|
 test "length functions" {
   @expect.expect_all(soft => {
-    soft.expect(ev("CHAR_LENGTH('abc')")).to_equal(Int(3))
-    soft.expect(ev("character_length('😁x')")).to_equal(Int(2))
-    soft.expect(ev("Char_Length('')")).to_equal(Int(0))
-    soft.expect(ev("OCTET_LENGTH('français')")).to_equal(Int(9))
-    soft.expect(ev("bit_length('abc')")).to_equal(Int(24))
-    soft.expect(ev("char_length(`abc`)")).to_equal(Int(3))
-    soft.expect(ev("char_length(`\"ab\"`)")).to_equal(Int(2))
+    soft.expect(ev("CHAR_LENGTH('abc')")).to_equal(@value.Value::from_int(3))
+    soft
+    .expect(ev("character_length('😁x')"))
+    .to_equal(@value.Value::from_int(2))
+    soft.expect(ev("Char_Length('')")).to_equal(@value.Value::from_int(0))
+    soft
+    .expect(ev("OCTET_LENGTH('français')"))
+    .to_equal(@value.Value::from_int(9))
+    soft.expect(ev("bit_length('abc')")).to_equal(@value.Value::from_int(24))
+    soft.expect(ev("char_length(`abc`)")).to_equal(@value.Value::from_int(3))
+    soft.expect(ev("char_length(`\"ab\"`)")).to_equal(@value.Value::from_int(2))
   })
 }
 
@@ -76,34 +80,48 @@ test "a function as a GROUP BY key and around an aggregate" {
     )
     .to_equal(
       bag_of([
-        tuple([("n", Int(2)), ("c", Int(2))]),
-        tuple([("n", Int(1)), ("c", Int(1))]),
+        tuple([
+          ("n", @value.Value::from_int(2)),
+          ("c", @value.Value::from_int(2)),
+        ]),
+        tuple([
+          ("n", @value.Value::from_int(1)),
+          ("c", @value.Value::from_int(1)),
+        ]),
       ]),
     )
     soft
     .expect(ev("SELECT VALUE CHAR_LENGTH(MAX(t.a)) FROM \{rows} AS t"))
-    .to_equal(bag_of([Int(2)]))
+    .to_equal(bag_of([@value.Value::from_int(2)]))
   })
 }
 
 ///|
 test "collection functions; a subquery argument stays a collection" {
   @expect.expect_all(soft => {
-    soft.expect(ev("SIZE([1, 2, 3])")).to_equal(Int(3))
-    soft.expect(ev("cardinality(<<1, NULL>>)")).to_equal(Int(2))
-    soft.expect(ev("size({'a': 1, 'a': 2})")).to_equal(Int(2))
-    soft.expect(ev("size(`(1 2)`)")).to_equal(Int(2))
+    soft.expect(ev("SIZE([1, 2, 3])")).to_equal(@value.Value::from_int(3))
+    soft
+    .expect(ev("cardinality(<<1, NULL>>)"))
+    .to_equal(@value.Value::from_int(2))
+    soft
+    .expect(ev("size({'a': 1, 'a': 2})"))
+    .to_equal(@value.Value::from_int(2))
+    soft.expect(ev("size(`(1 2)`)")).to_equal(@value.Value::from_int(2))
     soft
     .expect(ev("size(SELECT a FROM <<{'a': 1}, {'a': 2}>>)"))
-    .to_equal(Int(2))
+    .to_equal(@value.Value::from_int(2))
     soft
     .expect(ev("cardinality(SELECT a FROM <<{'a': 1}, {'a': 2}>>)"))
-    .to_equal(Int(2))
-    soft.expect(ev("exists(select * from [1])")).to_equal(Bool(true))
-    soft.expect(ev("EXISTS([])")).to_equal(Bool(false))
+    .to_equal(@value.Value::from_int(2))
+    soft
+    .expect(ev("exists(select * from [1])"))
+    .to_equal(@value.Value::from_bool(true))
+    soft.expect(ev("EXISTS([])")).to_equal(@value.Value::from_bool(false))
     soft
     .expect(ev("TUPLEUNION({'a': 1}, {'b': 2})"))
-    .to_equal(tuple([("a", Int(1)), ("b", Int(2))]))
+    .to_equal(
+      tuple([("a", @value.Value::from_int(1)), ("b", @value.Value::from_int(2))]),
+    )
     soft.expect(ev("tupleunion()")).to_equal(tuple([]))
     soft.expect(ev("cardinality('foo')")).to_equal(Missing)
   })
@@ -112,10 +130,12 @@ test "collection functions; a subquery argument stays a collection" {
 ///|
 test "map functions and m[k] share the key rule" {
   @expect.expect_all(soft => {
-    soft.expect(ev("MAP { 1.0: 'one', 2.0: 'two' }[1]")).to_equal(String("one"))
+    soft
+    .expect(ev("MAP { 1.0: 'one', 2.0: 'two' }[1]"))
+    .to_equal(@value.Value::from_string("one"))
     soft
     .expect(ev("map_get(MAP { 1.0: 'one', 2.0: 'two' }, 1)"))
-    .to_equal(String("one"))
+    .to_equal(@value.Value::from_string("one"))
     soft.expect(ev("map_get(MAP { 'a': 1 }, 'z')")).to_equal(Missing)
     soft
     .expect_call(() => ev("map_get(MAP { 'a': 1 }, 'z')", mode=Strict))
@@ -131,13 +151,22 @@ test "map functions and m[k] share the key rule" {
     )
     soft
     .expect(ev("map_contains_key(MAP { 1: 'one' }, 1)"))
-    .to_equal(Bool(true))
+    .to_equal(@value.Value::from_bool(true))
     soft
     .expect(ev("MAP_KEYS(MAP { 'x': 1, 'y': 2 })"))
-    .to_equal(bag_of([String("x"), String("y")]))
+    .to_equal(
+      bag_of([@value.Value::from_string("x"), @value.Value::from_string("y")]),
+    )
     soft
     .expect(ev("map_entries(MAP { 'a': 1 })"))
-    .to_equal(bag_of([tuple([("k", String("a")), ("v", Int(1))])]))
+    .to_equal(
+      bag_of([
+        tuple([
+          ("k", @value.Value::from_string("a")),
+          ("v", @value.Value::from_int(1)),
+        ]),
+      ]),
+    )
   })
 }
 
@@ -145,9 +174,9 @@ test "map functions and m[k] share the key rule" {
 test "ABS and MOD end to end; deep nesting is a static error" {
   let deep = "ABS(".repeat(1000) + "-1" + ")".repeat(1000)
   @expect.expect_all(soft => {
-    soft.expect(ev("ABS(-3)")).to_equal(Int(3))
+    soft.expect(ev("ABS(-3)")).to_equal(@value.Value::from_int(3))
     soft.expect(ev("abs(1.0)")).to_equal(dec("1.0"))
-    soft.expect(ev("MOD(-17, 4)")).to_equal(Int(-1))
+    soft.expect(ev("MOD(-17, 4)")).to_equal(@value.Value::from_int(-1))
     soft.expect(ev("MOD(MISSING, 'some string')")).to_equal(Missing)
     soft
     .expect_call(() => ev("MOD(NULL, 'some string')", mode=Strict))
@@ -176,21 +205,41 @@ test "ABS and MOD end to end; deep nesting is a static error" {
 ///|
 test "special forms equal their comma forms" {
   @expect.expect_all(soft => {
-    soft.expect(ev("TRIM('  a  ')")).to_equal(String("a"))
-    soft.expect(ev("trim(both '12' from '121a21')")).to_equal(String("a"))
-    soft.expect(ev("trim(leading from '  a  ')")).to_equal(String("a  "))
-    soft.expect(ev("trim(trailing 'x' from 'xax')")).to_equal(String("xa"))
-    soft.expect(ev("trim('x' from 'xax')")).to_equal(String("a"))
-    soft.expect(ev("SUBSTRING('abcdef' FROM 2 FOR 3)")).to_equal(String("bcd"))
-    soft.expect(ev("substring('abcdef', 2, 3)")).to_equal(String("bcd"))
-    soft.expect(ev("substring('abcdef' FROM 3)")).to_equal(String("cdef"))
-    soft.expect(ev("POSITION('c' IN 'abc')")).to_equal(Int(3))
-    soft.expect(ev("position('c', 'abc')")).to_equal(Int(3))
+    soft.expect(ev("TRIM('  a  ')")).to_equal(@value.Value::from_string("a"))
+    soft
+    .expect(ev("trim(both '12' from '121a21')"))
+    .to_equal(@value.Value::from_string("a"))
+    soft
+    .expect(ev("trim(leading from '  a  ')"))
+    .to_equal(@value.Value::from_string("a  "))
+    soft
+    .expect(ev("trim(trailing 'x' from 'xax')"))
+    .to_equal(@value.Value::from_string("xa"))
+    soft
+    .expect(ev("trim('x' from 'xax')"))
+    .to_equal(@value.Value::from_string("a"))
+    soft
+    .expect(ev("SUBSTRING('abcdef' FROM 2 FOR 3)"))
+    .to_equal(@value.Value::from_string("bcd"))
+    soft
+    .expect(ev("substring('abcdef', 2, 3)"))
+    .to_equal(@value.Value::from_string("bcd"))
+    soft
+    .expect(ev("substring('abcdef' FROM 3)"))
+    .to_equal(@value.Value::from_string("cdef"))
+    soft
+    .expect(ev("POSITION('c' IN 'abc')"))
+    .to_equal(@value.Value::from_int(3))
+    soft.expect(ev("position('c', 'abc')")).to_equal(@value.Value::from_int(3))
     soft
     .expect(ev("OVERLAY('hello' PLACING 'XX' FROM 2 FOR 3)"))
-    .to_equal(String("hXXo"))
-    soft.expect(ev("overlay('hello', 'XX', 2, 3)")).to_equal(String("hXXo"))
-    soft.expect(ev("text_replace('aXa', 'X', 'b')")).to_equal(String("aba"))
+    .to_equal(@value.Value::from_string("hXXo"))
+    soft
+    .expect(ev("overlay('hello', 'XX', 2, 3)"))
+    .to_equal(@value.Value::from_string("hXXo"))
+    soft
+    .expect(ev("text_replace('aXa', 'X', 'b')"))
+    .to_equal(@value.Value::from_string("aba"))
     soft.expect(ev("substring('1', 4, -11)")).to_equal(Missing)
     soft
     .expect_call(() => ev("substring('1', 4, -11)", mode=Strict))
@@ -204,9 +253,13 @@ test "special forms equal their comma forms" {
 ///|
 test "UPPER and LOWER end to end; a symbol gives a string" {
   @expect.expect_all(soft => {
-    soft.expect(ev("UPPER('straße')")).to_equal(String("STRASSE"))
-    soft.expect(ev("lower('ΣΑΣ')")).to_equal(String("σας"))
-    soft.expect(ev("upper(`abc`)")).to_equal(String("ABC"))
+    soft
+    .expect(ev("UPPER('straße')"))
+    .to_equal(@value.Value::from_string("STRASSE"))
+    soft
+    .expect(ev("lower('ΣΑΣ')"))
+    .to_equal(@value.Value::from_string("σας"))
+    soft.expect(ev("upper(`abc`)")).to_equal(@value.Value::from_string("ABC"))
     soft.expect(ev("upper(1)")).to_equal(Missing)
   })
 }
@@ -221,9 +274,9 @@ test "nested calls just under the parser limit evaluate" {
   let trim = "TRIM(".repeat(n) + "' a '" + ")".repeat(n)
   @expect.expect_all(soft => {
     for mode in [@eval.Mode::Permissive, Strict] {
-      soft.expect(ev(abs, mode~)).to_equal(Int(1))
-      soft.expect(ev(upper, mode~)).to_equal(String("A"))
-      soft.expect(ev(trim, mode~)).to_equal(String("a"))
+      soft.expect(ev(abs, mode~)).to_equal(@value.Value::from_int(1))
+      soft.expect(ev(upper, mode~)).to_equal(@value.Value::from_string("A"))
+      soft.expect(ev(trim, mode~)).to_equal(@value.Value::from_string("a"))
     }
   })
 }

@@ -41,10 +41,10 @@ fn result_kind(
   mode~ : @eval.Mode = Permissive,
 ) -> @value.Value {
   ev(source, mode~) catch {
-    TypeError(..) => String("error: TypeError")
-    DataError(..) => String("error: DataError")
-    Unsupported(..) => String("error: Unsupported")
-    Syntax(_) => String("error: Syntax")
+    TypeError(..) => @value.Value::from_string("error: TypeError")
+    DataError(..) => @value.Value::from_string("error: DataError")
+    Unsupported(..) => @value.Value::from_string("error: Unsupported")
+    Syntax(_) => @value.Value::from_string("error: Syntax")
   }
 }
 

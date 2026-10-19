@@ -109,8 +109,8 @@ fn to_interval(
         q,
       )
     }
-    Int(n) => number_to_interval(@ion_core.Decimal::new(big64(n), 0), q)
-    BigInt(n) => number_to_interval(@ion_core.Decimal::new(n, 0), q)
+    Int(n) => number_to_interval(@ion_core.Decimal::Decimal(big64(n), 0), q)
+    BigInt(n) => number_to_interval(@ion_core.Decimal::Decimal(n, 0), q)
     Decimal(d) => number_to_interval(d, q)
     _ => raise TypeFailure("CAST of \{kind_name(x)} to INTERVAL")
   }

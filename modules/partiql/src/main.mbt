@@ -3,14 +3,25 @@ async fn main {
   let args = @env.args()[1:]
   // `run` is synchronous, so stdin is read before it when the command needs
   // it.
-  let stdin : Result[String, Error] = if @cli.reads_stdin(args) {
-    Ok(@stdio.stdin.read_all().text()) catch {
+  let stdin : Result[Bytes, Error] = if @cli.reads_stdin(args) {
+    Ok(@stdio.stdin.read_all().binary()) catch {
       e => Err(e)
     }
   } else {
     Err(Failure("stdin was not read"))
   }
   let io : @cli.Io = {
+    read_file_bytes: Some(path => {
+      @fs.read_file_to_bytes(path) catch {
+        IOError(message) => raise Failure(message)
+      }
+    }),
+    read_stdin_bytes: Some(() => {
+      match stdin {
+        Ok(bytes) => bytes
+        Err(e) => raise e
+      }
+    }),
     read_file: path => {
       @fs.read_file_to_string(path) catch {
         IOError(message) => raise Failure(message)
@@ -23,7 +34,7 @@ async fn main {
     },
     read_stdin: () => {
       match stdin {
-        Ok(text) => text
+        Ok(bytes) => @utf8.decode(bytes)
         Err(e) => raise e
       }
     },
@@ -37,7 +48,9 @@ async fn main {
     }),
   }
   let outcome = @cli.run(args, io~)
-  if outcome.stdout != "" {
+  if outcome.stdout_bytes is Some(bytes) {
+    @stdio.stdout.write(bytes)
+  } else if outcome.stdout != "" {
     println(outcome.stdout.trim_end(chars="\n"))
   }
   if outcome.stderr != "" {

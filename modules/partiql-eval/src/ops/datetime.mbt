@@ -85,7 +85,7 @@ fn date_of_days(days : Int64) -> @value.Date raise OpFailure {
     raise DataFailure("a date out of range")
   }
   let (year, month, day) = civil_from_days(days)
-  let d = @value.Date::new(year~, month~, day~) catch {
+  let d = @value.Date::Date(year~, month~, day~) catch {
     _ => raise DataFailure("a date out of range")
   }
   checked_date(d)
@@ -125,7 +125,7 @@ fn date_add_months(
       "datetime field overflow: \{year}-\{month} has no day \{d.day}",
     )
   }
-  @value.Date::new(year~, month~, day=d.day) catch {
+  @value.Date::Date(year~, month~, day=d.day) catch {
     _ => raise DataFailure("a date out of range")
   }
 }
@@ -143,8 +143,8 @@ fn dt_value(n : @bigint.BigInt) -> @value.Value raise OpFailure {
     raise DataFailure("an interval out of range")
   }
   let rest = (n % nanos_per_second).to_int64()
-  IntervalDT(
-    @value.IntervalDT::new(seconds.to_int64(), rest) catch {
+  @value.Value::from_interval_dt(
+    @value.IntervalDT(seconds.to_int64(), rest) catch {
       _ => raise DataFailure("an interval out of range")
     },
   )
@@ -155,8 +155,8 @@ fn ym_value(months : @bigint.BigInt) -> @value.Value raise OpFailure {
   if !fits_int64(months) {
     raise DataFailure("an interval out of range")
   }
-  IntervalYM(
-    @value.IntervalYM::new(months.to_int64()) catch {
+  @value.Value::from_interval_ym(
+    @value.IntervalYM(months.to_int64()) catch {
       _ => raise DataFailure("an interval out of range")
     },
   )
@@ -183,7 +183,7 @@ fn time_at(
 ) -> @value.Time raise OpFailure {
   let seconds = (rest / nanos_per_second).to_int()
   let nanos = (rest % nanos_per_second).to_int()
-  @value.Time::new(
+  @value.Time::Time(
     hour=seconds / 3600,
     minute=seconds % 3600 / 60,
     second=seconds % 60,
@@ -237,7 +237,7 @@ fn timestamp_shift(
   if !fits_int64(days) {
     raise DataFailure("a timestamp out of range")
   }
-  @value.Timestamp::new(
+  @value.Timestamp::Timestamp(
     date_of_days(days.to_int64()),
     time_at(rest, ts.time.precision, ts.time.offset),
   )
@@ -330,7 +330,7 @@ fn exact_decimal(f : Double) -> @ion_core.Decimal raise OpFailure {
     exponent_bits - 1075
   }
   if mantissa == 0L {
-    return @ion_core.Decimal::new(0N, 0)
+    return @ion_core.Decimal::Decimal(0N, 0)
   }
   while mantissa % 2L == 0L {
     mantissa = mantissa / 2L
@@ -338,12 +338,12 @@ fn exact_decimal(f : Double) -> @ion_core.Decimal raise OpFailure {
   }
   let m = if negative { -big64(mantissa) } else { big64(mantissa) }
   if exponent >= 0 {
-    @ion_core.Decimal::new(
+    @ion_core.Decimal::Decimal(
       m * @bigint.BigInt::from_int(2).pow(@bigint.BigInt::from_int(exponent)),
       0,
     )
   } else {
-    @ion_core.Decimal::new(
+    @ion_core.Decimal::Decimal(
       m * @bigint.BigInt::from_int(5).pow(@bigint.BigInt::from_int(-exponent)),
       exponent,
     )
@@ -372,7 +372,7 @@ fn truncated(d : @ion_core.Decimal) -> @bigint.BigInt raise OpFailure {
 /// its exact binary value.
 fn factor(n : Num) -> @ion_core.Decimal raise OpFailure {
   match n {
-    Whole(w) => @ion_core.Decimal::new(w, 0)
+    Whole(w) => @ion_core.Decimal::Decimal(w, 0)
     Exact(d) => d
     Approx(f) => exact_decimal(f)
   }
@@ -404,14 +404,14 @@ fn scale_by(interval : @value.Value, n : Num) -> @value.Value raise OpFailure {
   match interval {
     IntervalYM(i) => {
       let product = decimal_mul(
-        @ion_core.Decimal::new(big64(i.months), 0),
+        @ion_core.Decimal::Decimal(big64(i.months), 0),
         factor(n),
       )
       scaled_ym(truncated(product))
     }
     IntervalDT(i) => {
       let product = decimal_mul(
-        @ion_core.Decimal::new(dt_nanos(i), 0),
+        @ion_core.Decimal::Decimal(dt_nanos(i), 0),
         factor(n),
       )
       let nanos = truncated(product)
@@ -428,7 +428,7 @@ fn divide_by(interval : @value.Value, n : Num) -> @value.Value raise OpFailure {
     IntervalYM(i) => {
       let divisor = factor(n)
       let quotient = decimal_div(
-        @ion_core.Decimal::new(big64(i.months), 0),
+        @ion_core.Decimal::Decimal(big64(i.months), 0),
         divisor,
       )
       scaled_ym(truncated(quotient))
@@ -436,7 +436,7 @@ fn divide_by(interval : @value.Value, n : Num) -> @value.Value raise OpFailure {
     IntervalDT(i) => {
       let divisor = factor(n)
       let quotient = decimal_div(
-        @ion_core.Decimal::new(dt_nanos(i), 0),
+        @ion_core.Decimal::Decimal(dt_nanos(i), 0),
         divisor,
       )
       scaled_dt(to_micros(truncated(quotient)))
@@ -464,22 +464,28 @@ fn shift_datetime(
 ) -> @value.Value raise OpFailure {
   match (point, interval) {
     (Date(d), IntervalYM(i)) =>
-      Date(date_add_months(d, if negative { -i.months } else { i.months }))
+      @value.Value::from_date(
+        date_add_months(d, if negative { -i.months } else { i.months }),
+      )
     (Timestamp(ts), IntervalYM(i)) =>
-      Timestamp(
-        @value.Timestamp::new(
+      @value.Value::from_timestamp(
+        @value.Timestamp(
           date_add_months(ts.date, if negative { -i.months } else { i.months }),
           ts.time,
         ),
       )
     (Date(d), IntervalDT(i)) =>
-      Date(date_shift(d, if negative { -dt_nanos(i) } else { dt_nanos(i) }))
+      @value.Value::from_date(
+        date_shift(d, if negative { -dt_nanos(i) } else { dt_nanos(i) }),
+      )
     (Timestamp(ts), IntervalDT(i)) =>
-      Timestamp(
+      @value.Value::from_timestamp(
         timestamp_shift(ts, if negative { -dt_nanos(i) } else { dt_nanos(i) }),
       )
     (Time(t), IntervalDT(i)) =>
-      Time(time_shift(t, if negative { -dt_nanos(i) } else { dt_nanos(i) }))
+      @value.Value::from_time(
+        time_shift(t, if negative { -dt_nanos(i) } else { dt_nanos(i) }),
+      )
     (Time(_), IntervalYM(_)) =>
       raise TypeFailure("a time and a year-month interval")
     _ => raise TypeFailure("a datetime and an interval that do not combine")
@@ -584,7 +590,7 @@ fn interval_neg(v : @value.Value) -> @value.Value? raise OpFailure {
 /// `x = y` for two datetimes of the kinds that `datetime_order` compares.
 fn datetime_equal(x : @value.Value, y : @value.Value) -> @value.Value? {
   match datetime_order(x, y) {
-    Some(c) => Some(Bool(c == 0))
+    Some(c) => Some(@value.Value::from_bool(c == 0))
     None => None
   }
 }

@@ -1,6 +1,6 @@
 ///|
 fn bag(items : Array[@value.Value]) -> @value.Value {
-  Bag(@value.Bag::new(items))
+  @value.Value::from_bag(@value.Bag(items))
 }
 
 ///|
@@ -8,37 +8,97 @@ test "FROM forms" {
   @expect.expect_all(soft => {
     soft
     .expect(ev("SELECT VALUE [i, v] FROM [10, 20] AS v AT i"))
-    .to_equal(bag([List([Int(0), Int(10)]), List([Int(1), Int(20)])]))
+    .to_equal(
+      bag([
+        @value.Value::from_list([
+          @value.Value::from_int(0),
+          @value.Value::from_int(10),
+        ]),
+        @value.Value::from_list([
+          @value.Value::from_int(1),
+          @value.Value::from_int(20),
+        ]),
+      ]),
+    )
     soft
     .expect(ev("SELECT VALUE i IS MISSING FROM <<10>> AS v AT i"))
-    .to_equal(bag([Bool(true)]))
+    .to_equal(bag([@value.Value::from_bool(true)]))
     soft
     .expect(ev("SELECT VALUE [k, v] FROM UNPIVOT {'a': 1, 'b': 2} AS v AT k"))
-    .to_equal(bag([List([String("a"), Int(1)]), List([String("b"), Int(2)])]))
+    .to_equal(
+      bag([
+        @value.Value::from_list([
+          @value.Value::from_string("a"),
+          @value.Value::from_int(1),
+        ]),
+        @value.Value::from_list([
+          @value.Value::from_string("b"),
+          @value.Value::from_int(2),
+        ]),
+      ]),
+    )
     soft
     .expect(ev("SELECT VALUE [x, y] FROM [1, 2] AS x, [10] AS y"))
-    .to_equal(bag([List([Int(1), Int(10)]), List([Int(2), Int(10)])]))
+    .to_equal(
+      bag([
+        @value.Value::from_list([
+          @value.Value::from_int(1),
+          @value.Value::from_int(10),
+        ]),
+        @value.Value::from_list([
+          @value.Value::from_int(2),
+          @value.Value::from_int(10),
+        ]),
+      ]),
+    )
     soft
     .expect(ev("SELECT VALUE [x, y] FROM [[1, 2]] AS x, x AS y"))
     .to_equal(
       bag([
-        List([List([Int(1), Int(2)]), Int(1)]),
-        List([List([Int(1), Int(2)]), Int(2)]),
+        @value.Value::from_list([
+          @value.Value::from_list([
+            @value.Value::from_int(1),
+            @value.Value::from_int(2),
+          ]),
+          @value.Value::from_int(1),
+        ]),
+        @value.Value::from_list([
+          @value.Value::from_list([
+            @value.Value::from_int(1),
+            @value.Value::from_int(2),
+          ]),
+          @value.Value::from_int(2),
+        ]),
       ]),
     )
     soft
     .expect(
       ev("SELECT VALUE [x, y] FROM [1, 2] AS x JOIN [2, 3] AS y ON x = y"),
     )
-    .to_equal(bag([List([Int(2), Int(2)])]))
+    .to_equal(
+      bag([
+        @value.Value::from_list([
+          @value.Value::from_int(2),
+          @value.Value::from_int(2),
+        ]),
+      ]),
+    )
     soft
     .expect(
       ev("SELECT VALUE [x, y] FROM [1, 2] AS x LEFT JOIN [2] AS y ON x = y"),
     )
-    .to_equal(bag([List([Int(1), Null]), List([Int(2), Int(2)])]))
+    .to_equal(
+      bag([
+        @value.Value::from_list([@value.Value::from_int(1), Null]),
+        @value.Value::from_list([
+          @value.Value::from_int(2),
+          @value.Value::from_int(2),
+        ]),
+      ]),
+    )
     soft
     .expect(ev("SELECT VALUE [x, y] FROM [1] AS x LEFT JOIN [] AS y ON TRUE"))
-    .to_equal(bag([List([Int(1), Null])]))
+    .to_equal(bag([@value.Value::from_list([@value.Value::from_int(1), Null])]))
     soft
     .expect(ev("SELECT VALUE [x, y] FROM [1] AS x INNER JOIN [] AS y ON TRUE"))
     .to_equal(bag([]))
@@ -46,7 +106,15 @@ test "FROM forms" {
     .expect(
       ev("SELECT VALUE [x, y] FROM [1] AS x RIGHT JOIN [1, 2] AS y ON x = y"),
     )
-    .to_equal(bag([List([Int(1), Int(1)]), List([Null, Int(2)])]))
+    .to_equal(
+      bag([
+        @value.Value::from_list([
+          @value.Value::from_int(1),
+          @value.Value::from_int(1),
+        ]),
+        @value.Value::from_list([Null, @value.Value::from_int(2)]),
+      ]),
+    )
     soft
     .expect_call(() => {
       ev("SELECT VALUE x FROM [1] AS x FULL JOIN [1] AS y ON TRUE")
@@ -63,12 +131,30 @@ test "FROM forms in strict mode" {
   @expect.expect_all(soft => {
     soft
     .expect(ev("SELECT VALUE [x, y] FROM [1, 2] AS x, [10] AS y", mode=Strict))
-    .to_equal(bag([List([Int(1), Int(10)]), List([Int(2), Int(10)])]))
+    .to_equal(
+      bag([
+        @value.Value::from_list([
+          @value.Value::from_int(1),
+          @value.Value::from_int(10),
+        ]),
+        @value.Value::from_list([
+          @value.Value::from_int(2),
+          @value.Value::from_int(10),
+        ]),
+      ]),
+    )
     soft
     .expect(
       ev("SELECT VALUE [k, v] FROM UNPIVOT {'a': 1} AS v AT k", mode=Strict),
     )
-    .to_equal(bag([List([String("a"), Int(1)])]))
+    .to_equal(
+      bag([
+        @value.Value::from_list([
+          @value.Value::from_string("a"),
+          @value.Value::from_int(1),
+        ]),
+      ]),
+    )
     soft
     .expect_call(() => ev("SELECT VALUE v FROM UNPIVOT 1 AS v", mode=Strict))
     .to_raise_matching(
@@ -91,10 +177,17 @@ test "UNPIVOT of a value that is not a tuple" {
   @expect.expect_all(soft => {
     soft
     .expect(ev("SELECT VALUE [k, v] FROM UNPIVOT 1 AS v AT k"))
-    .to_equal(bag([List([String("_1"), Int(1)])]))
+    .to_equal(
+      bag([
+        @value.Value::from_list([
+          @value.Value::from_string("_1"),
+          @value.Value::from_int(1),
+        ]),
+      ]),
+    )
     soft
     .expect(ev("SELECT VALUE v FROM UNPIVOT {'a': 1, 'a': 2} AS v"))
-    .to_equal(bag([Int(1), Int(2)]))
+    .to_equal(bag([@value.Value::from_int(1), @value.Value::from_int(2)]))
   })
 }
 
@@ -103,19 +196,34 @@ test "lateral sources and the padding of outer joins" {
   @expect.expect_all(soft => {
     soft
     .expect(ev("SELECT VALUE [v1, v2] FROM 1 AS v1, @v1 AS v2"))
-    .to_equal(bag([List([Int(1), Int(1)])]))
+    .to_equal(
+      bag([
+        @value.Value::from_list([
+          @value.Value::from_int(1),
+          @value.Value::from_int(1),
+        ]),
+      ]),
+    )
     // LEFT CROSS JOIN pads when the right side is empty.
     soft
     .expect(
       ev("SELECT VALUE [x, y] FROM [[1], []] AS x LEFT CROSS JOIN x AS y"),
     )
-    .to_equal(bag([List([List([Int(1)]), Int(1)]), List([List([]), Null])]))
+    .to_equal(
+      bag([
+        @value.Value::from_list([
+          @value.Value::from_list([@value.Value::from_int(1)]),
+          @value.Value::from_int(1),
+        ]),
+        @value.Value::from_list([@value.Value::from_list([]), Null]),
+      ]),
+    )
     // Both AS and AT of the right side are padded.
     soft
     .expect(
       ev("SELECT VALUE [y, j] FROM [1] AS x LEFT JOIN [] AS y AT j ON TRUE"),
     )
-    .to_equal(bag([List([Null, Null])]))
+    .to_equal(bag([@value.Value::from_list([Null, Null])]))
     // The ON clause sees the variable of its own right side, not later ones.
     soft
     .expect(
@@ -126,11 +234,31 @@ test "lateral sources and the padding of outer joins" {
     )
     .to_equal(
       bag([
-        List([Int(1), Int(1), Decimal(@ion.Decimal::parse("1.1"))]),
-        List([Int(1), Int(1), Decimal(@ion.Decimal::parse("2.1"))]),
-        List([Int(1), Int(2), Decimal(@ion.Decimal::parse("2.1"))]),
-        List([Int(3), Int(1), Null]),
-        List([Int(3), Int(2), Null]),
+        @value.Value::from_list([
+          @value.Value::from_int(1),
+          @value.Value::from_int(1),
+          @value.Value::from_decimal(@ion.Decimal::parse("1.1")),
+        ]),
+        @value.Value::from_list([
+          @value.Value::from_int(1),
+          @value.Value::from_int(1),
+          @value.Value::from_decimal(@ion.Decimal::parse("2.1")),
+        ]),
+        @value.Value::from_list([
+          @value.Value::from_int(1),
+          @value.Value::from_int(2),
+          @value.Value::from_decimal(@ion.Decimal::parse("2.1")),
+        ]),
+        @value.Value::from_list([
+          @value.Value::from_int(3),
+          @value.Value::from_int(1),
+          Null,
+        ]),
+        @value.Value::from_list([
+          @value.Value::from_int(3),
+          @value.Value::from_int(2),
+          Null,
+        ]),
       ]),
     )
   })
@@ -143,12 +271,28 @@ test "parenthesized joins and long lists" {
     .expect(
       ev("SELECT VALUE [x, y, z] FROM ([1] AS x CROSS JOIN [2] AS y), [3] AS z"),
     )
-    .to_equal(bag([List([Int(1), Int(2), Int(3)])]))
+    .to_equal(
+      bag([
+        @value.Value::from_list([
+          @value.Value::from_int(1),
+          @value.Value::from_int(2),
+          @value.Value::from_int(3),
+        ]),
+      ]),
+    )
     soft
     .expect(
       ev("SELECT VALUE [x, y, z] FROM [1] AS x, ([2] AS y CROSS JOIN [3] AS z)"),
     )
-    .to_equal(bag([List([Int(1), Int(2), Int(3)])]))
+    .to_equal(
+      bag([
+        @value.Value::from_list([
+          @value.Value::from_int(1),
+          @value.Value::from_int(2),
+          @value.Value::from_int(3),
+        ]),
+      ]),
+    )
   })
 }
 
@@ -156,9 +300,9 @@ test "parenthesized joins and long lists" {
 test "a plain name in a FROM source finds a global before a variable" {
   // select.ion, joinWithShadowedGlobal: `a` is a global, so `a.b` is the
   // global's attribute; `@a.b` is the variable's.
-  let a = @value.Tuple::new([("b", @value.Value::Int(7))])
+  let a = @value.Tuple::Tuple([("b", @value.Value::from_int(7))])
   let env = @eval.Bindings::of_tuple(
-    @value.Tuple::new([("a", @value.Value::Tuple(a))]),
+    @value.Tuple::Tuple([("a", @value.Value::from_tuple(a))]),
   )
   @expect.expect_all(soft => {
     soft
@@ -169,7 +313,7 @@ test "a plain name in a FROM source finds a global before a variable" {
         mode=Permissive,
       ),
     )
-    .to_equal(bag([Int(7)]))
+    .to_equal(bag([@value.Value::from_int(7)]))
     soft
     .expect(
       @eval.evaluate_text(
@@ -178,7 +322,7 @@ test "a plain name in a FROM source finds a global before a variable" {
         mode=Permissive,
       ),
     )
-    .to_equal(bag([Int(5)]))
+    .to_equal(bag([@value.Value::from_int(5)]))
   })
 }
 
@@ -198,11 +342,15 @@ fn long_from(n : Int32, sep : String, on~ : String = "") -> String {
 test "a FROM list of 10000 items" {
   // The joins of a chain run as one flat loop: no stack per item.
   @expect.expect_all(soft => {
-    soft.expect(ev(long_from(10000, ", "))).to_equal(bag([Int(9999)]))
-    soft.expect(ev(long_from(10000, " CROSS JOIN "))).to_equal(bag([Int(9999)]))
+    soft
+    .expect(ev(long_from(10000, ", ")))
+    .to_equal(bag([@value.Value::from_int(9999)]))
+    soft
+    .expect(ev(long_from(10000, " CROSS JOIN ")))
+    .to_equal(bag([@value.Value::from_int(9999)]))
     soft
     .expect(ev(long_from(10000, " INNER JOIN ", on=" ON TRUE")))
-    .to_equal(bag([Int(9999)]))
+    .to_equal(bag([@value.Value::from_int(9999)]))
   })
 }
 
@@ -215,7 +363,7 @@ test "a FROM list with an ON in every join" {
   for i = 1; i < 3000; i = i + 1 {
     text = text + " LEFT JOIN " + items[i] + " ON TRUE"
   }
-  @expect.expect(ev(text)).to_equal(bag([Int(2999)]))
+  @expect.expect(ev(text)).to_equal(bag([@value.Value::from_int(2999)]))
 }
 
 ///|
@@ -249,7 +397,9 @@ test "UNPIVOT of MISSING and of a map" {
     )
     soft
     .expect(ev("SELECT VALUE [k, v] FROM UNPIVOT NULL AS v AT k"))
-    .to_equal(bag([List([String("_1"), Null])]))
+    .to_equal(
+      bag([@value.Value::from_list([@value.Value::from_string("_1"), Null])]),
+    )
     for mode in [@eval.Mode::Permissive, Strict] {
       soft
       .expect(
@@ -259,7 +409,16 @@ test "UNPIVOT of MISSING and of a map" {
         ),
       )
       .to_equal(
-        bag([List([Int(1), String("one")]), List([Int(2), String("two")])]),
+        bag([
+          @value.Value::from_list([
+            @value.Value::from_int(1),
+            @value.Value::from_string("one"),
+          ]),
+          @value.Value::from_list([
+            @value.Value::from_int(2),
+            @value.Value::from_string("two"),
+          ]),
+        ]),
       )
       soft
       .expect(ev("SELECT VALUE [k, v] FROM UNPIVOT MAP { } AS v AT k", mode~))
@@ -271,7 +430,14 @@ test "UNPIVOT of MISSING and of a map" {
           mode~,
         ),
       )
-      .to_equal(bag([List([Bool(true), String("yes")])]))
+      .to_equal(
+        bag([
+          @value.Value::from_list([
+            @value.Value::from_bool(true),
+            @value.Value::from_string("yes"),
+          ]),
+        ]),
+      )
     }
   })
 }
@@ -313,7 +479,15 @@ test "nested right joins are bounded in total" {
         "SELECT VALUE [a, b, c] FROM [1] AS a RIGHT JOIN ([2] AS b RIGHT JOIN [3] AS c ON TRUE) ON TRUE",
       ),
     )
-    .to_equal(bag([List([Int(1), Int(2), Int(3)])]))
+    .to_equal(
+      bag([
+        @value.Value::from_list([
+          @value.Value::from_int(1),
+          @value.Value::from_int(2),
+          @value.Value::from_int(3),
+        ]),
+      ]),
+    )
   })
 }
 
@@ -376,7 +550,9 @@ test "a subquery in an ON counts the right joins after it" {
         description="DataError at \{shape.0} levels of \{shape.1}",
       )
     }
-    soft.expect(ev(subquery_in_on(3, 2))).to_equal(bag([Int(1)]))
+    soft
+    .expect(ev(subquery_in_on(3, 2)))
+    .to_equal(bag([@value.Value::from_int(1)]))
   })
 }
 
@@ -386,5 +562,5 @@ test "a long parenthesized FROM list as a right side" {
   let text = "SELECT VALUE a FROM [1] AS a CROSS JOIN (" +
     items.join(" CROSS JOIN ") +
     ")"
-  @expect.expect(ev(text)).to_equal(bag([Int(1)]))
+  @expect.expect(ev(text)).to_equal(bag([@value.Value::from_int(1)]))
 }
