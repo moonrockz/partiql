@@ -527,3 +527,58 @@ test "MISSING fields are absent and do not create implicit ambiguity" {
     }
   })
 }
+
+///|
+test "implicit candidates mask outer names case-insensitively but keep same-scope spellings" {
+  @expect.expect_all(soft => {
+    for mode in [@eval.Mode::Permissive, Strict] {
+      for
+        source in [
+          "SELECT VALUE (SELECT VALUE a FROM [0] AS T) FROM [{'a':1}] AS t", "SELECT VALUE (SELECT VALUE \"a\" FROM [0] AS T) FROM [{'a':1}] AS t",
+          "SELECT VALUE (SELECT VALUE a FROM [0] AS T) FROM [{'a':1}] AS t, [{'a':2}] AS T",
+        ] {
+        soft
+        .expect(ev_env(source, "{a:9}", mode~), label=source)
+        .to_equal(ev("<<<<9>>>>"))
+        match mode {
+          Permissive =>
+            soft
+            .expect(ev(source), label=source)
+            .to_equal(ev("<<<<missing>>>>"))
+          Strict =>
+            soft
+            .expect_call(() => ev(source, mode~), label=source)
+            .to_raise_matching(
+              e => e is @eval.EvalError::TypeError(..),
+              description="shadowed outer attribute is unavailable",
+            )
+        }
+      }
+      soft
+      .expect_call(() => {
+        ev("SELECT VALUE a FROM [{'a':1}] AS t, [{'a':2}] AS T", mode~)
+      })
+      .to_raise_matching(
+        e => e is @eval.EvalError::DataError(..),
+        description="same-frame t and T remain two candidates",
+      )
+      soft
+      .expect(
+        ev(
+          "SELECT VALUE [\"t\".a, \"T\".a] FROM [{'a':1}] AS t, [{'a':2}] AS T",
+          mode~,
+        ),
+      )
+      .to_equal(ev("<<[1,2]>>"))
+      // A delimited variable reference still explicitly names the outer spelling.
+      soft
+      .expect(
+        ev(
+          "SELECT VALUE (SELECT VALUE \"t\".a FROM [0] AS T) FROM [{'a':1}] AS t",
+          mode~,
+        ),
+      )
+      .to_equal(ev("<<<<1>>>>"))
+    }
+  })
+}

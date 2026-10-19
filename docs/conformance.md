@@ -356,9 +356,12 @@ The rule applies to explicit paths, named subscripts and implicit attributes,
 and to both tuples and Ion structs. Implicit attribute lookup searches lexical
 query scopes from inner to outer. In the nearest scope containing a match,
 two matching variables are a `DataError` in both modes; qualify the attribute
-with its variable to disambiguate. Exact repeated LET bindings and shadowed
-outer variables count once. If exactly one variable matches, its tuple uses
-the field rule above; if none matches, lookup proceeds to outer scopes, then
+with its variable to disambiguate. Exact repeated LET bindings count once.
+Inner bindings mask outer candidates ignoring case; differently spelled
+names in the same frame remain separate candidates. A quoted, qualified
+variable reference can still select an outer spelling explicitly.
+If exactly one variable matches, its tuple uses the field rule above;
+if none matches, lookup proceeds to outer scopes, then
 globals. NULL-valued fields count as present; MISSING fields are absent from
 the value model. This preserves the inner-query precedence required by
 PartiQL's [SQL scoping rules](https://github.com/partiql/partiql-lang/blob/main/src/scoping.adoc).

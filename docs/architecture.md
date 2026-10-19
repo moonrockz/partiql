@@ -156,10 +156,15 @@ graph TD
     an attribute of an in-scope query variable, or a global binding, in that
     order. A FROM source expression finds a global before a FROM
     variable. An unbound name with query variables in scope (FROM AS and AT,
-    and LET) resolves first as the attribute of the first in-scope variable
-    tuple that has it (innermost query first, in declared order), then as a
-    global; found nowhere it is MISSING in permissive mode and a `TypeError` in
-    strict mode. With no FROM variable in scope it lowers to a global, and
+    and LET) searches for matching attributes one lexical scope at a time,
+    innermost first. In the nearest scope with a match, multiple matching
+    variables cause a `DataError` in both modes. A single matching tuple
+    returns its field; duplicate fields cause a `TypeError` in strict mode
+    and return the first match in permissive mode. Inner bindings mask outer
+    candidates ignoring case, while differently spelled names in the same
+    scope remain separate candidates. If no candidate matches, lookup falls
+    back to globals; found nowhere it is MISSING in permissive mode and a
+    `TypeError` in strict mode. With no FROM variable in scope it lowers to a global, and
     the undefined-variable `DataError` is raised at run time in both modes.
     A variable name that a FROM clause declares twice (AS, AT or an implicit
     name) is a `DataError` that suggests `AS`; names compare exactly, and a
@@ -170,8 +175,10 @@ graph TD
     (they are not candidates for implicit lookup). A key that is exactly a
     name finds an output name first; in any other key expression a FROM, LET
     or outer variable wins, and an output name is visible when no variable
-    has that name. For a body that is not a SELECT block, each output element is
-    bound to a hidden variable that no identifier can name, so a plain name
+    has that name. An exact repeated output label is ambiguous when it names
+    different SELECT expressions, even over empty input; identical expressions
+    may repeat the label. For a body that is not a SELECT block, each output
+    element is bound to a hidden variable that no identifier can name, so a plain name
     in a key is an attribute of the output element. A set-operation chain is
     lowered in a loop along its left spine. `TABLE a.b` lowers as
     `SELECT * FROM a.b`. `WITH` lowers its bindings in order in a scope of

@@ -185,7 +185,8 @@ fn Scope::resolved_name(
 
 ///|
 /// Candidate variables grouped by lexical scope, innermost first. Exact
-/// repeats denote one binding; inner bindings hide outer candidates. Output,
+/// repeats denote one binding; inner bindings hide outer candidates ignoring
+/// case, while different spellings in the same frame remain candidates. Output,
 /// WITH and grouped bindings are not implicit attribute candidates.
 fn Scope::locals(self : Scope) -> Array[@plan.ImplicitScope] {
   let all = []
@@ -194,13 +195,17 @@ fn Scope::locals(self : Scope) -> Array[@plan.ImplicitScope] {
   while scope is Some(s) {
     let variables = []
     if !s.outputs {
+      let frame : @hashset.HashSet[String] = @hashset.HashSet([])
       for name in s.names {
-        if !seen.contains(name) {
-          seen.add(name)
+        if !seen.contains(name.to_lower()) && !frame.contains(name) {
+          frame.add(name)
           if !s.with_ && !s.grouped {
             variables.push(name)
           }
         }
+      }
+      for name in s.names {
+        seen.add(name.to_lower())
       }
     }
     if !variables.is_empty() {
