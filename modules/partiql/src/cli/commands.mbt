@@ -108,6 +108,11 @@ fn command(name : String, prefix : String) -> @argparse.Command {
             about="NAME=FILE: bind the Ion values or JSON document of FILE to the global NAME. '-' as FILE reads stdin.",
             action=Append,
           ),
+          @argparse.OptionArg(
+            "time-zone",
+            about="The session time zone, an offset +HH:MM or -HH:MM (default +00:00).",
+            allow_hyphen_values=true,
+          ),
         ],
         positionals=input_positionals(),
       )
@@ -187,6 +192,7 @@ fn examples(path : ArrayView[String]) -> Array[String] {
         "partiql query --strict --compact query.sql", "partiql query --data t=rows.ion --each t -e 't.a'",
         "partiql query --data t=rows.ion --output-format binary -e 't' > result.10n",
         "partiql query --data t=rows.ion --data-schema t=rows.isl --schema-type row -e 't'",
+        "partiql query --time-zone -08:00 -e 'CURRENT_TIMESTAMP'",
       ]
     ["version"] => ["partiql version", "partiql --version"]
     ["help"] => ["partiql help", "partiql help version"]

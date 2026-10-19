@@ -44,8 +44,9 @@ fn notes(path : ArrayView[String]) -> Array[String] {
         "YAML is input-only, UTF-8, with 256-level, 1M-node and 64 MiB scalar limits.",
         "JSON and YAML input cannot use Ion Schema options. Ion remains the default.",
         "--output-format binary writes raw bytes; --compact applies only to text.",
-        "Schemas validate raw PartiQL-encoded Ion before any statement runs.", "The session time zone is UTC: CURRENT_DATE, CURRENT_TIME and",
-        "CURRENT_TIMESTAMP read the system clock at offset +00:00.",
+        "Schemas validate raw PartiQL-encoded Ion before any statement runs.", "The session time zone is UTC unless --time-zone sets it. CURRENT_DATE,",
+        "CURRENT_TIME and CURRENT_TIMESTAMP read the system clock at that offset,",
+        "and CAST uses it to add or remove a time zone.",
       ]
     _ => []
   }
