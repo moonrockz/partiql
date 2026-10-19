@@ -13,7 +13,7 @@ license = "Apache-2.0"
 
 keywords = [ "partiql", "sql", "query", "ion", "data-model" ]
 
-description = "The PartiQL data model for MoonBit, with PartiQL-encoded Ion and JSON codecs."
+description = "The PartiQL data model for MoonBit, with PartiQL-encoded Ion, JSON and YAML input codecs."
 
 source = "src"
 

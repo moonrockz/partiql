@@ -73,7 +73,7 @@ fn command(name : String, prefix : String) -> @argparse.Command {
           ..input_options(),
           @argparse.OptionArg(
             "input-format",
-            about="Data and environment format: ion (default, text or binary) or json.",
+            about="Data and environment format: ion (default, text or binary), json or yaml.",
           ),
           @argparse.OptionArg(
             "output-format",
@@ -182,6 +182,7 @@ fn examples(path : ArrayView[String]) -> Array[String] {
       [
         "partiql query -e 'select value x * 2 from <<1, 2>> as x'", "partiql query --data t=rows.ion -e 'select a from t where b > 1'",
         "partiql query --input-format json --data t=rows.json --output-format json -e 'CAST((SELECT * FROM t) AS LIST)'",
+        "partiql query --input-format yaml --data t=rows.yaml --each t -e 't.name'",
         "partiql query --env env.ion query.sql", "cat rows.ion | partiql query --data t=- query.sql",
         "partiql query --strict --compact query.sql", "partiql query --data t=rows.ion --each t -e 't.a'",
         "partiql query --data t=rows.ion --output-format binary -e 't' > result.10n",

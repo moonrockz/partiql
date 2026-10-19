@@ -50,7 +50,7 @@ test "JSON options have help and reject misuse before reading stdin" {
     }
     for
       args in [
-        ["--input-format", "yaml"],
+        ["--input-format", "unknown"],
         ["--input-format", "binary"],
         ["--output-format", "yaml"],
         ["--input-format"],

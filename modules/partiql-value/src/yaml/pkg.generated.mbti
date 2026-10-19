@@ -1,0 +1,38 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "moonrockz/partiql-value/yaml"
+
+import {
+  "moonbitlang/core/debug",
+  "moonrockz/partiql-value",
+}
+
+// Values
+pub fn read_bytes(BytesView) -> Array[@partiql-value.Value] raise YamlError
+
+pub fn read_text(StringView) -> Array[@partiql-value.Value] raise YamlError
+
+// Errors
+pub(all) suberror YamlError {
+  YamlError(kind~ : ErrorKind, location~ : Location?, message~ : String)
+} derive(@debug.Debug)
+pub fn YamlError::message(Self) -> String
+
+// Types and methods
+pub(all) enum ErrorKind {
+  Encoding
+  Syntax
+  Unsupported
+  DuplicateKey
+  Limit
+  Bindings
+} derive(Eq, @debug.Debug)
+
+pub(all) struct Location {
+  document : Int
+  line : Int
+  column : Int
+} derive(Eq, @debug.Debug)
+
+// Type aliases
+
+// Traits

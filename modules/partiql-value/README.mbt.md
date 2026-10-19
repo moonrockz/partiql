@@ -1,7 +1,7 @@
 # moonrockz/partiql-value
 
 The PartiQL data model for MoonBit, with structural identity, SQL equality,
-grouping equivalence, ordering, and codecs for PartiQL-encoded Ion and JSON.
+grouping equivalence, ordering, and codecs for PartiQL-encoded Ion, JSON and YAML input.
 
 ## Installation and imports
 
@@ -16,6 +16,7 @@ import {
   "moonrockz/partiql-value" @value,
   "moonrockz/partiql-value/ion" @partiql_ion,
   "moonrockz/partiql-value/json" @partiql_json,
+  "moonrockz/partiql-value/yaml" @partiql_yaml,
   "moonrockz/ion/ion" @ion_core,
 }
 ```
@@ -33,6 +34,7 @@ import { "moonrockz/expect" } for "test"
 | `moonrockz/partiql-value` | `Value`, collections, maps, graphs, datetime and interval types, and value relations |
 | `moonrockz/partiql-value/ion` | Single-value codecs, text/binary datagrams and Ion Schema validation |
 | `moonrockz/partiql-value/json` | Strict JSON documents with exact numbers and duplicate keys |
+| `moonrockz/partiql-value/yaml` | YAML 1.2 Core input, exact numbers and bounded aliases |
 | `moonrockz/partiql-value/arbitrary` | Quickcheck generators and shrinkable wrappers |
 
 ## Constructing values
@@ -318,3 +320,71 @@ UTF-16 offset, unsupported output values, and invalid binding shapes.
 `error.message()` gives a human-readable description. No unsupported value
 is silently omitted or replaced with null. The `Tuple` constructor itself
 removes `Missing` fields before the codec sees them.
+
+
+## YAML input
+
+`yaml.read_text(StringView)` and `read_bytes(BytesView)` return `Array[Value]`,
+one value per document, in source order. Readers succeed with the whole stream
+or raise `YamlError`; they never return partial documents. Empty or comment-only
+input gives `[]`; an explicit empty document gives `[Null]`.
+
+```mbt check
+test "read exact YAML documents" {
+  let values = @partiql_yaml.read_text("--- {price: 1.2300}\n--- {price: -0.00}")
+  @expect.expect(values).to_equal(@partiql_ion.read_text("{price: 1.2300} {price: -0.00}"))
+}
+```
+
+| YAML input | PartiQL value |
+|---|---|
+| Core null and booleans | Null and Bool |
+| Decimal, `0o` octal and `0x` hexadecimal integers | Int64-backed Int, or BigInt when needed |
+| Finite float spellings, including `1e2` | Exact Decimal with coefficient, exponent and negative zero preserved |
+| `.inf`, `-.inf`, `.nan` and Core case variants | Float special values |
+| Plain strings, quoted strings, literal/folded blocks | String |
+| Sequences | List |
+| Mappings | Tuple, preserving field order |
+
+Resolution is YAML 1.2 Core: `yes`, `no`, `on`, `off`, dates, `0b10`, `1_000`
+and `1:20` remain strings. `012` means twelve. Quoted/block text stays String
+unless explicitly tagged. Versions other than 1.2 are rejected. Mapping keys
+must resolve to String; quote a numeric-looking key or use `!!str`. Duplicate
+decoded names are rejected by exact Unicode equality, including escaped and
+aliased keys. No Unicode normalization is applied.
+
+The seven core tags `!!str`, `!!null`, `!!bool`, `!!int`, `!!float`, `!!seq`
+and `!!map` are supported, including full URIs and `%TAG` handles. Explicit
+scalar tags require Core lexical forms and collection tags require the matching
+node kind. `!!float '1'` produces Decimal; `!!float '-0'` retains negative zero.
+Bare `!` forces the ordinary string/sequence/mapping kind. Unknown tags and
+non-core timestamp, binary, set, omap, pairs and merge tags are unsupported.
+Plain `<<` is an ordinary field name, with no merge expansion.
+
+Anchors and acyclic aliases are supported. Each occurrence becomes an
+independent value tree; changing a list cannot change another occurrence.
+Forward/undefined aliases and cycles fail. Reused names refer to the latest
+preceding anchor. Anchors and tag directives reset between documents. Comments,
+styles and anchor names do not survive decoding. YAML output is not provided.
+
+Bytes must be UTF-8; YAML BOMs are accepted. UTF-16 and UTF-32 are rejected.
+`YamlError` distinguishes Encoding, Syntax, Unsupported, DuplicateKey, Limit and
+Bindings. Positioned errors carry a 1-based document, line and Unicode-scalar
+column relative to the supplied view, never a guessed byte offset.
+
+Fixed limits apply per input stream: 256 nested containers, 1,000,000 expanded
+nodes and 64 MiB of decoded scalar UTF-8 payload. Each scalar, sequence and
+mapping is a node; mapping keys count as scalar nodes. Payload counts decoded
+scalar spelling before type resolution, including keys, numeric spelling and
+every alias copy. Empty scalars use zero bytes. Containers contribute no scalar
+bytes. Anchor definitions count as their ordinary values, even if never aliased.
+Alias expansion checks aggregate node/payload/depth costs before copying.
+Decimal exponents must fit Int32 after the fractional scale is applied.
+
+The parser also bounds scanner work to 6,000,016 token fetches, 256 flow levels,
+512 indentation-stack entries and 64 MiB per metadata buffer. Scalar and folding
+buffers are capped by the remaining scanned payload budget before growth.
+These parser limits can reject unusually large presentation metadata even when
+its eventual Value would be small. No materialized YAML/JSON intermediate or
+binary64 numeric conversion is used. Coverage is a pinned, representative
+[YAML fixture subset](src/yaml/fixtures/README.md), not a full-compliance claim.

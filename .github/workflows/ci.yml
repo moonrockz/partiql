@@ -120,6 +120,8 @@ jobs:
           cache: true
       - run: moon update
       - run: mise run build:cli
+      - name: Smoke-test YAML input
+        run: python3 .github/scripts/test_yaml_cli.py _build/native/release/build/moonrockz/partiql/partiql.exe
       - name: Smoke test
         run: |
           moon run modules/partiql/src --target wasm -- version

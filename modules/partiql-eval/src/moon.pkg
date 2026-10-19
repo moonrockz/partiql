@@ -7,6 +7,7 @@ import {
   "moonrockz/partiql-value" @value,
   "moonrockz/partiql-value/ion" @partiql_ion,
   "moonrockz/partiql-value/json" @partiql_json,
+  "moonrockz/partiql-value/yaml" @partiql_yaml,
   "moonrockz/ion/ion" @ion_core,
   "moonbitlang/core/debug",
 }
@@ -18,6 +19,7 @@ import {
   "moonrockz/ion/text",
   "moonrockz/partiql-value/ion" @partiql_ion,
   "moonrockz/partiql-value/json" @partiql_json,
+  "moonrockz/partiql-value/yaml" @partiql_yaml,
   "moonrockz/expect",
   "moonbitlang/core/quickcheck",
   "moonbitlang/core/quickcheck/splitmix",
