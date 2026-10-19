@@ -306,3 +306,26 @@ test "YAML empty block nodes and escaped tag URIs decode without losing values" 
     }
   })
 }
+
+///|
+test "YAML duplicate checks use decoded keys including aliases and escapes" {
+  @expect.expect_all(soft => {
+    for source in ["{x: 1, \"\\u0078\": 2}", "{ &key x: 1, *key : 2 }"] {
+      soft
+      .expect_call(() => @yaml.read_text(source))
+      .to_raise_matching(
+        e => e is @yaml.YamlError::YamlError(kind=DuplicateKey, ..),
+        description="decoded duplicate key",
+      )
+    }
+    soft
+    .expect_call(() => @yaml.read_text("[&n 1, {*n : value}]"))
+    .to_raise_matching(
+      e => e is @yaml.YamlError::YamlError(kind=Unsupported, ..),
+      description="non-string alias key",
+    )
+    soft
+    .expect(@yaml.read_text("{é: 1, é: 2}"))
+    .to_equal(@ion.read_text("{\"é\": 1, \"é\": 2}"))
+  })
+}
