@@ -8,6 +8,7 @@ import {
   "moonrockz/partiql-syntax/ast",
   "moonrockz/partiql-value",
   "moonrockz/partiql-value/json",
+  "moonrockz/partiql-value/yaml",
 }
 
 // Values
@@ -30,6 +31,8 @@ pub fn Bindings::from_ion_bytes(BytesView, catalog? : @moonrockz/ion/ion.Catalog
 pub fn Bindings::from_ion_text(StringView, catalog? : @moonrockz/ion/ion.Catalog, validation? : @moonrockz/partiql-value/ion.Validation) -> Self raise @moonrockz/partiql-value/ion.IonDataError
 pub fn Bindings::from_json_bytes(BytesView) -> Self raise @json.JsonError
 pub fn Bindings::from_json_text(StringView) -> Self raise @json.JsonError
+pub fn Bindings::from_yaml_bytes(BytesView) -> Self raise @yaml.YamlError
+pub fn Bindings::from_yaml_text(StringView) -> Self raise @yaml.YamlError
 pub fn Bindings::of_ion(@moonrockz/ion/ion.Ion) -> Self raise @plan.EvalError
 pub fn Bindings::of_pairs(Array[(String, @partiql-value.Value)]) -> Self
 pub fn Bindings::of_tuple(@partiql-value.Tuple) -> Self

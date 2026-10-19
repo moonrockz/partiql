@@ -1,5 +1,5 @@
 // `partiql query` (spec M4e): evaluates statements against global bindings
-// read from Ion or JSON, and prints each result in the selected format.
+// read from Ion, JSON or YAML, and prints each result in the selected format.
 
 ///|
 fn query_command(m : @argparse.Matches, io : Io, color : Bool) -> Outcome {
@@ -249,7 +249,7 @@ fn read_values(
   io : Io,
   errors : StringBuilder,
   validation : @partiql_ion.Validation?,
-  json : Bool,
+  format : InputFormat,
 ) -> Array[@value.Value]? {
   let bytes = read_ion_file(file, io) catch {
     e => {
@@ -257,18 +257,26 @@ fn read_values(
       return None
     }
   }
-  if json {
-    let value = @partiql_json.read_bytes(bytes) catch {
-      e => {
-        query_report(errors, file, e.message())
-        return None
-      }
+  let values = try {
+    match format {
+      Json =>
+        [
+          @partiql_json.read_bytes(bytes) catch {
+            e => raise Failure(e.message())
+          },
+        ]
+      Yaml =>
+        @partiql_yaml.read_bytes(bytes) catch {
+          e => raise Failure(e.message())
+        }
+      Ion =>
+        @partiql_ion.read_bytes(bytes, validation?) catch {
+          e => raise Failure(ion_error_text(e))
+        }
     }
-    return Some([value])
-  }
-  let values = @partiql_ion.read_bytes(bytes, validation?) catch {
+  } catch {
     e => {
-      query_report(errors, file, ion_error_text(e))
+      query_report(errors, file, error_text(e))
       return None
     }
   }
@@ -317,7 +325,7 @@ fn load_bindings(
   io : Io,
   errors : StringBuilder,
 ) -> LoadedBindings {
-  let json = m.values.get("input-format") == Some(["json"])
+  let format = input_format(m)
   let globals : Array[(String, @value.Value)] = []
   let mut each : (String, Array[@value.Value])? = None
   let bind = (file : String, name : String, value : @value.Value) => {
@@ -342,7 +350,7 @@ fn load_bindings(
     return { globals, each, }
   }
   for file in m.values.get("env").unwrap_or([]) {
-    guard read_values(file, io, errors, env_validation, json) is Some(values) else {
+    guard read_values(file, io, errors, env_validation, format) is Some(values) else {
       continue
     }
     match values {
@@ -354,16 +362,16 @@ fn load_bindings(
         query_report(
           errors,
           file,
-          if json {
-            "--env needs one JSON object"
-          } else {
-            "--env needs one Ion struct"
+          match format {
+            Json => "--env needs one JSON object"
+            Yaml => "--env needs exactly one YAML mapping document"
+            Ion => "--env needs one Ion struct"
           },
         )
     }
   }
   for d in datas {
-    guard read_values(d.file, io, errors, validations.get(d.name), json)
+    guard read_values(d.file, io, errors, validations.get(d.name), format)
       is Some(values) else {
       continue
     }
@@ -371,7 +379,7 @@ fn load_bindings(
       each = Some(
         (
           d.name,
-          if json {
+          if !(format is Ion) {
             match values {
               [List(items)] => items
               _ => values
@@ -402,16 +410,16 @@ fn query_options_error(
   }
   match m.values.get("input-format") {
     None | Some(["ion"]) => ()
-    Some(["json"]) =>
+    Some(["json" | "yaml" as format]) =>
       if m.values.get("env-schema") is Some(_) ||
         m.values.get("data-schema") is Some(_) ||
         m.values.get("schema-type") is Some(_) ||
         m.flags.get("schema-document") == Some(true) {
         return Some(
-          "Ion Schema options cannot be used with --input-format json",
+          "Ion Schema options cannot be used with --input-format " + format,
         )
       }
-    _ => return Some("--input-format must be ion or json")
+    _ => return Some("--input-format must be ion, json or yaml")
   }
   if m.values.get("each") is Some([name, ..]) && !datas.any(d => d.name == name) {
     return Some("--each needs a --data binding named " + name)
@@ -441,4 +449,21 @@ fn query_options_error(
     return Some("--schema-type and --schema-document need a schema option")
   }
   None
+}
+
+///|
+priv enum InputFormat {
+  Ion
+  Json
+  Yaml
+}
+
+///|
+// Called only after query_options_error validates the option.
+fn input_format(m : @argparse.Matches) -> InputFormat {
+  match m.values.get("input-format") {
+    Some(["json"]) => Json
+    Some(["yaml"]) => Yaml
+    _ => Ion
+  }
 }

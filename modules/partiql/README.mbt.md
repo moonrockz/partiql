@@ -161,3 +161,60 @@ test "embedded CLI usage error" {
 Build the executable locally with `mise run build:cli`. The executable supports
 native and wasm; the CLI library's checked examples run on all four library
 targets through `mise run test:docs`.
+
+## YAML input
+
+`--input-format yaml` selects YAML 1.2 Core input for every `--data` and `--env`,
+including stdin. There is no extension sniffing. `--env` requires exactly one
+mapping document; `--data` binds zero documents as an empty Bag, one as-is, and
+many as a Bag. `--each NAME` expands one top-level List; a stream of Lists stays
+a sequence of whole Lists. Empty streams and a sole empty List run no evaluations
+with `--each`; an explicit empty document runs once with Null. Every binding
+loads completely before any statement evaluates, so a malformed later document
+produces no query output.
+
+```sh
+printf '%s\n' '--- {name: first}' '--- {name: second}' > manifest.yaml
+partiql query --input-format yaml --data t=manifest.yaml \
+  -e 'SELECT VALUE r.name FROM t AS r'
+cat manifest.yaml | partiql query --input-format yaml --data t=- --each t \
+  --output-format json --compact -e 't.name'
+printf '%s\n' 'n: 4' | partiql query --input-format yaml --env - -e 'n + 1'
+```
+
+These produce a bag of two names, two JSON strings, and `5`, respectively.
+Input is UTF-8 with YAML BOM support. Exact integers and finite Decimals, core
+tags, document-local anchors and bounded aliases follow the
+[value codec contract](../partiql-value/README.mbt.md#yaml-input). Mapping keys
+must be strings and unique after decoding. Special floats are supported as input
+but cannot be written as JSON. Plain `<<` does not perform a merge. YAML 1.1,
+UTF-16/32, custom tags, comment preservation and YAML output are not supported.
+
+Limits are 256 nested containers, 1,000,000 expanded nodes and 64 MiB of decoded
+scalar UTF-8 bytes per stream, including keys and alias copies; parser work is
+also bounded. Ion Schema flags with YAML are usage errors, before input is read.
+Usage errors exit 2; decoding, evaluation and output errors exit 1. YAML errors
+name the file or stdin, document, line and Unicode column when available.
+Ion remains the default output, and `--output-format binary|json` remains
+available. JSON rejects Bags and special Float values; explicitly cast SELECT
+results to List when JSON output is needed.
+
+```mbt check
+test "iterate YAML documents including empty streams" {
+  @expect.expect_all(soft => {
+    for (source, expected) in [
+      ("--- {name: first}\n--- {name: second}", "\"first\"\n\"second\"\n"),
+      ("", ""),
+      ("---", "null\n"),
+    ] {
+      let io = { ..@cli.Io::unavailable(), read_stdin: () => source }
+      let result = @cli.run([
+        "query", "--input-format", "yaml", "--data", "t=-", "--each", "t",
+        "--output-format", "json", "--compact", "-e", "CASE WHEN t IS NULL THEN NULL ELSE t.name END",
+      ], io~)
+      soft.expect(result.status).to_equal(0)
+      soft.expect(result.stdout).to_equal(expected)
+    }
+  })
+}
+```

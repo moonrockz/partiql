@@ -21,7 +21,7 @@ fixed from the start (see [ADR 0001](adr/0001-workspace-monorepo.md)).
 
 | Module | Packages | Depends on | Targets | Published |
 |---|---|---|---|---|
-| `moonrockz/partiql-value` | root (`Value`), `ion` and `json` (codecs), `arbitrary` (generators) | `moonrockz/ion` | wasm, wasm-gc, js, native | yes |
+| `moonrockz/partiql-value` | root (`Value`), `ion`, `json` and `yaml` (codecs), `arbitrary` (generators) | `moonrockz/ion` | wasm, wasm-gc, js, native | yes |
 | `moonrockz/partiql-syntax` | root (`parse`), `ast`, `lexer`, `parser` | `moonrockz/ion` | wasm, wasm-gc, js, native | yes |
 | `moonrockz/partiql-eval` | root (`evaluate`), `plan`, `lower`, `ops`, `interp` | value, syntax, `moonrockz/ion` | wasm, wasm-gc, js, native | yes |
 | `moonrockz/partiql` | root (executable), `cli` | value, syntax, eval, `moonrockz/ion`, `moonbitlang/x`, `moonbitlang/async` | native, wasm | yes |

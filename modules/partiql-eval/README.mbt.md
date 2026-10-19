@@ -271,3 +271,23 @@ test "query a JSON environment" {
   ])))
 }
 ```
+
+## YAML bindings
+
+`Bindings::from_yaml_text` and `Bindings::from_yaml_bytes` require exactly one
+YAML mapping document. Empty streams, extra documents and other root kinds
+raise a typed `YamlError`. Values follow the
+[YAML codec contract](../partiql-value/README.mbt.md#yaml-input).
+For arbitrary streams, import `moonrockz/partiql-value/yaml` and use
+`Bindings::empty().with_data("t", @partiql_yaml.read_text(source))`.
+Zero documents bind an empty Bag, one binds its value, and many bind a Bag.
+
+```mbt check
+test "query a YAML manifest stream" {
+  let values = @partiql_yaml.read_text("--- {name: first}\n--- {name: second}")
+  let env = @eval.Bindings::empty().with_data("t", values)
+  @expect.expect(@eval.evaluate_text("SELECT VALUE r.name FROM t AS r", env~)).to_equal(
+    @partiql_ion.read_text("$bag::[\"first\", \"second\"]")[0],
+  )
+}
+```

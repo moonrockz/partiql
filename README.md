@@ -11,7 +11,7 @@ measures that compliance.
 ## Status
 
 The implementation includes the data model, parser, printer, query evaluator,
-aggregates, casts, datetime functions, Ion sessions and strict JSON input/output. Some specification
+aggregates, casts, datetime functions, Ion sessions, strict JSON input/output and YAML input. Some specification
 forms remain unsupported. See [docs/roadmap.md](docs/roadmap.md) for the plan and
 [docs/conformance.md](docs/conformance.md) for the current conformance
 results.
@@ -23,7 +23,7 @@ use the same version.
 
 | Module | Purpose |
 |---|---|
-| [`moonrockz/partiql-value`](https://mooncakes.io/docs/moonrockz/partiql-value) | The PartiQL data model with Ion and JSON codecs |
+| [`moonrockz/partiql-value`](https://mooncakes.io/docs/moonrockz/partiql-value) | The PartiQL data model with Ion, JSON and YAML codecs |
 | [`moonrockz/partiql-syntax`](https://mooncakes.io/docs/moonrockz/partiql-syntax) | The PartiQL parser |
 | [`moonrockz/partiql-eval`](https://mooncakes.io/docs/moonrockz/partiql-eval) | The PartiQL query evaluator |
 | [`moonrockz/partiql`](https://mooncakes.io/docs/moonrockz/partiql) | The `partiql` command-line tool |
@@ -108,7 +108,7 @@ import {
 
 The library guides include imports, checked examples and error contracts:
 
-- [Values, Ion and JSON](modules/partiql-value/README.mbt.md)
+- [Values, Ion, JSON and YAML](modules/partiql-value/README.mbt.md)
 - [Parsing, formatting and diagnostics](modules/partiql-syntax/README.mbt.md)
 - [Evaluation, bindings and sessions](modules/partiql-eval/README.mbt.md)
 - [CLI commands and embedding](modules/partiql/README.mbt.md)
@@ -162,3 +162,19 @@ See [AGENTS.md](AGENTS.md) for the development rules.
 ## License
 
 [Apache-2.0](LICENSE)
+
+
+### YAML input
+
+Query YAML files or UTF-8 stdin with `--input-format yaml`:
+
+```sh
+partiql query --input-format yaml --data t=manifest.yaml --each t -e 't.name'
+```
+
+The codec supports YAML 1.2 Core values, exact finite numbers, core tags,
+document streams and bounded aliases. Keys must be strings and duplicate keys
+are rejected. Empty streams contain no values; explicit empty documents contain
+Null. YAML is input-only; results use Ion, binary Ion or JSON. See the
+[value mapping and limits](modules/partiql-value/README.mbt.md#yaml-input) and
+[CLI examples](modules/partiql/README.mbt.md#yaml-input).
