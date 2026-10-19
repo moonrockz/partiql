@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.0] - 2026-10-19
+
+### Added
+
+- **value:** Add JSON codecs and query formats (#46)
+- **value:** Add bounded YAML input (#47)
+
 ## [0.2.0] - 2026-10-18
 
 ### Added
@@ -29,6 +36,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **eval:** IS CHAR without a length, and IS DECIMAL with a positive exponent (#24)
 - **value:** Prevent deep-value stack overflows (#36)
 - **cli:** Serialize deeply nested query results (#37)
+- **build:** Keep releases below 1.0 (#45)
 
 ## [0.1.0] - 2026-10-04
 
