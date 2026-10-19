@@ -57,7 +57,7 @@ fn command(name : String, prefix : String) -> @argparse.Command {
     "query" =>
       @argparse.Command(
         named,
-        about="Evaluate PartiQL against Ion data; print each result as Ion.",
+        about="Evaluate PartiQL against Ion or JSON data; print each result.",
         flags=[
           @argparse.FlagArg(
             "strict",
@@ -72,8 +72,12 @@ fn command(name : String, prefix : String) -> @argparse.Command {
         options=[
           ..input_options(),
           @argparse.OptionArg(
+            "input-format",
+            about="Data and environment format: ion (default, text or binary) or json.",
+          ),
+          @argparse.OptionArg(
             "output-format",
-            about="Result format: ion (default) or binary.",
+            about="Result format: ion (default), binary or json.",
           ),
           @argparse.OptionArg(
             "each",
@@ -95,13 +99,13 @@ fn command(name : String, prefix : String) -> @argparse.Command {
           ),
           @argparse.OptionArg(
             "env",
-            about="A text or binary Ion file that holds one struct; each field is a global. '-' reads stdin.",
+            about="An Ion struct or JSON object file; each field is a global. '-' reads stdin.",
             action=Append,
             allow_hyphen_values=true,
           ),
           @argparse.OptionArg(
             "data",
-            about="NAME=FILE: bind the text or binary Ion values of FILE to the global NAME. '-' as FILE reads stdin.",
+            about="NAME=FILE: bind the Ion values or JSON document of FILE to the global NAME. '-' as FILE reads stdin.",
             action=Append,
           ),
         ],
@@ -177,6 +181,7 @@ fn examples(path : ArrayView[String]) -> Array[String] {
     ["query"] =>
       [
         "partiql query -e 'select value x * 2 from <<1, 2>> as x'", "partiql query --data t=rows.ion -e 'select a from t where b > 1'",
+        "partiql query --input-format json --data t=rows.json --output-format json -e 'CAST((SELECT * FROM t) AS LIST)'",
         "partiql query --env env.ion query.sql", "cat rows.ion | partiql query --data t=- query.sql",
         "partiql query --strict --compact query.sql", "partiql query --data t=rows.ion --each t -e 't.a'",
         "partiql query --data t=rows.ion --output-format binary -e 't' > result.10n",

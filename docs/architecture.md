@@ -21,7 +21,7 @@ fixed from the start (see [ADR 0001](adr/0001-workspace-monorepo.md)).
 
 | Module | Packages | Depends on | Targets | Published |
 |---|---|---|---|---|
-| `moonrockz/partiql-value` | root (`Value`), `ion` (codec), `arbitrary` (generators) | `moonrockz/ion` | wasm, wasm-gc, js, native | yes |
+| `moonrockz/partiql-value` | root (`Value`), `ion` and `json` (codecs), `arbitrary` (generators) | `moonrockz/ion` | wasm, wasm-gc, js, native | yes |
 | `moonrockz/partiql-syntax` | root (`parse`), `ast`, `lexer`, `parser` | `moonrockz/ion` | wasm, wasm-gc, js, native | yes |
 | `moonrockz/partiql-eval` | root (`evaluate`), `plan`, `lower`, `ops`, `interp` | value, syntax, `moonrockz/ion` | wasm, wasm-gc, js, native | yes |
 | `moonrockz/partiql` | root (executable), `cli` | value, syntax, eval, `moonrockz/ion`, `moonbitlang/x`, `moonbitlang/async` | native, wasm | yes |
@@ -80,6 +80,10 @@ graph TD
     validation checks raw values or a whole document before decoding.
     `IonDataError` retains transport, codec and schema errors, including all
     violation paths. See ADR 0007.
+  - `json`: strict single-document UTF-8 JSON input/output. Numbers retain
+    integer precision or decimal scale, and tuples retain duplicate fields.
+    Unsupported PartiQL kinds raise typed errors. `Bindings::from_json_text`
+    and `from_json_bytes` load environments; the CLI selects JSON explicitly.
   - `arbitrary`: quickcheck generators (`gen_value`, `ArbValue`, ...) and
     the property laws of the data model. Published so that later milestones
     can reuse the generators.
