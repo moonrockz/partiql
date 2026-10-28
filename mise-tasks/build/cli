@@ -2,5 +2,5 @@
 #MISE description="Build the partiql CLI for wasm and native (release mode)"
 set -euo pipefail
 
-moon build modules/partiql/src --target wasm --release
-moon build modules/partiql/src --target native --release
+mise exec -- moon build modules/partiql/src --target wasm --release
+mise exec -- moon build modules/partiql/src --target native --release

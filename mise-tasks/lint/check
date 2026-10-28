@@ -4,4 +4,4 @@ set -euo pipefail
 
 # --target all: the default target (wasm-gc) skips packages limited to
 # native and js, such as the conformance harness.
-moon check --deny-warn --target all
+mise exec -- moon check --deny-warn --target all

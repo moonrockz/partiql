@@ -5,8 +5,8 @@ set -euo pipefail
 
 if [ -n "${usage_target:-}" ]; then
   mise run test:docs --target "$usage_target"
-  moon test --target "$usage_target"
+  mise exec -- moon test --target "$usage_target"
 else
   mise run test:docs
-  moon test
+  mise exec -- moon test
 fi
