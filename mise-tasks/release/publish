@@ -13,7 +13,7 @@ fi
 for mod in "${MODULES[@]}"; do
   echo "Publishing moonrockz/$mod..."
   # Refresh the index so the next module resolves the version just published.
-  moon update
+  mise exec -- moon update
   (cd "modules/$mod" && moon publish)
 done
 echo "Published: ${MODULES[*]}"

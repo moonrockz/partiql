@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
 #MISE description="Build and smoke-test native YAML input and output boundaries"
 set -euo pipefail
-moon build modules/partiql/src --target native --release
+mise exec -- moon build modules/partiql/src --target native --release
 python3 .github/scripts/test_yaml_cli.py _build/native/release/build/moonrockz/partiql/partiql.exe

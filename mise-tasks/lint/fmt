@@ -2,4 +2,4 @@
 #MISE description="Fail if moon fmt would change any file"
 set -euo pipefail
 
-moon fmt --check
+mise exec -- moon fmt --check

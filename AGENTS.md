@@ -502,3 +502,33 @@ bd prime                # Refresh Beads context
 
 **Architecture in one line:** issues live in a local Dolt DB; sync uses `refs/dolt/data` on your git remote; `.beads/issues.jsonl` is a passive export. See https://github.com/gastownhall/beads/blob/main/docs/core-concepts/sync-concepts.md for details and anti-patterns.
 <!-- END BEADS CODEX SETUP -->
+
+## Shared OpenSpec configuration
+
+Use the shared `html-design` schema for new changes. Read `openspec/README.md`
+and `openspec/config.yaml`; repository-local tracking and approval rules still apply.
+The files under `openspec/schemas/html-design/` and `scripts/openspec-ext.mbtx`
+are managed by Mission Control's openspec-ext bundle. Change the shared source
+and reinstall instead of editing these snapshots. Run `mise run openspec:check`
+and `mise exec -- openspec validate --all --strict` after configuration changes.
+OpenSpec artifacts are committed project documentation; existing scratch-document
+rules continue to apply to local notes. Existing changes retain their own schema.
+
+### Local MoonBit toolchain
+
+`.mise.toml` pins MoonBit to the same compiler and core version as CI. Run
+`mise install`, then use `mise run` tasks or `mise exec -- moon ...`. When
+upgrading, update this pin and its platform URLs together with the CI version.
+A newer global compiler can change core APIs and script syntax; it does not
+validate compatibility with the repository's declared toolchain.
+
+The HTTP archive omits the core library. If the pin is incomplete on a fresh
+machine, complete that exact installation before running checks:
+
+```shell
+curl -fsSL https://cli.moonbitlang.com/install/unix.sh -o /tmp/install-moonbit.sh
+MOON_HOME="$(mise where http:moonbit)" bash /tmp/install-moonbit.sh '0.10.15+943464bfa'
+```
+
+Task launchers resolve MoonBit through `mise exec -- moon` so Git hooks and
+subprocesses also use the pin when their caller has a global compiler on PATH.

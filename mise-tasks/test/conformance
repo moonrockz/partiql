@@ -2,4 +2,4 @@
 #MISE description="Run the partiql-tests conformance suite against the ratchet baseline"
 set -euo pipefail
 
-moon test -p moonrockz/partiql-conformance --target native
+mise exec -- moon test -p moonrockz/partiql-conformance --target native
