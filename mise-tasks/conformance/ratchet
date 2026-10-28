@@ -2,5 +2,5 @@
 #MISE description="Rewrite the conformance baseline from the current results"
 set -euo pipefail
 
-PARTIQL_CONFORMANCE_MODE=ratchet moon test -p moonrockz/partiql-conformance --target native
+PARTIQL_CONFORMANCE_MODE=ratchet mise exec -- moon test -p moonrockz/partiql-conformance --target native
 git --no-pager diff --stat -- modules/partiql-conformance/baseline

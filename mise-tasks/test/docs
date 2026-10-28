@@ -4,7 +4,7 @@
 set -euo pipefail
 
 if [ -n "${usage_target:-}" ]; then
-  python3 .github/scripts/test_docs.py --target "$usage_target"
+  mise exec -- python3 .github/scripts/test_docs.py --target "$usage_target"
 else
-  python3 .github/scripts/test_docs.py
+  mise exec -- python3 .github/scripts/test_docs.py
 fi
