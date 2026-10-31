@@ -518,16 +518,22 @@ rules continue to apply to local notes. Existing changes retain their own schema
 
 `.mise.toml` pins MoonBit to the same compiler and core version as CI. Run
 `mise install`, then use `mise run` tasks or `mise exec -- moon ...`. When
-upgrading, update this pin and its platform URLs together with the CI version.
+upgrading, update this pin and its platform URLs together with the CI version
+(`MOONBIT_VERSION` in `.github/workflows/*.yml`).
 A newer global compiler can change core APIs and script syntax; it does not
 validate compatibility with the repository's declared toolchain.
 
-The HTTP archive omits the core library. If the pin is incomplete on a fresh
-machine, complete that exact installation before running checks:
+The HTTP archive omits the core library and `moonx`. The `postinstall` hook of
+the pin completes the installation: on Linux and macOS it runs the upstream
+installer, and on Windows it runs `tools/bootstrap-moonbit-windows.ps1`, which
+checks the core archive against `tools/moonbit-core-pin.json`. Both files are
+copies from finos/morphir-moonbit; when you bump the pin, copy them again from
+that repository. If a Unix pin is still incomplete, complete that exact
+installation before running checks:
 
 ```shell
 curl -fsSL https://cli.moonbitlang.com/install/unix.sh -o /tmp/install-moonbit.sh
-MOON_HOME="$(mise where http:moonbit)" bash /tmp/install-moonbit.sh '0.10.15+943464bfa'
+MOON_HOME="$(mise where http:moonbit)" bash /tmp/install-moonbit.sh '0.10.18+6c83a7f62'
 ```
 
 Task launchers resolve MoonBit through `mise exec -- moon` so Git hooks and

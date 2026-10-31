@@ -62,6 +62,9 @@ fn Reader::token_error(
       (position, "invalid character " + char.escape())
     InvalidNumber(position, number) => (position, "invalid number " + number)
     InvalidIdentEscape(position) => (position, "invalid escape sequence")
+    // Tokens are scalars and strings, never objects, and the core parser
+    // accepts duplicate keys by default. Kept so the match stays total.
+    DuplicateKey(position, key) => (position, "duplicate key " + key.escape())
     InvalidEof =>
       return Syntax(offset=self.pos, message="unexpected end of JSON token")
     DepthLimitExceeded =>

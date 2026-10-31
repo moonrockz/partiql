@@ -36,7 +36,7 @@ pub fn cast(@partiql-value.Value, CastTarget, zone? : ZoneOffset, today? : () ->
 
 pub fn char_length(Array[@partiql-value.Value]) -> @partiql-value.Value raise OpFailure
 
-pub fn clock_timestamp(Int64, Int, ZoneOffset, Int) -> @partiql-value.Timestamp raise OpFailure
+pub fn clock_timestamp(Int64, Int32, ZoneOffset, Int32) -> @partiql-value.Timestamp raise OpFailure
 
 pub fn concat(@partiql-value.Value, @partiql-value.Value) -> @partiql-value.Value raise OpFailure
 
@@ -122,9 +122,9 @@ pub fn parse_decimal(String) -> @ion.Decimal?
 
 pub fn parse_interval(String, negative~ : Bool, qualifier~ : @ast.IntervalQualifier) -> @partiql-value.Value raise OpFailure
 
-pub fn parse_time(String, Int?, Bool) -> @partiql-value.Time raise OpFailure
+pub fn parse_time(String, Int32?, Bool) -> @partiql-value.Time raise OpFailure
 
-pub fn parse_timestamp(String, Int?, Bool) -> @partiql-value.Timestamp raise OpFailure
+pub fn parse_timestamp(String, Int32?, Bool) -> @partiql-value.Timestamp raise OpFailure
 
 pub fn position(Array[@partiql-value.Value]) -> @partiql-value.Value raise OpFailure
 
@@ -172,8 +172,8 @@ pub(all) enum CastTarget {
   Clob
   Blob
   Date
-  Time(precision~ : Int?, zone~ : Bool)
-  Timestamp(precision~ : Int?, zone~ : Bool)
+  Time(precision~ : Int32?, zone~ : Bool)
+  Timestamp(precision~ : Int32?, zone~ : Bool)
   Interval(@ast.IntervalQualifier)
   List
   Bag
@@ -189,7 +189,7 @@ pub fn Clock::fixed(@time.ZonedDateTime) -> Self
 pub(all) enum FieldMatch {
   NoField
   One(@partiql-value.Value)
-  Many(@partiql-value.Value, count~ : Int)
+  Many(@partiql-value.Value, count~ : Int32)
 } derive(Eq, @debug.Debug)
 
 pub(all) enum FloatWidth {
@@ -206,20 +206,20 @@ pub(all) enum IntWidth {
 
 pub(all) enum Scale {
   Unconstrained
-  Fixed(precision~ : Int, scale~ : Int)
+  Fixed(precision~ : Int32, scale~ : Int32)
 } derive(Eq, @debug.Debug)
 
 pub(all) enum TextKind {
-  Char(Int)
-  Varchar(Int)
+  Char(Int32)
+  Varchar(Int32)
   String
 } derive(Eq, @debug.Debug)
 
 pub struct ZoneOffset {
-  minutes : Int
+  minutes : Int32
 } derive(Eq, @debug.Debug)
 #alias(new, deprecated)
-pub fn ZoneOffset::from_minutes(Int) -> Self?
+pub fn ZoneOffset::from_minutes(Int32) -> Self?
 pub fn ZoneOffset::utc() -> Self
 
 // Type aliases

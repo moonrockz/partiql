@@ -28,9 +28,9 @@ pub(all) enum ErrorKind {
 } derive(Eq, @debug.Debug)
 
 pub(all) struct Location {
-  document : Int
-  line : Int
-  column : Int
+  document : Int32
+  line : Int32
+  column : Int32
 } derive(Eq, @debug.Debug)
 
 // Type aliases

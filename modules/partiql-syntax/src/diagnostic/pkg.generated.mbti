@@ -7,7 +7,7 @@ import {
 }
 
 // Values
-pub fn position(String, Int) -> Position
+pub fn position(String, Int32) -> Position
 
 pub fn render(@ast.ParseError, String, name~ : String, color? : Bool) -> String
 
@@ -17,8 +17,8 @@ pub fn render_message(String, @ast.Span, String, name~ : String, color? : Bool) 
 
 // Types and methods
 pub(all) struct Position {
-  line : Int
-  column : Int
+  line : Int32
+  column : Int32
 } derive(Eq, @debug.Debug)
 
 // Type aliases

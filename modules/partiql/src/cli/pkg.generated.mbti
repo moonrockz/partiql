@@ -31,7 +31,7 @@ pub(all) struct Outcome {
   stdout_bytes : Bytes?
   stdout : String
   stderr : String
-  status : Int
+  status : Int32
 } derive(Eq, @debug.Debug)
 
 // Type aliases

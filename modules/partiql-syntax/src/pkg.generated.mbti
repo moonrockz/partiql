@@ -7,7 +7,7 @@ import {
 }
 
 // Values
-pub fn format(String, width? : Int) -> String raise @ast.ParseError
+pub fn format(String, width? : Int32) -> String raise @ast.ParseError
 
 pub fn parse(String) -> @ast.Statement raise @ast.ParseError
 
@@ -15,17 +15,17 @@ pub fn parse_script(String) -> @ast.Script raise @ast.ParseError
 
 pub fn parse_script_recovering(String) -> @ast.Recovered
 
-pub fn position(String, Int) -> @diagnostic.Position
+pub fn position(String, Int32) -> @diagnostic.Position
 
-pub fn print(@ast.Statement, width? : Int) -> String
+pub fn print(@ast.Statement, width? : Int32) -> String
 
-pub fn print_script(@ast.Script, width? : Int) -> String
+pub fn print_script(@ast.Script, width? : Int32) -> String
 
 pub fn render(@ast.ParseError, String, name~ : String, color? : Bool) -> String
 
 pub fn render_message(String, @ast.Span, String, name~ : String, color? : Bool) -> String
 
-pub fn to_sexp(@ast.Statement, width? : Int) -> String
+pub fn to_sexp(@ast.Statement, width? : Int32) -> String
 
 // Errors
 

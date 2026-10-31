@@ -8,7 +8,7 @@ import {
 }
 
 // Values
-pub fn compare(Value, Value, nulls~ : NullOrder) -> Int
+pub fn compare(Value, Value, nulls~ : NullOrder) -> Int32
 
 pub fn eqg(Value, Value) -> Bool
 
@@ -54,18 +54,18 @@ pub struct Bag {
 #alias(new, deprecated)
 pub fn Bag::Bag(Array[Value]) -> Self
 pub fn Bag::items(Self) -> ArrayView[Value]
-pub fn Bag::length(Self) -> Int
+pub fn Bag::length(Self) -> Int32
 pub impl Eq for Bag
 pub impl @debug.Debug for Bag
 pub impl ToValue for Bag
 
 pub struct Date {
-  year : Int
-  month : Int
-  day : Int
+  year : Int32
+  month : Int32
+  day : Int32
 } derive(@debug.Debug)
 #alias(new, deprecated)
-pub fn Date::Date(year~ : Int, month~ : Int, day~ : Int) -> Self raise DateTimeError
+pub fn Date::Date(year~ : Int32, month~ : Int32, day~ : Int32) -> Self raise DateTimeError
 pub impl Eq for Date
 pub impl ToValue for Date
 
@@ -109,7 +109,7 @@ pub impl ToValue for GraphValue
 
 pub struct IntervalDT {
   seconds : Int64
-  nanos : Int
+  nanos : Int32
 } derive(@debug.Debug)
 #alias(new, deprecated)
 pub fn IntervalDT::IntervalDT(Int64, Int64) -> Self raise IntervalError
@@ -165,7 +165,7 @@ pub struct MapValue {
 #alias(new, deprecated)
 pub fn MapValue::MapValue(key_type~ : MapType, value_type~ : MapType, Array[(Value, Value)]) -> Self raise MapError
 pub fn MapValue::entries(Self) -> ArrayView[(Value, Value)]
-pub fn MapValue::length(Self) -> Int
+pub fn MapValue::length(Self) -> Int32
 pub impl Eq for MapValue
 pub impl @debug.Debug for MapValue
 pub impl ToValue for MapValue
@@ -176,15 +176,15 @@ pub(all) enum NullOrder {
 } derive(Eq, @debug.Debug)
 
 pub struct Time {
-  hour : Int
-  minute : Int
-  second : Int
-  nanos : Int
-  precision : Int
-  offset : Int?
+  hour : Int32
+  minute : Int32
+  second : Int32
+  nanos : Int32
+  precision : Int32
+  offset : Int32?
 } derive(@debug.Debug)
 #alias(new, deprecated)
-pub fn Time::Time(hour~ : Int, minute~ : Int, second~ : Int, nanos? : Int, precision? : Int, offset? : Int?) -> Self raise DateTimeError
+pub fn Time::Time(hour~ : Int32, minute~ : Int32, second~ : Int32, nanos? : Int32, precision? : Int32, offset? : Int32?) -> Self raise DateTimeError
 pub impl Eq for Time
 pub impl ToValue for Time
 
@@ -204,7 +204,7 @@ pub struct Tuple {
 pub fn Tuple::Tuple(Array[(String, Value)]) -> Self
 pub fn Tuple::fields(Self) -> ArrayView[(String, Value)]
 pub fn Tuple::get_all(Self, String) -> Array[Value]
-pub fn Tuple::length(Self) -> Int
+pub fn Tuple::length(Self) -> Int32
 pub impl Eq for Tuple
 pub impl @debug.Debug for Tuple
 pub impl ToValue for Tuple
@@ -268,7 +268,7 @@ pub(open) trait ToValue {
   fn to_value(Self) -> Value
 }
 pub impl ToValue for Bool
-pub impl ToValue for Int
+pub impl ToValue for Int32
 pub impl ToValue for Int64
 pub impl ToValue for Double
 pub impl ToValue for String
