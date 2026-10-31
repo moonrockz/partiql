@@ -16,9 +16,9 @@ pub fn lower(@ast.Expr) -> @plan.Expr raise @plan.EvalError
 
 pub fn lower_query(@ast.Query) -> @plan.Expr raise @plan.EvalError
 
-pub fn time_literal(String, Int?, Bool, span~ : @ast.Span) -> @partiql-value.Time raise @plan.EvalError
+pub fn time_literal(String, Int32?, Bool, span~ : @ast.Span) -> @partiql-value.Time raise @plan.EvalError
 
-pub fn timestamp_literal(String, Int?, Bool, span~ : @ast.Span) -> @partiql-value.Timestamp raise @plan.EvalError
+pub fn timestamp_literal(String, Int32?, Bool, span~ : @ast.Span) -> @partiql-value.Timestamp raise @plan.EvalError
 
 // Errors
 

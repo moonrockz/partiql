@@ -60,19 +60,19 @@ pub(all) enum DataType {
   SmallInt
   Int
   BigInt
-  Decimal(Int?, Int?)
-  Numeric(Int?, Int?)
+  Decimal(Int32?, Int32?)
+  Numeric(Int32?, Int32?)
   Real
-  Double(Int?)
-  Char(Int?)
-  Varchar(Int?)
+  Double(Int32?)
+  Char(Int32?)
+  Varchar(Int32?)
   String
   Symbol
   Blob
   Clob
   Date
-  Time(Int?, with_tz~ : Bool)
-  Timestamp(Int?, with_tz~ : Bool)
+  Time(Int32?, with_tz~ : Bool)
+  Timestamp(Int32?, with_tz~ : Bool)
   Interval(IntervalQualifier)
   Struct
   Tuple
@@ -156,7 +156,7 @@ pub(all) enum ExprKind {
   NullIf(Expr, Expr)
   DateAdd(DatetimeField, Expr, Expr)
   DateDiff(DatetimeField, Expr, Expr)
-  CurrentDatetime(CurrentKind, precision~ : Int?)
+  CurrentDatetime(CurrentKind, precision~ : Int32?)
   Call(Identifier, Array[Expr], quantifier~ : SetQuantifier?)
   CallStar(Identifier)
   List(Array[Expr])
@@ -237,9 +237,9 @@ pub(all) struct Identifier {
 
 pub(all) struct IntervalQualifier {
   start : DatetimeField
-  start_precision : Int?
+  start_precision : Int32?
   end : DatetimeField?
-  fractional_precision : Int?
+  fractional_precision : Int32?
 } derive(Eq, @debug.Debug)
 
 pub(all) struct Join {
@@ -292,8 +292,8 @@ pub(all) enum Literal {
   String(String)
   Ion(String, @ion.Ion)
   Date(String)
-  Time(String, precision~ : Int?, with_tz~ : Bool)
-  Timestamp(String, precision~ : Int?, with_tz~ : Bool)
+  Time(String, precision~ : Int32?, with_tz~ : Bool)
+  Timestamp(String, precision~ : Int32?, with_tz~ : Bool)
   Interval(String, negative~ : Bool, qualifier~ : IntervalQualifier)
 } derive(@debug.Debug)
 pub impl Eq for Literal
@@ -346,7 +346,7 @@ pub(all) struct Quantifier {
 pub(all) enum QuantifierKind {
   Plus
   Star
-  Range(lower~ : Int, upper~ : Int?)
+  Range(lower~ : Int32, upper~ : Int32?)
 } derive(Eq, @debug.Debug)
 
 pub(all) struct Query {
@@ -410,8 +410,8 @@ pub(all) enum SelectorKind {
   AnyShortest
   AllShortest
   Shortest
-  Any(k~ : Int?)
-  ShortestK(k~ : Int, group~ : Bool)
+  Any(k~ : Int32?)
+  ShortestK(k~ : Int32, group~ : Bool)
 } derive(Eq, @debug.Debug)
 
 pub(all) struct SetOp {
@@ -448,10 +448,10 @@ pub(all) struct SortSpec {
 } derive(Eq, @debug.Debug)
 
 pub(all) struct Span {
-  start : Int
-  end : Int
+  start : Int32
+  end : Int32
 } derive(Eq, @debug.Debug)
-pub fn Span::line_column(Self, String) -> ((Int, Int), (Int, Int))
+pub fn Span::line_column(Self, String) -> ((Int32, Int32), (Int32, Int32))
 pub fn Span::merge(Self, Self) -> Self
 
 pub(all) enum Statement {

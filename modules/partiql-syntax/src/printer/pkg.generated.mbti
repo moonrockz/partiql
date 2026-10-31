@@ -6,9 +6,9 @@ import {
 }
 
 // Values
-pub fn print(@ast.Statement, width? : Int) -> String
+pub fn print(@ast.Statement, width? : Int32) -> String
 
-pub fn print_script(@ast.Script, width? : Int) -> String
+pub fn print_script(@ast.Script, width? : Int32) -> String
 
 // Errors
 

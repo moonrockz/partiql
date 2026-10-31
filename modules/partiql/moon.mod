@@ -27,6 +27,6 @@ import {
   "moonrockz/partiql-value@0.3.0",
   "moonrockz/ion@0.6.0",
   "moonbitlang/x@0.5.5",
-  "moonbitlang/async@0.22.4",
+  "moonbitlang/async@0.22.7",
   "moonrockz/expect@0.6.0",
 }

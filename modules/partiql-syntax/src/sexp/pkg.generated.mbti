@@ -6,11 +6,11 @@ import {
 }
 
 // Values
-pub fn expr_to_sexp(@ast.Expr, width? : Int) -> String
+pub fn expr_to_sexp(@ast.Expr, width? : Int32) -> String
 
-pub fn query_to_sexp(@ast.Query, width? : Int) -> String
+pub fn query_to_sexp(@ast.Query, width? : Int32) -> String
 
-pub fn to_sexp(@ast.Statement, width? : Int) -> String
+pub fn to_sexp(@ast.Statement, width? : Int32) -> String
 
 // Errors
 

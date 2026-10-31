@@ -18,7 +18,7 @@ pub fn write_text(@partiql-value.Value, pretty? : Bool) -> String raise JsonErro
 // Errors
 pub(all) suberror JsonError {
   Utf8
-  Syntax(offset~ : Int, message~ : String)
+  Syntax(offset~ : Int32, message~ : String)
   Unsupported(String)
   Bindings(String)
 } derive(@debug.Debug)
