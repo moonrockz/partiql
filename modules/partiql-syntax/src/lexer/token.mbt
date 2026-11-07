@@ -2,6 +2,7 @@
 /// The kind of a token. Keywords are `Word`s: the parser decides which words
 /// are keywords. Punctuation is one character per token; the parser composes
 /// `<<`, `<=`, `||` and similar operators from touching tokens.
+#derive(Debug)
 pub(all) enum TokenKind {
   /// A regular identifier or keyword, as written.
   Word(String)
@@ -23,7 +24,7 @@ pub(all) enum TokenKind {
   Invalid
   Punct(Char)
   End
-} derive(Debug)
+}
 
 ///|
 /// Structural equality; Ion values compare with `IonValue::equals`.
@@ -45,10 +46,11 @@ pub impl Eq for TokenKind with fn equal(a, b) {
 ///|
 /// One lexical token and its half-open UTF-16 source span.
 /// The lexer includes a final EOF token at the end of the input.
+#derive(Debug, Eq)
 pub(all) struct Token {
   kind : TokenKind
   span : @ast.Span
-} derive(Debug, Eq)
+}
 
 ///|
 /// A short description for error messages.

@@ -10,7 +10,7 @@ permissions:
 
 env:
   # Pinned MoonBit toolchain (moon/moonc/core). Bump deliberately; see AGENTS.md.
-  MOONBIT_VERSION: "0.10.18+6c83a7f62"
+  MOONBIT_VERSION: "0.10.20+65efd5b93"
 
 jobs:
   lint:
@@ -28,6 +28,8 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+      - name: Check the shared OpenSpec snapshot
+        run: mission-control-tools openspec check --bundle
       - run: moon update
       - run: mise run lint:fmt
       - run: mise run lint:check

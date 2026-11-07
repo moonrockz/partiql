@@ -37,72 +37,80 @@ let gen_directions : Array[
 ]
 
 ///|
+#derive(Debug)
 enum GLabel {
   LName(String)
   LWild
   LNot(GLabel)
   LAnd(GLabel, GLabel)
   LOr(GLabel, GLabel)
-} derive(Debug)
+}
 
 ///|
+#derive(Debug)
 struct GElem {
   name : String?
   label : GLabel?
   where_ : String?
-} derive(Debug)
+}
 
 ///|
+#derive(Debug)
 enum GQuant {
   QPlus
   QStar
   QRange(Int32, Int32?)
-} derive(Debug)
+}
 
 ///|
+#derive(Debug)
 enum GPart {
   GNode(GElem)
   /// direction index into `gen_directions`, filler, quantifier
   GEdge(Int32, GElem?, GQuant?)
   /// bracket delimiter, path, WHERE, quantifier
   GGroup(Bool, GPath, String?, GQuant?)
-} derive(Debug)
+}
 
 ///|
+#derive(Debug)
 struct GPath {
   restrictor : String?
   name : String?
   parts : Array[GPart]
-} derive(Debug)
+}
 
 ///|
+#derive(Debug)
 enum GSel {
   SAnyShortest
   SAllShortest
   SShortest
   SAny(Int32?)
   SShortestK(Int32, Bool)
-} derive(Debug)
+}
 
 ///|
 /// Layout of the rendered text: `spacing` 0 tight, 1 single spaces, 2 random
 /// gaps (from `noise`); `case_` 0 upper, 1 lower, 2 capitalized keywords;
 /// `full_labels` puts every label in parentheses.
+#derive(Debug)
 struct Style {
   spacing : Int32
   case_ : Int32
   full_labels : Bool
   noise : Array[Int32]
-} derive(Debug)
+}
 
 ///|
 /// A random parenthesized graph MATCH on the graph `g`.
+#derive(Debug)
 struct GraphSpec {
   selector : GSel?
   paths : Array[GPath]
   where_ : String?
   style : Style
-} derive(Debug)
+}
 
 ///|
 fn pick(rs : @splitmix.RandomState, n : Int32) -> Int32 {
@@ -260,8 +268,8 @@ fn kw(style : Style, word : String) -> String {
     0 => word
     1 => word.to_lower()
     _ =>
-      word.view(end_offset=1).to_owned() +
-      word.view(start_offset=1).to_owned().to_lower()
+      word.exact_view(end=1).to_owned() +
+      word.exact_view(start=1).to_owned().to_lower()
   }
 }
 

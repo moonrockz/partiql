@@ -16,12 +16,13 @@ pub fn write_bytes(@partiql-value.Value, pretty? : Bool) -> Bytes raise JsonErro
 pub fn write_text(@partiql-value.Value, pretty? : Bool) -> String raise JsonError
 
 // Errors
+#derive(@debug.Debug)
 pub(all) suberror JsonError {
   Utf8
   Syntax(offset~ : Int32, message~ : String)
   Unsupported(String)
   Bindings(String)
-} derive(@debug.Debug)
+}
 pub fn JsonError::message(Self) -> String
 
 // Types and methods

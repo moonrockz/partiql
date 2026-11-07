@@ -171,7 +171,7 @@ test "partiql-tests" {
       continue
     }
     for path in ion_files_under(root) {
-      let relative = path.view(start_offset=root.length() + 1).to_owned()
+      let relative = path.exact_view(start=root.length() + 1).to_owned()
       let file_id = if root.has_suffix("-extended") {
         "extended/" + relative
       } else {

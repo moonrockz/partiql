@@ -16,10 +16,11 @@ pub fn render_message(String, @ast.Span, String, name~ : String, color? : Bool) 
 // Errors
 
 // Types and methods
+#derive(Eq, @debug.Debug)
 pub(all) struct Position {
   line : Int32
   column : Int32
-} derive(Eq, @debug.Debug)
+}
 
 // Type aliases
 

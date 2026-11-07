@@ -89,10 +89,11 @@ pub fn Session::evaluate_each(
 
 ///|
 /// Either evaluation or output encoding failed at the session boundary.
+#derive(Debug)
 pub(all) suberror SessionError {
   Evaluation(EvalError)
   Ion(@partiql_ion.IonDataError)
-} derive(Debug)
+}
 
 ///|
 /// Evaluate a complete script and encode its results as PartiQL Ion text,

@@ -1,5 +1,6 @@
 ///|
 /// A data type in CAST, IS and type positions.
+#derive(Debug, Eq)
 pub(all) enum DataType {
   Null
   Missing
@@ -32,4 +33,4 @@ pub(all) enum DataType {
   Map(DataType, DataType)
   Array(DataType?)
   Custom(Identifier)
-} derive(Debug, Eq)
+}

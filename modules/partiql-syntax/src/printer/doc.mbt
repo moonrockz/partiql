@@ -3,6 +3,7 @@
 // `render` the pretty layout at a width through `moonrockz/pretty` (spec M3b).
 
 ///|
+#derive(Debug)
 priv enum Doc {
   Nil
   Text(String)
@@ -17,7 +18,7 @@ priv enum Doc {
   Nest(Int32, Doc)
   /// Flat when it fits the width, else broken (pretty layout only).
   Group(Doc)
-} derive(Debug)
+}
 
 ///|
 fn cat(docs : Array[Doc]) -> Doc {

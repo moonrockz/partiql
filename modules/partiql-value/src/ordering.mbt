@@ -1,9 +1,10 @@
 ///|
 /// Where NULL and MISSING sort.
+#derive(Debug, Eq)
 pub(all) enum NullOrder {
   NullsFirst
   NullsLast
-} derive(Debug, Eq)
+}
 
 ///|
 fn rank(v : Value) -> Int32 {

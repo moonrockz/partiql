@@ -16,14 +16,16 @@ pub fn output_variable(String) -> String
 pub let row_variable : String
 
 // Errors
+#derive(Eq, @debug.Debug)
 pub(all) suberror EvalError {
   TypeError(message~ : String, span~ : @ast.Span)
   DataError(message~ : String, span~ : @ast.Span)
   Unsupported(message~ : String, span~ : @ast.Span)
   Syntax(@ast.ParseError)
-} derive(Eq, @debug.Debug)
+}
 
 // Types and methods
+#derive(Eq, @debug.Debug)
 pub(all) enum AggregateKind {
   Count
   Sum
@@ -32,8 +34,9 @@ pub(all) enum AggregateKind {
   Max
   Any
   Every
-} derive(Eq, @debug.Debug)
+}
 
+#derive(@debug.Debug)
 pub(all) enum Expr {
   Const(@partiql-value.Value, @ast.Span)
   Global(String, delimited~ : Bool, @ast.Span)
@@ -70,9 +73,10 @@ pub(all) enum Expr {
   CollAggregate(AggregateKind, distinct~ : Bool, Expr, @ast.Span)
   Aggregate(AggregateKind, distinct~ : Bool, Expr, members~ : Array[String], group~ : String, @ast.Span)
   GlobalsFirst(Array[(String, Bool, @ast.Span)], key~ : Expr, otherwise~ : Expr, @ast.Span)
-} derive(@debug.Debug)
+}
 pub fn Expr::span(Self) -> @ast.Span
 
+#derive(Eq, @debug.Debug)
 pub(all) enum Function {
   CharLength
   OctetLength
@@ -105,48 +109,56 @@ pub(all) enum Function {
   CurrentTime(Int32)
   CurrentTimestamp(Int32)
   UtcNow
-} derive(Eq, @debug.Debug)
+}
 pub fn Function::name(Self) -> String
 
+#derive(@debug.Debug)
 pub(all) enum Grouping {
   All
   By(Array[(String, Expr)])
-} derive(@debug.Debug)
+}
 
+#derive(Eq, @debug.Debug)
 pub(all) struct ImplicitScope {
   variables : Array[String]
-} derive(Eq, @debug.Debug)
+}
 
+#derive(@debug.Debug)
 pub(all) enum Item {
   Named(String, Expr)
   AllFields(Expr)
-} derive(@debug.Debug)
+}
 
+#derive(Eq, @debug.Debug)
 pub(all) enum JoinKind {
   Cross
   Inner
   Left
   Right
-} derive(Eq, @debug.Debug)
+}
 
+#derive(@debug.Debug)
 pub(all) enum LocalLookup {
   Bound(String)
   Ambiguous(Array[String])
   AmbiguousOutput(String)
-} derive(@debug.Debug)
+}
 
+#derive(Eq, @debug.Debug)
 pub(all) enum Mode {
   Permissive
   Strict
-} derive(Eq, @debug.Debug)
+}
 
+#derive(@debug.Debug)
 pub(all) enum Projection {
   Value(Expr)
   Items(Array[Item])
   Star(Array[String])
   Pivot(value~ : Expr, key~ : Expr)
-} derive(@debug.Debug)
+}
 
+#derive(@debug.Debug)
 pub(all) enum Rel {
   Scan(Expr, as_~ : String, at~ : String?, @ast.Span)
   Unpivot(Expr, as_~ : String, at~ : String?, @ast.Span)
@@ -154,27 +166,30 @@ pub(all) enum Rel {
   Join(JoinKind, Rel, Rel, on~ : Expr?, @ast.Span)
   Let(Rel, Array[(String, Expr)], @ast.Span)
   Group(Rel, Grouping, group_as~ : String, members~ : Array[String], @ast.Span)
-} derive(@debug.Debug)
+}
 pub fn Rel::span(Self) -> @ast.Span
 
+#derive(@debug.Debug)
 pub(all) struct SortKey {
   expr : Expr
   desc : Bool
   nulls_first : Bool
-} derive(@debug.Debug)
+}
 
+#derive(@debug.Debug)
 pub(all) enum Step {
   Field(String, delimited~ : Bool)
   Index(Expr)
   AllElements
   AllFields
-} derive(@debug.Debug)
+}
 
+#derive(@debug.Debug)
 pub(all) enum SubqueryUse {
   Scalar
   Column
   Row
-} derive(@debug.Debug)
+}
 
 // Type aliases
 

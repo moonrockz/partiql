@@ -3,9 +3,10 @@
 ///|
 /// Valid statements with one word deleted or one junk piece inserted, and
 /// token soup with valid and broken Ion literals.
+#derive(Debug)
 struct BrokenText {
   text : String
-} derive(Debug)
+}
 
 ///|
 let broken_pieces : Array[String] = [

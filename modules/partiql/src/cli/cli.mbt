@@ -1,12 +1,13 @@
 ///|
 /// The result of one run: text or binary stdout, text stderr, and exit status.
+#derive(Debug, Eq)
 pub(all) struct Outcome {
   /// Raw binary output, when requested. Text output is empty in this case.
   stdout_bytes : Bytes?
   stdout : String
   stderr : String
   status : Int32
-} derive(Debug, Eq)
+}
 
 ///|
 fn success(text : String) -> Outcome {

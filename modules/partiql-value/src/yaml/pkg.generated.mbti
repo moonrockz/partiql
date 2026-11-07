@@ -12,12 +12,14 @@ pub fn read_bytes(BytesView) -> Array[@partiql-value.Value] raise YamlError
 pub fn read_text(StringView) -> Array[@partiql-value.Value] raise YamlError
 
 // Errors
+#derive(@debug.Debug)
 pub(all) suberror YamlError {
   YamlError(kind~ : ErrorKind, location~ : Location?, message~ : String)
-} derive(@debug.Debug)
+}
 pub fn YamlError::message(Self) -> String
 
 // Types and methods
+#derive(Eq, @debug.Debug)
 pub(all) enum ErrorKind {
   Encoding
   Syntax
@@ -25,13 +27,14 @@ pub(all) enum ErrorKind {
   DuplicateKey
   Limit
   Bindings
-} derive(Eq, @debug.Debug)
+}
 
+#derive(Eq, @debug.Debug)
 pub(all) struct Location {
   document : Int32
   line : Int32
   column : Int32
-} derive(Eq, @debug.Debug)
+}
 
 // Type aliases
 

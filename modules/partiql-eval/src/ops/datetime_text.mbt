@@ -161,7 +161,7 @@ fn time_part(
   // A literal without an explicit precision shows at least one fraction digit,
   // as in `second: 45.0` (partiql-tests time.ion, `time no fractional seconds`).
   let digits = precision.unwrap_or(fraction.length().min(9).max(1))
-  let shown = fraction.view(end_offset=fraction.length().min(9)).to_owned()
+  let shown = fraction.exact_view(end=fraction.length().min(9)).to_owned()
   let all = digits_value(shown + String::make(9 - shown.length(), '0')).to_int()
   let mut unit = 1
   for _ in 0..<(9 - digits.min(9).max(0)) {
@@ -291,7 +291,7 @@ fn interval_values(
         raise Reason("a fraction of 1 to 9 digits")
       }
       let kept = fraction
-        .view(end_offset=fraction.length().min(fraction_digits))
+        .exact_view(end=fraction.length().min(fraction_digits))
         .to_owned()
       let padded = kept + String::make(9 - kept.length(), '0')
       nanos = digits_value(padded)

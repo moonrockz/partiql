@@ -21,31 +21,36 @@ pub fn sql_equals(Value, Value) -> Value
 pub fn timestamp_of_ion(@ion.Timestamp) -> Timestamp
 
 // Errors
+#derive(Eq, @debug.Debug)
 pub(all) suberror DateTimeError {
   InvalidDate(String)
   InvalidTime(String)
-} derive(Eq, @debug.Debug)
+}
 
+#derive(Eq, @debug.Debug)
 pub(all) suberror GraphError {
   DuplicateNodeId(String)
   DuplicateEdgeId(String)
   UnknownNode(String)
   MissingPayload(String)
-} derive(Eq, @debug.Debug)
+}
 
+#derive(Eq, @debug.Debug)
 pub(all) suberror IntervalError {
   Overflow(String)
-} derive(Eq, @debug.Debug)
+}
 
+#derive(Eq, @debug.Debug)
 pub(all) suberror LowerError {
   SymbolWithoutText
-} derive(Eq, @debug.Debug)
+}
 
+#derive(Eq, @debug.Debug)
 pub(all) suberror MapError {
   InvalidKey(String)
   DuplicateKey(String)
   DynamicKeyType
-} derive(Eq, @debug.Debug)
+}
 
 // Types and methods
 pub struct Bag {
@@ -59,20 +64,22 @@ pub impl Eq for Bag
 pub impl @debug.Debug for Bag
 pub impl ToValue for Bag
 
+#derive(@debug.Debug)
 pub struct Date {
   year : Int32
   month : Int32
   day : Int32
-} derive(@debug.Debug)
+}
 #alias(new, deprecated)
 pub fn Date::Date(year~ : Int32, month~ : Int32, day~ : Int32) -> Self raise DateTimeError
 pub impl Eq for Date
 pub impl ToValue for Date
 
+#derive(@debug.Debug)
 pub(all) enum Ends {
   Directed(from~ : String, to~ : String)
   Undirected(String, String)
-} derive(@debug.Debug)
+}
 pub impl Eq for Ends
 
 pub struct GraphEdge {
@@ -107,10 +114,11 @@ pub impl Eq for GraphValue
 pub impl @debug.Debug for GraphValue
 pub impl ToValue for GraphValue
 
+#derive(@debug.Debug)
 pub struct IntervalDT {
   seconds : Int64
   nanos : Int32
-} derive(@debug.Debug)
+}
 #alias(new, deprecated)
 pub fn IntervalDT::IntervalDT(Int64, Int64) -> Self raise IntervalError
 pub fn IntervalDT::days(Self) -> Int64
@@ -123,9 +131,10 @@ pub fn IntervalDT::seconds_part(Self) -> Int64
 pub impl Eq for IntervalDT
 pub impl ToValue for IntervalDT
 
+#derive(@debug.Debug)
 pub struct IntervalYM {
   months : Int64
-} derive(@debug.Debug)
+}
 #alias(new, deprecated)
 pub fn IntervalYM::IntervalYM(Int64) -> Self raise IntervalError
 pub fn IntervalYM::from_parts(negative~ : Bool, years~ : Int64, months~ : Int64) -> Self raise IntervalError
@@ -135,6 +144,7 @@ pub fn IntervalYM::years(Self) -> Int64
 pub impl Eq for IntervalYM
 pub impl ToValue for IntervalYM
 
+#derive(Eq, @debug.Debug)
 pub(all) enum MapType {
   Dynamic
   Bool
@@ -152,7 +162,7 @@ pub(all) enum MapType {
   Date
   Time
   Timestamp
-} derive(Eq, @debug.Debug)
+}
 pub fn MapType::admits(Self, Value) -> Bool
 pub fn MapType::from_name(String) -> Self?
 pub fn MapType::name(Self) -> String
@@ -170,11 +180,13 @@ pub impl Eq for MapValue
 pub impl @debug.Debug for MapValue
 pub impl ToValue for MapValue
 
+#derive(Eq, @debug.Debug)
 pub(all) enum NullOrder {
   NullsFirst
   NullsLast
-} derive(Eq, @debug.Debug)
+}
 
+#derive(@debug.Debug)
 pub struct Time {
   hour : Int32
   minute : Int32
@@ -182,16 +194,17 @@ pub struct Time {
   nanos : Int32
   precision : Int32
   offset : Int32?
-} derive(@debug.Debug)
+}
 #alias(new, deprecated)
 pub fn Time::Time(hour~ : Int32, minute~ : Int32, second~ : Int32, nanos? : Int32, precision? : Int32, offset? : Int32?) -> Self raise DateTimeError
 pub impl Eq for Time
 pub impl ToValue for Time
 
+#derive(@debug.Debug)
 pub struct Timestamp {
   date : Date
   time : Time
-} derive(@debug.Debug)
+}
 #alias(new, deprecated)
 pub fn Timestamp::Timestamp(Date, Time) -> Self
 pub impl Eq for Timestamp

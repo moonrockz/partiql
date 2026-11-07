@@ -2,9 +2,10 @@
 /// PartiQL-flavoured source text: words, numbers, quotes, backticks,
 /// operators and whitespace, so random input reaches deep into the lexer and
 /// the parser.
+#derive(Debug)
 struct SoupText {
   text : String
-} derive(Debug)
+}
 
 ///|
 let soup_pieces : Array[String] = [
@@ -94,7 +95,7 @@ test "deep nesting raises a syntax error, not a stack overflow" {
       soft
       .expect_call(
         () => @syntax.parse(source),
-        label=source.view(end_offset=30).to_owned(),
+        label=source.clamped_view(end=30).to_owned(),
       )
       .to_raise_matching(too_deep, description="nesting is too deep")
     }
@@ -133,9 +134,10 @@ test "nesting just below the limit parses on every target" {
 
 ///|
 /// Random GPML tokens inside `(g MATCH …)`.
+#derive(Debug)
 struct GraphSoup {
   text : String
-} derive(Debug)
+}
 
 ///|
 let graph_pieces : Array[String] = [
@@ -193,7 +195,7 @@ test "deep input inside a parenthesized join reports the depth" {
       soft
       .expect_call(
         () => @syntax.parse(source),
-        label=source.view(end_offset=30).to_owned(),
+        label=source.clamped_view(end=30).to_owned(),
       )
       .to_raise_matching(too_deep, description="nesting is too deep")
     }
@@ -202,10 +204,11 @@ test "deep input inside a parenthesized join reports the depth" {
 
 ///|
 /// SoupText with random comments between the pieces.
+#derive(Debug)
 struct CommentedText {
   text : String
   comments : Array[String]
-} derive(Debug)
+}
 
 ///|
 let commented_bases : Array[String] = [

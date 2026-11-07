@@ -124,47 +124,53 @@ test "a case without assert is malformed" {
 }
 
 ///|
+#derive(Debug, Eq)
 enum EvalMode {
   Coerce
   Error
-} derive(Debug, Eq)
+}
 
 ///|
+#derive(Debug)
 enum Assertion {
   SyntaxSuccess
   SyntaxFail
   StaticAnalysisFail
   EvaluationSuccess(output~ : @ion.IonValue, modes~ : Array[EvalMode])
   EvaluationFail(modes~ : Array[EvalMode])
-} derive(Debug)
+}
 
 ///|
 /// The statement of a test case: its text, or the id of an `equiv_class`
 /// whose statements are all equivalent.
+#derive(Debug, Eq)
 enum Statements {
   Text(String)
   EquivClass(String)
-} derive(Debug, Eq)
+}
 
 ///|
+#derive(Debug)
 struct TestCase {
   /// `<file>::<ns>::...::<name>`, unique in the suite.
   id : String
   statement : Statements
   env : @ion.IonValue?
   assertions : Array[Assertion]
-} derive(Debug)
+}
 
 ///|
+#derive(Debug)
 struct Suite {
   cases : Array[TestCase]
   equiv_classes : Map[String, Array[String]]
-} derive(Debug)
+}
 
 ///|
+#derive(Debug)
 suberror SuiteError {
   Malformed(String)
-} derive(Debug)
+}
 
 ///|
 fn annotation_texts(value : @ion.IonValue) -> Array[String] {

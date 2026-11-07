@@ -1,2 +1,3 @@
 * text=auto eol=lf
 pkg.generated.mbti linguist-generated=true
+openspec/schemas/html-design/** text eol=lf

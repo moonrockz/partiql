@@ -246,6 +246,10 @@ Tasks are file-based scripts in `mise-tasks/`. Never add inline `[tasks]` to
 | `conformance:ratchet` | Rewrite the conformance baseline from the current results |
 | `build:cli` | Build the CLI for wasm and native (release mode) |
 | `hooks:install` | Install the lefthook git hooks |
+| `openspec:check` | Check the shared OpenSpec snapshot and tool version (`mission-control-tools openspec check --bundle`) |
+| `openspec:setup` | Regenerate the core OpenSpec agent skills (`mission-control-tools openspec setup`) |
+| `openspec:validate` | Validate the `html-design` schema and all OpenSpec artifacts |
+| `openspec:verify` | `openspec:check` and `openspec:validate` |
 | `release:version` | Next version from conventional commits |
 | `release:bump` | Set every module version, sibling import and the CLI version |
 | `release:check-version` | Fail unless all versions equal the given version |
@@ -507,10 +511,10 @@ bd prime                # Refresh Beads context
 
 Use the shared `html-design` schema for new changes. Read `openspec/README.md`
 and `openspec/config.yaml`; repository-local tracking and approval rules still apply.
-The files under `openspec/schemas/html-design/` and `scripts/openspec-ext.mbtx`
-are managed by Mission Control's openspec-ext bundle. Change the shared source
-and reinstall instead of editing these snapshots. Run `mise run openspec:check`
-and `mise exec -- openspec validate --all --strict` after configuration changes.
+The files under `openspec/schemas/html-design/` are managed by Mission Control's
+shared bundle, which the pinned `mission-control-tools` CLI installs. Change the
+shared source and reinstall (`mission-control-tools openspec install`) instead of
+editing these snapshots. Run `mise run openspec:verify` after configuration changes.
 OpenSpec artifacts are committed project documentation; existing scratch-document
 rules continue to apply to local notes. Existing changes retain their own schema.
 
@@ -533,7 +537,7 @@ installation before running checks:
 
 ```shell
 curl -fsSL https://cli.moonbitlang.com/install/unix.sh -o /tmp/install-moonbit.sh
-MOON_HOME="$(mise where http:moonbit)" bash /tmp/install-moonbit.sh '0.10.18+6c83a7f62'
+MOON_HOME="$(mise where http:moonbit)" bash /tmp/install-moonbit.sh '0.10.20+65efd5b93'
 ```
 
 Task launchers resolve MoonBit through `mise exec -- moon` so Git hooks and

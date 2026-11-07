@@ -9,12 +9,14 @@ import {
 // Values
 
 // Errors
+#derive(Eq, @debug.Debug)
 pub(all) suberror ParseError {
   Unsupported(message~ : String, span~ : Span)
   Syntax(message~ : String, span~ : Span, expected~ : Array[String], found~ : String)
-} derive(Eq, @debug.Debug)
+}
 
 // Types and methods
+#derive(Eq, @debug.Debug)
 pub(all) enum BinaryOp {
   Add
   Sub
@@ -28,30 +30,35 @@ pub(all) enum BinaryOp {
   Le
   Gt
   Ge
-} derive(Eq, @debug.Debug)
+}
 
+#derive(Eq, @debug.Debug)
 pub(all) struct Comment {
   kind : CommentKind
   text : String
   span : Span
-} derive(Eq, @debug.Debug)
+}
 
+#derive(Eq, @debug.Debug)
 pub(all) enum CommentKind {
   Line
   Block
-} derive(Eq, @debug.Debug)
+}
 
+#derive(Eq, @debug.Debug)
 pub(all) enum Corresponding {
   All
   By(Array[Identifier])
-} derive(Eq, @debug.Debug)
+}
 
+#derive(Eq, @debug.Debug)
 pub(all) enum CurrentKind {
   Date
   Time
   Timestamp
-} derive(Eq, @debug.Debug)
+}
 
+#derive(Eq, @debug.Debug)
 pub(all) enum DataType {
   Null
   Missing
@@ -83,8 +90,9 @@ pub(all) enum DataType {
   Map(DataType, DataType)
   Array(DataType?)
   Custom(Identifier)
-} derive(Eq, @debug.Debug)
+}
 
+#derive(Eq, @debug.Debug)
 pub(all) enum DatetimeField {
   Year
   Month
@@ -94,8 +102,9 @@ pub(all) enum DatetimeField {
   Second
   TimezoneHour
   TimezoneMinute
-} derive(Eq, @debug.Debug)
+}
 
+#derive(Eq, @debug.Debug)
 pub(all) enum EdgeDirection {
   Left
   Undirected
@@ -104,29 +113,33 @@ pub(all) enum EdgeDirection {
   UndirectedOrRight
   LeftOrRight
   Any
-} derive(Eq, @debug.Debug)
+}
 
+#derive(Eq, @debug.Debug)
 pub(all) struct EdgeFiller {
   variable : Identifier?
   label : Label?
   where_ : Expr?
   span : Span
-} derive(Eq, @debug.Debug)
+}
 
+#derive(Eq, @debug.Debug)
 pub(all) struct EdgePattern {
   direction : EdgeDirection
   filler : EdgeFiller?
   quantifier : Quantifier?
   span : Span
-} derive(Eq, @debug.Debug)
+}
 
+#derive(Eq, @debug.Debug)
 pub(all) struct Expr {
   kind : ExprKind
   span : Span
-} derive(Eq, @debug.Debug)
+}
 pub fn Expr::canonical(Self) -> Self
 pub fn Expr::strip_spans(Self) -> Self
 
+#derive(Eq, @debug.Debug)
 pub(all) enum ExprKind {
   Lit(Literal)
   VarRef(Identifier, qualified~ : Bool)
@@ -169,14 +182,16 @@ pub(all) enum ExprKind {
   Query(Query)
   GraphMatch(GraphMatch)
   Error
-} derive(Eq, @debug.Debug)
+}
 
+#derive(Eq, @debug.Debug)
 pub(all) enum FromItem {
   Scan(FromSource)
   Unpivot(FromSource)
   Join(Join)
-} derive(Eq, @debug.Debug)
+}
 
+#derive(Eq, @debug.Debug)
 pub(all) struct FromSource {
   lateral : Bool
   expr : Expr
@@ -184,104 +199,120 @@ pub(all) struct FromSource {
   at : Identifier?
   by : Identifier?
   span : Span
-} derive(Eq, @debug.Debug)
+}
 
+#derive(Eq, @debug.Debug)
 pub(all) struct GraphMatch {
   graph : Expr
   pattern : GraphPattern
   span : Span
-} derive(Eq, @debug.Debug)
+}
 
+#derive(Eq, @debug.Debug)
 pub(all) struct GraphPattern {
   selector : Selector?
   paths : Array[PathPattern]
   where_ : Expr?
   span : Span
-} derive(Eq, @debug.Debug)
+}
 
+#derive(Eq, @debug.Debug)
 pub(all) struct GroupBy {
   keys : GroupKeys
   group_as : Identifier?
   span : Span
-} derive(Eq, @debug.Debug)
+}
 
+#derive(Eq, @debug.Debug)
 pub(all) enum GroupDelimiter {
   Paren
   Bracket
-} derive(Eq, @debug.Debug)
+}
 
+#derive(Eq, @debug.Debug)
 pub(all) struct GroupKey {
   expr : Expr
   as_ : Identifier?
   span : Span
-} derive(Eq, @debug.Debug)
+}
 
+#derive(Eq, @debug.Debug)
 pub(all) enum GroupKeys {
   All
   By(Array[GroupKey], partial~ : Bool)
-} derive(Eq, @debug.Debug)
+}
 
+#derive(Eq, @debug.Debug)
 pub(all) struct GroupPattern {
   delimiter : GroupDelimiter
   path : PathPattern
   where_ : Expr?
   quantifier : Quantifier?
   span : Span
-} derive(Eq, @debug.Debug)
+}
 
+#derive(Eq, @debug.Debug)
 pub(all) struct Identifier {
   text : String
   delimited : Bool
   span : Span
-} derive(Eq, @debug.Debug)
+}
 
+#derive(Eq, @debug.Debug)
 pub(all) struct IntervalQualifier {
   start : DatetimeField
   start_precision : Int32?
   end : DatetimeField?
   fractional_precision : Int32?
-} derive(Eq, @debug.Debug)
+}
 
+#derive(Eq, @debug.Debug)
 pub(all) struct Join {
   kind : JoinKind
   form : JoinForm
   left : FromItem
   right : FromItem
   span : Span
-} derive(Eq, @debug.Debug)
+}
 
+#derive(Eq, @debug.Debug)
 pub(all) enum JoinForm {
   Comma
   Cross
   On(Expr)
-} derive(Eq, @debug.Debug)
+}
 
+#derive(Eq, @debug.Debug)
 pub(all) enum JoinKind {
   Inner
   Left
   Right
   Full
-} derive(Eq, @debug.Debug)
+}
 
+#derive(Eq, @debug.Debug)
 pub(all) struct Label {
   kind : LabelKind
   span : Span
-} derive(Eq, @debug.Debug)
+}
 
+#derive(Eq, @debug.Debug)
 pub(all) enum LabelKind {
   Name(Identifier)
   Wildcard
   Not(Label)
   And(Label, Label)
   Or(Label, Label)
-} derive(Eq, @debug.Debug)
+}
 
+#derive(Eq, @debug.Debug)
 pub(all) struct LetBinding {
   expr : Expr
   name : Identifier
   span : Span
-} derive(Eq, @debug.Debug)
+}
 
+#derive(@debug.Debug)
 pub(all) enum Literal {
   Null
   Missing
@@ -295,60 +326,69 @@ pub(all) enum Literal {
   Time(String, precision~ : Int32?, with_tz~ : Bool)
   Timestamp(String, precision~ : Int32?, with_tz~ : Bool)
   Interval(String, negative~ : Bool, qualifier~ : IntervalQualifier)
-} derive(@debug.Debug)
+}
 pub impl Eq for Literal
 
+#derive(Eq, @debug.Debug)
 pub(all) struct NodePattern {
   variable : Identifier?
   label : Label?
   where_ : Expr?
   span : Span
-} derive(Eq, @debug.Debug)
+}
 
+#derive(Eq, @debug.Debug)
 pub(all) enum NullsOrder {
   First
   Last
-} derive(Eq, @debug.Debug)
+}
 
+#derive(Eq, @debug.Debug)
 pub(all) enum PathPart {
   Node(NodePattern)
   Edge(EdgePattern)
   Group(GroupPattern)
-} derive(Eq, @debug.Debug)
+}
 
+#derive(Eq, @debug.Debug)
 pub(all) struct PathPattern {
   restrictor : Restrictor?
   variable : Identifier?
   parts : Array[PathPart]
   span : Span
-} derive(Eq, @debug.Debug)
+}
 
+#derive(Eq, @debug.Debug)
 pub(all) enum PathStep {
   Field(Identifier)
   FieldString(String, span~ : Span)
   Index(Expr)
   AllElements(Span)
   AllFields(Span)
-} derive(Eq, @debug.Debug)
+}
 
+#derive(Eq, @debug.Debug)
 pub(all) enum Projection {
   Star(Span)
   Items(Array[SelectItem])
   Value(Expr)
   Pivot(value~ : Expr, key~ : Expr)
-} derive(Eq, @debug.Debug)
+}
 
+#derive(Eq, @debug.Debug)
 pub(all) struct Quantifier {
   kind : QuantifierKind
   span : Span
-} derive(Eq, @debug.Debug)
+}
 
+#derive(Eq, @debug.Debug)
 pub(all) enum QuantifierKind {
   Plus
   Star
   Range(lower~ : Int32, upper~ : Int32?)
-} derive(Eq, @debug.Debug)
+}
 
+#derive(Eq, @debug.Debug)
 pub(all) struct Query {
   with_ : Array[WithBinding]
   body : QueryBody
@@ -356,35 +396,40 @@ pub(all) struct Query {
   limit : Expr?
   offset : Expr?
   span : Span
-} derive(Eq, @debug.Debug)
+}
 pub fn Query::strip_spans(Self) -> Self
 
+#derive(Eq, @debug.Debug)
 pub(all) enum QueryBody {
   Select(Select)
   SetOp(SetOp)
   Expr(Expr)
   Table(Array[Identifier])
-} derive(Eq, @debug.Debug)
+}
 
+#derive(Eq, @debug.Debug)
 pub(all) struct Recovered {
   script : Script
   errors : Array[ParseError]
-} derive(Eq, @debug.Debug)
+}
 
+#derive(Eq, @debug.Debug)
 pub(all) enum Restrictor {
   Walk
   Trail
   Acyclic
   Simple
-} derive(Eq, @debug.Debug)
+}
 
+#derive(Eq, @debug.Debug)
 pub(all) struct Script {
   statements : Array[Statement]
   comments : Array[Comment]
   span : Span
-} derive(Eq, @debug.Debug)
+}
 pub fn Script::strip_spans(Self) -> Self
 
+#derive(Eq, @debug.Debug)
 pub(all) struct Select {
   quantifier : SetQuantifier?
   projection : Projection
@@ -394,26 +439,30 @@ pub(all) struct Select {
   group_by : GroupBy?
   having : Expr?
   span : Span
-} derive(Eq, @debug.Debug)
+}
 
+#derive(Eq, @debug.Debug)
 pub(all) enum SelectItem {
   Expr(Expr, as_~ : Identifier?, span~ : Span)
   AllFields(Expr, span~ : Span)
-} derive(Eq, @debug.Debug)
+}
 
+#derive(Eq, @debug.Debug)
 pub(all) struct Selector {
   kind : SelectorKind
   span : Span
-} derive(Eq, @debug.Debug)
+}
 
+#derive(Eq, @debug.Debug)
 pub(all) enum SelectorKind {
   AnyShortest
   AllShortest
   Shortest
   Any(k~ : Int32?)
   ShortestK(k~ : Int32, group~ : Bool)
-} derive(Eq, @debug.Debug)
+}
 
+#derive(Eq, @debug.Debug)
 pub(all) struct SetOp {
   op : SetOpKind
   quantifier : SetQuantifier?
@@ -422,60 +471,69 @@ pub(all) struct SetOp {
   left : Query
   right : Query
   span : Span
-} derive(Eq, @debug.Debug)
+}
 
+#derive(Eq, @debug.Debug)
 pub(all) enum SetOpKind {
   Union
   Intersect
   Except
-} derive(Eq, @debug.Debug)
+}
 
+#derive(Eq, @debug.Debug)
 pub(all) enum SetQuantifier {
   All
   Distinct
-} derive(Eq, @debug.Debug)
+}
 
+#derive(Eq, @debug.Debug)
 pub(all) enum SortOrder {
   Asc
   Desc
-} derive(Eq, @debug.Debug)
+}
 
+#derive(Eq, @debug.Debug)
 pub(all) struct SortSpec {
   expr : Expr
   order : SortOrder?
   nulls : NullsOrder?
   span : Span
-} derive(Eq, @debug.Debug)
+}
 
+#derive(Eq, @debug.Debug)
 pub(all) struct Span {
   start : Int32
   end : Int32
-} derive(Eq, @debug.Debug)
+}
 pub fn Span::line_column(Self, String) -> ((Int32, Int32), (Int32, Int32))
 pub fn Span::merge(Self, Self) -> Self
 
+#derive(Eq, @debug.Debug)
 pub(all) enum Statement {
   Query(Query)
   Error(Span)
-} derive(Eq, @debug.Debug)
+}
 pub fn Statement::strip_spans(Self) -> Self
 
+#derive(Eq, @debug.Debug)
 pub(all) enum TrimSpec {
   Both
   Leading
   Trailing
-} derive(Eq, @debug.Debug)
+}
 
+#derive(Eq, @debug.Debug)
 pub(all) enum UnaryOp {
   Pos
   Neg
-} derive(Eq, @debug.Debug)
+}
 
+#derive(Eq, @debug.Debug)
 pub(all) struct WithBinding {
   name : Identifier
   query : Query
   span : Span
-} derive(Eq, @debug.Debug)
+}
 
 // Type aliases
 

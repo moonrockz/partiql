@@ -13,7 +13,7 @@ test "lex_with_comments returns the comments in source order" {
     soft
     .expect(
       comments.map(c => {
-        source.view(start_offset=c.span.start, end_offset=c.span.end).to_owned()
+        source.exact_view(start=c.span.start, end=c.span.end).to_owned()
       }),
     )
     .to_equal(["-- one", "/* two */", "-- three"])

@@ -17,10 +17,11 @@ pub fn evaluate(@ast.Statement, env~ : Bindings, mode? : @plan.Mode, zone? : @op
 pub fn evaluate_text(String, env~ : Bindings, mode? : @plan.Mode, zone? : @ops.ZoneOffset, clock? : @ops.Clock) -> @partiql-value.Value raise @plan.EvalError
 
 // Errors
+#derive(@debug.Debug)
 pub(all) suberror SessionError {
   Evaluation(@plan.EvalError)
   Ion(@moonrockz/partiql-value/ion.IonDataError)
-} derive(@debug.Debug)
+}
 
 // Types and methods
 pub struct Bindings {

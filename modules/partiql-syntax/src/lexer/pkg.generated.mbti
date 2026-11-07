@@ -17,11 +17,13 @@ pub fn lex_with_comments(String) -> (Array[Token], Array[@ast.Comment]) raise @a
 // Errors
 
 // Types and methods
+#derive(Eq, @debug.Debug)
 pub(all) struct Token {
   kind : TokenKind
   span : @ast.Span
-} derive(Eq, @debug.Debug)
+}
 
+#derive(@debug.Debug)
 pub(all) enum TokenKind {
   Word(String)
   QuotedIdent(String)
@@ -33,7 +35,7 @@ pub(all) enum TokenKind {
   Invalid
   Punct(Char)
   End
-} derive(@debug.Debug)
+}
 pub fn TokenKind::describe(Self) -> String
 pub impl Eq for TokenKind
 

@@ -57,11 +57,12 @@ test "ion payloads are found in document order and round-trip" {
 }
 
 ///|
+#derive(Debug, Eq)
 enum Outcome {
   Pass
   Fail(String)
   NotApplicable
-} derive(Debug, Eq)
+}
 
 ///|
 /// `expect_success` is true for SyntaxSuccess and false for SyntaxFail.

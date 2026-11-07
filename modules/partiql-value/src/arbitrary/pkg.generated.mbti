@@ -36,21 +36,24 @@ pub fn has_nested_absent(@partiql-value.Value) -> Bool
 // Errors
 
 // Types and methods
+#derive(@debug.Debug)
 pub(all) struct ArbIon {
   value : @ion.Ion
-} derive(@debug.Debug)
+}
 pub impl @quickcheck.Arbitrary for ArbIon
 pub impl @shrink.Shrink for ArbIon
 
+#derive(@debug.Debug)
 pub(all) struct ArbTimestamp {
   value : @partiql-value.Timestamp
-} derive(@debug.Debug)
+}
 pub impl @quickcheck.Arbitrary for ArbTimestamp
 pub impl @shrink.Shrink for ArbTimestamp
 
+#derive(@debug.Debug)
 pub(all) struct ArbValue {
   value : @partiql-value.Value
-} derive(@debug.Debug)
+}
 pub impl @quickcheck.Arbitrary for ArbValue
 pub impl @shrink.Shrink for ArbValue
 

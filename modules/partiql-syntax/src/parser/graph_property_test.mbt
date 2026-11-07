@@ -211,12 +211,12 @@ test "law 5: removing a closing delimiter is a syntax error" {
     (spec : GraphSpec) => {
       let text = render(spec)
       for i in 0..<text.length() {
-        let c = text.view(start_offset=i, end_offset=i + 1).to_owned()
-        if c != ")" && c != "]" && c != "}" {
+        guard text.get_view(start=i, end=i + 1) is Some(c) &&
+          (c == ")" || c == "]" || c == "}") else {
           continue
         }
-        let cut = text.view(end_offset=i).to_owned() +
-          text.view(start_offset=i + 1).to_owned()
+        let cut = text.exact_view(end=i).to_owned() +
+          text.exact_view(start=i + 1).to_owned()
         let syntax = try @parser.parse_statement(cut) catch {
           Syntax(..) => true
           _ => false

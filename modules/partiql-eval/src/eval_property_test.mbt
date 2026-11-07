@@ -1,9 +1,10 @@
 ///|
 /// A small PartiQL expression text of depth at most 3: literals of every
 /// kind (NULL, MISSING and wrong types included) under the M4a operators.
+#derive(Debug)
 struct ExprText {
   text : String
-} derive(Debug)
+}
 
 ///|
 let expr_atoms : Array[String] = [
@@ -72,9 +73,10 @@ impl @quickcheck.Shrink for ExprText
 
 ///|
 /// One operator over atoms.
+#derive(Debug)
 struct OneOp {
   text : String
-} derive(Debug)
+}
 
 ///|
 impl @quickcheck.Arbitrary for OneOp with fn arbitrary(_size, rs) {
@@ -87,12 +89,13 @@ impl @quickcheck.Shrink for OneOp
 ///|
 /// How an evaluation ended. The generator never produces Syntax or Unsupported
 /// text, so those land in `Other` and the laws reject them.
+#derive(Eq, Debug)
 enum Outcome {
   Val(@value.Value)
   Type
   Data
   Other
-} derive(Eq, Debug)
+}
 
 ///|
 fn outcome(source : String, mode : @eval.Mode) -> Outcome {
@@ -257,9 +260,10 @@ test "law: AND and OR commute, associate and obey De Morgan" {
 /// A number literal of a random kind: an Int64 (near the limits too), a
 /// decimal, or a float from an Ion literal. Decimals and floats are multiples
 /// of 0.25 in a small range, so sums and differences are exact.
+#derive(Debug)
 struct NumText {
   text : String
-} derive(Debug)
+}
 
 ///|
 fn int_text(n : Int64) -> String {
