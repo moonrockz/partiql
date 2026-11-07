@@ -1,12 +1,13 @@
 ///|
 /// Errors at the JSON boundary. Syntax offsets count UTF-16 code units from
 /// the start of the document. Unsupported values are never replaced by null.
+#derive(Debug)
 pub(all) suberror JsonError {
   Utf8
   Syntax(offset~ : Int32, message~ : String)
   Unsupported(String)
   Bindings(String)
-} derive(Debug)
+}
 
 ///|
 pub fn JsonError::message(self : JsonError) -> String {

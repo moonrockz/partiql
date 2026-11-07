@@ -45,7 +45,7 @@ pub fn round_decimal(
   let digits = d.coefficient().to_string()
   let negative = digits.has_prefix("-")
   let magnitude = if negative {
-    digits.view(start_offset=1).to_owned()
+    digits.exact_view(start=1).to_owned()
   } else {
     digits
   }
@@ -54,9 +54,9 @@ pub fn round_decimal(
     return d
   }
   let kept = @bigint.BigInt::from_string(
-    magnitude.view(end_offset=max_decimal_digits).to_owned(),
+    magnitude.exact_view(end=max_decimal_digits).to_owned(),
   )
-  let rest = magnitude.view(start_offset=max_decimal_digits).to_owned()
+  let rest = magnitude.exact_view(start=max_decimal_digits).to_owned()
   let half = "5" + "0".repeat(drop - 1)
   let c = rest.lexical_compare(half)
   let up = if c < 0 {
@@ -220,7 +220,7 @@ pub fn parse_decimal(text : String) -> @ion_core.Decimal? {
     return Some(mantissa)
   }
   let digits = if parts[1].has_prefix("+") {
-    parts[1].view(start_offset=1).to_owned()
+    parts[1].exact_view(start=1).to_owned()
   } else {
     parts[1]
   }

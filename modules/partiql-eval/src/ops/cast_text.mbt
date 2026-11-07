@@ -12,9 +12,9 @@ fn mantissa(digits : String) -> String {
   if digits.length() == 1 {
     digits
   } else {
-    digits.view(end_offset=1).to_owned() +
+    digits.exact_view(end=1).to_owned() +
     "." +
-    digits.view(start_offset=1).to_owned()
+    digits.exact_view(start=1).to_owned()
   }
 }
 
@@ -42,9 +42,9 @@ fn decimal_text(d : @ion_core.Decimal) -> String {
   let k = (-e).to_int()
   if n > k {
     sign +
-    digits.view(end_offset=n - k).to_owned() +
+    digits.exact_view(end=n - k).to_owned() +
     "." +
-    digits.view(start_offset=n - k).to_owned()
+    digits.exact_view(start=n - k).to_owned()
   } else {
     sign + "0." + "0".repeat(k - n) + digits
   }
@@ -97,7 +97,7 @@ fn time_text(t : @value.Time) -> String {
   let clock = "\{padded(t.hour.to_int64(), 2)}:\{padded(t.minute.to_int64(), 2)}:\{padded(t.second.to_int64(), 2)}"
   let fraction = if t.precision > 0 {
     "." +
-    padded(t.nanos.to_int64(), 9).view(end_offset=t.precision.min(9)).to_owned()
+    padded(t.nanos.to_int64(), 9).exact_view(end=t.precision.min(9)).to_owned()
   } else {
     ""
   }
@@ -150,7 +150,7 @@ fn dt_text(i : @value.IntervalDT) -> String {
   let fraction = if nanos == 0 {
     ""
   } else {
-    "." + padded(nanos.to_int64(), 9).view(end_offset=digits).to_owned()
+    "." + padded(nanos.to_int64(), 9).exact_view(end=digits).to_owned()
   }
   let clock = "\{padded(seconds / 3600L, 2)}:\{padded(seconds % 3600L / 60L, 2)}:\{padded(seconds % 60L, 2)}"
   "INTERVAL '\{sign}\{days} \{clock}\{fraction}' DAY\{precision_text(digit_count(days), 2)} TO SECOND\{precision_text(digits, 6)}"
@@ -232,7 +232,7 @@ fn to_lob(
   target : CastTarget,
 ) -> @value.Value raise OpFailure {
   match (x, target) {
-    (String(s), Clob) => @value.Value::from_clob(@utf8.encode(s.view()))
+    (String(s), Clob) => @value.Value::from_clob(@utf8.encode(s))
     (Clob(b) | Blob(b), Clob) => @value.Value::from_clob(b)
     (Clob(b) | Blob(b), Blob) => @value.Value::from_blob(b)
     _ => raise TypeFailure("CAST of \{kind_name(x)} to \{target_name(target)}")

@@ -577,9 +577,10 @@ fn gen_query(rs : @splitmix.RandomState, depth : Int32) -> @ast.Query raise {
 
 ///|
 /// A random statement.
+#derive(Debug)
 struct TreeSpec {
   statement : @ast.Statement
-} derive(Debug)
+}
 
 ///|
 impl @quickcheck.Arbitrary for TreeSpec with fn arbitrary(size, rs) {
@@ -593,9 +594,10 @@ impl @quickcheck.Shrink for TreeSpec
 
 ///|
 /// A random expression statement (`SELECT VALUE e`).
+#derive(Debug)
 struct ExprSpec {
   expr : @ast.Expr
-} derive(Debug)
+}
 
 ///|
 impl @quickcheck.Arbitrary for ExprSpec with fn arbitrary(size, rs) {

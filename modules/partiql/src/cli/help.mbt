@@ -83,7 +83,7 @@ fn short_error(message : String) -> String {
   let lines = message.split("\n").map(line => line.to_owned()).collect()
   let first = lines.get(0).unwrap_or("error")
   let reason = if first.has_prefix("error: ") {
-    first.view(start_offset=7).to_owned()
+    first.exact_view(start=7).to_owned()
   } else {
     first
   }

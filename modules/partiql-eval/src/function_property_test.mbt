@@ -1,11 +1,12 @@
 ///|
 /// A string of code points that stress case mapping and positions, with a
 /// start and a non-negative length.
+#derive(Debug)
 struct TextSample {
   text : String
   start : Int32
   length : Int32
-} derive(Debug)
+}
 
 ///|
 let sample_pieces : Array[String] = [

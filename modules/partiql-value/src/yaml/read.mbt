@@ -1,13 +1,15 @@
 ///|
 /// Source coordinates are relative to the supplied view. Lines, Unicode-scalar
 /// columns and document numbers are 1-based; they are not byte offsets.
+#derive(Debug, Eq)
 pub(all) struct Location {
   document : Int32
   line : Int32
   column : Int32
-} derive(Debug, Eq)
+}
 
 ///|
+#derive(Debug, Eq)
 pub(all) enum ErrorKind {
   Encoding
   Syntax
@@ -15,12 +17,13 @@ pub(all) enum ErrorKind {
   DuplicateKey
   Limit
   Bindings
-} derive(Debug, Eq)
+}
 
 ///|
+#derive(Debug)
 pub(all) suberror YamlError {
   YamlError(kind~ : ErrorKind, location~ : Location?, message~ : String)
-} derive(Debug)
+}
 
 ///|
 pub fn YamlError::message(self : YamlError) -> String {

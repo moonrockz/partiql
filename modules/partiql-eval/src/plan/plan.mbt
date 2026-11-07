@@ -2,43 +2,48 @@
 /// How the interpreter handles runtime type failures. Permissive mode yields
 /// MISSING; strict mode raises `TypeError`. Data and unsupported-form failures
 /// raise in either mode.
+#derive(Debug, Eq)
 pub(all) enum Mode {
   Permissive
   Strict
-} derive(Debug, Eq)
+}
 
 ///|
 /// An evaluation failure with a source location, or the original parse error.
 /// `TypeError` is a strict-mode operand failure; `DataError` is invalid data or
 /// a static error in either mode; `Unsupported` is an unimplemented form.
+#derive(Debug, Eq)
 pub(all) suberror EvalError {
   TypeError(message~ : String, span~ : @ast.Span)
   DataError(message~ : String, span~ : @ast.Span)
   Unsupported(message~ : String, span~ : @ast.Span)
   Syntax(@ast.ParseError)
-} derive(Debug, Eq)
+}
 
 ///|
 /// One step of a path.
+#derive(Debug)
 pub(all) enum Step {
   Field(String, delimited~ : Bool)
   Index(Expr)
   AllElements
   AllFields
-} derive(Debug)
+}
 
 ///|
 /// The local fallback of a FROM source after global lookup has failed.
+#derive(Debug)
 pub(all) enum LocalLookup {
   Bound(String)
   Ambiguous(Array[String])
   /// One output label denotes distinct SELECT expressions.
   AmbiguousOutput(String)
-} derive(Debug)
+}
 
 ///|
 /// A lowered scalar expression (spec M4a §3). Names are resolved, literals
 /// are values.
+#derive(Debug)
 pub(all) enum Expr {
   Const(@value.Value, @ast.Span)
   Global(String, delimited~ : Bool, @ast.Span)
@@ -148,17 +153,18 @@ pub(all) enum Expr {
     otherwise~ : Expr,
     @ast.Span
   )
-} derive(Debug)
+}
 
 ///|
 /// A key of ORDER BY. `nulls_first` is resolved: the explicit `NULLS FIRST`
 /// or `NULLS LAST`, else NULL and MISSING come last for ASC and first for
 /// DESC.
+#derive(Debug)
 pub(all) struct SortKey {
   expr : Expr
   desc : Bool
   nulls_first : Bool
-} derive(Debug)
+}
 
 ///|
 /// The variable that holds an output element for the sort keys of a query
@@ -175,6 +181,7 @@ pub fn output_variable(name : String) -> String {
 ///|
 /// How a single-column subquery is coerced at its use site.
 /// Each variant defines its empty-input and cardinality behavior.
+#derive(Debug)
 pub(all) enum SubqueryUse {
   /// One value: NULL for no row, the value of the column for one row, and
   /// for more rows MISSING (permissive) or a `TypeError` (strict).
@@ -184,10 +191,11 @@ pub(all) enum SubqueryUse {
   /// The attribute values of the only row, as a list (array coercion): NULL
   /// for no row; more rows as for `Scalar`.
   Row
-} derive(Debug)
+}
 
 ///|
 /// A relational plan node (spec M4b1 §3): it produces binding tuples.
+#derive(Debug)
 pub(all) enum Rel {
   /// One binding of `as_` per element of a collection; `at` binds the
   /// element's position.
@@ -211,20 +219,22 @@ pub(all) enum Rel {
   /// `members` (FROM AS and AT, and LET, in order); a MISSING one is left
   /// out. Keys compare with `eqg` after MISSING becomes NULL.
   Group(Rel, Grouping, group_as~ : String, members~ : Array[String], @ast.Span)
-} derive(Debug)
+}
 
 ///|
 /// A lowered join strategy. Left and right outer joins pad unmatched
 /// bindings with NULL; cross and inner joins produce only matching pairs.
+#derive(Debug, Eq)
 pub(all) enum JoinKind {
   Cross
   Inner
   Left
   Right
-} derive(Debug, Eq)
+}
 
 ///|
 /// What a query block makes of each binding tuple.
+#derive(Debug)
 pub(all) enum Projection {
   /// `SELECT VALUE e`
   Value(Expr)
@@ -236,16 +246,17 @@ pub(all) enum Projection {
   /// `PIVOT value AT key`: per row a one-attribute tuple (the empty tuple
   /// for a row without an attribute); the query joins them into one tuple.
   Pivot(value~ : Expr, key~ : Expr)
-} derive(Debug)
+}
 
 ///|
 /// An item of a SELECT list.
+#derive(Debug)
 pub(all) enum Item {
   /// `expr AS name`, the name given or implied.
   Named(String, Expr)
   /// `expr.*`
   AllFields(Expr)
-} derive(Debug)
+}
 
 ///|
 /// Where an expression is in the source.
@@ -304,6 +315,7 @@ pub fn Rel::span(self : Rel) -> @ast.Span {
 
 ///|
 /// An aggregate function (spec M4c §3.3). SOME is `Any`.
+#derive(Debug, Eq)
 pub(all) enum AggregateKind {
   Count
   Sum
@@ -312,17 +324,18 @@ pub(all) enum AggregateKind {
   Max
   Any
   Every
-} derive(Debug, Eq)
+}
 
 ///|
 /// The keys of a GROUP BY (spec M4c §4).
+#derive(Debug)
 pub(all) enum Grouping {
   /// One group of every binding tuple, also when there are none: GROUP ALL,
   /// or a query with an aggregate or HAVING and no GROUP BY.
   All
   /// The key variables and their expressions.
   By(Array[(String, Expr)])
-} derive(Debug)
+}
 
 ///|
 /// The group variable of a grouped query without GROUP AS. No identifier
@@ -332,6 +345,7 @@ pub let group_variable : String = "\u{0}group"
 ///|
 /// A built-in scalar function (spec M4d1). One argument unless a variant
 /// says otherwise.
+#derive(Debug, Eq)
 pub(all) enum Function {
   CharLength
   OctetLength
@@ -375,7 +389,7 @@ pub(all) enum Function {
   CurrentTime(Int32)
   CurrentTimestamp(Int32)
   UtcNow
-} derive(Debug, Eq)
+}
 
 ///|
 /// The SQL name, for messages.
@@ -418,6 +432,7 @@ pub fn Function::name(self : Function) -> String {
 ///|
 /// Candidate variables in one lexical scope for an implicit attribute lookup.
 /// Scopes are carried innermost first, with shadowed variables excluded.
+#derive(Debug, Eq)
 pub(all) struct ImplicitScope {
   variables : Array[String]
-} derive(Debug, Eq)
+}

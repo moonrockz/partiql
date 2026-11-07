@@ -1,9 +1,10 @@
 ///|
 /// A 1-based line and a 1-based column counted in code points.
+#derive(Debug, Eq)
 pub(all) struct Position {
   line : Int32
   column : Int32
-} derive(Debug, Eq)
+}
 
 ///|
 fn is_high_surrogate(c : Int32) -> Bool {
@@ -42,7 +43,7 @@ fn line_text(source : String, line : Int32) -> String {
   if line - 1 < lines.length() {
     let text = lines[line - 1]
     if text.has_suffix("\r") {
-      text.view(end_offset=text.length() - 1).to_owned()
+      text.exact_view(end=text.length() - 1).to_owned()
     } else {
       text
     }

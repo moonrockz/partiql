@@ -155,13 +155,15 @@ pub fn tuple_union(Array[@partiql-value.Value]) -> @partiql-value.Value raise Op
 pub fn upper(Array[@partiql-value.Value]) -> @partiql-value.Value raise OpFailure
 
 // Errors
+#derive(Eq, @debug.Debug)
 pub(all) suberror OpFailure {
   TypeFailure(String)
   DataFailure(String)
   Unsupported(String)
-} derive(Eq, @debug.Debug)
+}
 
 // Types and methods
+#derive(Eq, @debug.Debug)
 pub(all) enum CastTarget {
   Any
   Bool
@@ -179,45 +181,51 @@ pub(all) enum CastTarget {
   Bag
   Tuple
   Map(key~ : CastTarget, key_type~ : @partiql-value.MapType, value~ : CastTarget, value_type~ : @partiql-value.MapType)
-} derive(Eq, @debug.Debug)
+}
 
 pub(all) struct Clock {
   now : () -> @time.ZonedDateTime raise
 }
 pub fn Clock::fixed(@time.ZonedDateTime) -> Self
 
+#derive(Eq, @debug.Debug)
 pub(all) enum FieldMatch {
   NoField
   One(@partiql-value.Value)
   Many(@partiql-value.Value, count~ : Int32)
-} derive(Eq, @debug.Debug)
+}
 
+#derive(Eq, @debug.Debug)
 pub(all) enum FloatWidth {
   Real
   Double
-} derive(Eq, @debug.Debug)
+}
 
+#derive(Eq, @debug.Debug)
 pub(all) enum IntWidth {
   Bits8
   Bits16
   Bits32
   Bits64
-} derive(Eq, @debug.Debug)
+}
 
+#derive(Eq, @debug.Debug)
 pub(all) enum Scale {
   Unconstrained
   Fixed(precision~ : Int32, scale~ : Int32)
-} derive(Eq, @debug.Debug)
+}
 
+#derive(Eq, @debug.Debug)
 pub(all) enum TextKind {
   Char(Int32)
   Varchar(Int32)
   String
-} derive(Eq, @debug.Debug)
+}
 
+#derive(Eq, @debug.Debug)
 pub struct ZoneOffset {
   minutes : Int32
-} derive(Eq, @debug.Debug)
+}
 #alias(new, deprecated)
 pub fn ZoneOffset::from_minutes(Int32) -> Self?
 pub fn ZoneOffset::utc() -> Self

@@ -56,7 +56,7 @@ test "format keeps the tree and is idempotent" {
       soft
       .expect_call(
         () => same_tree(source),
-        label=source.view(end_offset=24).to_owned(),
+        label=source.clamped_view(end=24).to_owned(),
       )
       .to_return()
       .to_be_true()

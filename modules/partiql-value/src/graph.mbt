@@ -1,10 +1,11 @@
 ///|
 /// The ends of a graph edge (RFC 0025): an ordered pair for a directed edge,
 /// an unordered pair for an undirected edge. Ends name node ids.
+#derive(Debug)
 pub(all) enum Ends {
   Directed(from~ : String, to~ : String)
   Undirected(String, String)
-} derive(Debug)
+}
 
 ///|
 /// A graph node: its id from the source data, its labels (a set, kept in
@@ -75,6 +76,7 @@ pub fn GraphEdge::labels(self : GraphEdge) -> ArrayView[String] {
 
 ///|
 /// Why a graph could not be built.
+#derive(Debug, Eq)
 pub(all) suberror GraphError {
   DuplicateNodeId(String)
   DuplicateEdgeId(String)
@@ -82,7 +84,7 @@ pub(all) suberror GraphError {
   UnknownNode(String)
   /// A payload that is MISSING (use no payload instead).
   MissingPayload(String)
-} derive(Debug, Eq)
+}
 
 ///|
 /// A PartiQL graph (RFC 0025). Node ids are unique among nodes, edge ids

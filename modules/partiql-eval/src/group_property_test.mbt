@@ -1,8 +1,9 @@
 ///|
 /// Rows `{'k': key, 'v': value}` with few keys and mixed values.
+#derive(Debug)
 struct Rows {
   rows : Array[(String, String)]
-} derive(Debug)
+}
 
 ///|
 let row_keys : Array[String] = ["1", "2", "1.0", "NULL", "MISSING", "'a'"]

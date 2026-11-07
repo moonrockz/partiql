@@ -27,11 +27,13 @@ pub fn write_bytes(Array[@partiql-value.Value]) -> Bytes raise IonDataError
 pub fn write_text(Array[@partiql-value.Value], pretty? : Bool) -> String raise IonDataError
 
 // Errors
+#derive(Eq, @debug.Debug)
 pub(all) suberror CodecError {
   Unsupported(String)
   Malformed(String)
-} derive(Eq, @debug.Debug)
+}
 
+#derive(@debug.Debug)
 pub(all) suberror IonDataError {
   Utf8
   Text(@moonrockz/ion/ion.IonError)
@@ -41,7 +43,7 @@ pub(all) suberror IonDataError {
   Violations(Array[ValidationViolation])
   Write(@moonrockz/ion/ion.IonError)
   Bindings(String)
-} derive(@debug.Debug)
+}
 pub fn IonDataError::message(Self) -> String
 
 // Types and methods
@@ -51,10 +53,11 @@ pub struct Validation {
 pub fn Validation::document(@schema.Schema, String) -> Self
 pub fn Validation::elements(@schema.Schema, String) -> Self
 
+#derive(@debug.Debug)
 pub struct ValidationViolation {
   path : String
   message : String
-} derive(@debug.Debug)
+}
 
 // Type aliases
 

@@ -5,11 +5,12 @@
 /// value of the right type, such as a division by zero) is an error in both.
 /// `Unsupported` marks a valid operation that this version does not evaluate
 /// (spec M4d2 §4.1).
+#derive(Debug, Eq)
 pub(all) suberror OpFailure {
   TypeFailure(String)
   DataFailure(String)
   Unsupported(String)
-} derive(Debug, Eq)
+}
 
 ///|
 fn boxed(v : @value.Value) -> @value.Value raise OpFailure {
@@ -20,11 +21,12 @@ fn boxed(v : @value.Value) -> @value.Value raise OpFailure {
 
 ///|
 /// Matches in tuple declaration order; repeated fields never shadow.
+#derive(Debug, Eq)
 pub(all) enum FieldMatch {
   NoField
   One(@value.Value)
   Many(@value.Value, count~ : Int32)
-} derive(Debug, Eq)
+}
 
 ///|
 /// All fields matching a name, ignoring ASCII case for regular identifiers.

@@ -2,9 +2,10 @@
 /// A quickcheck value wrapper with `Arbitrary` and `Shrink` instances.
 /// Generation caps the recursion budget at eight; shrinking reduces containers
 /// and scalar magnitudes.
+#derive(Debug)
 pub(all) struct ArbValue {
   value : @value.Value
-} derive(Debug)
+}
 
 ///|
 pub impl @quickcheck.Arbitrary for ArbValue with fn arbitrary(size, rs) {
@@ -58,9 +59,10 @@ pub impl @shrink.Shrink for ArbValue with fn shrink(self) {
 ///|
 /// A quickcheck Ion wrapper drawn from representative parsed examples.
 /// Shrinking drops annotations and selects container children.
+#derive(Debug)
 pub(all) struct ArbIon {
   value : @ion_core.IonValue
-} derive(Debug)
+}
 
 ///|
 pub impl @quickcheck.Arbitrary for ArbIon with fn arbitrary(size, rs) {
@@ -91,9 +93,10 @@ pub impl @shrink.Shrink for ArbIon with fn shrink(self) {
 
 ///|
 /// A quickcheck timestamp wrapper. Shrinking approaches 2000-01-01 midnight UTC.
+#derive(Debug)
 pub(all) struct ArbTimestamp {
   value : @value.Timestamp
-} derive(Debug)
+}
 
 ///|
 pub impl @quickcheck.Arbitrary for ArbTimestamp with fn arbitrary(_size, rs) {

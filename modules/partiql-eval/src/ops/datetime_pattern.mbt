@@ -162,9 +162,9 @@ fn format_datetime(
           Year(1) => d.year.to_string()
           Year(2) => number_text(d.year % 100, 2)
           Year(w) => number_text(d.year, w)
-          Month(3) => month_names[d.month - 1].view(end_offset=3).to_owned()
+          Month(3) => month_names[d.month - 1].exact_view(end=3).to_owned()
           Month(4) => month_names[d.month - 1]
-          Month(5) => month_names[d.month - 1].view(end_offset=1).to_owned()
+          Month(5) => month_names[d.month - 1].exact_view(end=1).to_owned()
           Month(w) => number_text(d.month, w)
           Day(w) => number_text(d.day, w)
           _ => ""
@@ -188,7 +188,7 @@ fn format_datetime(
           AmPm => if t.hour < 12 { "AM" } else { "PM" }
           Minute(w) => number_text(t.minute, w)
           Second(w) => number_text(t.second, w)
-          Fraction(k) => number_text(t.nanos, 9).view(end_offset=k).to_owned()
+          Fraction(k) => number_text(t.nanos, 9).exact_view(end=k).to_owned()
           Nano => t.nanos.to_string()
           _ => ""
         }
@@ -507,7 +507,7 @@ fn parse_with_pattern(
       Month(3 | 4) => {
         let mut found = false
         for i, name in month_names {
-          let short = name.view(end_offset=3).to_owned()
+          let short = name.exact_view(end=3).to_owned()
           if (token is Month(4) && scan.accept(name, AnyCase)) ||
             (token is Month(3) && scan.accept(short, AnyCase)) {
             month = (i + 1).to_int64()

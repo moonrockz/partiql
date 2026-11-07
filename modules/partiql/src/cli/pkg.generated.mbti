@@ -27,12 +27,13 @@ pub(all) struct Io {
 }
 pub fn Io::unavailable() -> Self
 
+#derive(Eq, @debug.Debug)
 pub(all) struct Outcome {
   stdout_bytes : Bytes?
   stdout : String
   stderr : String
   status : Int32
-} derive(Eq, @debug.Debug)
+}
 
 // Type aliases
 

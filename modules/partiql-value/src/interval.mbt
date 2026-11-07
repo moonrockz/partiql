@@ -1,8 +1,9 @@
 ///|
 /// An interval that does not fit the representation.
+#derive(Debug, Eq)
 pub(all) suberror IntervalError {
   Overflow(String)
-} derive(Debug, Eq)
+}
 
 ///|
 let int64_min_big : @bigint.BigInt = @bigint.BigInt::from_int64(
@@ -30,9 +31,10 @@ fn big(n : Int64) -> @bigint.BigInt {
 
 ///|
 /// A year-month interval, as a signed number of months.
+#derive(Debug)
 pub struct IntervalYM {
   months : Int64
-} derive(Debug)
+}
 
 ///|
 /// Build a signed month count. Raise `IntervalError::Overflow` for Int64's
@@ -85,10 +87,11 @@ pub fn IntervalYM::months_part(self : IntervalYM) -> Int64 {
 ///|
 /// A day-time interval: `seconds` + `nanos` / 10^9, with `nanos` in
 /// 0..999,999,999 (floor form).
+#derive(Debug)
 pub struct IntervalDT {
   seconds : Int64
   nanos : Int32
-} derive(Debug)
+}
 
 ///|
 /// Floor form of seconds + nanos / 10^9, computed in BigInt arithmetic.

@@ -1,10 +1,11 @@
 ///|
 /// A collection literal of atoms: a list or a bag, as text and as items.
+#derive(Debug)
 struct CollText {
   open : String
   close : String
   items : Array[String]
-} derive(Debug)
+}
 
 ///|
 let coll_atoms : Array[String] = [
@@ -133,9 +134,10 @@ let distinct_atoms : Array[String] = [
 ]
 
 ///|
+#derive(Debug)
 struct DistinctText {
   text : String
-} derive(Debug)
+}
 
 ///|
 impl @quickcheck.Arbitrary for DistinctText with fn arbitrary(_size, rs) {
@@ -229,9 +231,10 @@ test "SELECT DISTINCT VALUE merges grouping-equal numbers of every kind" {
 ///|
 /// A generated query: expression texts of the M4a generator under the query
 /// forms, so strict and permissive modes can differ.
+#derive(Debug)
 struct QueryText {
   text : String
-} derive(Debug)
+}
 
 ///|
 let query_sources : Array[String] = [
@@ -466,9 +469,10 @@ test "law: ORDER BY output is sorted, ASC nulls last and DESC nulls first" {
 
 ///|
 /// A list source: the stability law needs positions.
+#derive(Debug)
 struct ListText {
   text : String
-} derive(Debug)
+}
 
 ///|
 impl @quickcheck.Arbitrary for ListText with fn arbitrary(_size, rs) {
@@ -515,11 +519,12 @@ test "law: ORDER BY is stable" {
 }
 
 ///|
+#derive(Debug)
 struct SliceCase {
   c : CollText
   n : Int32
   m : Int32
-} derive(Debug)
+}
 
 ///|
 impl @quickcheck.Arbitrary for SliceCase with fn arbitrary(size, rs) {
@@ -647,9 +652,10 @@ test "law: OUTER DISTINCT forms are DISTINCT over the ALL forms" {
 ///|
 /// Relations: bags of one-attribute tuples over one type class, so the SQL
 /// operators raise no DataError.
+#derive(Debug)
 struct RelText {
   items : Array[String]
-} derive(Debug)
+}
 
 ///|
 let rel_atoms : Array[String] = ["0", "1", "-1", "7", "2e0", "1.5", "NULL"]

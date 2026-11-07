@@ -1,21 +1,24 @@
 ///|
 /// An expression kind and its half-open UTF-16 source span.
 /// Recovered expressions may contain `ExprKind::Error`.
+#derive(Debug, Eq)
 pub(all) struct Expr {
   kind : ExprKind
   span : Span
-} derive(Debug, Eq)
+}
 
 ///|
 /// The unary numeric signs `+` and `-`.
+#derive(Debug, Eq)
 pub(all) enum UnaryOp {
   Pos
   Neg
-} derive(Debug, Eq)
+}
 
 ///|
 /// A non-short-circuit arithmetic, concatenation or comparison operator.
 /// AND, OR and NOT have separate expression variants.
+#derive(Debug, Eq)
 pub(all) enum BinaryOp {
   Add
   Sub
@@ -29,19 +32,21 @@ pub(all) enum BinaryOp {
   Le
   Gt
   Ge
-} derive(Debug, Eq)
+}
 
 ///|
 /// Which end of a string TRIM removes matching characters from.
+#derive(Debug, Eq)
 pub(all) enum TrimSpec {
   Both
   Leading
   Trailing
-} derive(Debug, Eq)
+}
 
 ///|
 /// A datetime field used by EXTRACT, DATE_ADD, DATE_DIFF and interval qualifiers.
 /// Not every field is valid in every position; the parser checks those rules.
+#derive(Debug, Eq)
 pub(all) enum DatetimeField {
   Year
   Month
@@ -51,20 +56,22 @@ pub(all) enum DatetimeField {
   Second
   TimezoneHour
   TimezoneMinute
-} derive(Debug, Eq)
+}
 
 ///|
 /// The SQL clock functions (SQL-92 6.8).
+#derive(Debug, Eq)
 pub(all) enum CurrentKind {
   Date
   Time
   Timestamp
-} derive(Debug, Eq)
+}
 
 ///|
 /// The syntactic form of an expression, with child expressions in source order.
 /// Literal source text and syntactic options are retained for printing.
 /// Parsing a form does not imply the evaluator supports it.
+#derive(Debug, Eq)
 pub(all) enum ExprKind {
   Lit(Literal)
   /// A variable; `qualified` is the `@` prefix (local-first lookup).
@@ -119,11 +126,12 @@ pub(all) enum ExprKind {
   /// A missing or broken expression in a recovered tree (spec M3d); its span
   /// covers the skipped tokens.
   Error
-} derive(Debug, Eq)
+}
 
 ///|
 /// One field, index or wildcard step following a path root.
 /// Identifiers retain whether lookup is case-sensitive.
+#derive(Debug, Eq)
 pub(all) enum PathStep {
   /// `.name`
   Field(Identifier)
@@ -135,21 +143,23 @@ pub(all) enum PathStep {
   AllElements(Span)
   /// `.*`
   AllFields(Span)
-} derive(Debug, Eq)
+}
 
 ///|
 /// The leading and optional trailing fields of an INTERVAL type or literal.
 /// Optional precisions retain the written leading and fractional digit counts.
+#derive(Debug, Eq)
 pub(all) struct IntervalQualifier {
   start : DatetimeField
   start_precision : Int32?
   end : DatetimeField?
   fractional_precision : Int32?
-} derive(Debug, Eq)
+}
 
 ///|
 /// A literal. Numbers keep their source text; an Ion literal keeps its text
 /// and its parsed value.
+#derive(Debug)
 pub(all) enum Literal {
   Null
   Missing
@@ -163,7 +173,7 @@ pub(all) enum Literal {
   Time(String, precision~ : Int32?, with_tz~ : Bool)
   Timestamp(String, precision~ : Int32?, with_tz~ : Bool)
   Interval(String, negative~ : Bool, qualifier~ : IntervalQualifier)
-} derive(Debug)
+}
 
 ///|
 pub impl Eq for Literal with fn equal(a, b) {

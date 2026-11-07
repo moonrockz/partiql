@@ -1,5 +1,6 @@
 ///|
 /// Why a statement could not be parsed.
+#derive(Debug, Eq)
 pub(all) suberror ParseError {
   /// Valid PartiQL that this version does not parse yet: DML and DDL
   /// statements such as INSERT or CREATE.
@@ -12,4 +13,4 @@ pub(all) suberror ParseError {
     expected~ : Array[String],
     found~ : String
   )
-} derive(Debug, Eq)
+}

@@ -1,9 +1,10 @@
 ///|
 /// A range of source text: UTF-16 code unit offsets, `end` exclusive.
+#derive(Debug, Eq)
 pub(all) struct Span {
   start : Int32
   end : Int32
-} derive(Debug, Eq)
+}
 
 ///|
 /// The smallest span that covers both spans.

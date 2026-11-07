@@ -2,40 +2,45 @@
 
 ///|
 /// The width of an integer target: TINYINT, SMALLINT, INT, BIGINT.
+#derive(Eq, Debug)
 pub(all) enum IntWidth {
   Bits8
   Bits16
   Bits32
   Bits64
-} derive(Eq, Debug)
+}
 
 ///|
 /// REAL (binary32) or DOUBLE PRECISION (binary64).
+#derive(Eq, Debug)
 pub(all) enum FloatWidth {
   Real
   Double
-} derive(Eq, Debug)
+}
 
 ///|
 /// The scale of a DECIMAL target: a bare DECIMAL keeps the scale of the
 /// value (rounded to 38 digits); DECIMAL(p, s) has scale s.
+#derive(Eq, Debug)
 pub(all) enum Scale {
   Unconstrained
   Fixed(precision~ : Int32, scale~ : Int32)
-} derive(Eq, Debug)
+}
 
 ///|
 /// A character string target. Lengths are in code points.
+#derive(Eq, Debug)
 pub(all) enum TextKind {
   Char(Int32)
   Varchar(Int32)
   String
-} derive(Eq, Debug)
+}
 
 ///|
 /// The target of a CAST, resolved by lowering (spec M4d2 §3.1). `Map` keeps
 /// the targets of its keys and values and the declared map types, because a
 /// target cannot tell NUMERIC from DECIMAL and a `MapType` can.
+#derive(Eq, Debug)
 pub(all) enum CastTarget {
   Any
   Bool
@@ -58,14 +63,15 @@ pub(all) enum CastTarget {
     value~ : CastTarget,
     value_type~ : @value.MapType
   )
-} derive(Eq, Debug)
+}
 
 ///|
 /// The session time zone displacement in minutes east of UTC, −18:00 to
 /// +18:00 (spec M4d2 §4.4).
+#derive(Eq, Debug)
 pub struct ZoneOffset {
   minutes : Int32
-} derive(Eq, Debug)
+}
 
 ///|
 /// The zero-minute offset, UTC.

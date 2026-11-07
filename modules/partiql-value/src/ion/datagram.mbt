@@ -1,6 +1,7 @@
 ///|
 /// Errors at the Ion transport boundary. Codec errors retain their distinction
 /// between malformed and unsupported PartiQL encodings.
+#derive(Debug)
 pub(all) suberror IonDataError {
   Utf8
   Text(@ion_core.IonError)
@@ -10,7 +11,7 @@ pub(all) suberror IonDataError {
   Violations(Array[ValidationViolation])
   Write(@ion_core.IonError)
   Bindings(String)
-} derive(Debug)
+}
 
 ///|
 /// A human-readable message, including every path for schema violations.
@@ -32,10 +33,11 @@ pub fn IonDataError::message(self : IonDataError) -> String {
 
 ///|
 /// A schema violation with its location in the input datagram.
+#derive(Debug)
 pub struct ValidationViolation {
   path : String
   message : String
-} derive(Debug)
+}
 
 ///|
 /// A schema applied to raw Ion, before PartiQL decoding.

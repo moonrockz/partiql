@@ -1,9 +1,10 @@
 ///|
 /// An Ion value that has no PartiQL equivalent.
+#derive(Debug, Eq)
 pub(all) suberror LowerError {
   /// A symbol whose text is unknown (a symbol ID that no table defines).
   SymbolWithoutText
-} derive(Debug, Eq)
+}
 
 ///|
 /// Converts an Ion timestamp: missing fields become 0, an unknown offset

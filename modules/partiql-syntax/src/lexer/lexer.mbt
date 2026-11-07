@@ -19,8 +19,14 @@ fn Scanner::at(self : Scanner, ahead : Int32) -> Int32 {
 }
 
 ///|
+/// Offsets are UTF-16 code units, and the source can hold a lone surrogate
+/// (see `describe_char`). `exact_view` rejects a range that starts or ends at a
+/// trailing surrogate, so this keeps the bounds check only.
 fn Scanner::text(self : Scanner, start : Int32, end : Int32) -> String {
-  self.source.view(start_offset=start, end_offset=end).to_owned()
+  guard start >= 0 && start <= end && end <= self.source.length() else {
+    abort("Scanner::text: invalid span")
+  }
+  self.source.unsafe_substring(start~, end~)
 }
 
 ///|

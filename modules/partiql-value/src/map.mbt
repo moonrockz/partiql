@@ -1,6 +1,7 @@
 ///|
 /// The declared key or value type of a MAP (RFC 0104). The names are the
 /// static type names of partiql-tests' `$map::<key>::<value>::` encoding.
+#derive(Debug, Eq)
 pub(all) enum MapType {
   Dynamic
   Bool
@@ -18,7 +19,7 @@ pub(all) enum MapType {
   Date
   Time
   Timestamp
-} derive(Debug, Eq)
+}
 
 ///|
 /// The type name as partiql-tests writes it.
@@ -69,6 +70,7 @@ pub fn MapType::from_name(name : String) -> MapType? {
 
 ///|
 /// Why a MAP could not be built.
+#derive(Debug, Eq)
 pub(all) suberror MapError {
   /// A NULL, MISSING, non-scalar or unlowerable key.
   InvalidKey(String)
@@ -76,7 +78,7 @@ pub(all) suberror MapError {
   DuplicateKey(String)
   /// RFC 0104 leaves a DYNAMIC key type for future work.
   DynamicKeyType
-} derive(Debug, Eq)
+}
 
 ///|
 /// A PartiQL MAP: unique scalar keys, no MISSING values. The stored order

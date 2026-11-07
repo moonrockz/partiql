@@ -2,10 +2,11 @@
 
 ///|
 /// A random statement and a random width from 1 to 120.
+#derive(Debug)
 struct WideTree {
   statement : @ast.Statement
   width : Int32
-} derive(Debug)
+}
 
 ///|
 impl @quickcheck.Arbitrary for WideTree with fn arbitrary(size, rs) {

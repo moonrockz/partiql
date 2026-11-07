@@ -1,17 +1,19 @@
 ///|
 /// A date, time or timestamp field that is out of range.
+#derive(Debug, Eq)
 pub(all) suberror DateTimeError {
   InvalidDate(String)
   InvalidTime(String)
-} derive(Debug, Eq)
+}
 
 ///|
 /// A calendar date (proleptic Gregorian).
+#derive(Debug)
 pub struct Date {
   year : Int32
   month : Int32
   day : Int32
-} derive(Debug)
+}
 
 ///|
 fn is_leap_year(year : Int32) -> Bool {
@@ -61,6 +63,7 @@ pub fn Date::Date(
 ///|
 /// A time of day. `offset` is minutes east of UTC; `None` means WITHOUT TIME
 /// ZONE. `precision` is the number of fractional-second digits (TIME(p)).
+#derive(Debug)
 pub struct Time {
   hour : Int32
   minute : Int32
@@ -68,7 +71,7 @@ pub struct Time {
   nanos : Int32
   precision : Int32
   offset : Int32?
-} derive(Debug)
+}
 
 ///|
 fn pow10(n : Int32) -> Int32 {
@@ -120,10 +123,11 @@ pub fn Time::Time(
 
 ///|
 /// A date and a time. The time's offset is the timestamp's offset.
+#derive(Debug)
 pub struct Timestamp {
   date : Date
   time : Time
-} derive(Debug)
+}
 
 ///|
 /// Combine an already validated date and time. Preserve the time's precision
